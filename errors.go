@@ -4,7 +4,7 @@ package basistheory
 
 import (
 	json "encoding/json"
-	core "github.com/fern-demo/basis-theory-go/core"
+	core "github.com/basis-theory/go-sdk/core"
 )
 
 // Bad Request

@@ -1,4 +1,4 @@
-module github.com/fern-demo/basis-theory-go
+module github.com/basis-theory/go-sdk
 
 go 1.18
 

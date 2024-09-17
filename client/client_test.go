@@ -3,7 +3,7 @@
 package client
 
 import (
-	option "github.com/fern-demo/basis-theory-go/option"
+	option "github.com/basis-theory/go-sdk/option"
 	assert "github.com/stretchr/testify/assert"
 	http "net/http"
 	testing "testing"

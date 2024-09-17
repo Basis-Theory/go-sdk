@@ -7,10 +7,10 @@ import (
 	context "context"
 	json "encoding/json"
 	errors "errors"
-	basistheorygo "github.com/fern-demo/basis-theory-go"
-	core "github.com/fern-demo/basis-theory-go/core"
-	option "github.com/fern-demo/basis-theory-go/option"
-	tenants "github.com/fern-demo/basis-theory-go/tenants"
+	gosdk "github.com/basis-theory/go-sdk"
+	core "github.com/basis-theory/go-sdk/core"
+	option "github.com/basis-theory/go-sdk/option"
+	tenants "github.com/basis-theory/go-sdk/tenants"
 	io "io"
 	http "net/http"
 	os "os"
@@ -42,7 +42,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) GetUsageReports(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*basistheorygo.TenantUsageReport, error) {
+) (*gosdk.TenantUsageReport, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -65,21 +65,21 @@ func (c *Client) GetUsageReports(
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 401:
-			value := new(basistheorygo.UnauthorizedError)
+			value := new(gosdk.UnauthorizedError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 403:
-			value := new(basistheorygo.ForbiddenError)
+			value := new(gosdk.ForbiddenError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 404:
-			value := new(basistheorygo.NotFoundError)
+			value := new(gosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
@@ -89,17 +89,19 @@ func (c *Client) GetUsageReports(
 		return apiError
 	}
 
-	var response *basistheorygo.TenantUsageReport
+	var response *gosdk.TenantUsageReport
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
-			URL:          endpointURL,
-			Method:       http.MethodGet,
-			MaxAttempts:  options.MaxAttempts,
-			Headers:      headers,
-			Client:       options.HTTPClient,
-			Response:     &response,
-			ErrorDecoder: errorDecoder,
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
 		},
 	); err != nil {
 		return nil, err
@@ -110,7 +112,7 @@ func (c *Client) GetUsageReports(
 func (c *Client) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*basistheorygo.Tenant, error) {
+) (*gosdk.Tenant, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -133,21 +135,21 @@ func (c *Client) Get(
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 401:
-			value := new(basistheorygo.UnauthorizedError)
+			value := new(gosdk.UnauthorizedError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 403:
-			value := new(basistheorygo.ForbiddenError)
+			value := new(gosdk.ForbiddenError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 404:
-			value := new(basistheorygo.NotFoundError)
+			value := new(gosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
@@ -157,17 +159,19 @@ func (c *Client) Get(
 		return apiError
 	}
 
-	var response *basistheorygo.Tenant
+	var response *gosdk.Tenant
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
-			URL:          endpointURL,
-			Method:       http.MethodGet,
-			MaxAttempts:  options.MaxAttempts,
-			Headers:      headers,
-			Client:       options.HTTPClient,
-			Response:     &response,
-			ErrorDecoder: errorDecoder,
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
 		},
 	); err != nil {
 		return nil, err
@@ -179,7 +183,7 @@ func (c *Client) Update(
 	ctx context.Context,
 	request *tenants.UpdateTenantRequest,
 	opts ...option.IdempotentRequestOption,
-) (*basistheorygo.Tenant, error) {
+) (*gosdk.Tenant, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -202,28 +206,28 @@ func (c *Client) Update(
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(basistheorygo.BadRequestError)
+			value := new(gosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 401:
-			value := new(basistheorygo.UnauthorizedError)
+			value := new(gosdk.UnauthorizedError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 403:
-			value := new(basistheorygo.ForbiddenError)
+			value := new(gosdk.ForbiddenError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 404:
-			value := new(basistheorygo.NotFoundError)
+			value := new(gosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
@@ -233,18 +237,20 @@ func (c *Client) Update(
 		return apiError
 	}
 
-	var response *basistheorygo.Tenant
+	var response *gosdk.Tenant
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
-			URL:          endpointURL,
-			Method:       http.MethodPut,
-			MaxAttempts:  options.MaxAttempts,
-			Headers:      headers,
-			Client:       options.HTTPClient,
-			Request:      request,
-			Response:     &response,
-			ErrorDecoder: errorDecoder,
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
 		},
 	); err != nil {
 		return nil, err
@@ -278,21 +284,21 @@ func (c *Client) Delete(
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 401:
-			value := new(basistheorygo.UnauthorizedError)
+			value := new(gosdk.UnauthorizedError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 403:
-			value := new(basistheorygo.ForbiddenError)
+			value := new(gosdk.ForbiddenError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
 			}
 			return value
 		case 404:
-			value := new(basistheorygo.NotFoundError)
+			value := new(gosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
@@ -305,12 +311,14 @@ func (c *Client) Delete(
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
-			URL:          endpointURL,
-			Method:       http.MethodDelete,
-			MaxAttempts:  options.MaxAttempts,
-			Headers:      headers,
-			Client:       options.HTTPClient,
-			ErrorDecoder: errorDecoder,
+			URL:             endpointURL,
+			Method:          http.MethodDelete,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			ErrorDecoder:    errorDecoder,
 		},
 	); err != nil {
 		return err

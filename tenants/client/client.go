@@ -3,12 +3,12 @@
 package client
 
 import (
-	core "github.com/fern-demo/basis-theory-go/core"
-	option "github.com/fern-demo/basis-theory-go/option"
-	connections "github.com/fern-demo/basis-theory-go/tenants/connections"
-	invitations "github.com/fern-demo/basis-theory-go/tenants/invitations"
-	members "github.com/fern-demo/basis-theory-go/tenants/members"
-	self "github.com/fern-demo/basis-theory-go/tenants/self"
+	core "github.com/basis-theory/go-sdk/core"
+	option "github.com/basis-theory/go-sdk/option"
+	connections "github.com/basis-theory/go-sdk/tenants/connections"
+	invitations "github.com/basis-theory/go-sdk/tenants/invitations"
+	members "github.com/basis-theory/go-sdk/tenants/members"
+	self "github.com/basis-theory/go-sdk/tenants/self"
 	http "net/http"
 	os "os"
 )

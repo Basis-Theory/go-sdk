@@ -3,22 +3,22 @@
 package client
 
 import (
-	applicationkeys "github.com/fern-demo/basis-theory-go/applicationkeys"
-	applications "github.com/fern-demo/basis-theory-go/applications"
-	applicationtemplates "github.com/fern-demo/basis-theory-go/applicationtemplates"
-	core "github.com/fern-demo/basis-theory-go/core"
-	logs "github.com/fern-demo/basis-theory-go/logs"
-	option "github.com/fern-demo/basis-theory-go/option"
-	permissions "github.com/fern-demo/basis-theory-go/permissions"
-	proxies "github.com/fern-demo/basis-theory-go/proxies"
-	reactorformulas "github.com/fern-demo/basis-theory-go/reactorformulas"
-	reactors "github.com/fern-demo/basis-theory-go/reactors"
-	roles "github.com/fern-demo/basis-theory-go/roles"
-	sessions "github.com/fern-demo/basis-theory-go/sessions"
-	tenantsclient "github.com/fern-demo/basis-theory-go/tenants/client"
-	threeds "github.com/fern-demo/basis-theory-go/threeds"
-	tokenize "github.com/fern-demo/basis-theory-go/tokenize"
-	tokens "github.com/fern-demo/basis-theory-go/tokens"
+	applicationkeys "github.com/basis-theory/go-sdk/applicationkeys"
+	applications "github.com/basis-theory/go-sdk/applications"
+	applicationtemplates "github.com/basis-theory/go-sdk/applicationtemplates"
+	core "github.com/basis-theory/go-sdk/core"
+	logs "github.com/basis-theory/go-sdk/logs"
+	option "github.com/basis-theory/go-sdk/option"
+	permissions "github.com/basis-theory/go-sdk/permissions"
+	proxies "github.com/basis-theory/go-sdk/proxies"
+	reactorformulas "github.com/basis-theory/go-sdk/reactorformulas"
+	reactors "github.com/basis-theory/go-sdk/reactors"
+	roles "github.com/basis-theory/go-sdk/roles"
+	sessions "github.com/basis-theory/go-sdk/sessions"
+	tenantsclient "github.com/basis-theory/go-sdk/tenants/client"
+	threeds "github.com/basis-theory/go-sdk/threeds"
+	tokenize "github.com/basis-theory/go-sdk/tokenize"
+	tokens "github.com/basis-theory/go-sdk/tokens"
 	http "net/http"
 	os "os"
 )
@@ -38,10 +38,10 @@ type Client struct {
 	Reactors             *reactors.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
-	Tenants              *tenantsclient.Client
 	Threeds              *threeds.Client
 	Tokenize             *tokenize.Client
 	Tokens               *tokens.Client
+	Tenants              *tenantsclient.Client
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
@@ -68,9 +68,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactors.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
 		Threeds:              threeds.NewClient(opts...),
 		Tokenize:             tokenize.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
+		Tenants:              tenantsclient.NewClient(opts...),
 	}
 }

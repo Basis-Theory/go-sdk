@@ -3,7 +3,7 @@
 package tenants
 
 import (
-	basistheorygo "github.com/fern-demo/basis-theory-go"
+	gosdk "github.com/basis-theory/go-sdk"
 )
 
 type CreateTenantInvitationRequest struct {
@@ -12,8 +12,8 @@ type CreateTenantInvitationRequest struct {
 }
 
 type InvitationsListRequest struct {
-	Status *basistheorygo.TenantInvitationStatus `json:"-" url:"status,omitempty"`
-	Page   *int                                  `json:"-" url:"page,omitempty"`
-	Start  *string                               `json:"-" url:"start,omitempty"`
-	Size   *int                                  `json:"-" url:"size,omitempty"`
+	Status *gosdk.TenantInvitationStatus `json:"-" url:"status,omitempty"`
+	Page   *int                          `json:"-" url:"page,omitempty"`
+	Start  *string                       `json:"-" url:"start,omitempty"`
+	Size   *int                          `json:"-" url:"size,omitempty"`
 }

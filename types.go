@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/fern-demo/basis-theory-go/core"
+	core "github.com/basis-theory/go-sdk/core"
 	time "time"
 )
 
@@ -3583,7 +3583,7 @@ func (t *TokenEnrichments) String() string {
 }
 
 type TokenMetrics struct {
-	Count         *int       `json:"count,omitempty" url:"count,omitempty"`
+	Count         *int64     `json:"count,omitempty" url:"count,omitempty"`
 	LastCreatedAt *time.Time `json:"last_created_at,omitempty" url:"last_created_at,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -3685,10 +3685,10 @@ func (t *TokenPaginatedList) String() string {
 }
 
 type TokenReport struct {
-	IncludedMonthlyActiveTokens *int                     `json:"included_monthly_active_tokens,omitempty" url:"included_monthly_active_tokens,omitempty"`
-	MonthlyActiveTokens         *int                     `json:"monthly_active_tokens,omitempty" url:"monthly_active_tokens,omitempty"`
+	IncludedMonthlyActiveTokens *int64                   `json:"included_monthly_active_tokens,omitempty" url:"included_monthly_active_tokens,omitempty"`
+	MonthlyActiveTokens         *int64                   `json:"monthly_active_tokens,omitempty" url:"monthly_active_tokens,omitempty"`
 	MetricsByType               map[string]*TokenMetrics `json:"metrics_by_type,omitempty" url:"metrics_by_type,omitempty"`
-	TotalTokens                 *int                     `json:"total_tokens,omitempty" url:"total_tokens,omitempty"`
+	TotalTokens                 *int64                   `json:"total_tokens,omitempty" url:"total_tokens,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
