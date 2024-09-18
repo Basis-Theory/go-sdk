@@ -25,5 +25,3 @@ jobs:
 
       - name: Test
         run: go test ./...
-        env:
-          BT_MGT_API_KEY: ${{ secrets.BT_MGT_API_KEY }}
