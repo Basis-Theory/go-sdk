@@ -3,4 +3,5 @@
 # README.md
 
 .gitignore
-test/**/*
+.github/workflows/ci.yml
+test/integration/canary_test.go
