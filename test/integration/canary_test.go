@@ -10,7 +10,7 @@ import (
 	"github.com/basis-theory/go-sdk/option"
 )
 
-func TestMyFunction(t *testing.T) {
+func TestTenantSelf(t *testing.T) {
 	client := basistheoryclient.NewClient(
 		option.WithAPIKey(os.Getenv("BT_MGT_API_KEY")),
 		option.WithBaseURL("https://api.flock-dev.com"),
