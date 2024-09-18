@@ -3,7 +3,7 @@
 package option
 
 import (
-	core "github.com/basis-theory/go-sdk/core"
+	core "github.com/Basis-Theory/go-sdk/core"
 	http "net/http"
 	url "net/url"
 )

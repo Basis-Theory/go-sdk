@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 import (
-	basistheoryclient "github.com/basis-theory/go-sdk/client"
-	"github.com/basis-theory/go-sdk/option"
+	basistheoryclient "github.com/Basis-Theory/go-sdk/client"
+	"github.com/Basis-Theory/go-sdk/option"
 )
 
 func TestTenantSelf(t *testing.T) {

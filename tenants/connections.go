@@ -3,7 +3,7 @@
 package tenants
 
 import (
-	gosdk "github.com/basis-theory/go-sdk"
+	gosdk "github.com/Basis-Theory/go-sdk"
 )
 
 type CreateTenantConnectionRequest struct {

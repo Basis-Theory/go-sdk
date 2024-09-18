@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/basis-theory/go-sdk/core"
+	core "github.com/Basis-Theory/go-sdk/core"
 	time "time"
 )
 
