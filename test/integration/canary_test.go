@@ -60,7 +60,59 @@ func TestTokenCrud(t *testing.T) {
 	EnsureTokenDeleted(t, client, tokenId)
 }
 
-func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, appliationId string) string {
+func TestListV1PaginationWithIteration(t *testing.T) {
+	client := NewPrivateClient()
+
+	pageSize := 3
+	page, err := client.Tokens.List(
+		context.TODO(),
+		&basistheory.TokensListRequest{
+			Page: IntPtr(1),
+			Size: IntPtr(pageSize),
+		},
+	)
+	FailIfError(t, "Unable to list tokens", err)
+
+	count := 0
+	iter := page.Iterator()
+	for iter.Next(context.TODO()) {
+		count++
+		if count > pageSize {
+			break
+		}
+	}
+	if count <= pageSize {
+		t.Errorf("Expected at least %d tokens. Got %d", pageSize, count)
+	}
+}
+
+func TestListV2PaginationWithIteration(t *testing.T) {
+	client := NewPrivateClient()
+
+	pageSize := 3
+	page, err := client.Tokens.ListV2(
+		context.TODO(),
+		&basistheory.TokensListV2Request{
+			Start: nil,
+			Size:  IntPtr(pageSize),
+		},
+	)
+	FailIfError(t, "Unable to list tokens", err)
+
+	count := 0
+	iter := page.Iterator()
+	for iter.Next(context.TODO()) {
+		count++
+		if count > pageSize {
+			break
+		}
+	}
+	if count <= pageSize {
+		t.Errorf("Expected at least %d tokens. Got %d", pageSize, count)
+	}
+}
+
+func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) string {
 	response, err := manageClient.Proxies.Create(
 		context.TODO(),
 		&basistheory.CreateProxyRequest{
@@ -71,7 +123,7 @@ func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, appliatio
 			RequestTransform:  nil,
 			ResponseTransform: nil,
 			Application: &basistheory.Application{
-				ID: StringPtr(appliationId),
+				ID: StringPtr(applicationId),
 			},
 			Configuration: nil,
 			RequireAuth:   nil,
@@ -271,4 +323,8 @@ func StringPtr(s string) *string {
 
 func BoolPtr(b bool) *bool {
 	return &b
+}
+
+func IntPtr(i int) *int {
+	return &i
 }
