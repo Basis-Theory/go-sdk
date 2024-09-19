@@ -64,7 +64,7 @@ func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, appliatio
 	response, err := manageClient.Proxies.Create(
 		context.TODO(),
 		&basistheory.CreateProxyRequest{
-			Name:              "Go-" + uuid.NewString(),
+			Name:              "(Deletable) go-sdk-" + uuid.NewString(),
 			DestinationURL:    "https://echo.basistheory.com",
 			RequestReactorID:  nil,
 			ResponseReactorID: nil,
@@ -188,7 +188,7 @@ func CreateApplication(t *testing.T, manageClient *basistheoryclient.Client) str
 	x, err := manageClient.Applications.Create(
 		context.TODO(),
 		&basistheory.CreateApplicationRequest{
-			Name:        "Go-SDK-" + uuid.NewString(),
+			Name:        "(Deletable) Go-SDK-" + uuid.NewString(),
 			Type:        "private",
 			Permissions: []string{"token:use"},
 		},
@@ -218,7 +218,7 @@ func CreateReactor(t *testing.T, manageClient *basistheoryclient.Client, applica
 	x, err2 := manageClient.Reactors.Create(
 		context.TODO(),
 		&basistheory.CreateReactorRequest{
-			Name: "Go-SDK-" + uuid.NewString(),
+			Name: "(Deletable) Go-SDK-" + uuid.NewString(),
 			Code: "module.exports = function (req) {return {raw: req.args}}",
 			Application: &basistheory.Application{
 				ID: StringPtr(applicationId),
