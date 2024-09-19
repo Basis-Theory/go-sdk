@@ -39,14 +39,17 @@ func TestTokenCrud(t *testing.T) {
 	//UpdateToken(t, client, tokenId, updateCardNumber)
 	//GetAndValidateCardNumber(t, client, tokenId, updateCardNumber)
 
+	// Create Application
 	applicationId := CreateApplication(t, manageClient)
 
 	// Create / Delete Proxy
 	proxyId := CreateProxy(t, manageClient, applicationId)
+	// Missing ability to call proxies from SDK
+	// The definition is missing from the Basis Theory OpenApi specs
 	DeleteProxy(t, manageClient, proxyId)
 
 	// Reactors
-	reactorId := CreateReactor(t, manageClient)
+	reactorId := CreateReactor(t, manageClient, applicationId)
 	React(t, client, reactorId)
 	DeleteReactor(t, manageClient, reactorId)
 
@@ -139,14 +142,6 @@ func UpdateToken(t *testing.T, client *basistheoryclient.Client, tokenId string,
 				"expiration_year":  2026,
 				"cvc":              "987",
 			},
-			//Privacy:               nil,
-			//Metadata:              nil,
-			//SearchIndexes:         nil,
-			//FingerprintExpression: nil,
-			//Mask:                  nil,
-			//ExpiresAt:             nil,
-			//DeduplicateToken:      nil,
-			//Containers: nil,
 		},
 	)
 	FailIfError(t, "Failed to update token", err)
@@ -219,13 +214,15 @@ func DeleteProxy(t *testing.T, manageClient *basistheoryclient.Client, proxyId s
 	FailIfError(t, "Failed to delete proxy", err)
 }
 
-func CreateReactor(t *testing.T, manageClient *basistheoryclient.Client) string {
+func CreateReactor(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) string {
 	x, err2 := manageClient.Reactors.Create(
 		context.TODO(),
 		&basistheory.CreateReactorRequest{
-			Name:          "Go-SDK-" + uuid.NewString(),
-			Code:          "module.exports = function (req) {return {raw: req.args}}",
-			Application:   nil,
+			Name: "Go-SDK-" + uuid.NewString(),
+			Code: "module.exports = function (req) {return {raw: req.args}}",
+			Application: &basistheory.Application{
+				ID: StringPtr(applicationId),
+			},
 			Configuration: nil,
 		})
 	FailIfError(t, "Failed to create reactor", err2)
