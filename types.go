@@ -1634,7 +1634,11 @@ func (p *ProxyPaginatedList) String() string {
 }
 
 type ProxyTransform struct {
-	Code *string `json:"code,omitempty" url:"code,omitempty"`
+	Type        *string `json:"type,omitempty" url:"type,omitempty"`
+	Code        *string `json:"code,omitempty" url:"code,omitempty"`
+	Matcher     *string `json:"matcher,omitempty" url:"matcher,omitempty"`
+	Expression  *string `json:"expression,omitempty" url:"expression,omitempty"`
+	Replacement *string `json:"replacement,omitempty" url:"replacement,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -2192,7 +2196,6 @@ func (t *Tenant) String() string {
 }
 
 type TenantConnectionOptions struct {
-	Scopes        *string  `json:"scopes,omitempty" url:"scopes,omitempty"`
 	DomainAliases []string `json:"domain_aliases,omitempty" url:"domain_aliases,omitempty"`
 
 	extraProperties map[string]interface{}

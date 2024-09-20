@@ -7,6 +7,7 @@ import (
 	applications "github.com/Basis-Theory/go-sdk/applications"
 	applicationtemplates "github.com/Basis-Theory/go-sdk/applicationtemplates"
 	core "github.com/Basis-Theory/go-sdk/core"
+	detokenize "github.com/Basis-Theory/go-sdk/detokenize"
 	logs "github.com/Basis-Theory/go-sdk/logs"
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
@@ -31,6 +32,7 @@ type Client struct {
 	Applications         *applications.Client
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
+	Detokenize           *detokenize.Client
 	Logs                 *logs.Client
 	Permissions          *permissions.Client
 	Proxies              *proxies.Client
@@ -61,6 +63,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Applications:         applications.NewClient(opts...),
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
+		Detokenize:           detokenize.NewClient(opts...),
 		Logs:                 logs.NewClient(opts...),
 		Permissions:          permissions.NewClient(opts...),
 		Proxies:              proxies.NewClient(opts...),

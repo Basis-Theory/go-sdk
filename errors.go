@@ -7,14 +7,13 @@ import (
 	core "github.com/Basis-Theory/go-sdk/core"
 )
 
-// Bad Request
 type BadRequestError struct {
 	*core.APIError
-	Body *ValidationProblemDetails
+	Body interface{}
 }
 
 func (b *BadRequestError) UnmarshalJSON(data []byte) error {
-	var body *ValidationProblemDetails
+	var body interface{}
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
