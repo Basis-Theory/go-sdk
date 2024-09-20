@@ -7,14 +7,13 @@ import (
 	core "github.com/Basis-Theory/go-sdk/core"
 )
 
-// Bad Request
 type BadRequestError struct {
 	*core.APIError
-	Body *ValidationProblemDetails
+	Body interface{}
 }
 
 func (b *BadRequestError) UnmarshalJSON(data []byte) error {
-	var body *ValidationProblemDetails
+	var body interface{}
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -31,14 +30,13 @@ func (b *BadRequestError) Unwrap() error {
 	return b.APIError
 }
 
-// Conflict
 type ConflictError struct {
 	*core.APIError
-	Body *ProblemDetails
+	Body interface{}
 }
 
 func (c *ConflictError) UnmarshalJSON(data []byte) error {
-	var body *ProblemDetails
+	var body interface{}
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -126,14 +124,13 @@ func (u *UnauthorizedError) Unwrap() error {
 	return u.APIError
 }
 
-// Client Error
 type UnprocessableEntityError struct {
 	*core.APIError
-	Body *ProblemDetails
+	Body interface{}
 }
 
 func (u *UnprocessableEntityError) UnmarshalJSON(data []byte) error {
-	var body *ProblemDetails
+	var body interface{}
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
