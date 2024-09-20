@@ -60,6 +60,18 @@ func TestTokenCrud(t *testing.T) {
 	EnsureTokenDeleted(t, client, tokenId)
 }
 
+func TestIdempotencyHeader(t *testing.T) {
+	client := NewPrivateClient()
+	idempotencyKey := uuid.NewString()
+
+	firstTokenId := CreateToken(t, client, "6011000990139424", option.WithIdempotencyKey(StringPtr(idempotencyKey)))
+	secondTokenId := CreateToken(t, client, "4242424242424242", option.WithIdempotencyKey(StringPtr(idempotencyKey)))
+
+	if firstTokenId != secondTokenId {
+		t.Errorf("Expected firstTokenId to be %s but was %s", firstTokenId, secondTokenId)
+	}
+}
+
 func TestListV1PaginationWithIteration(t *testing.T) {
 	client := NewPrivateClient()
 
@@ -150,7 +162,7 @@ func NewPrivateClient() *basistheoryclient.Client {
 	return client
 }
 
-func CreateToken(t *testing.T, client *basistheoryclient.Client, cardNumber string) string {
+func CreateToken(t *testing.T, client *basistheoryclient.Client, cardNumber string, opts ...option.IdempotentRequestOption) string {
 	tokenCreatedResponse, err := client.Tokens.Create(
 		context.TODO(),
 		&basistheory.CreateTokenRequest{
@@ -177,6 +189,7 @@ func CreateToken(t *testing.T, client *basistheoryclient.Client, cardNumber stri
 			ExpiresAt:        nil,
 			Containers:       []string{"/pci/high/"},
 		},
+		opts...,
 	)
 	FailIfError(t, "Failed to create token", err)
 	tokenId := *tokenCreatedResponse.ID
