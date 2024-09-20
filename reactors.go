@@ -24,9 +24,8 @@ type PatchReactorRequest struct {
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
 }
 
-type ReactRequest struct {
-	Args        interface{} `json:"args,omitempty" url:"-"`
-	CallbackURL *string     `json:"callback_url,omitempty" url:"-"`
+type ReactRequestAsync struct {
+	Args interface{} `json:"args,omitempty" url:"-"`
 }
 
 type UpdateReactorRequest struct {
