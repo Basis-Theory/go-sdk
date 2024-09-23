@@ -13,6 +13,8 @@ import (
 	"github.com/Basis-Theory/go-sdk/option"
 )
 
+// Test Functions
+
 func TestTenantSelf(t *testing.T) {
 	client := NewManagementClient()
 
@@ -124,6 +126,19 @@ func TestListV2PaginationWithIteration(t *testing.T) {
 	}
 }
 
+func TestWebhooks(t *testing.T) {
+	client := NewManagementClient()
+
+	url := "https://echo.basistheory.com/" + uuid.NewString()
+	webhookId := CreateWebhook(t, client, url)
+
+	GetWebhookAssertUrl(t, client, webhookId, url)
+
+	response, err := client.Webhooks.Update(
+		context.TODO(),
+		&basistheory.)
+}
+
 func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) string {
 	response, err := manageClient.Proxies.Create(
 		context.TODO(),
@@ -145,6 +160,8 @@ func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicati
 	proxyId := *response.ID
 	return proxyId
 }
+
+// Helper Functions
 
 func NewManagementClient() *basistheoryclient.Client {
 	client := basistheoryclient.NewClient(
@@ -322,6 +339,28 @@ func DeleteReactor(t *testing.T, manageClient *basistheoryclient.Client, reactor
 		reactorId,
 	)
 	FailIfError(t, "Failed to delete reactor", e)
+}
+
+func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) string {
+	response, err := client.Webhooks.Create(
+		context.TODO(),
+		&basistheory.WebhookCreateRequest{
+			Name:   "(Deletable) Webhook - " + uuid.NewString(),
+			URL:    url,
+			Events: []string{"token.created"},
+		})
+	FailIfError(t, "Could not create webhook", err)
+	return response.ID
+}
+
+func GetWebhookAssertUrl(t *testing.T, client *basistheoryclient.Client, webhookId string, url string) {
+	response, err := client.Webhooks.Get(
+		context.TODO(),
+		webhookId)
+	FailIfError(t, "Unable to get webhook", err)
+	if url != response.URL {
+		t.Errorf("Expected webhook URL to be %s. Got %s", url, response.URL)
+	}
 }
 
 func FailIfError(t *testing.T, message string, err error) {
