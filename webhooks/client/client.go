@@ -149,7 +149,7 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *gosdk.WebhookCreateRequest,
+	request *gosdk.WebhookUpdateRequest,
 	opts ...option.RequestOption,
 ) (*gosdk.WebhookResponse, error) {
 	options := core.NewRequestOptions(opts...)
