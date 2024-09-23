@@ -2,18 +2,20 @@ package integration
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	basistheory "github.com/Basis-Theory/go-sdk"
 	"github.com/google/uuid"
+	"net/http"
+	"net/url"
 	"os"
 	"testing"
+	"time"
 )
 import (
 	basistheoryclient "github.com/Basis-Theory/go-sdk/client"
 	"github.com/Basis-Theory/go-sdk/option"
 )
-
-// Test Functions
 
 func TestTenantSelf(t *testing.T) {
 	client := NewManagementClient()
@@ -134,9 +136,25 @@ func TestWebhooks(t *testing.T) {
 
 	GetWebhookAssertUrl(t, client, webhookId, url)
 
-	response, err := client.Webhooks.Update(
+	time.Sleep(2 * time.Second) // Required to avoid error `The webhook subscription is undergoing another concurrent operation. Please wait a few seconds, then try again.`
+
+	updateUrl := "https://echo.basistheory.com/" + uuid.NewString()
+	UpdateWebhook(t, client, webhookId, updateUrl)
+
+	GetWebhookAssertUrl(t, client, webhookId, updateUrl)
+
+	DeleteWebhook(t, client, webhookId)
+
+	_, err := client.Webhooks.Get(
 		context.TODO(),
-		&basistheory.)
+		webhookId)
+	if err == nil {
+		t.Errorf("Expected error when trying to get a webhook that doesn't exist")
+	}
+	var notFoundError basistheory.NotFoundError
+	if errors.As(err, &notFoundError) {
+		t.Errorf("Expected error to be Not Found")
+	}
 }
 
 func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) string {
@@ -161,12 +179,26 @@ func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicati
 	return proxyId
 }
 
-// Helper Functions
-
 func NewManagementClient() *basistheoryclient.Client {
 	client := basistheoryclient.NewClient(
 		option.WithAPIKey(os.Getenv("BT_MGT_API_KEY")),
 		option.WithBaseURL(os.Getenv("BT_API_URL")),
+	)
+	return client
+}
+
+// This management client can be used with a capturing proxy to inspect the requests
+// Set the environment variable `HTTP_PROXY` to the proxy URL; ie `http://127.0.0.1:8008`
+// This client will disable SSL verification to avoid self-signed (or unavailable) certs on the proxy
+func NewManagementClientDebug() *basistheoryclient.Client {
+	proxyURL, _ := url.Parse(os.Getenv("HTTP_PROXY"))
+	client := basistheoryclient.NewClient(
+		option.WithAPIKey(os.Getenv("BT_MGT_API_KEY")),
+		option.WithBaseURL(os.Getenv("BT_API_URL")),
+		option.WithHTTPClient(&http.Client{Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Proxy:           http.ProxyURL(proxyURL),
+		}}),
 	)
 	return client
 }
@@ -351,6 +383,25 @@ func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) s
 		})
 	FailIfError(t, "Could not create webhook", err)
 	return response.ID
+}
+
+func UpdateWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string, updateUrl string) {
+	_, err := client.Webhooks.Update(
+		context.TODO(),
+		webhookId,
+		&basistheory.WebhookUpdateRequest{
+			Name:   "(Deletable) Updated -" + uuid.NewString(),
+			URL:    updateUrl,
+			Events: []string{"token.created", "token.updated"},
+		})
+	FailIfError(t, "Unable to update Webhook", err)
+}
+
+func DeleteWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string) {
+	err := client.Webhooks.Delete(
+		context.TODO(),
+		webhookId)
+	FailIfError(t, "Unable to delete webhook", err)
 }
 
 func GetWebhookAssertUrl(t *testing.T, client *basistheoryclient.Client, webhookId string, url string) {
