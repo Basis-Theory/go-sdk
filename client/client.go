@@ -7,18 +7,20 @@ import (
 	applications "github.com/Basis-Theory/go-sdk/applications"
 	applicationtemplates "github.com/Basis-Theory/go-sdk/applicationtemplates"
 	core "github.com/Basis-Theory/go-sdk/core"
+	detokenize "github.com/Basis-Theory/go-sdk/detokenize"
 	logs "github.com/Basis-Theory/go-sdk/logs"
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
 	proxies "github.com/Basis-Theory/go-sdk/proxies"
 	reactorformulas "github.com/Basis-Theory/go-sdk/reactorformulas"
-	reactors "github.com/Basis-Theory/go-sdk/reactors"
+	reactorsclient "github.com/Basis-Theory/go-sdk/reactors/client"
 	roles "github.com/Basis-Theory/go-sdk/roles"
 	sessions "github.com/Basis-Theory/go-sdk/sessions"
 	tenantsclient "github.com/Basis-Theory/go-sdk/tenants/client"
 	threeds "github.com/Basis-Theory/go-sdk/threeds"
 	tokenize "github.com/Basis-Theory/go-sdk/tokenize"
 	tokens "github.com/Basis-Theory/go-sdk/tokens"
+	webhooksclient "github.com/Basis-Theory/go-sdk/webhooks/client"
 	http "net/http"
 	os "os"
 )
@@ -31,16 +33,18 @@ type Client struct {
 	Applications         *applications.Client
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
+	Detokenize           *detokenize.Client
 	Logs                 *logs.Client
 	Permissions          *permissions.Client
 	Proxies              *proxies.Client
 	Reactorformulas      *reactorformulas.Client
-	Reactors             *reactors.Client
+	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
 	Threeds              *threeds.Client
 	Tokenize             *tokenize.Client
 	Tokens               *tokens.Client
+	Webhooks             *webhooksclient.Client
 	Tenants              *tenantsclient.Client
 }
 
@@ -61,16 +65,18 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Applications:         applications.NewClient(opts...),
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
+		Detokenize:           detokenize.NewClient(opts...),
 		Logs:                 logs.NewClient(opts...),
 		Permissions:          permissions.NewClient(opts...),
 		Proxies:              proxies.NewClient(opts...),
 		Reactorformulas:      reactorformulas.NewClient(opts...),
-		Reactors:             reactors.NewClient(opts...),
+		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
 		Threeds:              threeds.NewClient(opts...),
 		Tokenize:             tokenize.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
+		Webhooks:             webhooksclient.NewClient(opts...),
 		Tenants:              tenantsclient.NewClient(opts...),
 	}
 }

@@ -29,6 +29,10 @@ type ReactRequest struct {
 	CallbackURL *string     `json:"callback_url,omitempty" url:"-"`
 }
 
+type ReactRequestAsync struct {
+	Args interface{} `json:"args,omitempty" url:"-"`
+}
+
 type UpdateReactorRequest struct {
 	Name          string             `json:"name" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
