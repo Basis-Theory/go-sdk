@@ -143,6 +143,8 @@ func TestWebhooks(t *testing.T) {
 
 	GetWebhookAssertUrl(t, client, webhookId, updateUrl)
 
+	time.Sleep(2 * time.Second) // Required to avoid error `The webhook subscription is undergoing another concurrent operation. Please wait a few seconds, then try again.`
+
 	DeleteWebhook(t, client, webhookId)
 
 	_, err := client.Webhooks.Get(
