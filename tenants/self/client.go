@@ -196,6 +196,7 @@ func (c *Client) Update(
 	endpointURL := baseURL + "/tenants/self"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

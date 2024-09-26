@@ -156,6 +156,7 @@ func (c *Client) Create(
 	endpointURL := baseURL + "/reactors"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -300,6 +301,7 @@ func (c *Client) Update(
 	endpointURL := core.EncodeURL(baseURL+"/reactors/%v", id)
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -449,6 +451,7 @@ func (c *Client) Patch(
 	endpointURL := core.EncodeURL(baseURL+"/reactors/%v", id)
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/merge-patch+json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -527,6 +530,7 @@ func (c *Client) React(
 	endpointURL := core.EncodeURL(baseURL+"/reactors/%v/react", id)
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -614,6 +618,7 @@ func (c *Client) ReactAsync(
 	endpointURL := core.EncodeURL(baseURL+"/reactors/%v/react-async", id)
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

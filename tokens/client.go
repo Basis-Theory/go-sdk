@@ -56,6 +56,7 @@ func (c *Client) Detokenize(
 	endpointURL := baseURL + "/detokenize"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -133,6 +134,7 @@ func (c *Client) Tokenize(
 	endpointURL := baseURL + "/tokenize"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -301,6 +303,7 @@ func (c *Client) Create(
 	endpointURL := baseURL + "/tokens"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -380,6 +383,7 @@ func (c *Client) Search(
 	endpointURL := baseURL + "/tokens/search"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -600,6 +604,7 @@ func (c *Client) Update(
 	endpointURL := core.EncodeURL(baseURL+"/tokens/%v", id)
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/merge-patch+json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -774,6 +779,7 @@ func (c *Client) SearchV2(
 	endpointURL := baseURL + "/v2/tokens/search"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
