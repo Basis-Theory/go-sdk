@@ -146,6 +146,7 @@ func (c *Client) Create(
 	endpointURL := baseURL + "/tenants/self/invitations"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

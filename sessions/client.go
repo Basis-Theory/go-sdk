@@ -125,6 +125,7 @@ func (c *Client) Authorize(
 	endpointURL := baseURL + "/sessions/authorize"
 
 	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
