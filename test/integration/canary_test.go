@@ -38,10 +38,10 @@ func TestTokenCrud(t *testing.T) {
 	tokenId := CreateToken(t, client, createCardNumber)
 	GetAndValidateCardNumber(t, client, tokenId, createCardNumber)
 
-	// Update Token (broken due to invalid `Content-Type`) https://basistheory.slack.com/archives/C07BZHM9JUD/p1726766102647879
-	//updateCardNumber := "4242424242424242"
-	//UpdateToken(t, client, tokenId, updateCardNumber)
-	//GetAndValidateCardNumber(t, client, tokenId, updateCardNumber)
+	// Update Token
+	updateCardNumber := "4242424242424242"
+	UpdateToken(t, client, tokenId, updateCardNumber)
+	GetAndValidateCardNumber(t, client, tokenId, updateCardNumber)
 
 	// Create Application
 	applicationId := CreateApplication(t, manageClient)
