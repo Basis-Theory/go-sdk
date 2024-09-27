@@ -1,7 +1,7 @@
 # Basis Theory Go Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
-[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/fern-demo/basis-theory-go)
+[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/basis-theory/go-sdk)
 
 The Basis Theory Go library provides convenient access to the Basis Theory API from Go.
 
@@ -14,16 +14,16 @@ This module requires Go version >= 1.18.
 Run the following command to use the basistheory Go library in your module:
 
 ```sh
-go get github.com/fern-demo/basis-theory-go
+go get github.com/basis-theory/go-sdk
 ```
 
 ## Usage
 
 ```go
 import (
-  "github.com/fern-demo/basis-theory-go"
-  basistheoryclient "github.com/fern-demo/basis-theory-go/client"
-  "github.com/fern-demo/basis-theory-go/option"
+  "github.com/basis-theory/go-sdk"
+  basistheoryclient "github.com/basis-theory/go-sdk/client"
+  "github.com/basis-theory/go-sdk/option"
 )
 
 client := basistheoryclient.NewClient(
