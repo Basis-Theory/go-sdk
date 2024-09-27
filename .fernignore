@@ -2,6 +2,8 @@
 
 .github/workflows/ci.yml
 .github/workflows/release.yml
+.github/workflows/security-scan.yml
+
 test/integration/canary_test.go
 
 .gitignore
