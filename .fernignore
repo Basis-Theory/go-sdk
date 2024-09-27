@@ -1,10 +1,13 @@
 # Specify files that shouldn't be modified by Fern
 
 .github/workflows/ci.yml
+.github/workflows/release.yml
 test/integration/canary_test.go
 
 .gitignore
+.nvmrc
 .releaserc.json
 
 package.json
 README.md
+yarn.lock
