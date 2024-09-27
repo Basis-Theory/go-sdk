@@ -17,6 +17,12 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.SEMANTIC_RELEASE_PAT }}
 
+      - name: Start Deploy Message
+        uses: Basis-Theory/github-actions/deploy-slack-action@master
+        with:
+          slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
+          channel: ${{ vars.SLACK_DUCKBOT_PRODUCT_DEPLOY_CHANNEL }}
+
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -29,3 +35,11 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn release
+
+      - name: Stop Deploy Message
+        if: always()
+        uses: Basis-Theory/github-actions/deploy-slack-action@master
+        with:
+          slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
+          channel: ${{ vars.SLACK_DUCKBOT_PRODUCT_DEPLOY_CHANNEL }}
+          status: 'done'
