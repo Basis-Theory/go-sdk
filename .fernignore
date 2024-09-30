@@ -10,6 +10,7 @@ test/integration/canary_test.go
 .nvmrc
 .releaserc.json
 
+CHANGELOG.md
 package.json
 README.md
 yarn.lock
