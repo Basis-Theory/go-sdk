@@ -1,3 +1,10 @@
+## [0.1.2](https://github.com/Basis-Theory/go-sdk/compare/v0.1.1...v0.1.2) (2024-09-30)
+
+
+### Bug Fixes
+
+* Fix webhook component naming conventions ([#24](https://github.com/Basis-Theory/go-sdk/issues/24)) ([abb0a16](https://github.com/Basis-Theory/go-sdk/commit/abb0a168f3cd29abd151e29ea151eca707a470ce))
+
 ## [0.1.1](https://github.com/Basis-Theory/go-sdk/compare/v0.1.0...v0.1.1) (2024-09-30)
 
 

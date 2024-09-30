@@ -1,6 +1,6 @@
 {
   "name": "go-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Basis Theory Go SDK",
   "repository": "https://github.com/Basis-Theory/go-sdk",
   "author": "Basis Theory",
