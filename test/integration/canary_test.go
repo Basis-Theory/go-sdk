@@ -378,7 +378,7 @@ func DeleteReactor(t *testing.T, manageClient *basistheoryclient.Client, reactor
 func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) string {
 	response, err := client.Webhooks.Create(
 		context.TODO(),
-		&basistheory.WebhookCreateRequest{
+		&basistheory.CreateWebhookRequest{
 			Name:   "(Deletable) Webhook - " + uuid.NewString(),
 			URL:    url,
 			Events: []string{"token.created"},
@@ -391,7 +391,7 @@ func UpdateWebhook(t *testing.T, client *basistheoryclient.Client, webhookId str
 	_, err := client.Webhooks.Update(
 		context.TODO(),
 		webhookId,
-		&basistheory.WebhookUpdateRequest{
+		&basistheory.UpdateWebhookRequest{
 			Name:   "(Deletable) Updated -" + uuid.NewString(),
 			URL:    updateUrl,
 			Events: []string{"token.created", "token.updated"},
