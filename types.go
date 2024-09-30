@@ -3981,8 +3981,8 @@ type WebhookResponse struct {
 	Events     []string              `json:"events,omitempty" url:"events,omitempty"`
 	CreatedBy  string                `json:"created_by" url:"created_by"`
 	CreatedAt  time.Time             `json:"created_at" url:"created_at"`
-	ModifiedBy string                `json:"modified_by" url:"modified_by"`
-	ModifiedAt time.Time             `json:"modified_at" url:"modified_at"`
+	ModifiedBy *string               `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt *time.Time            `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -3997,7 +3997,7 @@ func (w *WebhookResponse) UnmarshalJSON(data []byte) error {
 	var unmarshaler = struct {
 		embed
 		CreatedAt  *core.DateTime `json:"created_at"`
-		ModifiedAt *core.DateTime `json:"modified_at"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed: embed(*w),
 	}
@@ -4006,7 +4006,7 @@ func (w *WebhookResponse) UnmarshalJSON(data []byte) error {
 	}
 	*w = WebhookResponse(unmarshaler.embed)
 	w.CreatedAt = unmarshaler.CreatedAt.Time()
-	w.ModifiedAt = unmarshaler.ModifiedAt.Time()
+	w.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
 
 	extraProperties, err := core.ExtractExtraProperties(data, *w)
 	if err != nil {
@@ -4023,11 +4023,11 @@ func (w *WebhookResponse) MarshalJSON() ([]byte, error) {
 	var marshaler = struct {
 		embed
 		CreatedAt  *core.DateTime `json:"created_at"`
-		ModifiedAt *core.DateTime `json:"modified_at"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed:      embed(*w),
 		CreatedAt:  core.NewDateTime(w.CreatedAt),
-		ModifiedAt: core.NewDateTime(w.ModifiedAt),
+		ModifiedAt: core.NewOptionalDateTime(w.ModifiedAt),
 	}
 	return json.Marshal(marshaler)
 }
