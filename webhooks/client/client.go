@@ -85,7 +85,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.WebhookResponse, error) {
+) (interface{}, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -125,7 +125,7 @@ func (c *Client) Get(
 		return apiError
 	}
 
-	var response *gosdk.WebhookResponse
+	var response interface{}
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -149,9 +149,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *gosdk.WebhookUpdateRequest,
+	request interface{},
 	opts ...option.RequestOption,
-) (*gosdk.WebhookResponse, error) {
+) (interface{}, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -213,7 +213,7 @@ func (c *Client) Update(
 		return apiError
 	}
 
-	var response *gosdk.WebhookResponse
+	var response interface{}
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -322,7 +322,7 @@ func (c *Client) Delete(
 func (c *Client) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*gosdk.WebhookListResponse, error) {
+) (interface{}, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -362,7 +362,7 @@ func (c *Client) List(
 		return apiError
 	}
 
-	var response *gosdk.WebhookListResponse
+	var response interface{}
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -385,9 +385,9 @@ func (c *Client) List(
 // Create a new webhook
 func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.WebhookCreateRequest,
+	request interface{},
 	opts ...option.RequestOption,
-) (*gosdk.WebhookResponse, error) {
+) (interface{}, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -442,7 +442,7 @@ func (c *Client) Create(
 		return apiError
 	}
 
-	var response *gosdk.WebhookResponse
+	var response interface{}
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
