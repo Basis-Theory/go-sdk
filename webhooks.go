@@ -2,7 +2,7 @@
 
 package basistheory
 
-type WebhookCreateRequest struct {
+type CreateWebhookRequest struct {
 	// The name of the webhook
 	Name string `json:"name" url:"-"`
 	// The URL to which the webhook will send events
@@ -11,7 +11,7 @@ type WebhookCreateRequest struct {
 	Events []string `json:"events,omitempty" url:"-"`
 }
 
-type WebhookUpdateRequest struct {
+type UpdateWebhookRequest struct {
 	// The name of the webhook
 	Name string `json:"name" url:"-"`
 	// The URL to which the webhook will send events
