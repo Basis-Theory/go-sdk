@@ -18,6 +18,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
         with:
           command: code test
+          args: --all-sub-projects --severity-threshold=high
 
       - name: Snyk dependency scan
         uses: snyk/actions/gradle@master
