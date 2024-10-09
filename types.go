@@ -3889,16 +3889,18 @@ func (v *ValidationProblemDetails) String() string {
 }
 
 type Webhook struct {
-	ID         string        `json:"id" url:"id"`
-	TenantID   string        `json:"tenant_id" url:"tenant_id"`
-	Status     WebhookStatus `json:"status" url:"status"`
-	Name       string        `json:"name" url:"name"`
-	URL        string        `json:"url" url:"url"`
-	Events     []string      `json:"events,omitempty" url:"events,omitempty"`
-	CreatedBy  string        `json:"created_by" url:"created_by"`
-	CreatedAt  time.Time     `json:"created_at" url:"created_at"`
-	ModifiedBy *string       `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt *time.Time    `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	ID       string        `json:"id" url:"id"`
+	TenantID string        `json:"tenant_id" url:"tenant_id"`
+	Status   WebhookStatus `json:"status" url:"status"`
+	Name     string        `json:"name" url:"name"`
+	URL      string        `json:"url" url:"url"`
+	// The email address to use for management notification events. Ie: webhook disabled
+	NotifyEmail *string    `json:"notify_email,omitempty" url:"notify_email,omitempty"`
+	Events      []string   `json:"events,omitempty" url:"events,omitempty"`
+	CreatedBy   string     `json:"created_by" url:"created_by"`
+	CreatedAt   time.Time  `json:"created_at" url:"created_at"`
+	ModifiedBy  *string    `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt  *time.Time `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage

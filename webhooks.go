@@ -7,6 +7,8 @@ type CreateWebhookRequest struct {
 	Name string `json:"name" url:"-"`
 	// The URL to which the webhook will send events
 	URL string `json:"url" url:"-"`
+	// The email address to use for management notification events. Ie: webhook disabled
+	NotifyEmail *string `json:"notify_email,omitempty" url:"-"`
 	// An array of event types that the webhook will listen for
 	Events []string `json:"events,omitempty" url:"-"`
 }
@@ -16,6 +18,8 @@ type UpdateWebhookRequest struct {
 	Name string `json:"name" url:"-"`
 	// The URL to which the webhook will send events
 	URL string `json:"url" url:"-"`
+	// The email address to use for management notification events. Ie: webhook disabled
+	NotifyEmail *string `json:"notify_email,omitempty" url:"-"`
 	// An array of event types that the webhook will listen for
 	Events []string `json:"events,omitempty" url:"-"`
 }

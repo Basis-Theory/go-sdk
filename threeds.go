@@ -3,13 +3,14 @@
 package basistheory
 
 type AuthenticateThreeDsSessionRequest struct {
-	AuthenticationCategory string                     `json:"authentication_category" url:"-"`
-	AuthenticationType     string                     `json:"authentication_type" url:"-"`
-	ChallengePreference    *string                    `json:"challenge_preference,omitempty" url:"-"`
-	PurchaseInfo           *ThreeDsPurchaseInfo       `json:"purchase_info,omitempty" url:"-"`
-	MerchantInfo           *ThreeDsMerchantInfo       `json:"merchant_info,omitempty" url:"-"`
-	RequestorInfo          *ThreeDsRequestorInfo      `json:"requestor_info,omitempty" url:"-"`
-	CardholderInfo         *ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"-"`
-	BroadcastInfo          interface{}                `json:"broadcast_info,omitempty" url:"-"`
-	MessageExtensions      []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"-"`
+	AuthenticationCategory     string                     `json:"authentication_category" url:"-"`
+	AuthenticationType         *string                    `json:"authentication_type,omitempty" url:"-"`
+	MerchantAuthenticationType *string                    `json:"merchant_authentication_type,omitempty" url:"-"`
+	ChallengePreference        *string                    `json:"challenge_preference,omitempty" url:"-"`
+	PurchaseInfo               *ThreeDsPurchaseInfo       `json:"purchase_info,omitempty" url:"-"`
+	MerchantInfo               *ThreeDsMerchantInfo       `json:"merchant_info,omitempty" url:"-"`
+	RequestorInfo              *ThreeDsRequestorInfo      `json:"requestor_info,omitempty" url:"-"`
+	CardholderInfo             *ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"-"`
+	BroadcastInfo              interface{}                `json:"broadcast_info,omitempty" url:"-"`
+	MessageExtensions          []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"-"`
 }
