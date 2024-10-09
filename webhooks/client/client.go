@@ -121,6 +121,13 @@ func (c *Client) Get(
 				return apiError
 			}
 			return value
+		case 404:
+			value := new(gosdk.NotFoundError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
 		}
 		return apiError
 	}
@@ -344,6 +351,13 @@ func (c *Client) List(
 		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
+		case 400:
+			value := new(gosdk.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
 		case 401:
 			value := new(gosdk.UnauthorizedError)
 			value.APIError = apiError
