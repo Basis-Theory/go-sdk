@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/Basis-Theory/go-sdk/compare/v0.1.2...v0.2.0) (2024-10-09)
+
+
+### Features
+
+* adds notify_email to webhooks ([#27](https://github.com/Basis-Theory/go-sdk/issues/27)) ([577e00a](https://github.com/Basis-Theory/go-sdk/commit/577e00a4ced891592209e337316f0bd76d711366))
+
 ## [0.1.2](https://github.com/Basis-Theory/go-sdk/compare/v0.1.1...v0.1.2) (2024-09-30)
 
 
