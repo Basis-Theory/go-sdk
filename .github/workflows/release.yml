@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    environment: PR
+    environment: PROD
     name: Release
     runs-on: ubuntu-latest
     env:
