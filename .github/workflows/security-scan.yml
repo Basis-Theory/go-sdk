@@ -2,7 +2,7 @@ name: Security Scan
 
 on:
   schedule:
-    - cron: '0 12 * * 1' # 12pm UTC every Monday
+    - cron: "0 12 * * 1" # 12pm UTC every Monday
   workflow_dispatch:
 
 jobs:
@@ -34,6 +34,6 @@ jobs:
           author_name: Security Scan
           status: ${{ job.status }}
           channel: ${{ secrets.SLACK_SECURITY_SCAN_ALERT_CHANNEL_ID }}
-          fields: 'repo,workflow'
+          fields: "repo,workflow"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
