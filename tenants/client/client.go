@@ -8,6 +8,7 @@ import (
 	connections "github.com/Basis-Theory/go-sdk/tenants/connections"
 	invitations "github.com/Basis-Theory/go-sdk/tenants/invitations"
 	members "github.com/Basis-Theory/go-sdk/tenants/members"
+	owner "github.com/Basis-Theory/go-sdk/tenants/owner"
 	self "github.com/Basis-Theory/go-sdk/tenants/self"
 	http "net/http"
 	os "os"
@@ -21,6 +22,7 @@ type Client struct {
 	Connections *connections.Client
 	Invitations *invitations.Client
 	Members     *members.Client
+	Owner       *owner.Client
 	Self        *self.Client
 }
 
@@ -41,6 +43,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Connections: connections.NewClient(opts...),
 		Invitations: invitations.NewClient(opts...),
 		Members:     members.NewClient(opts...),
+		Owner:       owner.NewClient(opts...),
 		Self:        self.NewClient(opts...),
 	}
 }
