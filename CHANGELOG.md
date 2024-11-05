@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/Basis-Theory/go-sdk/compare/v0.2.0...v0.3.0) (2024-11-05)
+
+
+### Features
+
+* Adds token intents, 3DS, enrichments, token extras ([#31](https://github.com/Basis-Theory/go-sdk/issues/31)) ([f099c0f](https://github.com/Basis-Theory/go-sdk/commit/f099c0fb549b166ad6a69bdc4cf4ad3c48cca786))
+
 # [0.2.0](https://github.com/Basis-Theory/go-sdk/compare/v0.1.2...v0.2.0) (2024-10-09)
 
 
