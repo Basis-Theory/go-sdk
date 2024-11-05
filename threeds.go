@@ -3,14 +3,22 @@
 package basistheory
 
 type AuthenticateThreeDsSessionRequest struct {
-	AuthenticationCategory     string                     `json:"authentication_category" url:"-"`
-	AuthenticationType         *string                    `json:"authentication_type,omitempty" url:"-"`
-	MerchantAuthenticationType *string                    `json:"merchant_authentication_type,omitempty" url:"-"`
-	ChallengePreference        *string                    `json:"challenge_preference,omitempty" url:"-"`
-	PurchaseInfo               *ThreeDsPurchaseInfo       `json:"purchase_info,omitempty" url:"-"`
-	MerchantInfo               *ThreeDsMerchantInfo       `json:"merchant_info,omitempty" url:"-"`
-	RequestorInfo              *ThreeDsRequestorInfo      `json:"requestor_info,omitempty" url:"-"`
-	CardholderInfo             *ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"-"`
-	BroadcastInfo              interface{}                `json:"broadcast_info,omitempty" url:"-"`
-	MessageExtensions          []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"-"`
+	AuthenticationCategory string                     `json:"authentication_category" url:"-"`
+	AuthenticationType     string                     `json:"authentication_type" url:"-"`
+	ChallengePreference    *string                    `json:"challenge_preference,omitempty" url:"-"`
+	PurchaseInfo           *ThreeDsPurchaseInfo       `json:"purchase_info,omitempty" url:"-"`
+	MerchantInfo           *ThreeDsMerchantInfo       `json:"merchant_info,omitempty" url:"-"`
+	RequestorInfo          *ThreeDsRequestorInfo      `json:"requestor_info,omitempty" url:"-"`
+	CardholderInfo         *ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"-"`
+	BroadcastInfo          interface{}                `json:"broadcast_info,omitempty" url:"-"`
+	MessageExtensions      []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"-"`
+}
+
+type CreateThreeDsSessionRequest struct {
+	Pan           *string            `json:"pan,omitempty" url:"-"`
+	TokenID       *string            `json:"token_id,omitempty" url:"-"`
+	TokenIntentID *string            `json:"token_intent_id,omitempty" url:"-"`
+	Type          *string            `json:"type,omitempty" url:"-"`
+	Device        *string            `json:"device,omitempty" url:"-"`
+	DeviceInfo    *ThreeDsDeviceInfo `json:"device_info,omitempty" url:"-"`
 }

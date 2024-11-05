@@ -7,6 +7,7 @@ import (
 	applications "github.com/Basis-Theory/go-sdk/applications"
 	applicationtemplates "github.com/Basis-Theory/go-sdk/applicationtemplates"
 	core "github.com/Basis-Theory/go-sdk/core"
+	enrichments "github.com/Basis-Theory/go-sdk/enrichments"
 	logs "github.com/Basis-Theory/go-sdk/logs"
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
@@ -32,6 +33,7 @@ type Client struct {
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
 	Tokens               *tokens.Client
+	Enrichments          *enrichments.Client
 	Logs                 *logs.Client
 	Permissions          *permissions.Client
 	Proxies              *proxies.Client
@@ -39,9 +41,9 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
+	Tenants              *tenantsclient.Client
 	Threeds              *threeds.Client
 	Webhooks             *webhooksclient.Client
-	Tenants              *tenantsclient.Client
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
@@ -62,6 +64,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
+		Enrichments:          enrichments.NewClient(opts...),
 		Logs:                 logs.NewClient(opts...),
 		Permissions:          permissions.NewClient(opts...),
 		Proxies:              proxies.NewClient(opts...),
@@ -69,8 +72,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
+		Tenants:              tenantsclient.NewClient(opts...),
 		Threeds:              threeds.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
 	}
 }

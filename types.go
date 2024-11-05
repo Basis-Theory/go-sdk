@@ -663,6 +663,53 @@ func (c *CreateTenantConnectionResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CreateThreeDsSessionResponse struct {
+	ID                    *string `json:"id,omitempty" url:"id,omitempty"`
+	Type                  *string `json:"type,omitempty" url:"type,omitempty"`
+	CardBrand             *string `json:"cardBrand,omitempty" url:"cardBrand,omitempty"`
+	MethodURL             *string `json:"method_url,omitempty" url:"method_url,omitempty"`
+	MethodNotificationURL *string `json:"method_notification_url,omitempty" url:"method_notification_url,omitempty"`
+	DirectoryServerID     *string `json:"directory_server_id,omitempty" url:"directory_server_id,omitempty"`
+	RecommendedVersion    *string `json:"recommended_version,omitempty" url:"recommended_version,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *CreateThreeDsSessionResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateThreeDsSessionResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateThreeDsSessionResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreateThreeDsSessionResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateThreeDsSessionResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CursorPagination struct {
 	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
 	Next     *string `json:"next,omitempty" url:"next,omitempty"`
@@ -2627,6 +2674,8 @@ func (t *ThreeDsAddress) String() string {
 
 type ThreeDsAuthentication struct {
 	PanTokenID                  *string                    `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
+	TokenID                     *string                    `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID               *string                    `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
 	ThreedsVersion              *string                    `json:"threeds_version,omitempty" url:"threeds_version,omitempty"`
 	AcsTransactionID            *string                    `json:"acs_transaction_id,omitempty" url:"acs_transaction_id,omitempty"`
 	DsTransactionID             *string                    `json:"ds_transaction_id,omitempty" url:"ds_transaction_id,omitempty"`
@@ -3299,8 +3348,11 @@ func (t *ThreeDsRequestorInfo) String() string {
 
 type ThreeDsSession struct {
 	ID             *string                `json:"id,omitempty" url:"id,omitempty"`
+	Type           *string                `json:"type,omitempty" url:"type,omitempty"`
 	TenantID       *string                `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
 	PanTokenID     *string                `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
+	TokenID        *string                `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID  *string                `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
 	CardBrand      *string                `json:"card_brand,omitempty" url:"card_brand,omitempty"`
 	ExpirationDate *time.Time             `json:"expiration_date,omitempty" url:"expiration_date,omitempty"`
 	CreatedDate    *time.Time             `json:"created_date,omitempty" url:"created_date,omitempty"`
@@ -3443,6 +3495,7 @@ type Token struct {
 	ExpiresAt             *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
 	Aliases               []string           `json:"aliases,omitempty" url:"aliases,omitempty"`
+	Extras                *TokenExtras       `json:"_extras,omitempty" url:"_extras,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -3581,6 +3634,47 @@ func (t *TokenEnrichments) UnmarshalJSON(data []byte) error {
 }
 
 func (t *TokenEnrichments) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TokenExtras struct {
+	Deduplicated *bool `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TokenExtras) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenExtras) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenExtras
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenExtras(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenExtras) String() string {
 	if len(t._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
 			return value
