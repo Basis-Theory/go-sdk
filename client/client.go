@@ -7,6 +7,7 @@ import (
 	applications "github.com/Basis-Theory/go-sdk/applications"
 	applicationtemplates "github.com/Basis-Theory/go-sdk/applicationtemplates"
 	core "github.com/Basis-Theory/go-sdk/core"
+	enrichments "github.com/Basis-Theory/go-sdk/enrichments"
 	logs "github.com/Basis-Theory/go-sdk/logs"
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
@@ -16,7 +17,7 @@ import (
 	roles "github.com/Basis-Theory/go-sdk/roles"
 	sessions "github.com/Basis-Theory/go-sdk/sessions"
 	tenantsclient "github.com/Basis-Theory/go-sdk/tenants/client"
-	threeds "github.com/Basis-Theory/go-sdk/threeds"
+	threedsclient "github.com/Basis-Theory/go-sdk/threeds/client"
 	tokens "github.com/Basis-Theory/go-sdk/tokens"
 	webhooksclient "github.com/Basis-Theory/go-sdk/webhooks/client"
 	http "net/http"
@@ -32,6 +33,7 @@ type Client struct {
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
 	Tokens               *tokens.Client
+	Enrichments          *enrichments.Client
 	Logs                 *logs.Client
 	Permissions          *permissions.Client
 	Proxies              *proxies.Client
@@ -39,7 +41,7 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
-	Threeds              *threeds.Client
+	Threeds              *threedsclient.Client
 	Webhooks             *webhooksclient.Client
 	Tenants              *tenantsclient.Client
 }
@@ -62,6 +64,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
+		Enrichments:          enrichments.NewClient(opts...),
 		Logs:                 logs.NewClient(opts...),
 		Permissions:          permissions.NewClient(opts...),
 		Proxies:              proxies.NewClient(opts...),
@@ -69,7 +72,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
-		Threeds:              threeds.NewClient(opts...),
+		Threeds:              threedsclient.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		Tenants:              tenantsclient.NewClient(opts...),
 	}

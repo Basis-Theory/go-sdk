@@ -14,6 +14,7 @@ type CreateTokenRequest struct {
 	DeduplicateToken      *bool              `json:"deduplicate_token,omitempty" url:"-"`
 	ExpiresAt             *string            `json:"expires_at,omitempty" url:"-"`
 	Containers            []string           `json:"containers,omitempty" url:"-"`
+	TokenIntentID         *string            `json:"token_intent_id,omitempty" url:"-"`
 }
 
 type TokensListRequest struct {
