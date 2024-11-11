@@ -31,7 +31,7 @@ jobs:
           BT_MGT_API_KEY: ${{ secrets.BT_SDK_INT_TEST_MGT_API_KEY }}
           BT_PVT_API_KEY: ${{ secrets.BT_SDK_INT_TEST_PVT_API_KEY }}
 
-    pr-security-check:
-      name: PR Security Check
-      uses: Basis-Theory/security-workflows/.github/workflows/pr-check.yml@master
-      secrets: inherit
+  pr-security-check:
+    name: PR Security Check
+    uses: Basis-Theory/security-workflows/.github/workflows/pr-check.yml@master
+    secrets: inherit
