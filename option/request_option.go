@@ -69,3 +69,10 @@ func WithAPIKey(apiKey string) *core.APIKeyOption {
 		APIKey: apiKey,
 	}
 }
+
+// WithCorrelationID sets the correlationID request header.
+func WithCorrelationID(correlationID *string) *core.CorrelationIDOption {
+	return &core.CorrelationIDOption{
+		CorrelationID: correlationID,
+	}
+}

@@ -25,6 +25,7 @@ type RequestOptions struct {
 	QueryParameters url.Values
 	MaxAttempts     uint
 	APIKey          string
+	CorrelationID   *string
 }
 
 // NewRequestOptions returns a new *RequestOptions value.
@@ -49,6 +50,9 @@ func (r *RequestOptions) ToHeader() http.Header {
 	header := r.cloneHeader()
 	if r.APIKey != "" {
 		header.Set("BT-API-KEY", fmt.Sprintf("%v", r.APIKey))
+	}
+	if r.CorrelationID != nil {
+		header.Set("BT-TRACE-ID", fmt.Sprintf("%v", *r.CorrelationID))
 	}
 	return header
 }
@@ -150,4 +154,17 @@ func (a *APIKeyOption) applyRequestOptions(opts *RequestOptions) {
 
 func (a *APIKeyOption) applyIdempotentRequestOptions(opts *IdempotentRequestOptions) {
 	opts.APIKey = a.APIKey
+}
+
+// CorrelationIDOption implements the RequestOption interface.
+type CorrelationIDOption struct {
+	CorrelationID *string
+}
+
+func (c *CorrelationIDOption) applyRequestOptions(opts *RequestOptions) {
+	opts.CorrelationID = c.CorrelationID
+}
+
+func (c *CorrelationIDOption) applyIdempotentRequestOptions(opts *IdempotentRequestOptions) {
+	opts.CorrelationID = c.CorrelationID
 }
