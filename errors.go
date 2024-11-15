@@ -79,6 +79,7 @@ func (f *ForbiddenError) Unwrap() error {
 	return f.APIError
 }
 
+// Not Found
 type NotFoundError struct {
 	*core.APIError
 	Body interface{}
