@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/Basis-Theory/go-sdk/compare/v0.3.0...v0.4.0) (2024-11-15)
+
+
+### Features
+
+* Add correlation ID support ([#36](https://github.com/Basis-Theory/go-sdk/issues/36)) ([b97c5f2](https://github.com/Basis-Theory/go-sdk/commit/b97c5f2fc231176ada3574aee1521784eb71f107))
+
 # [0.3.0](https://github.com/Basis-Theory/go-sdk/compare/v0.2.0...v0.3.0) (2024-11-05)
 
 
