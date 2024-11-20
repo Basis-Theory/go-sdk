@@ -2,6 +2,6 @@
 
 package basistheory
 
-type PermissionsGetRequest struct {
+type PermissionsListRequest struct {
 	ApplicationType *string `json:"-" url:"application_type,omitempty"`
 }

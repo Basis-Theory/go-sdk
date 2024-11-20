@@ -287,6 +287,88 @@ func (a *ApplicationTemplate) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type AsyncReactResponse struct {
+	AsyncReactorRequestID *string `json:"asyncReactorRequestId,omitempty" url:"asyncReactorRequestId,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AsyncReactResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AsyncReactResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AsyncReactResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AsyncReactResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AsyncReactResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type BankVerificationResponse struct {
+	Status *string `json:"status,omitempty" url:"status,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (b *BankVerificationResponse) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BankVerificationResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler BankVerificationResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BankVerificationResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+
+	b._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BankVerificationResponse) String() string {
+	if len(b._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
+}
+
 type BinDetails struct {
 	CardBrand       *string            `json:"card_brand,omitempty" url:"card_brand,omitempty"`
 	Type            *string            `json:"type,omitempty" url:"type,omitempty"`
@@ -550,6 +632,54 @@ func (c *Condition) UnmarshalJSON(data []byte) error {
 }
 
 func (c *Condition) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CreateReactorFormulaRequest struct {
+	ID                *string                           `json:"id,omitempty" url:"id,omitempty"`
+	Type              string                            `json:"type" url:"type"`
+	Name              string                            `json:"name" url:"name"`
+	Description       *string                           `json:"description,omitempty" url:"description,omitempty"`
+	Icon              *string                           `json:"icon,omitempty" url:"icon,omitempty"`
+	Code              *string                           `json:"code,omitempty" url:"code,omitempty"`
+	Configuration     []*ReactorFormulaConfiguration    `json:"configuration,omitempty" url:"configuration,omitempty"`
+	RequestParameters []*ReactorFormulaRequestParameter `json:"request_parameters,omitempty" url:"request_parameters,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *CreateReactorFormulaRequest) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateReactorFormulaRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateReactorFormulaRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreateReactorFormulaRequest(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateReactorFormulaRequest) String() string {
 	if len(c._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
 			return value
@@ -3863,6 +3993,53 @@ func (u *UpdatePrivacy) UnmarshalJSON(data []byte) error {
 }
 
 func (u *UpdatePrivacy) String() string {
+	if len(u._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UpdateReactorFormulaRequest struct {
+	Type              string                            `json:"type" url:"type"`
+	Name              string                            `json:"name" url:"name"`
+	Description       *string                           `json:"description,omitempty" url:"description,omitempty"`
+	Icon              *string                           `json:"icon,omitempty" url:"icon,omitempty"`
+	Code              *string                           `json:"code,omitempty" url:"code,omitempty"`
+	Configuration     []*ReactorFormulaConfiguration    `json:"configuration,omitempty" url:"configuration,omitempty"`
+	RequestParameters []*ReactorFormulaRequestParameter `json:"request_parameters,omitempty" url:"request_parameters,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (u *UpdateReactorFormulaRequest) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
+}
+
+func (u *UpdateReactorFormulaRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateReactorFormulaRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UpdateReactorFormulaRequest(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+
+	u._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UpdateReactorFormulaRequest) String() string {
 	if len(u._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
 			return value

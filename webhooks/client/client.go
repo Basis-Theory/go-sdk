@@ -11,7 +11,6 @@ import (
 	core "github.com/Basis-Theory/go-sdk/core"
 	option "github.com/Basis-Theory/go-sdk/option"
 	events "github.com/Basis-Theory/go-sdk/webhooks/events"
-	signingkey "github.com/Basis-Theory/go-sdk/webhooks/signingkey"
 	io "io"
 	http "net/http"
 	os "os"
@@ -22,8 +21,7 @@ type Client struct {
 	caller  *core.Caller
 	header  http.Header
 
-	Events     *events.Client
-	SigningKey *signingkey.Client
+	Events *events.Client
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
@@ -39,9 +37,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header:     options.ToHeader(),
-		Events:     events.NewClient(opts...),
-		SigningKey: signingkey.NewClient(opts...),
+		header: options.ToHeader(),
+		Events: events.NewClient(opts...),
 	}
 }
 

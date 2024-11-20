@@ -38,11 +38,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-func (c *Client) Bankaccountverify(
+func (c *Client) BankAccountVerify(
 	ctx context.Context,
 	request *gosdk.BankVerificationRequest,
 	opts ...option.RequestOption,
-) error {
+) (*gosdk.BankVerificationResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -90,6 +90,7 @@ func (c *Client) Bankaccountverify(
 		return apiError
 	}
 
+	var response *gosdk.BankVerificationResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -101,10 +102,11 @@ func (c *Client) Bankaccountverify(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
+			Response:        &response,
 			ErrorDecoder:    errorDecoder,
 		},
 	); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return response, nil
 }

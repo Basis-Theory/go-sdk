@@ -39,9 +39,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-func (c *Client) Get(
+func (c *Client) List(
 	ctx context.Context,
-	request *tenants.MembersGetRequest,
+	request *tenants.MembersListRequest,
 	opts ...option.RequestOption,
 ) (*gosdk.TenantMemberResponsePaginatedList, error) {
 	options := core.NewRequestOptions(opts...)
