@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/Basis-Theory/go-sdk/compare/v0.4.1...v0.4.2) (2024-11-20)
+
+
+### Bug Fixes
+
+* Add token-intents ([#39](https://github.com/Basis-Theory/go-sdk/issues/39)) ([551377a](https://github.com/Basis-Theory/go-sdk/commit/551377a90ba278e169c0f1d2cf33035789dd90b7))
+
 ## [0.4.1](https://github.com/Basis-Theory/go-sdk/compare/v0.4.0...v0.4.1) (2024-11-20)
 
 
