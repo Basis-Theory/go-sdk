@@ -39,6 +39,79 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
+func (c *Client) Create(
+	ctx context.Context,
+	request *threeds.CreateThreeDsSessionRequest,
+	opts ...option.RequestOption,
+) (*gosdk.CreateThreeDsSessionResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.basistheory.com"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/3ds/sessions"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(gosdk.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 401:
+			value := new(gosdk.UnauthorizedError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		case 403:
+			value := new(gosdk.ForbiddenError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *gosdk.CreateThreeDsSessionResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *Client) Authenticate(
 	ctx context.Context,
 	sessionID string,

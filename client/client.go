@@ -12,7 +12,6 @@ import (
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
 	proxies "github.com/Basis-Theory/go-sdk/proxies"
-	reactorformulas "github.com/Basis-Theory/go-sdk/reactorformulas"
 	reactorsclient "github.com/Basis-Theory/go-sdk/reactors/client"
 	roles "github.com/Basis-Theory/go-sdk/roles"
 	sessions "github.com/Basis-Theory/go-sdk/sessions"
@@ -37,13 +36,12 @@ type Client struct {
 	Logs                 *logs.Client
 	Permissions          *permissions.Client
 	Proxies              *proxies.Client
-	Reactorformulas      *reactorformulas.Client
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
-	Threeds              *threedsclient.Client
 	Webhooks             *webhooksclient.Client
 	Tenants              *tenantsclient.Client
+	Threeds              *threedsclient.Client
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
@@ -68,12 +66,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Logs:                 logs.NewClient(opts...),
 		Permissions:          permissions.NewClient(opts...),
 		Proxies:              proxies.NewClient(opts...),
-		Reactorformulas:      reactorformulas.NewClient(opts...),
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
-		Threeds:              threedsclient.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		Tenants:              tenantsclient.NewClient(opts...),
+		Threeds:              threedsclient.NewClient(opts...),
 	}
 }

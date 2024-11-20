@@ -605,7 +605,7 @@ func (c *Client) ReactAsync(
 	id string,
 	request *gosdk.ReactRequestAsync,
 	opts ...option.RequestOption,
-) (*gosdk.ReactResponse, error) {
+) (*gosdk.AsyncReactResponse, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -667,7 +667,7 @@ func (c *Client) ReactAsync(
 		return apiError
 	}
 
-	var response *gosdk.ReactResponse
+	var response *gosdk.AsyncReactResponse
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{

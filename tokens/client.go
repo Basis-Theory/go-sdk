@@ -43,7 +43,7 @@ func (c *Client) Detokenize(
 	ctx context.Context,
 	request interface{},
 	opts ...option.RequestOption,
-) error {
+) (interface{}, error) {
 	options := core.NewRequestOptions(opts...)
 
 	baseURL := "https://api.basistheory.com"
@@ -98,6 +98,7 @@ func (c *Client) Detokenize(
 		return apiError
 	}
 
+	var response interface{}
 	if err := c.caller.Call(
 		ctx,
 		&core.CallParams{
@@ -109,12 +110,13 @@ func (c *Client) Detokenize(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
+			Response:        &response,
 			ErrorDecoder:    errorDecoder,
 		},
 	); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return response, nil
 }
 
 func (c *Client) Tokenize(
