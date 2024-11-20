@@ -17,6 +17,7 @@ import (
 	sessions "github.com/Basis-Theory/go-sdk/sessions"
 	tenantsclient "github.com/Basis-Theory/go-sdk/tenants/client"
 	threedsclient "github.com/Basis-Theory/go-sdk/threeds/client"
+	tokenintents "github.com/Basis-Theory/go-sdk/tokenintents"
 	tokens "github.com/Basis-Theory/go-sdk/tokens"
 	webhooksclient "github.com/Basis-Theory/go-sdk/webhooks/client"
 	http "net/http"
@@ -39,6 +40,7 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
+	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
 	Tenants              *tenantsclient.Client
 	Threeds              *threedsclient.Client
@@ -69,6 +71,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
+		TokenIntents:         tokenintents.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		Tenants:              tenantsclient.NewClient(opts...),
 		Threeds:              threedsclient.NewClient(opts...),
