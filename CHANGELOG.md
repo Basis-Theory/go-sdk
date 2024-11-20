@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/Basis-Theory/go-sdk/compare/v0.4.0...v0.4.1) (2024-11-20)
+
+
+### Bug Fixes
+
+* Update to latest specs ([#37](https://github.com/Basis-Theory/go-sdk/issues/37)) ([bc0de30](https://github.com/Basis-Theory/go-sdk/commit/bc0de300543aa4feb219b15c81055343f8ad7e73))
+
 # [0.4.0](https://github.com/Basis-Theory/go-sdk/compare/v0.3.0...v0.4.0) (2024-11-15)
 
 
