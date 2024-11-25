@@ -29,6 +29,17 @@ func TestTenantSelf(t *testing.T) {
 	}
 }
 
+func TestRequestCorrelation(t *testing.T) {
+	client := NewManagementClient()
+	response, _ := client.Tenants.Self.Get(
+		context.TODO(),
+		option.WithCorrelationID(StringPtr(uuid.NewString())),
+	)
+	if response.Name == nil {
+		t.Errorf("Expected SDK Integration Tests. Got %s", *response.Name)
+	}
+}
+
 func TestTokenCrud(t *testing.T) {
 	client := NewPrivateClient()
 	manageClient := NewManagementClient()
@@ -79,12 +90,13 @@ func TestIdempotencyHeader(t *testing.T) {
 func TestListV1PaginationWithIteration(t *testing.T) {
 	client := NewPrivateClient()
 
+	pageNum := 1
 	pageSize := 3
 	page, err := client.Tokens.List(
 		context.TODO(),
 		&basistheory.TokensListRequest{
-			Page: IntPtr(1),
-			Size: IntPtr(pageSize),
+			Page: &pageNum,
+			Size: &pageSize,
 		},
 	)
 	FailIfError(t, "Unable to list tokens", err)
@@ -110,7 +122,7 @@ func TestListV2PaginationWithIteration(t *testing.T) {
 		context.TODO(),
 		&basistheory.TokensListV2Request{
 			Start: nil,
-			Size:  IntPtr(pageSize),
+			Size:  &pageSize,
 		},
 	)
 	FailIfError(t, "Unable to list tokens", err)
