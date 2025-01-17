@@ -3,6 +3,9 @@
 package basistheory
 
 import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/Basis-Theory/go-sdk/core"
 	time "time"
 )
 
@@ -14,4 +17,155 @@ type LogsListRequest struct {
 	Page       *int       `json:"-" url:"page,omitempty"`
 	Start      *string    `json:"-" url:"start,omitempty"`
 	Size       *int       `json:"-" url:"size,omitempty"`
+}
+
+type Log struct {
+	ID         *string    `json:"id,omitempty" url:"id,omitempty"`
+	TenantID   *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	ActorID    *string    `json:"actor_id,omitempty" url:"actor_id,omitempty"`
+	ActorType  *string    `json:"actor_type,omitempty" url:"actor_type,omitempty"`
+	EntityType *string    `json:"entity_type,omitempty" url:"entity_type,omitempty"`
+	EntityID   *string    `json:"entity_id,omitempty" url:"entity_id,omitempty"`
+	Operation  *string    `json:"operation,omitempty" url:"operation,omitempty"`
+	Message    *string    `json:"message,omitempty" url:"message,omitempty"`
+	CreatedAt  *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *Log) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *Log) UnmarshalJSON(data []byte) error {
+	type embed Log
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*l),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*l = Log(unmarshaler.embed)
+	l.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *Log) MarshalJSON() ([]byte, error) {
+	type embed Log
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*l),
+		CreatedAt: core.NewOptionalDateTime(l.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (l *Log) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
+}
+
+type LogEntityType struct {
+	DisplayName *string `json:"display_name,omitempty" url:"display_name,omitempty"`
+	Value       *string `json:"value,omitempty" url:"value,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *LogEntityType) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *LogEntityType) UnmarshalJSON(data []byte) error {
+	type unmarshaler LogEntityType
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LogEntityType(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LogEntityType) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
+}
+
+type LogPaginatedList struct {
+	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Data       []*Log      `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *LogPaginatedList) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *LogPaginatedList) UnmarshalJSON(data []byte) error {
+	type unmarshaler LogPaginatedList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LogPaginatedList(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LogPaginatedList) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }

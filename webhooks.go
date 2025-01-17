@@ -2,6 +2,13 @@
 
 package basistheory
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/Basis-Theory/go-sdk/core"
+	time "time"
+)
+
 type CreateWebhookRequest struct {
 	// The name of the webhook
 	Name string `json:"name" url:"-"`
@@ -11,6 +18,186 @@ type CreateWebhookRequest struct {
 	NotifyEmail *string `json:"notify_email,omitempty" url:"-"`
 	// An array of event types that the webhook will listen for
 	Events []string `json:"events,omitempty" url:"-"`
+}
+
+type Webhook struct {
+	ID       string        `json:"id" url:"id"`
+	TenantID string        `json:"tenant_id" url:"tenant_id"`
+	Status   WebhookStatus `json:"status" url:"status"`
+	Name     string        `json:"name" url:"name"`
+	URL      string        `json:"url" url:"url"`
+	// The email address to use for management notification events. Ie: webhook disabled
+	NotifyEmail *string    `json:"notify_email,omitempty" url:"notify_email,omitempty"`
+	Events      []string   `json:"events,omitempty" url:"events,omitempty"`
+	CreatedBy   string     `json:"created_by" url:"created_by"`
+	CreatedAt   time.Time  `json:"created_at" url:"created_at"`
+	ModifiedBy  *string    `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt  *time.Time `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (w *Webhook) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
+}
+
+func (w *Webhook) UnmarshalJSON(data []byte) error {
+	type embed Webhook
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed: embed(*w),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*w = Webhook(unmarshaler.embed)
+	w.CreatedAt = unmarshaler.CreatedAt.Time()
+	w.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *Webhook) MarshalJSON() ([]byte, error) {
+	type embed Webhook
+	var marshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed:      embed(*w),
+		CreatedAt:  core.NewDateTime(w.CreatedAt),
+		ModifiedAt: core.NewOptionalDateTime(w.ModifiedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (w *Webhook) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
+type WebhookList struct {
+	Pagination *WebhookListPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Data       []*Webhook             `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (w *WebhookList) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
+}
+
+func (w *WebhookList) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhookList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhookList(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhookList) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
+type WebhookListPagination struct {
+	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (w *WebhookListPagination) GetExtraProperties() map[string]interface{} {
+	return w.extraProperties
+}
+
+func (w *WebhookListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhookListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhookListPagination(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+
+	w._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhookListPagination) String() string {
+	if len(w._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
+type WebhookStatus string
+
+const (
+	WebhookStatusEnabled  WebhookStatus = "enabled"
+	WebhookStatusDisabled WebhookStatus = "disabled"
+)
+
+func NewWebhookStatusFromString(s string) (WebhookStatus, error) {
+	switch s {
+	case "enabled":
+		return WebhookStatusEnabled, nil
+	case "disabled":
+		return WebhookStatusDisabled, nil
+	}
+	var t WebhookStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (w WebhookStatus) Ptr() *WebhookStatus {
+	return &w
 }
 
 type UpdateWebhookRequest struct {
