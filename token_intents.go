@@ -2,7 +2,84 @@
 
 package basistheory
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/Basis-Theory/go-sdk/core"
+	time "time"
+)
+
 type CreateTokenIntentRequest struct {
 	Type string      `json:"type" url:"-"`
 	Data interface{} `json:"data,omitempty" url:"-"`
+}
+
+type CreateTokenIntentResponse struct {
+	ID          *string      `json:"id,omitempty" url:"id,omitempty"`
+	Type        *string      `json:"type,omitempty" url:"type,omitempty"`
+	TenantID    *string      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Fingerprint *string      `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	CreatedBy   *string      `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt   *time.Time   `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ExpiresAt   *time.Time   `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Card        *CardDetails `json:"card,omitempty" url:"card,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *CreateTokenIntentResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateTokenIntentResponse) UnmarshalJSON(data []byte) error {
+	type embed CreateTokenIntentResponse
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = CreateTokenIntentResponse(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateTokenIntentResponse) MarshalJSON() ([]byte, error) {
+	type embed CreateTokenIntentResponse
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewOptionalDateTime(c.CreatedAt),
+		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *CreateTokenIntentResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
