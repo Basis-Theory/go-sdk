@@ -21,10 +21,11 @@ type AuthenticateThreeDsSessionRequest struct {
 }
 
 type CreateThreeDsSessionRequest struct {
-	Pan           *string                  `json:"pan,omitempty" url:"-"`
-	TokenID       *string                  `json:"token_id,omitempty" url:"-"`
-	TokenIntentID *string                  `json:"token_intent_id,omitempty" url:"-"`
-	Type          *string                  `json:"type,omitempty" url:"-"`
-	Device        *string                  `json:"device,omitempty" url:"-"`
-	DeviceInfo    *gosdk.ThreeDsDeviceInfo `json:"device_info,omitempty" url:"-"`
+	Pan              *string                  `json:"pan,omitempty" url:"-"`
+	TokenID          *string                  `json:"token_id,omitempty" url:"-"`
+	TokenIntentID    *string                  `json:"token_intent_id,omitempty" url:"-"`
+	Type             *string                  `json:"type,omitempty" url:"-"`
+	Device           *string                  `json:"device,omitempty" url:"-"`
+	WebChallengeMode *string                  `json:"web_challenge_mode,omitempty" url:"-"`
+	DeviceInfo       *gosdk.ThreeDsDeviceInfo `json:"device_info,omitempty" url:"-"`
 }

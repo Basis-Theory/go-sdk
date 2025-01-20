@@ -2,6 +2,13 @@
 
 package basistheory
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/Basis-Theory/go-sdk/core"
+	time "time"
+)
+
 type CreateReactorRequest struct {
 	Name          string             `json:"name" url:"-"`
 	Code          string             `json:"code" url:"-"`
@@ -31,6 +38,368 @@ type ReactRequest struct {
 
 type ReactRequestAsync struct {
 	Args interface{} `json:"args,omitempty" url:"-"`
+}
+
+type AsyncReactResponse struct {
+	AsyncReactorRequestID *string `json:"asyncReactorRequestId,omitempty" url:"asyncReactorRequestId,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AsyncReactResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AsyncReactResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AsyncReactResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AsyncReactResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AsyncReactResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type ReactResponse struct {
+	Tokens  interface{} `json:"tokens,omitempty" url:"tokens,omitempty"`
+	Raw     interface{} `json:"raw,omitempty" url:"raw,omitempty"`
+	Body    interface{} `json:"body,omitempty" url:"body,omitempty"`
+	Headers interface{} `json:"headers,omitempty" url:"headers,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *ReactResponse) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *ReactResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ReactResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = ReactResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *ReactResponse) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type Reactor struct {
+	ID            *string            `json:"id,omitempty" url:"id,omitempty"`
+	TenantID      *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Name          *string            `json:"name,omitempty" url:"name,omitempty"`
+	Formula       *ReactorFormula    `json:"formula,omitempty" url:"formula,omitempty"`
+	Code          *string            `json:"code,omitempty" url:"code,omitempty"`
+	Application   *Application       `json:"application,omitempty" url:"application,omitempty"`
+	CreatedBy     *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt     *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy    *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *Reactor) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *Reactor) UnmarshalJSON(data []byte) error {
+	type embed Reactor
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed: embed(*r),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*r = Reactor(unmarshaler.embed)
+	r.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	r.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *Reactor) MarshalJSON() ([]byte, error) {
+	type embed Reactor
+	var marshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed:      embed(*r),
+		CreatedAt:  core.NewOptionalDateTime(r.CreatedAt),
+		ModifiedAt: core.NewOptionalDateTime(r.ModifiedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (r *Reactor) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type ReactorFormula struct {
+	ID                *string                           `json:"id,omitempty" url:"id,omitempty"`
+	Type              *string                           `json:"type,omitempty" url:"type,omitempty"`
+	Status            *string                           `json:"status,omitempty" url:"status,omitempty"`
+	Name              *string                           `json:"name,omitempty" url:"name,omitempty"`
+	Description       *string                           `json:"description,omitempty" url:"description,omitempty"`
+	Icon              *string                           `json:"icon,omitempty" url:"icon,omitempty"`
+	Code              *string                           `json:"code,omitempty" url:"code,omitempty"`
+	CreatedBy         *string                           `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt         *time.Time                        `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy        *string                           `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt        *time.Time                        `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	Configuration     []*ReactorFormulaConfiguration    `json:"configuration,omitempty" url:"configuration,omitempty"`
+	RequestParameters []*ReactorFormulaRequestParameter `json:"request_parameters,omitempty" url:"request_parameters,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *ReactorFormula) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *ReactorFormula) UnmarshalJSON(data []byte) error {
+	type embed ReactorFormula
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed: embed(*r),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*r = ReactorFormula(unmarshaler.embed)
+	r.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	r.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *ReactorFormula) MarshalJSON() ([]byte, error) {
+	type embed ReactorFormula
+	var marshaler = struct {
+		embed
+		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed:      embed(*r),
+		CreatedAt:  core.NewOptionalDateTime(r.CreatedAt),
+		ModifiedAt: core.NewOptionalDateTime(r.ModifiedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (r *ReactorFormula) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type ReactorFormulaConfiguration struct {
+	Name        string  `json:"name" url:"name"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
+	Type        string  `json:"type" url:"type"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *ReactorFormulaConfiguration) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *ReactorFormulaConfiguration) UnmarshalJSON(data []byte) error {
+	type unmarshaler ReactorFormulaConfiguration
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = ReactorFormulaConfiguration(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *ReactorFormulaConfiguration) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type ReactorFormulaRequestParameter struct {
+	Name        string  `json:"name" url:"name"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
+	Type        string  `json:"type" url:"type"`
+	Optional    *bool   `json:"optional,omitempty" url:"optional,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *ReactorFormulaRequestParameter) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *ReactorFormulaRequestParameter) UnmarshalJSON(data []byte) error {
+	type unmarshaler ReactorFormulaRequestParameter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = ReactorFormulaRequestParameter(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *ReactorFormulaRequestParameter) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type ReactorPaginatedList struct {
+	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Data       []*Reactor  `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *ReactorPaginatedList) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *ReactorPaginatedList) UnmarshalJSON(data []byte) error {
+	type unmarshaler ReactorPaginatedList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = ReactorPaginatedList(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *ReactorPaginatedList) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 type UpdateReactorRequest struct {

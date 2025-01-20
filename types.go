@@ -55,6 +55,49 @@ func (a *AccessRule) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type AdditionalCardDetails struct {
+	Brand          *string `json:"brand,omitempty" url:"brand,omitempty"`
+	Funding        *string `json:"funding,omitempty" url:"funding,omitempty"`
+	Authentication *string `json:"authentication,omitempty" url:"authentication,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AdditionalCardDetails) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AdditionalCardDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler AdditionalCardDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AdditionalCardDetails(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AdditionalCardDetails) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 type Application struct {
 	ID          *string           `json:"id,omitempty" url:"id,omitempty"`
 	TenantID    *string           `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
@@ -197,375 +240,15 @@ func (a *ApplicationKey) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ApplicationPaginatedList struct {
-	Pagination *Pagination    `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Application `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (a *ApplicationPaginatedList) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *ApplicationPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplicationPaginatedList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplicationPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-
-	a._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplicationPaginatedList) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type ApplicationTemplate struct {
-	ID              *string       `json:"id,omitempty" url:"id,omitempty"`
-	Name            *string       `json:"name,omitempty" url:"name,omitempty"`
-	Description     *string       `json:"description,omitempty" url:"description,omitempty"`
-	ApplicationType *string       `json:"application_type,omitempty" url:"application_type,omitempty"`
-	TemplateType    *string       `json:"template_type,omitempty" url:"template_type,omitempty"`
-	IsStarter       *bool         `json:"is_starter,omitempty" url:"is_starter,omitempty"`
-	Rules           []*AccessRule `json:"rules,omitempty" url:"rules,omitempty"`
-	Permissions     []string      `json:"permissions,omitempty" url:"permissions,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (a *ApplicationTemplate) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *ApplicationTemplate) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplicationTemplate
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplicationTemplate(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-
-	a._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplicationTemplate) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type AsyncReactResponse struct {
-	AsyncReactorRequestID *string `json:"asyncReactorRequestId,omitempty" url:"asyncReactorRequestId,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (a *AsyncReactResponse) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *AsyncReactResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler AsyncReactResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AsyncReactResponse(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-
-	a._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *AsyncReactResponse) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type BankVerificationResponse struct {
-	Status *string `json:"status,omitempty" url:"status,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (b *BankVerificationResponse) GetExtraProperties() map[string]interface{} {
-	return b.extraProperties
-}
-
-func (b *BankVerificationResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler BankVerificationResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BankVerificationResponse(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *b)
-	if err != nil {
-		return err
-	}
-	b.extraProperties = extraProperties
-
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *BankVerificationResponse) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type BinDetails struct {
-	CardBrand       *string            `json:"card_brand,omitempty" url:"card_brand,omitempty"`
-	Type            *string            `json:"type,omitempty" url:"type,omitempty"`
-	Prepaid         *bool              `json:"prepaid,omitempty" url:"prepaid,omitempty"`
-	CardSegmentType *string            `json:"card_segment_type,omitempty" url:"card_segment_type,omitempty"`
-	Bank            *BinDetailsBank    `json:"bank,omitempty" url:"bank,omitempty"`
-	Product         *BinDetailsProduct `json:"product,omitempty" url:"product,omitempty"`
-	Country         *BinDetailsCountry `json:"country,omitempty" url:"country,omitempty"`
-	Reloadable      *bool              `json:"reloadable,omitempty" url:"reloadable,omitempty"`
-	PanOrToken      *string            `json:"pan_or_token,omitempty" url:"pan_or_token,omitempty"`
-	AccountUpdater  *bool              `json:"account_updater,omitempty" url:"account_updater,omitempty"`
-	Alm             *bool              `json:"alm,omitempty" url:"alm,omitempty"`
-	DomesticOnly    *bool              `json:"domestic_only,omitempty" url:"domestic_only,omitempty"`
-	GamblingBlocked *bool              `json:"gambling_blocked,omitempty" url:"gambling_blocked,omitempty"`
-	Level2          *bool              `json:"level2,omitempty" url:"level2,omitempty"`
-	Level3          *bool              `json:"level3,omitempty" url:"level3,omitempty"`
-	IssuerCurrency  *string            `json:"issuer_currency,omitempty" url:"issuer_currency,omitempty"`
-	ComboCard       *string            `json:"combo_card,omitempty" url:"combo_card,omitempty"`
-	BinLength       *int               `json:"bin_length,omitempty" url:"bin_length,omitempty"`
-	Authentication  interface{}        `json:"authentication,omitempty" url:"authentication,omitempty"`
-	Cost            interface{}        `json:"cost,omitempty" url:"cost,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (b *BinDetails) GetExtraProperties() map[string]interface{} {
-	return b.extraProperties
-}
-
-func (b *BinDetails) UnmarshalJSON(data []byte) error {
-	type unmarshaler BinDetails
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BinDetails(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *b)
-	if err != nil {
-		return err
-	}
-	b.extraProperties = extraProperties
-
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *BinDetails) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type BinDetailsBank struct {
-	Name      *string `json:"name,omitempty" url:"name,omitempty"`
-	Phone     *string `json:"phone,omitempty" url:"phone,omitempty"`
-	URL       *string `json:"url,omitempty" url:"url,omitempty"`
-	CleanName *string `json:"clean_name,omitempty" url:"clean_name,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (b *BinDetailsBank) GetExtraProperties() map[string]interface{} {
-	return b.extraProperties
-}
-
-func (b *BinDetailsBank) UnmarshalJSON(data []byte) error {
-	type unmarshaler BinDetailsBank
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BinDetailsBank(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *b)
-	if err != nil {
-		return err
-	}
-	b.extraProperties = extraProperties
-
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *BinDetailsBank) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type BinDetailsCountry struct {
-	Alpha2  *string `json:"alpha2,omitempty" url:"alpha2,omitempty"`
-	Name    *string `json:"name,omitempty" url:"name,omitempty"`
-	Numeric *string `json:"numeric,omitempty" url:"numeric,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (b *BinDetailsCountry) GetExtraProperties() map[string]interface{} {
-	return b.extraProperties
-}
-
-func (b *BinDetailsCountry) UnmarshalJSON(data []byte) error {
-	type unmarshaler BinDetailsCountry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BinDetailsCountry(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *b)
-	if err != nil {
-		return err
-	}
-	b.extraProperties = extraProperties
-
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *BinDetailsCountry) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type BinDetailsProduct struct {
-	Code *string `json:"code,omitempty" url:"code,omitempty"`
-	Name *string `json:"name,omitempty" url:"name,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (b *BinDetailsProduct) GetExtraProperties() map[string]interface{} {
-	return b.extraProperties
-}
-
-func (b *BinDetailsProduct) UnmarshalJSON(data []byte) error {
-	type unmarshaler BinDetailsProduct
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BinDetailsProduct(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *b)
-	if err != nil {
-		return err
-	}
-	b.extraProperties = extraProperties
-
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *BinDetailsProduct) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
 type CardDetails struct {
-	Bin             *string `json:"bin,omitempty" url:"bin,omitempty"`
-	Last4           *string `json:"last4,omitempty" url:"last4,omitempty"`
-	ExpirationMonth *int    `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
-	ExpirationYear  *int    `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
-	Brand           *string `json:"brand,omitempty" url:"brand,omitempty"`
-	Funding         *string `json:"funding,omitempty" url:"funding,omitempty"`
-	Authentication  *string `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Bin             *string                  `json:"bin,omitempty" url:"bin,omitempty"`
+	Last4           *string                  `json:"last4,omitempty" url:"last4,omitempty"`
+	ExpirationMonth *int                     `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
+	ExpirationYear  *int                     `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
+	Brand           *string                  `json:"brand,omitempty" url:"brand,omitempty"`
+	Funding         *string                  `json:"funding,omitempty" url:"funding,omitempty"`
+	Authentication  *string                  `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Additional      []*AdditionalCardDetails `json:"additional,omitempty" url:"additional,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -696,67 +379,6 @@ func (c *CreateReactorFormulaRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type CreateSessionResponse struct {
-	SessionKey *string    `json:"session_key,omitempty" url:"session_key,omitempty"`
-	Nonce      *string    `json:"nonce,omitempty" url:"nonce,omitempty"`
-	ExpiresAt  *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (c *CreateSessionResponse) GetExtraProperties() map[string]interface{} {
-	return c.extraProperties
-}
-
-func (c *CreateSessionResponse) UnmarshalJSON(data []byte) error {
-	type embed CreateSessionResponse
-	var unmarshaler = struct {
-		embed
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
-	}{
-		embed: embed(*c),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*c = CreateSessionResponse(unmarshaler.embed)
-	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateSessionResponse) MarshalJSON() ([]byte, error) {
-	type embed CreateSessionResponse
-	var marshaler = struct {
-		embed
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
-	}{
-		embed:     embed(*c),
-		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (c *CreateSessionResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
 type CreateTenantConnectionResponse struct {
 	ConnectionID *string `json:"connection_id,omitempty" url:"connection_id,omitempty"`
 
@@ -834,118 +456,6 @@ func (c *CreateThreeDsSessionResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (c *CreateThreeDsSessionResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CreateTokenIntentResponse struct {
-	ID          *string      `json:"id,omitempty" url:"id,omitempty"`
-	Type        *string      `json:"type,omitempty" url:"type,omitempty"`
-	TenantID    *string      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Fingerprint *string      `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
-	CreatedBy   *string      `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt   *time.Time   `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ExpiresAt   *time.Time   `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	Card        *CardDetails `json:"card,omitempty" url:"card,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (c *CreateTokenIntentResponse) GetExtraProperties() map[string]interface{} {
-	return c.extraProperties
-}
-
-func (c *CreateTokenIntentResponse) UnmarshalJSON(data []byte) error {
-	type embed CreateTokenIntentResponse
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at,omitempty"`
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
-	}{
-		embed: embed(*c),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*c = CreateTokenIntentResponse(unmarshaler.embed)
-	c.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateTokenIntentResponse) MarshalJSON() ([]byte, error) {
-	type embed CreateTokenIntentResponse
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at,omitempty"`
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
-	}{
-		embed:     embed(*c),
-		CreatedAt: core.NewOptionalDateTime(c.CreatedAt),
-		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (c *CreateTokenIntentResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CursorPagination struct {
-	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
-	Next     *string `json:"next,omitempty" url:"next,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (c *CursorPagination) GetExtraProperties() map[string]interface{} {
-	return c.extraProperties
-}
-
-func (c *CursorPagination) UnmarshalJSON(data []byte) error {
-	type unmarshaler CursorPagination
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CursorPagination(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CursorPagination) String() string {
 	if len(c._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
 			return value
@@ -1382,8 +892,12 @@ func (g *GetTokens) String() string {
 }
 
 type GetTokensV2 struct {
-	Start *string `json:"start,omitempty" url:"start,omitempty"`
-	Size  *int    `json:"size,omitempty" url:"size,omitempty"`
+	Type        *string            `json:"type,omitempty" url:"type,omitempty"`
+	Container   *string            `json:"container,omitempty" url:"container,omitempty"`
+	Fingerprint *string            `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	Metadata    map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
+	Start       *string            `json:"start,omitempty" url:"start,omitempty"`
+	Size        *int               `json:"size,omitempty" url:"size,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -1423,155 +937,131 @@ func (g *GetTokensV2) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-type Log struct {
-	ID         *string    `json:"id,omitempty" url:"id,omitempty"`
-	TenantID   *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	ActorID    *string    `json:"actor_id,omitempty" url:"actor_id,omitempty"`
-	ActorType  *string    `json:"actor_type,omitempty" url:"actor_type,omitempty"`
-	EntityType *string    `json:"entity_type,omitempty" url:"entity_type,omitempty"`
-	EntityID   *string    `json:"entity_id,omitempty" url:"entity_id,omitempty"`
-	Operation  *string    `json:"operation,omitempty" url:"operation,omitempty"`
-	Message    *string    `json:"message,omitempty" url:"message,omitempty"`
-	CreatedAt  *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
+type GooglePayTokenizeRequest struct {
+	GooglePaymentMethodToken *GooglePaymentMethodToken `json:"google_payment_method_token,omitempty" url:"google_payment_method_token,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
 }
 
-func (l *Log) GetExtraProperties() map[string]interface{} {
-	return l.extraProperties
+func (g *GooglePayTokenizeRequest) GetExtraProperties() map[string]interface{} {
+	return g.extraProperties
 }
 
-func (l *Log) UnmarshalJSON(data []byte) error {
-	type embed Log
-	var unmarshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at,omitempty"`
-	}{
-		embed: embed(*l),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*l = Log(unmarshaler.embed)
-	l.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *l)
-	if err != nil {
-		return err
-	}
-	l.extraProperties = extraProperties
-
-	l._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (l *Log) MarshalJSON() ([]byte, error) {
-	type embed Log
-	var marshaler = struct {
-		embed
-		CreatedAt *core.DateTime `json:"created_at,omitempty"`
-	}{
-		embed:     embed(*l),
-		CreatedAt: core.NewOptionalDateTime(l.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (l *Log) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(l); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", l)
-}
-
-type LogEntityType struct {
-	DisplayName *string `json:"display_name,omitempty" url:"display_name,omitempty"`
-	Value       *string `json:"value,omitempty" url:"value,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (l *LogEntityType) GetExtraProperties() map[string]interface{} {
-	return l.extraProperties
-}
-
-func (l *LogEntityType) UnmarshalJSON(data []byte) error {
-	type unmarshaler LogEntityType
+func (g *GooglePayTokenizeRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayTokenizeRequest
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*l = LogEntityType(value)
+	*g = GooglePayTokenizeRequest(value)
 
-	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	extraProperties, err := core.ExtractExtraProperties(data, *g)
 	if err != nil {
 		return err
 	}
-	l.extraProperties = extraProperties
+	g.extraProperties = extraProperties
 
-	l._rawJSON = json.RawMessage(data)
+	g._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (l *LogEntityType) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+func (g *GooglePayTokenizeRequest) String() string {
+	if len(g._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := core.StringifyJSON(g); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", l)
+	return fmt.Sprintf("%#v", g)
 }
 
-type LogPaginatedList struct {
-	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Log      `json:"data,omitempty" url:"data,omitempty"`
+type GooglePaymentMethodToken struct {
+	ProtocolVersion        *string                 `json:"protocolVersion,omitempty" url:"protocolVersion,omitempty"`
+	Signature              *string                 `json:"signature,omitempty" url:"signature,omitempty"`
+	IntermediateSigningKey *IntermediateSigningKey `json:"intermediateSigningKey,omitempty" url:"intermediateSigningKey,omitempty"`
+	SignedMessage          *string                 `json:"signedMessage,omitempty" url:"signedMessage,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
 }
 
-func (l *LogPaginatedList) GetExtraProperties() map[string]interface{} {
-	return l.extraProperties
+func (g *GooglePaymentMethodToken) GetExtraProperties() map[string]interface{} {
+	return g.extraProperties
 }
 
-func (l *LogPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler LogPaginatedList
+func (g *GooglePaymentMethodToken) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePaymentMethodToken
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*l = LogPaginatedList(value)
+	*g = GooglePaymentMethodToken(value)
 
-	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	extraProperties, err := core.ExtractExtraProperties(data, *g)
 	if err != nil {
 		return err
 	}
-	l.extraProperties = extraProperties
+	g.extraProperties = extraProperties
 
-	l._rawJSON = json.RawMessage(data)
+	g._rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (l *LogPaginatedList) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+func (g *GooglePaymentMethodToken) String() string {
+	if len(g._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := core.StringifyJSON(g); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", l)
+	return fmt.Sprintf("%#v", g)
+}
+
+type IntermediateSigningKey struct {
+	SignedKey  *string  `json:"signedKey,omitempty" url:"signedKey,omitempty"`
+	Signatures []string `json:"signatures,omitempty" url:"signatures,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IntermediateSigningKey) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IntermediateSigningKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler IntermediateSigningKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IntermediateSigningKey(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IntermediateSigningKey) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type Pagination struct {
@@ -1609,92 +1099,6 @@ func (p *Pagination) UnmarshalJSON(data []byte) error {
 }
 
 func (p *Pagination) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type Permission struct {
-	Type             *string  `json:"type,omitempty" url:"type,omitempty"`
-	Description      *string  `json:"description,omitempty" url:"description,omitempty"`
-	ApplicationTypes []string `json:"application_types,omitempty" url:"application_types,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (p *Permission) GetExtraProperties() map[string]interface{} {
-	return p.extraProperties
-}
-
-func (p *Permission) UnmarshalJSON(data []byte) error {
-	type unmarshaler Permission
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = Permission(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
-	if err != nil {
-		return err
-	}
-	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *Permission) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type Privacy struct {
-	Classification    *string `json:"classification,omitempty" url:"classification,omitempty"`
-	ImpactLevel       *string `json:"impact_level,omitempty" url:"impact_level,omitempty"`
-	RestrictionPolicy *string `json:"restriction_policy,omitempty" url:"restriction_policy,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (p *Privacy) GetExtraProperties() map[string]interface{} {
-	return p.extraProperties
-}
-
-func (p *Privacy) UnmarshalJSON(data []byte) error {
-	type unmarshaler Privacy
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = Privacy(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
-	if err != nil {
-		return err
-	}
-	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *Privacy) String() string {
 	if len(p._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
 			return value
@@ -1766,411 +1170,10 @@ func (p *ProblemDetails) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-type Proxy struct {
-	ID                *string            `json:"id,omitempty" url:"id,omitempty"`
-	Key               *string            `json:"key,omitempty" url:"key,omitempty"`
-	TenantID          *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Name              *string            `json:"name,omitempty" url:"name,omitempty"`
-	DestinationURL    *string            `json:"destination_url,omitempty" url:"destination_url,omitempty"`
-	RequestReactorID  *string            `json:"request_reactor_id,omitempty" url:"request_reactor_id,omitempty"`
-	ResponseReactorID *string            `json:"response_reactor_id,omitempty" url:"response_reactor_id,omitempty"`
-	RequireAuth       *bool              `json:"require_auth,omitempty" url:"require_auth,omitempty"`
-	RequestTransform  *ProxyTransform    `json:"request_transform,omitempty" url:"request_transform,omitempty"`
-	ResponseTransform *ProxyTransform    `json:"response_transform,omitempty" url:"response_transform,omitempty"`
-	ApplicationID     *string            `json:"application_id,omitempty" url:"application_id,omitempty"`
-	Configuration     map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
-	ProxyHost         *string            `json:"proxy_host,omitempty" url:"proxy_host,omitempty"`
-	CreatedBy         *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt         *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy        *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt        *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (p *Proxy) GetExtraProperties() map[string]interface{} {
-	return p.extraProperties
-}
-
-func (p *Proxy) UnmarshalJSON(data []byte) error {
-	type embed Proxy
-	var unmarshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed: embed(*p),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*p = Proxy(unmarshaler.embed)
-	p.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	p.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
-	if err != nil {
-		return err
-	}
-	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *Proxy) MarshalJSON() ([]byte, error) {
-	type embed Proxy
-	var marshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed:      embed(*p),
-		CreatedAt:  core.NewOptionalDateTime(p.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(p.ModifiedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (p *Proxy) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type ProxyPaginatedList struct {
-	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Proxy    `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (p *ProxyPaginatedList) GetExtraProperties() map[string]interface{} {
-	return p.extraProperties
-}
-
-func (p *ProxyPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler ProxyPaginatedList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = ProxyPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
-	if err != nil {
-		return err
-	}
-	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *ProxyPaginatedList) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type ProxyTransform struct {
-	Type        *string `json:"type,omitempty" url:"type,omitempty"`
-	Code        *string `json:"code,omitempty" url:"code,omitempty"`
-	Matcher     *string `json:"matcher,omitempty" url:"matcher,omitempty"`
-	Expression  *string `json:"expression,omitempty" url:"expression,omitempty"`
-	Replacement *string `json:"replacement,omitempty" url:"replacement,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (p *ProxyTransform) GetExtraProperties() map[string]interface{} {
-	return p.extraProperties
-}
-
-func (p *ProxyTransform) UnmarshalJSON(data []byte) error {
-	type unmarshaler ProxyTransform
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = ProxyTransform(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
-	if err != nil {
-		return err
-	}
-	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *ProxyTransform) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
 // A public signing key in PEM format. The key is represented as a string
 // and includes the BEGIN and END markers along with the base64-encoded
 // key data.
 type PublicKey = string
-
-type ReactResponse struct {
-	Tokens  interface{} `json:"tokens,omitempty" url:"tokens,omitempty"`
-	Raw     interface{} `json:"raw,omitempty" url:"raw,omitempty"`
-	Body    interface{} `json:"body,omitempty" url:"body,omitempty"`
-	Headers interface{} `json:"headers,omitempty" url:"headers,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *ReactResponse) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *ReactResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ReactResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = ReactResponse(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReactResponse) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type Reactor struct {
-	ID            *string            `json:"id,omitempty" url:"id,omitempty"`
-	TenantID      *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Name          *string            `json:"name,omitempty" url:"name,omitempty"`
-	Formula       *ReactorFormula    `json:"formula,omitempty" url:"formula,omitempty"`
-	Code          *string            `json:"code,omitempty" url:"code,omitempty"`
-	Application   *Application       `json:"application,omitempty" url:"application,omitempty"`
-	CreatedBy     *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt     *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy    *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *Reactor) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *Reactor) UnmarshalJSON(data []byte) error {
-	type embed Reactor
-	var unmarshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed: embed(*r),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*r = Reactor(unmarshaler.embed)
-	r.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	r.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *Reactor) MarshalJSON() ([]byte, error) {
-	type embed Reactor
-	var marshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed:      embed(*r),
-		CreatedAt:  core.NewOptionalDateTime(r.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(r.ModifiedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (r *Reactor) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ReactorFormula struct {
-	ID                *string                           `json:"id,omitempty" url:"id,omitempty"`
-	Type              *string                           `json:"type,omitempty" url:"type,omitempty"`
-	Status            *string                           `json:"status,omitempty" url:"status,omitempty"`
-	Name              *string                           `json:"name,omitempty" url:"name,omitempty"`
-	Description       *string                           `json:"description,omitempty" url:"description,omitempty"`
-	Icon              *string                           `json:"icon,omitempty" url:"icon,omitempty"`
-	Code              *string                           `json:"code,omitempty" url:"code,omitempty"`
-	CreatedBy         *string                           `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt         *time.Time                        `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy        *string                           `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt        *time.Time                        `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	Configuration     []*ReactorFormulaConfiguration    `json:"configuration,omitempty" url:"configuration,omitempty"`
-	RequestParameters []*ReactorFormulaRequestParameter `json:"request_parameters,omitempty" url:"request_parameters,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *ReactorFormula) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *ReactorFormula) UnmarshalJSON(data []byte) error {
-	type embed ReactorFormula
-	var unmarshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed: embed(*r),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*r = ReactorFormula(unmarshaler.embed)
-	r.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	r.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReactorFormula) MarshalJSON() ([]byte, error) {
-	type embed ReactorFormula
-	var marshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed:      embed(*r),
-		CreatedAt:  core.NewOptionalDateTime(r.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(r.ModifiedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (r *ReactorFormula) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ReactorFormulaConfiguration struct {
-	Name        string  `json:"name" url:"name"`
-	Description *string `json:"description,omitempty" url:"description,omitempty"`
-	Type        string  `json:"type" url:"type"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *ReactorFormulaConfiguration) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *ReactorFormulaConfiguration) UnmarshalJSON(data []byte) error {
-	type unmarshaler ReactorFormulaConfiguration
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = ReactorFormulaConfiguration(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReactorFormulaConfiguration) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
 
 type ReactorFormulaPaginatedList struct {
 	Pagination *Pagination       `json:"pagination,omitempty" url:"pagination,omitempty"`
@@ -2203,133 +1206,6 @@ func (r *ReactorFormulaPaginatedList) UnmarshalJSON(data []byte) error {
 }
 
 func (r *ReactorFormulaPaginatedList) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ReactorFormulaRequestParameter struct {
-	Name        string  `json:"name" url:"name"`
-	Description *string `json:"description,omitempty" url:"description,omitempty"`
-	Type        string  `json:"type" url:"type"`
-	Optional    *bool   `json:"optional,omitempty" url:"optional,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *ReactorFormulaRequestParameter) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *ReactorFormulaRequestParameter) UnmarshalJSON(data []byte) error {
-	type unmarshaler ReactorFormulaRequestParameter
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = ReactorFormulaRequestParameter(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReactorFormulaRequestParameter) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ReactorPaginatedList struct {
-	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Reactor  `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *ReactorPaginatedList) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *ReactorPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler ReactorPaginatedList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = ReactorPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReactorPaginatedList) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type Role struct {
-	Name *string `json:"name,omitempty" url:"name,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (r *Role) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *Role) UnmarshalJSON(data []byte) error {
-	type unmarshaler Role
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = Role(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *Role) String() string {
 	if len(r._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
 			return value
@@ -2898,8 +1774,11 @@ type ThreeDsAuthentication struct {
 	AcsRenderingType            *ThreeDsAcsRenderingType   `json:"acs_rendering_type,omitempty" url:"acs_rendering_type,omitempty"`
 	AcsSignedContent            *string                    `json:"acs_signed_content,omitempty" url:"acs_signed_content,omitempty"`
 	AcsChallengeURL             *string                    `json:"acs_challenge_url,omitempty" url:"acs_challenge_url,omitempty"`
+	ChallengePreference         *string                    `json:"challenge_preference,omitempty" url:"challenge_preference,omitempty"`
+	ChallengePreferenceCode     *string                    `json:"challenge_preference_code,omitempty" url:"challenge_preference_code,omitempty"`
 	ChallengeAttempts           *string                    `json:"challenge_attempts,omitempty" url:"challenge_attempts,omitempty"`
 	ChallengeCancelReason       *string                    `json:"challenge_cancel_reason,omitempty" url:"challenge_cancel_reason,omitempty"`
+	ChallengeCancelReasonCode   *string                    `json:"challenge_cancel_reason_code,omitempty" url:"challenge_cancel_reason_code,omitempty"`
 	CardholderInfo              *string                    `json:"cardholder_info,omitempty" url:"cardholder_info,omitempty"`
 	WhitelistStatus             *string                    `json:"whitelist_status,omitempty" url:"whitelist_status,omitempty"`
 	WhitelistStatusSource       *string                    `json:"whitelist_status_source,omitempty" url:"whitelist_status_source,omitempty"`
@@ -3552,23 +2431,24 @@ func (t *ThreeDsRequestorInfo) String() string {
 }
 
 type ThreeDsSession struct {
-	ID             *string                `json:"id,omitempty" url:"id,omitempty"`
-	Type           *string                `json:"type,omitempty" url:"type,omitempty"`
-	TenantID       *string                `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	PanTokenID     *string                `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
-	TokenID        *string                `json:"token_id,omitempty" url:"token_id,omitempty"`
-	TokenIntentID  *string                `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
-	CardBrand      *string                `json:"card_brand,omitempty" url:"card_brand,omitempty"`
-	ExpirationDate *time.Time             `json:"expiration_date,omitempty" url:"expiration_date,omitempty"`
-	CreatedDate    *time.Time             `json:"created_date,omitempty" url:"created_date,omitempty"`
-	CreatedBy      *string                `json:"created_by,omitempty" url:"created_by,omitempty"`
-	ModifiedDate   *time.Time             `json:"modified_date,omitempty" url:"modified_date,omitempty"`
-	ModifiedBy     *string                `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	Device         *string                `json:"device,omitempty" url:"device,omitempty"`
-	DeviceInfo     *ThreeDsDeviceInfo     `json:"device_info,omitempty" url:"device_info,omitempty"`
-	Version        *ThreeDsVersion        `json:"version,omitempty" url:"version,omitempty"`
-	Method         *ThreeDsMethod         `json:"method,omitempty" url:"method,omitempty"`
-	Authentication *ThreeDsAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	ID               *string                `json:"id,omitempty" url:"id,omitempty"`
+	Type             *string                `json:"type,omitempty" url:"type,omitempty"`
+	TenantID         *string                `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	PanTokenID       *string                `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
+	TokenID          *string                `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID    *string                `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	CardBrand        *string                `json:"card_brand,omitempty" url:"card_brand,omitempty"`
+	ExpirationDate   *time.Time             `json:"expiration_date,omitempty" url:"expiration_date,omitempty"`
+	CreatedDate      *time.Time             `json:"created_date,omitempty" url:"created_date,omitempty"`
+	CreatedBy        *string                `json:"created_by,omitempty" url:"created_by,omitempty"`
+	ModifiedDate     *time.Time             `json:"modified_date,omitempty" url:"modified_date,omitempty"`
+	ModifiedBy       *string                `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	Device           *string                `json:"device,omitempty" url:"device,omitempty"`
+	DeviceInfo       *ThreeDsDeviceInfo     `json:"device_info,omitempty" url:"device_info,omitempty"`
+	WebChallengeMode *string                `json:"web_challenge_mode,omitempty" url:"web_challenge_mode,omitempty"`
+	Version          *ThreeDsVersion        `json:"version,omitempty" url:"version,omitempty"`
+	Method           *ThreeDsMethod         `json:"method,omitempty" url:"method,omitempty"`
+	Authentication   *ThreeDsAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -3681,258 +2561,6 @@ func (t *ThreeDsVersion) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-type Token struct {
-	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
-	Type                  *string            `json:"type,omitempty" url:"type,omitempty"`
-	TenantID              *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Data                  interface{}        `json:"data,omitempty" url:"data,omitempty"`
-	Metadata              map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
-	Enrichments           *TokenEnrichments  `json:"enrichments,omitempty" url:"enrichments,omitempty"`
-	CreatedBy             *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt             *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy            *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt            *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	Fingerprint           *string            `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
-	FingerprintExpression *string            `json:"fingerprint_expression,omitempty" url:"fingerprint_expression,omitempty"`
-	Mask                  interface{}        `json:"mask,omitempty" url:"mask,omitempty"`
-	Privacy               *Privacy           `json:"privacy,omitempty" url:"privacy,omitempty"`
-	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"search_indexes,omitempty"`
-	ExpiresAt             *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
-	Aliases               []string           `json:"aliases,omitempty" url:"aliases,omitempty"`
-	Extras                *TokenExtras       `json:"_extras,omitempty" url:"_extras,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *Token) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *Token) UnmarshalJSON(data []byte) error {
-	type embed Token
-	var unmarshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-		ExpiresAt  *core.DateTime `json:"expires_at,omitempty"`
-	}{
-		embed: embed(*t),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*t = Token(unmarshaler.embed)
-	t.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	t.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-	t.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *Token) MarshalJSON() ([]byte, error) {
-	type embed Token
-	var marshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-		ExpiresAt  *core.DateTime `json:"expires_at,omitempty"`
-	}{
-		embed:      embed(*t),
-		CreatedAt:  core.NewOptionalDateTime(t.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(t.ModifiedAt),
-		ExpiresAt:  core.NewOptionalDateTime(t.ExpiresAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (t *Token) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TokenCursorPaginatedList struct {
-	Pagination *CursorPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Token          `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenCursorPaginatedList) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenCursorPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenCursorPaginatedList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenCursorPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenCursorPaginatedList) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TokenEnrichments struct {
-	BinDetails  *BinDetails                  `json:"bin_details,omitempty" url:"bin_details,omitempty"`
-	CardDetails *TokenEnrichmentsCardDetails `json:"card_details,omitempty" url:"card_details,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenEnrichments) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenEnrichments) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenEnrichments
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenEnrichments(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenEnrichments) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TokenEnrichmentsCardDetails struct {
-	Bin   *string `json:"bin,omitempty" url:"bin,omitempty"`
-	Last4 *string `json:"last4,omitempty" url:"last4,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenEnrichmentsCardDetails) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenEnrichmentsCardDetails) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenEnrichmentsCardDetails
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenEnrichmentsCardDetails(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenEnrichmentsCardDetails) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TokenExtras struct {
-	Deduplicated *bool `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenExtras) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenExtras) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenExtras
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenExtras(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenExtras) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
 type TokenMetrics struct {
 	Count         *int64     `json:"count,omitempty" url:"count,omitempty"`
 	LastCreatedAt *time.Time `json:"last_created_at,omitempty" url:"last_created_at,omitempty"`
@@ -3993,48 +2621,6 @@ func (t *TokenMetrics) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-type TokenPaginatedList struct {
-	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Token    `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenPaginatedList) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenPaginatedList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenPaginatedList) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
 type TokenReport struct {
 	IncludedMonthlyActiveTokens *int64                   `json:"included_monthly_active_tokens,omitempty" url:"included_monthly_active_tokens,omitempty"`
 	MonthlyActiveTokens         *int64                   `json:"monthly_active_tokens,omitempty" url:"monthly_active_tokens,omitempty"`
@@ -4077,48 +2663,6 @@ func (t *TokenReport) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
-}
-
-type UpdatePrivacy struct {
-	ImpactLevel       *string `json:"impact_level,omitempty" url:"impact_level,omitempty"`
-	RestrictionPolicy *string `json:"restriction_policy,omitempty" url:"restriction_policy,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (u *UpdatePrivacy) GetExtraProperties() map[string]interface{} {
-	return u.extraProperties
-}
-
-func (u *UpdatePrivacy) UnmarshalJSON(data []byte) error {
-	type unmarshaler UpdatePrivacy
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UpdatePrivacy(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *u)
-	if err != nil {
-		return err
-	}
-	u.extraProperties = extraProperties
-
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UpdatePrivacy) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
 }
 
 type UpdateReactorFormulaRequest struct {
@@ -4274,184 +2818,4 @@ func (v *ValidationProblemDetails) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", v)
-}
-
-type Webhook struct {
-	ID       string        `json:"id" url:"id"`
-	TenantID string        `json:"tenant_id" url:"tenant_id"`
-	Status   WebhookStatus `json:"status" url:"status"`
-	Name     string        `json:"name" url:"name"`
-	URL      string        `json:"url" url:"url"`
-	// The email address to use for management notification events. Ie: webhook disabled
-	NotifyEmail *string    `json:"notify_email,omitempty" url:"notify_email,omitempty"`
-	Events      []string   `json:"events,omitempty" url:"events,omitempty"`
-	CreatedBy   string     `json:"created_by" url:"created_by"`
-	CreatedAt   time.Time  `json:"created_at" url:"created_at"`
-	ModifiedBy  *string    `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt  *time.Time `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (w *Webhook) GetExtraProperties() map[string]interface{} {
-	return w.extraProperties
-}
-
-func (w *Webhook) UnmarshalJSON(data []byte) error {
-	type embed Webhook
-	var unmarshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed: embed(*w),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*w = Webhook(unmarshaler.embed)
-	w.CreatedAt = unmarshaler.CreatedAt.Time()
-	w.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *w)
-	if err != nil {
-		return err
-	}
-	w.extraProperties = extraProperties
-
-	w._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (w *Webhook) MarshalJSON() ([]byte, error) {
-	type embed Webhook
-	var marshaler = struct {
-		embed
-		CreatedAt  *core.DateTime `json:"created_at"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-	}{
-		embed:      embed(*w),
-		CreatedAt:  core.NewDateTime(w.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(w.ModifiedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (w *Webhook) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
-}
-
-type WebhookList struct {
-	Pagination *WebhookListPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Webhook             `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (w *WebhookList) GetExtraProperties() map[string]interface{} {
-	return w.extraProperties
-}
-
-func (w *WebhookList) UnmarshalJSON(data []byte) error {
-	type unmarshaler WebhookList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*w = WebhookList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *w)
-	if err != nil {
-		return err
-	}
-	w.extraProperties = extraProperties
-
-	w._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (w *WebhookList) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
-}
-
-type WebhookListPagination struct {
-	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
-	Next     *string `json:"next,omitempty" url:"next,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (w *WebhookListPagination) GetExtraProperties() map[string]interface{} {
-	return w.extraProperties
-}
-
-func (w *WebhookListPagination) UnmarshalJSON(data []byte) error {
-	type unmarshaler WebhookListPagination
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*w = WebhookListPagination(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *w)
-	if err != nil {
-		return err
-	}
-	w.extraProperties = extraProperties
-
-	w._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (w *WebhookListPagination) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
-}
-
-type WebhookStatus string
-
-const (
-	WebhookStatusEnabled  WebhookStatus = "enabled"
-	WebhookStatusDisabled WebhookStatus = "disabled"
-)
-
-func NewWebhookStatusFromString(s string) (WebhookStatus, error) {
-	switch s {
-	case "enabled":
-		return WebhookStatusEnabled, nil
-	case "disabled":
-		return WebhookStatusDisabled, nil
-	}
-	var t WebhookStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (w WebhookStatus) Ptr() *WebhookStatus {
-	return &w
 }

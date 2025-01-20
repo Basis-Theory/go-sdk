@@ -2,9 +2,77 @@
 
 package basistheory
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/Basis-Theory/go-sdk/core"
+	time "time"
+)
+
 type AuthorizeSessionRequest struct {
 	Nonce       string        `json:"nonce" url:"-"`
 	ExpiresAt   *string       `json:"expires_at,omitempty" url:"-"`
 	Permissions []string      `json:"permissions,omitempty" url:"-"`
 	Rules       []*AccessRule `json:"rules,omitempty" url:"-"`
+}
+
+type CreateSessionResponse struct {
+	SessionKey *string    `json:"session_key,omitempty" url:"session_key,omitempty"`
+	Nonce      *string    `json:"nonce,omitempty" url:"nonce,omitempty"`
+	ExpiresAt  *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *CreateSessionResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateSessionResponse) UnmarshalJSON(data []byte) error {
+	type embed CreateSessionResponse
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = CreateSessionResponse(unmarshaler.embed)
+	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateSessionResponse) MarshalJSON() ([]byte, error) {
+	type embed CreateSessionResponse
+	var marshaler = struct {
+		embed
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *CreateSessionResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }

@@ -206,13 +206,6 @@ func (c *Client) Update(
 				return apiError
 			}
 			return value
-		case 409:
-			value := new(gosdk.ConflictError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
-			}
-			return value
 		}
 		return apiError
 	}
@@ -288,13 +281,6 @@ func (c *Client) Delete(
 			return value
 		case 404:
 			value := new(gosdk.NotFoundError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
-			}
-			return value
-		case 409:
-			value := new(gosdk.ConflictError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return apiError
