@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/Basis-Theory/go-sdk/compare/v0.4.2...v0.5.0) (2025-01-27)
+
+
+### Features
+
+* Add Google Pay ([2300de1](https://github.com/Basis-Theory/go-sdk/commit/2300de15d6dda2b918cd6780fd82310064e7e6b2))
+
 ## [0.4.2](https://github.com/Basis-Theory/go-sdk/compare/v0.4.1...v0.4.2) (2024-11-20)
 
 
