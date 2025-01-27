@@ -240,6 +240,48 @@ func (a *ApplicationKey) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type AssuranceDetails struct {
+	AccountVerified         *bool `json:"account_verified,omitempty" url:"account_verified,omitempty"`
+	CardHolderAuthenticated *bool `json:"card_holder_authenticated,omitempty" url:"card_holder_authenticated,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AssuranceDetails) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AssuranceDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler AssuranceDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AssuranceDetails(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AssuranceDetails) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 type CardDetails struct {
 	Bin             *string                  `json:"bin,omitempty" url:"bin,omitempty"`
 	Last4           *string                  `json:"last4,omitempty" url:"last4,omitempty"`
@@ -456,6 +498,78 @@ func (c *CreateThreeDsSessionResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (c *CreateThreeDsSessionResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CreateTokenIntentResponse struct {
+	ID             *string              `json:"id,omitempty" url:"id,omitempty"`
+	Type           *string              `json:"type,omitempty" url:"type,omitempty"`
+	TenantID       *string              `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Fingerprint    *string              `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	CreatedBy      *string              `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt      *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ExpiresAt      *time.Time           `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Card           *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
+	Authentication *TokenAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Extras         *TokenIntentExtras   `json:"_extras,omitempty" url:"_extras,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *CreateTokenIntentResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateTokenIntentResponse) UnmarshalJSON(data []byte) error {
+	type embed CreateTokenIntentResponse
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = CreateTokenIntentResponse(unmarshaler.embed)
+	c.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateTokenIntentResponse) MarshalJSON() ([]byte, error) {
+	type embed CreateTokenIntentResponse
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		CreatedAt: core.NewOptionalDateTime(c.CreatedAt),
+		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *CreateTokenIntentResponse) String() string {
 	if len(c._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
 			return value
@@ -935,133 +1049,6 @@ func (g *GetTokensV2) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", g)
-}
-
-type GooglePayTokenizeRequest struct {
-	GooglePaymentMethodToken *GooglePaymentMethodToken `json:"google_payment_method_token,omitempty" url:"google_payment_method_token,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (g *GooglePayTokenizeRequest) GetExtraProperties() map[string]interface{} {
-	return g.extraProperties
-}
-
-func (g *GooglePayTokenizeRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler GooglePayTokenizeRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GooglePayTokenizeRequest(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *g)
-	if err != nil {
-		return err
-	}
-	g.extraProperties = extraProperties
-
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GooglePayTokenizeRequest) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-type GooglePaymentMethodToken struct {
-	ProtocolVersion        *string                 `json:"protocolVersion,omitempty" url:"protocolVersion,omitempty"`
-	Signature              *string                 `json:"signature,omitempty" url:"signature,omitempty"`
-	IntermediateSigningKey *IntermediateSigningKey `json:"intermediateSigningKey,omitempty" url:"intermediateSigningKey,omitempty"`
-	SignedMessage          *string                 `json:"signedMessage,omitempty" url:"signedMessage,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (g *GooglePaymentMethodToken) GetExtraProperties() map[string]interface{} {
-	return g.extraProperties
-}
-
-func (g *GooglePaymentMethodToken) UnmarshalJSON(data []byte) error {
-	type unmarshaler GooglePaymentMethodToken
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GooglePaymentMethodToken(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *g)
-	if err != nil {
-		return err
-	}
-	g.extraProperties = extraProperties
-
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GooglePaymentMethodToken) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-type IntermediateSigningKey struct {
-	SignedKey  *string  `json:"signedKey,omitempty" url:"signedKey,omitempty"`
-	Signatures []string `json:"signatures,omitempty" url:"signatures,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (i *IntermediateSigningKey) GetExtraProperties() map[string]interface{} {
-	return i.extraProperties
-}
-
-func (i *IntermediateSigningKey) UnmarshalJSON(data []byte) error {
-	type unmarshaler IntermediateSigningKey
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*i = IntermediateSigningKey(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *i)
-	if err != nil {
-		return err
-	}
-	i.extraProperties = extraProperties
-
-	i._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (i *IntermediateSigningKey) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(i); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", i)
 }
 
 type Pagination struct {
@@ -2561,6 +2548,89 @@ func (t *ThreeDsVersion) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+type TokenAuthentication struct {
+	ThreedsCryptogram *string `json:"threeds_cryptogram,omitempty" url:"threeds_cryptogram,omitempty"`
+	EciIndicator      *string `json:"eci_indicator,omitempty" url:"eci_indicator,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TokenAuthentication) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenAuthentication) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenAuthentication
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenAuthentication(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenAuthentication) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TokenIntentExtras struct {
+	TspDetails *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TokenIntentExtras) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenIntentExtras) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenIntentExtras
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenIntentExtras(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenIntentExtras) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
 type TokenMetrics struct {
 	Count         *int64     `json:"count,omitempty" url:"count,omitempty"`
 	LastCreatedAt *time.Time `json:"last_created_at,omitempty" url:"last_created_at,omitempty"`
@@ -2654,6 +2724,51 @@ func (t *TokenReport) UnmarshalJSON(data []byte) error {
 }
 
 func (t *TokenReport) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TokenServiceProviderDetails struct {
+	Tsp              *string           `json:"tsp,omitempty" url:"tsp,omitempty"`
+	AuthMethod       *string           `json:"auth_method,omitempty" url:"auth_method,omitempty"`
+	MessageID        *string           `json:"message_id,omitempty" url:"message_id,omitempty"`
+	EciIndicator     *string           `json:"eci_indicator,omitempty" url:"eci_indicator,omitempty"`
+	AssuranceDetails *AssuranceDetails `json:"assurance_details,omitempty" url:"assurance_details,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TokenServiceProviderDetails) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenServiceProviderDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenServiceProviderDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenServiceProviderDetails(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenServiceProviderDetails) String() string {
 	if len(t._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
 			return value

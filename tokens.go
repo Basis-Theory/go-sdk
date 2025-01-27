@@ -329,26 +329,27 @@ func (p *Privacy) String() string {
 }
 
 type Token struct {
-	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
-	Type                  *string            `json:"type,omitempty" url:"type,omitempty"`
-	TenantID              *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Data                  interface{}        `json:"data,omitempty" url:"data,omitempty"`
-	Metadata              map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
-	Enrichments           *TokenEnrichments  `json:"enrichments,omitempty" url:"enrichments,omitempty"`
-	CreatedBy             *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt             *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
-	Card                  *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
-	ModifiedBy            *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt            *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	Fingerprint           *string            `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
-	FingerprintExpression *string            `json:"fingerprint_expression,omitempty" url:"fingerprint_expression,omitempty"`
-	Mask                  interface{}        `json:"mask,omitempty" url:"mask,omitempty"`
-	Privacy               *Privacy           `json:"privacy,omitempty" url:"privacy,omitempty"`
-	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"search_indexes,omitempty"`
-	ExpiresAt             *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
-	Aliases               []string           `json:"aliases,omitempty" url:"aliases,omitempty"`
-	Extras                *TokenExtras       `json:"_extras,omitempty" url:"_extras,omitempty"`
+	ID                    *string              `json:"id,omitempty" url:"id,omitempty"`
+	Type                  *string              `json:"type,omitempty" url:"type,omitempty"`
+	TenantID              *string              `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Data                  interface{}          `json:"data,omitempty" url:"data,omitempty"`
+	Metadata              map[string]*string   `json:"metadata,omitempty" url:"metadata,omitempty"`
+	Enrichments           *TokenEnrichments    `json:"enrichments,omitempty" url:"enrichments,omitempty"`
+	CreatedBy             *string              `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt             *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
+	Card                  *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
+	ModifiedBy            *string              `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt            *time.Time           `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	Fingerprint           *string              `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	FingerprintExpression *string              `json:"fingerprint_expression,omitempty" url:"fingerprint_expression,omitempty"`
+	Mask                  interface{}          `json:"mask,omitempty" url:"mask,omitempty"`
+	Privacy               *Privacy             `json:"privacy,omitempty" url:"privacy,omitempty"`
+	SearchIndexes         []string             `json:"search_indexes,omitempty" url:"search_indexes,omitempty"`
+	ExpiresAt             *time.Time           `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Containers            []string             `json:"containers,omitempty" url:"containers,omitempty"`
+	Aliases               []string             `json:"aliases,omitempty" url:"aliases,omitempty"`
+	Authentication        *TokenAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Extras                *TokenExtras         `json:"_extras,omitempty" url:"_extras,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -541,7 +542,8 @@ func (t *TokenEnrichmentsCardDetails) String() string {
 }
 
 type TokenExtras struct {
-	Deduplicated *bool `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+	Deduplicated *bool                        `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+	TspDetails   *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
