@@ -338,6 +338,7 @@ type Token struct {
 	CreatedBy             *string              `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt             *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
 	Card                  *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
+	NetworkToken          *CardDetails         `json:"network_token,omitempty" url:"network_token,omitempty"`
 	ModifiedBy            *string              `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt            *time.Time           `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Fingerprint           *string              `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
@@ -542,8 +543,9 @@ func (t *TokenEnrichmentsCardDetails) String() string {
 }
 
 type TokenExtras struct {
-	Deduplicated *bool                        `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
-	TspDetails   *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
+	Deduplicated          *bool                        `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+	TspDetails            *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
+	DeduplicationBehavior *string                      `json:"deduplication_behavior,omitempty" url:"deduplication_behavior,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage

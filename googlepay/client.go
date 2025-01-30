@@ -93,6 +93,13 @@ func (c *Client) Tokenize(
 				return apiError
 			}
 			return value
+		case 422:
+			value := new(gosdk.UnprocessableEntityError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
 		}
 		return apiError
 	}
