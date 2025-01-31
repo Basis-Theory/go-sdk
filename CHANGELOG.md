@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/Basis-Theory/go-sdk/compare/v0.6.0...v0.6.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* Add `network_token` to token intents ([80f332f](https://github.com/Basis-Theory/go-sdk/commit/80f332f4f1d40f7b432ada54c04b81faf2492f94))
+
 # [0.6.0](https://github.com/Basis-Theory/go-sdk/compare/v0.5.0...v0.6.0) (2025-01-30)
 
 
