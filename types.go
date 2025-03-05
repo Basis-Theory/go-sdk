@@ -109,7 +109,6 @@ type Application struct {
 	CreatedAt   *time.Time        `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ModifiedBy  *string           `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt  *time.Time        `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	ExpiresAt   *time.Time        `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	Permissions []string          `json:"permissions,omitempty" url:"permissions,omitempty"`
 	Rules       []*AccessRule     `json:"rules,omitempty" url:"rules,omitempty"`
 
@@ -127,7 +126,6 @@ func (a *Application) UnmarshalJSON(data []byte) error {
 		embed
 		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
 		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-		ExpiresAt  *core.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed: embed(*a),
 	}
@@ -137,7 +135,6 @@ func (a *Application) UnmarshalJSON(data []byte) error {
 	*a = Application(unmarshaler.embed)
 	a.CreatedAt = unmarshaler.CreatedAt.TimePtr()
 	a.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-	a.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
 
 	extraProperties, err := core.ExtractExtraProperties(data, *a)
 	if err != nil {
@@ -155,12 +152,10 @@ func (a *Application) MarshalJSON() ([]byte, error) {
 		embed
 		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
 		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
-		ExpiresAt  *core.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed:      embed(*a),
 		CreatedAt:  core.NewOptionalDateTime(a.CreatedAt),
 		ModifiedAt: core.NewOptionalDateTime(a.ModifiedAt),
-		ExpiresAt:  core.NewOptionalDateTime(a.ExpiresAt),
 	}
 	return json.Marshal(marshaler)
 }
@@ -282,6 +277,49 @@ func (a *AssuranceDetails) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type AuthenticationResponse struct {
+	MerchantIdentifier *string `json:"merchant_identifier,omitempty" url:"merchant_identifier,omitempty"`
+	AuthenticationData *string `json:"authentication_data,omitempty" url:"authentication_data,omitempty"`
+	TransactionAmount  *string `json:"transaction_amount,omitempty" url:"transaction_amount,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthenticationResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthenticationResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthenticationResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthenticationResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthenticationResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 type CardDetails struct {
 	Bin             *string                  `json:"bin,omitempty" url:"bin,omitempty"`
 	Last4           *string                  `json:"last4,omitempty" url:"last4,omitempty"`
@@ -290,6 +328,7 @@ type CardDetails struct {
 	Brand           *string                  `json:"brand,omitempty" url:"brand,omitempty"`
 	Funding         *string                  `json:"funding,omitempty" url:"funding,omitempty"`
 	Authentication  *string                  `json:"authentication,omitempty" url:"authentication,omitempty"`
+	IssuerCountry   *CardIssuerCountry       `json:"issuer_country,omitempty" url:"issuer_country,omitempty"`
 	Additional      []*AdditionalCardDetails `json:"additional,omitempty" url:"additional,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -319,6 +358,49 @@ func (c *CardDetails) UnmarshalJSON(data []byte) error {
 }
 
 func (c *CardDetails) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CardIssuerCountry struct {
+	Alpha2  *string `json:"alpha2,omitempty" url:"alpha2,omitempty"`
+	Name    *string `json:"name,omitempty" url:"name,omitempty"`
+	Numeric *string `json:"numeric,omitempty" url:"numeric,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *CardIssuerCountry) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardIssuerCountry) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardIssuerCountry
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardIssuerCountry(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardIssuerCountry) String() string {
 	if len(c._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
 			return value
@@ -1612,7 +1694,7 @@ func (t *TenantMemberResponsePaginatedList) String() string {
 }
 
 type TenantUsageReport struct {
-	TokenReport *TokenReport `json:"token_report,omitempty" url:"token_report,omitempty"`
+	TotalTokens *int64 `json:"total_tokens,omitempty" url:"total_tokens,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -1751,6 +1833,7 @@ type ThreeDsAuthentication struct {
 	SdkTransactionID            *string                    `json:"sdk_transaction_id,omitempty" url:"sdk_transaction_id,omitempty"`
 	AcsReferenceNumber          *string                    `json:"acs_reference_number,omitempty" url:"acs_reference_number,omitempty"`
 	DsReferenceNumber           *string                    `json:"ds_reference_number,omitempty" url:"ds_reference_number,omitempty"`
+	LiabilityShifted            *bool                      `json:"liability_shifted,omitempty" url:"liability_shifted,omitempty"`
 	AuthenticationValue         *string                    `json:"authentication_value,omitempty" url:"authentication_value,omitempty"`
 	AuthenticationStatus        *string                    `json:"authentication_status,omitempty" url:"authentication_status,omitempty"`
 	AuthenticationStatusCode    *string                    `json:"authentication_status_code,omitempty" url:"authentication_status_code,omitempty"`
@@ -2376,9 +2459,13 @@ func (t *ThreeDsPurchaseInfo) String() string {
 }
 
 type ThreeDsRequestorInfo struct {
-	ID   *string `json:"id,omitempty" url:"id,omitempty"`
-	Name *string `json:"name,omitempty" url:"name,omitempty"`
-	URL  *string `json:"url,omitempty" url:"url,omitempty"`
+	ID                  *string `json:"id,omitempty" url:"id,omitempty"`
+	Name                *string `json:"name,omitempty" url:"name,omitempty"`
+	URL                 *string `json:"url,omitempty" url:"url,omitempty"`
+	DiscoverClientID    *string `json:"discover_client_id,omitempty" url:"discover_client_id,omitempty"`
+	DiscoverRequestorID *string `json:"discover_requestor_id,omitempty" url:"discover_requestor_id,omitempty"`
+	AmexRequestorType   *string `json:"amex_requestor_type,omitempty" url:"amex_requestor_type,omitempty"`
+	CbSiretNumber       *string `json:"cb_siret_number,omitempty" url:"cb_siret_number,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -2632,116 +2719,20 @@ func (t *TokenIntentExtras) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-type TokenMetrics struct {
-	Count         *int64     `json:"count,omitempty" url:"count,omitempty"`
-	LastCreatedAt *time.Time `json:"last_created_at,omitempty" url:"last_created_at,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenMetrics) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenMetrics) UnmarshalJSON(data []byte) error {
-	type embed TokenMetrics
-	var unmarshaler = struct {
-		embed
-		LastCreatedAt *core.DateTime `json:"last_created_at,omitempty"`
-	}{
-		embed: embed(*t),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*t = TokenMetrics(unmarshaler.embed)
-	t.LastCreatedAt = unmarshaler.LastCreatedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenMetrics) MarshalJSON() ([]byte, error) {
-	type embed TokenMetrics
-	var marshaler = struct {
-		embed
-		LastCreatedAt *core.DateTime `json:"last_created_at,omitempty"`
-	}{
-		embed:         embed(*t),
-		LastCreatedAt: core.NewOptionalDateTime(t.LastCreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (t *TokenMetrics) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TokenReport struct {
-	IncludedMonthlyActiveTokens *int64                   `json:"included_monthly_active_tokens,omitempty" url:"included_monthly_active_tokens,omitempty"`
-	MonthlyActiveTokens         *int64                   `json:"monthly_active_tokens,omitempty" url:"monthly_active_tokens,omitempty"`
-	MetricsByType               map[string]*TokenMetrics `json:"metrics_by_type,omitempty" url:"metrics_by_type,omitempty"`
-	TotalTokens                 *int64                   `json:"total_tokens,omitempty" url:"total_tokens,omitempty"`
-
-	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
-}
-
-func (t *TokenReport) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenReport) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenReport
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenReport(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenReport) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
 type TokenServiceProviderDetails struct {
-	Tsp              *string           `json:"tsp,omitempty" url:"tsp,omitempty"`
-	AuthMethod       *string           `json:"auth_method,omitempty" url:"auth_method,omitempty"`
-	MessageID        *string           `json:"message_id,omitempty" url:"message_id,omitempty"`
-	EciIndicator     *string           `json:"eci_indicator,omitempty" url:"eci_indicator,omitempty"`
-	AssuranceDetails *AssuranceDetails `json:"assurance_details,omitempty" url:"assurance_details,omitempty"`
+	Tsp                          *string                   `json:"tsp,omitempty" url:"tsp,omitempty"`
+	AuthMethod                   *string                   `json:"auth_method,omitempty" url:"auth_method,omitempty"`
+	MessageID                    *string                   `json:"message_id,omitempty" url:"message_id,omitempty"`
+	EciIndicator                 *string                   `json:"eci_indicator,omitempty" url:"eci_indicator,omitempty"`
+	AssuranceDetails             *AssuranceDetails         `json:"assurance_details,omitempty" url:"assurance_details,omitempty"`
+	TransactionID                *string                   `json:"transaction_id,omitempty" url:"transaction_id,omitempty"`
+	CurrencyCode                 *string                   `json:"currency_code,omitempty" url:"currency_code,omitempty"`
+	TransactionAmount            *int64                    `json:"transaction_amount,omitempty" url:"transaction_amount,omitempty"`
+	CardholderName               *string                   `json:"cardholder_name,omitempty" url:"cardholder_name,omitempty"`
+	DeviceManufacturerIdentifier *string                   `json:"device_manufacturer_identifier,omitempty" url:"device_manufacturer_identifier,omitempty"`
+	PaymentDataType              *string                   `json:"payment_data_type,omitempty" url:"payment_data_type,omitempty"`
+	MerchantTokenIdentifier      *string                   `json:"merchant_token_identifier,omitempty" url:"merchant_token_identifier,omitempty"`
+	AuthenticationResponses      []*AuthenticationResponse `json:"authentication_responses,omitempty" url:"authentication_responses,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage

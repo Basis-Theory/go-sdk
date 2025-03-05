@@ -2,7 +2,87 @@
 
 package basistheory
 
+import (
+	json "encoding/json"
+	fmt "fmt"
+	core "github.com/Basis-Theory/go-sdk/core"
+	time "time"
+)
+
 type CreateTokenIntentRequest struct {
 	Type string      `json:"type" url:"-"`
 	Data interface{} `json:"data,omitempty" url:"-"`
+}
+
+type TokenIntent struct {
+	ID             *string              `json:"id,omitempty" url:"id,omitempty"`
+	Type           *string              `json:"type,omitempty" url:"type,omitempty"`
+	TenantID       *string              `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Fingerprint    *string              `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	CreatedBy      *string              `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt      *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ExpiresAt      *time.Time           `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Card           *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
+	NetworkToken   *CardDetails         `json:"network_token,omitempty" url:"network_token,omitempty"`
+	Authentication *TokenAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Extras         *TokenIntentExtras   `json:"_extras,omitempty" url:"_extras,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TokenIntent) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenIntent) UnmarshalJSON(data []byte) error {
+	type embed TokenIntent
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = TokenIntent(unmarshaler.embed)
+	t.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	t.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenIntent) MarshalJSON() ([]byte, error) {
+	type embed TokenIntent
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*t),
+		CreatedAt: core.NewOptionalDateTime(t.CreatedAt),
+		ExpiresAt: core.NewOptionalDateTime(t.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *TokenIntent) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
