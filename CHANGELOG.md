@@ -1,3 +1,15 @@
+# [1.0.0](https://github.com/Basis-Theory/go-sdk/compare/v0.6.1...v1.0.0) (2025-03-06)
+
+
+### Features
+
+* adding get token intents ([98eebe5](https://github.com/Basis-Theory/go-sdk/commit/98eebe5feae723b24b1e38bc8872d90ee38de70e))
+
+
+### BREAKING CHANGES
+
+* Updated Token Usage response and removes expires_at from Applications
+
 ## [0.6.1](https://github.com/Basis-Theory/go-sdk/compare/v0.6.0...v0.6.1) (2025-01-31)
 
 
