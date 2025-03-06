@@ -11,7 +11,6 @@ import (
 type CreateApplicationRequest struct {
 	Name        string        `json:"name" url:"-"`
 	Type        string        `json:"type" url:"-"`
-	ExpiresAt   *string       `json:"expires_at,omitempty" url:"-"`
 	Permissions []string      `json:"permissions,omitempty" url:"-"`
 	Rules       []*AccessRule `json:"rules,omitempty" url:"-"`
 	CreateKey   *bool         `json:"create_key,omitempty" url:"-"`
