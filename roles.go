@@ -5,14 +5,21 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 )
 
 type Role struct {
 	Name *string `json:"name,omitempty" url:"name,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (r *Role) GetName() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Name
 }
 
 func (r *Role) GetExtraProperties() map[string]interface{} {
@@ -26,24 +33,22 @@ func (r *Role) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Role(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
 	if err != nil {
 		return err
 	}
 	r.extraProperties = extraProperties
-
-	r._rawJSON = json.RawMessage(data)
+	r.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (r *Role) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(r); err == nil {
+	if value, err := internal.StringifyJSON(r); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", r)

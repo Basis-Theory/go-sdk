@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 )
 
 type CreateApplicationRequest struct {
@@ -29,7 +29,21 @@ type ApplicationPaginatedList struct {
 	Data       []*Application `json:"data,omitempty" url:"data,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (a *ApplicationPaginatedList) GetPagination() *Pagination {
+	if a == nil {
+		return nil
+	}
+	return a.Pagination
+}
+
+func (a *ApplicationPaginatedList) GetData() []*Application {
+	if a == nil {
+		return nil
+	}
+	return a.Data
 }
 
 func (a *ApplicationPaginatedList) GetExtraProperties() map[string]interface{} {
@@ -43,24 +57,22 @@ func (a *ApplicationPaginatedList) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = ApplicationPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
 	}
 	a.extraProperties = extraProperties
-
-	a._rawJSON = json.RawMessage(data)
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *ApplicationPaginatedList) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)

@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	time "time"
 )
 
@@ -35,7 +35,84 @@ type Webhook struct {
 	ModifiedAt  *time.Time `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (w *Webhook) GetID() string {
+	if w == nil {
+		return ""
+	}
+	return w.ID
+}
+
+func (w *Webhook) GetTenantID() string {
+	if w == nil {
+		return ""
+	}
+	return w.TenantID
+}
+
+func (w *Webhook) GetStatus() WebhookStatus {
+	if w == nil {
+		return ""
+	}
+	return w.Status
+}
+
+func (w *Webhook) GetName() string {
+	if w == nil {
+		return ""
+	}
+	return w.Name
+}
+
+func (w *Webhook) GetURL() string {
+	if w == nil {
+		return ""
+	}
+	return w.URL
+}
+
+func (w *Webhook) GetNotifyEmail() *string {
+	if w == nil {
+		return nil
+	}
+	return w.NotifyEmail
+}
+
+func (w *Webhook) GetEvents() []string {
+	if w == nil {
+		return nil
+	}
+	return w.Events
+}
+
+func (w *Webhook) GetCreatedBy() string {
+	if w == nil {
+		return ""
+	}
+	return w.CreatedBy
+}
+
+func (w *Webhook) GetCreatedAt() time.Time {
+	if w == nil {
+		return time.Time{}
+	}
+	return w.CreatedAt
+}
+
+func (w *Webhook) GetModifiedBy() *string {
+	if w == nil {
+		return nil
+	}
+	return w.ModifiedBy
+}
+
+func (w *Webhook) GetModifiedAt() *time.Time {
+	if w == nil {
+		return nil
+	}
+	return w.ModifiedAt
 }
 
 func (w *Webhook) GetExtraProperties() map[string]interface{} {
@@ -46,8 +123,8 @@ func (w *Webhook) UnmarshalJSON(data []byte) error {
 	type embed Webhook
 	var unmarshaler = struct {
 		embed
-		CreatedAt  *core.DateTime `json:"created_at"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed: embed(*w),
 	}
@@ -57,14 +134,12 @@ func (w *Webhook) UnmarshalJSON(data []byte) error {
 	*w = Webhook(unmarshaler.embed)
 	w.CreatedAt = unmarshaler.CreatedAt.Time()
 	w.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *w)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
 	if err != nil {
 		return err
 	}
 	w.extraProperties = extraProperties
-
-	w._rawJSON = json.RawMessage(data)
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -72,23 +147,23 @@ func (w *Webhook) MarshalJSON() ([]byte, error) {
 	type embed Webhook
 	var marshaler = struct {
 		embed
-		CreatedAt  *core.DateTime `json:"created_at"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed:      embed(*w),
-		CreatedAt:  core.NewDateTime(w.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(w.ModifiedAt),
+		CreatedAt:  internal.NewDateTime(w.CreatedAt),
+		ModifiedAt: internal.NewOptionalDateTime(w.ModifiedAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 func (w *Webhook) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
@@ -99,7 +174,21 @@ type WebhookList struct {
 	Data       []*Webhook             `json:"data,omitempty" url:"data,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (w *WebhookList) GetPagination() *WebhookListPagination {
+	if w == nil {
+		return nil
+	}
+	return w.Pagination
+}
+
+func (w *WebhookList) GetData() []*Webhook {
+	if w == nil {
+		return nil
+	}
+	return w.Data
 }
 
 func (w *WebhookList) GetExtraProperties() map[string]interface{} {
@@ -113,24 +202,22 @@ func (w *WebhookList) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*w = WebhookList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *w)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
 	if err != nil {
 		return err
 	}
 	w.extraProperties = extraProperties
-
-	w._rawJSON = json.RawMessage(data)
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (w *WebhookList) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)
@@ -141,7 +228,21 @@ type WebhookListPagination struct {
 	Next     *string `json:"next,omitempty" url:"next,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (w *WebhookListPagination) GetPageSize() *int {
+	if w == nil {
+		return nil
+	}
+	return w.PageSize
+}
+
+func (w *WebhookListPagination) GetNext() *string {
+	if w == nil {
+		return nil
+	}
+	return w.Next
 }
 
 func (w *WebhookListPagination) GetExtraProperties() map[string]interface{} {
@@ -155,24 +256,22 @@ func (w *WebhookListPagination) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*w = WebhookListPagination(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *w)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
 	if err != nil {
 		return err
 	}
 	w.extraProperties = extraProperties
-
-	w._rawJSON = json.RawMessage(data)
+	w.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (w *WebhookListPagination) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(w); err == nil {
+	if value, err := internal.StringifyJSON(w); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", w)

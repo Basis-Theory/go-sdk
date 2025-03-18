@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 )
 
 type BankVerificationRequest struct {
@@ -18,7 +18,14 @@ type BankVerificationResponse struct {
 	Status *string `json:"status,omitempty" url:"status,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (b *BankVerificationResponse) GetStatus() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Status
 }
 
 func (b *BankVerificationResponse) GetExtraProperties() map[string]interface{} {
@@ -32,24 +39,22 @@ func (b *BankVerificationResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*b = BankVerificationResponse(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
 	if err != nil {
 		return err
 	}
 	b.extraProperties = extraProperties
-
-	b._rawJSON = json.RawMessage(data)
+	b.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (b *BankVerificationResponse) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(b); err == nil {
+	if value, err := internal.StringifyJSON(b); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", b)

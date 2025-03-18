@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 )
 
 type GooglePayTokenizeRequest struct {
@@ -16,7 +16,14 @@ type GooglePayTokenizeResponse struct {
 	TokenIntent *CreateTokenIntentResponse `json:"token_intent,omitempty" url:"token_intent,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePayTokenizeResponse) GetTokenIntent() *CreateTokenIntentResponse {
+	if g == nil {
+		return nil
+	}
+	return g.TokenIntent
 }
 
 func (g *GooglePayTokenizeResponse) GetExtraProperties() map[string]interface{} {
@@ -30,24 +37,22 @@ func (g *GooglePayTokenizeResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*g = GooglePayTokenizeResponse(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *g)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
 	if err != nil {
 		return err
 	}
 	g.extraProperties = extraProperties
-
-	g._rawJSON = json.RawMessage(data)
+	g.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (g *GooglePayTokenizeResponse) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(g); err == nil {
+	if value, err := internal.StringifyJSON(g); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", g)
@@ -60,7 +65,35 @@ type GooglePaymentMethodToken struct {
 	SignedMessage          *string                 `json:"signedMessage,omitempty" url:"signedMessage,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePaymentMethodToken) GetProtocolVersion() *string {
+	if g == nil {
+		return nil
+	}
+	return g.ProtocolVersion
+}
+
+func (g *GooglePaymentMethodToken) GetSignature() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Signature
+}
+
+func (g *GooglePaymentMethodToken) GetIntermediateSigningKey() *IntermediateSigningKey {
+	if g == nil {
+		return nil
+	}
+	return g.IntermediateSigningKey
+}
+
+func (g *GooglePaymentMethodToken) GetSignedMessage() *string {
+	if g == nil {
+		return nil
+	}
+	return g.SignedMessage
 }
 
 func (g *GooglePaymentMethodToken) GetExtraProperties() map[string]interface{} {
@@ -74,24 +107,22 @@ func (g *GooglePaymentMethodToken) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*g = GooglePaymentMethodToken(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *g)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
 	if err != nil {
 		return err
 	}
 	g.extraProperties = extraProperties
-
-	g._rawJSON = json.RawMessage(data)
+	g.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (g *GooglePaymentMethodToken) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(g); err == nil {
+	if value, err := internal.StringifyJSON(g); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", g)
@@ -102,7 +133,21 @@ type IntermediateSigningKey struct {
 	Signatures []string `json:"signatures,omitempty" url:"signatures,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (i *IntermediateSigningKey) GetSignedKey() *string {
+	if i == nil {
+		return nil
+	}
+	return i.SignedKey
+}
+
+func (i *IntermediateSigningKey) GetSignatures() []string {
+	if i == nil {
+		return nil
+	}
+	return i.Signatures
 }
 
 func (i *IntermediateSigningKey) GetExtraProperties() map[string]interface{} {
@@ -116,24 +161,22 @@ func (i *IntermediateSigningKey) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*i = IntermediateSigningKey(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	extraProperties, err := internal.ExtractExtraProperties(data, *i)
 	if err != nil {
 		return err
 	}
 	i.extraProperties = extraProperties
-
-	i._rawJSON = json.RawMessage(data)
+	i.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (i *IntermediateSigningKey) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+	if len(i.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(i); err == nil {
+	if value, err := internal.StringifyJSON(i); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", i)
