@@ -3,21 +3,18 @@
 package sessions
 
 import (
-	bytes "bytes"
 	context "context"
-	json "encoding/json"
-	errors "errors"
 	gosdk "github.com/Basis-Theory/go-sdk"
 	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	option "github.com/Basis-Theory/go-sdk/option"
-	io "io"
 	http "net/http"
 	os "os"
 )
 
 type Client struct {
 	baseURL string
-	caller  *core.Caller
+	caller  *internal.Caller
 	header  http.Header
 }
 
@@ -28,8 +25,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 	return &Client{
 		baseURL: options.BaseURL,
-		caller: core.NewCaller(
-			&core.CallerParams{
+		caller: internal.NewCaller(
+			&internal.CallerParams{
 				Client:      options.HTTPClient,
 				MaxAttempts: options.MaxAttempts,
 			},
@@ -43,64 +40,47 @@ func (c *Client) Create(
 	opts ...option.IdempotentRequestOption,
 ) (*gosdk.CreateSessionResponse, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
-
-	baseURL := "https://api.basistheory.com"
-	if c.baseURL != "" {
-		baseURL = c.baseURL
-	}
-	if options.BaseURL != "" {
-		baseURL = options.BaseURL
-	}
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
 	endpointURL := baseURL + "/sessions"
-
-	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
-
-	errorDecoder := func(statusCode int, body io.Reader) error {
-		raw, err := io.ReadAll(body)
-		if err != nil {
-			return err
-		}
-		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
-		decoder := json.NewDecoder(bytes.NewReader(raw))
-		switch statusCode {
-		case 400:
-			value := new(gosdk.BadRequestError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &gosdk.BadRequestError{
+				APIError: apiError,
 			}
-			return value
-		case 401:
-			value := new(gosdk.UnauthorizedError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+		},
+		401: func(apiError *core.APIError) error {
+			return &gosdk.UnauthorizedError{
+				APIError: apiError,
 			}
-			return value
-		case 403:
-			value := new(gosdk.ForbiddenError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+		},
+		403: func(apiError *core.APIError) error {
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
 			}
-			return value
-		}
-		return apiError
+		},
 	}
 
 	var response *gosdk.CreateSessionResponse
 	if err := c.caller.Call(
 		ctx,
-		&core.CallParams{
+		&internal.CallParams{
 			URL:             endpointURL,
 			Method:          http.MethodPost,
-			MaxAttempts:     options.MaxAttempts,
 			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    errorDecoder,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	); err != nil {
 		return nil, err
@@ -114,78 +94,57 @@ func (c *Client) Authorize(
 	opts ...option.IdempotentRequestOption,
 ) error {
 	options := core.NewIdempotentRequestOptions(opts...)
-
-	baseURL := "https://api.basistheory.com"
-	if c.baseURL != "" {
-		baseURL = c.baseURL
-	}
-	if options.BaseURL != "" {
-		baseURL = options.BaseURL
-	}
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
 	endpointURL := baseURL + "/sessions/authorize"
-
-	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
 	headers.Set("Content-Type", "application/json")
-
-	errorDecoder := func(statusCode int, body io.Reader) error {
-		raw, err := io.ReadAll(body)
-		if err != nil {
-			return err
-		}
-		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
-		decoder := json.NewDecoder(bytes.NewReader(raw))
-		switch statusCode {
-		case 400:
-			value := new(gosdk.BadRequestError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &gosdk.BadRequestError{
+				APIError: apiError,
 			}
-			return value
-		case 401:
-			value := new(gosdk.UnauthorizedError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+		},
+		401: func(apiError *core.APIError) error {
+			return &gosdk.UnauthorizedError{
+				APIError: apiError,
 			}
-			return value
-		case 403:
-			value := new(gosdk.ForbiddenError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+		},
+		403: func(apiError *core.APIError) error {
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
 			}
-			return value
-		case 404:
-			value := new(gosdk.NotFoundError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+		},
+		404: func(apiError *core.APIError) error {
+			return &gosdk.NotFoundError{
+				APIError: apiError,
 			}
-			return value
-		case 409:
-			value := new(gosdk.ConflictError)
-			value.APIError = apiError
-			if err := decoder.Decode(value); err != nil {
-				return apiError
+		},
+		409: func(apiError *core.APIError) error {
+			return &gosdk.ConflictError{
+				APIError: apiError,
 			}
-			return value
-		}
-		return apiError
+		},
 	}
 
 	if err := c.caller.Call(
 		ctx,
-		&core.CallParams{
+		&internal.CallParams{
 			URL:             endpointURL,
 			Method:          http.MethodPost,
-			MaxAttempts:     options.MaxAttempts,
 			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
-			ErrorDecoder:    errorDecoder,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	); err != nil {
 		return err

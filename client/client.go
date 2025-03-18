@@ -3,12 +3,14 @@
 package client
 
 import (
+	applepayclient "github.com/Basis-Theory/go-sdk/applepay/client"
 	applicationkeys "github.com/Basis-Theory/go-sdk/applicationkeys"
 	applications "github.com/Basis-Theory/go-sdk/applications"
 	applicationtemplates "github.com/Basis-Theory/go-sdk/applicationtemplates"
 	core "github.com/Basis-Theory/go-sdk/core"
 	enrichments "github.com/Basis-Theory/go-sdk/enrichments"
 	googlepay "github.com/Basis-Theory/go-sdk/googlepay"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	logs "github.com/Basis-Theory/go-sdk/logs"
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
@@ -27,9 +29,10 @@ import (
 
 type Client struct {
 	baseURL string
-	caller  *core.Caller
+	caller  *internal.Caller
 	header  http.Header
 
+	ApplePay             *applepayclient.Client
 	Applications         *applications.Client
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
@@ -55,13 +58,14 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 	return &Client{
 		baseURL: options.BaseURL,
-		caller: core.NewCaller(
-			&core.CallerParams{
+		caller: internal.NewCaller(
+			&internal.CallerParams{
 				Client:      options.HTTPClient,
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
 		header:               options.ToHeader(),
+		ApplePay:             applepayclient.NewClient(opts...),
 		Applications:         applications.NewClient(opts...),
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),

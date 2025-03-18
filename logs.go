@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	time "time"
 )
 
@@ -31,7 +31,70 @@ type Log struct {
 	CreatedAt  *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (l *Log) GetID() *string {
+	if l == nil {
+		return nil
+	}
+	return l.ID
+}
+
+func (l *Log) GetTenantID() *string {
+	if l == nil {
+		return nil
+	}
+	return l.TenantID
+}
+
+func (l *Log) GetActorID() *string {
+	if l == nil {
+		return nil
+	}
+	return l.ActorID
+}
+
+func (l *Log) GetActorType() *string {
+	if l == nil {
+		return nil
+	}
+	return l.ActorType
+}
+
+func (l *Log) GetEntityType() *string {
+	if l == nil {
+		return nil
+	}
+	return l.EntityType
+}
+
+func (l *Log) GetEntityID() *string {
+	if l == nil {
+		return nil
+	}
+	return l.EntityID
+}
+
+func (l *Log) GetOperation() *string {
+	if l == nil {
+		return nil
+	}
+	return l.Operation
+}
+
+func (l *Log) GetMessage() *string {
+	if l == nil {
+		return nil
+	}
+	return l.Message
+}
+
+func (l *Log) GetCreatedAt() *time.Time {
+	if l == nil {
+		return nil
+	}
+	return l.CreatedAt
 }
 
 func (l *Log) GetExtraProperties() map[string]interface{} {
@@ -42,7 +105,7 @@ func (l *Log) UnmarshalJSON(data []byte) error {
 	type embed Log
 	var unmarshaler = struct {
 		embed
-		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
 	}{
 		embed: embed(*l),
 	}
@@ -51,14 +114,12 @@ func (l *Log) UnmarshalJSON(data []byte) error {
 	}
 	*l = Log(unmarshaler.embed)
 	l.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
 	if err != nil {
 		return err
 	}
 	l.extraProperties = extraProperties
-
-	l._rawJSON = json.RawMessage(data)
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -66,21 +127,21 @@ func (l *Log) MarshalJSON() ([]byte, error) {
 	type embed Log
 	var marshaler = struct {
 		embed
-		CreatedAt *core.DateTime `json:"created_at,omitempty"`
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
 	}{
 		embed:     embed(*l),
-		CreatedAt: core.NewOptionalDateTime(l.CreatedAt),
+		CreatedAt: internal.NewOptionalDateTime(l.CreatedAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 func (l *Log) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
@@ -91,7 +152,21 @@ type LogEntityType struct {
 	Value       *string `json:"value,omitempty" url:"value,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (l *LogEntityType) GetDisplayName() *string {
+	if l == nil {
+		return nil
+	}
+	return l.DisplayName
+}
+
+func (l *LogEntityType) GetValue() *string {
+	if l == nil {
+		return nil
+	}
+	return l.Value
 }
 
 func (l *LogEntityType) GetExtraProperties() map[string]interface{} {
@@ -105,24 +180,22 @@ func (l *LogEntityType) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*l = LogEntityType(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
 	if err != nil {
 		return err
 	}
 	l.extraProperties = extraProperties
-
-	l._rawJSON = json.RawMessage(data)
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (l *LogEntityType) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
@@ -133,7 +206,21 @@ type LogPaginatedList struct {
 	Data       []*Log      `json:"data,omitempty" url:"data,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (l *LogPaginatedList) GetPagination() *Pagination {
+	if l == nil {
+		return nil
+	}
+	return l.Pagination
+}
+
+func (l *LogPaginatedList) GetData() []*Log {
+	if l == nil {
+		return nil
+	}
+	return l.Data
 }
 
 func (l *LogPaginatedList) GetExtraProperties() map[string]interface{} {
@@ -147,24 +234,22 @@ func (l *LogPaginatedList) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*l = LogPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
 	if err != nil {
 		return err
 	}
 	l.extraProperties = extraProperties
-
-	l._rawJSON = json.RawMessage(data)
+	l.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (l *LogPaginatedList) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(l); err == nil {
+	if value, err := internal.StringifyJSON(l); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)

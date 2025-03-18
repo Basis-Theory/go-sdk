@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	time "time"
 )
 
@@ -60,7 +60,133 @@ type Proxy struct {
 	ModifiedAt        *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (p *Proxy) GetID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ID
+}
+
+func (p *Proxy) GetKey() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Key
+}
+
+func (p *Proxy) GetTenantID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.TenantID
+}
+
+func (p *Proxy) GetName() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Name
+}
+
+func (p *Proxy) GetDestinationURL() *string {
+	if p == nil {
+		return nil
+	}
+	return p.DestinationURL
+}
+
+func (p *Proxy) GetRequestReactorID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.RequestReactorID
+}
+
+func (p *Proxy) GetResponseReactorID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ResponseReactorID
+}
+
+func (p *Proxy) GetRequireAuth() *bool {
+	if p == nil {
+		return nil
+	}
+	return p.RequireAuth
+}
+
+func (p *Proxy) GetRequestTransform() *ProxyTransform {
+	if p == nil {
+		return nil
+	}
+	return p.RequestTransform
+}
+
+func (p *Proxy) GetResponseTransform() *ProxyTransform {
+	if p == nil {
+		return nil
+	}
+	return p.ResponseTransform
+}
+
+func (p *Proxy) GetApplicationID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ApplicationID
+}
+
+func (p *Proxy) GetConfiguration() map[string]*string {
+	if p == nil {
+		return nil
+	}
+	return p.Configuration
+}
+
+func (p *Proxy) GetProxyHost() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ProxyHost
+}
+
+func (p *Proxy) GetTimeout() *int {
+	if p == nil {
+		return nil
+	}
+	return p.Timeout
+}
+
+func (p *Proxy) GetCreatedBy() *string {
+	if p == nil {
+		return nil
+	}
+	return p.CreatedBy
+}
+
+func (p *Proxy) GetCreatedAt() *time.Time {
+	if p == nil {
+		return nil
+	}
+	return p.CreatedAt
+}
+
+func (p *Proxy) GetModifiedBy() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ModifiedBy
+}
+
+func (p *Proxy) GetModifiedAt() *time.Time {
+	if p == nil {
+		return nil
+	}
+	return p.ModifiedAt
 }
 
 func (p *Proxy) GetExtraProperties() map[string]interface{} {
@@ -71,8 +197,8 @@ func (p *Proxy) UnmarshalJSON(data []byte) error {
 	type embed Proxy
 	var unmarshaler = struct {
 		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed: embed(*p),
 	}
@@ -82,14 +208,12 @@ func (p *Proxy) UnmarshalJSON(data []byte) error {
 	*p = Proxy(unmarshaler.embed)
 	p.CreatedAt = unmarshaler.CreatedAt.TimePtr()
 	p.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
 	if err != nil {
 		return err
 	}
 	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
+	p.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -97,23 +221,23 @@ func (p *Proxy) MarshalJSON() ([]byte, error) {
 	type embed Proxy
 	var marshaler = struct {
 		embed
-		CreatedAt  *core.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *core.DateTime `json:"modified_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed:      embed(*p),
-		CreatedAt:  core.NewOptionalDateTime(p.CreatedAt),
-		ModifiedAt: core.NewOptionalDateTime(p.ModifiedAt),
+		CreatedAt:  internal.NewOptionalDateTime(p.CreatedAt),
+		ModifiedAt: internal.NewOptionalDateTime(p.ModifiedAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 func (p *Proxy) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
+	if value, err := internal.StringifyJSON(p); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)
@@ -124,7 +248,21 @@ type ProxyPaginatedList struct {
 	Data       []*Proxy    `json:"data,omitempty" url:"data,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (p *ProxyPaginatedList) GetPagination() *Pagination {
+	if p == nil {
+		return nil
+	}
+	return p.Pagination
+}
+
+func (p *ProxyPaginatedList) GetData() []*Proxy {
+	if p == nil {
+		return nil
+	}
+	return p.Data
 }
 
 func (p *ProxyPaginatedList) GetExtraProperties() map[string]interface{} {
@@ -138,24 +276,22 @@ func (p *ProxyPaginatedList) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*p = ProxyPaginatedList(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
 	if err != nil {
 		return err
 	}
 	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
+	p.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (p *ProxyPaginatedList) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
+	if value, err := internal.StringifyJSON(p); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)
@@ -169,7 +305,42 @@ type ProxyTransform struct {
 	Replacement *string `json:"replacement,omitempty" url:"replacement,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (p *ProxyTransform) GetType() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Type
+}
+
+func (p *ProxyTransform) GetCode() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Code
+}
+
+func (p *ProxyTransform) GetMatcher() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Matcher
+}
+
+func (p *ProxyTransform) GetExpression() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Expression
+}
+
+func (p *ProxyTransform) GetReplacement() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Replacement
 }
 
 func (p *ProxyTransform) GetExtraProperties() map[string]interface{} {
@@ -183,24 +354,22 @@ func (p *ProxyTransform) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*p = ProxyTransform(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
 	if err != nil {
 		return err
 	}
 	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
+	p.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (p *ProxyTransform) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
+	if value, err := internal.StringifyJSON(p); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)

@@ -103,6 +103,30 @@ func (n *NotFoundError) Unwrap() error {
 	return n.APIError
 }
 
+// Server Error
+type ServiceUnavailableError struct {
+	*core.APIError
+	Body *ProblemDetails
+}
+
+func (s *ServiceUnavailableError) UnmarshalJSON(data []byte) error {
+	var body *ProblemDetails
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	s.StatusCode = 503
+	s.Body = body
+	return nil
+}
+
+func (s *ServiceUnavailableError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Body)
+}
+
+func (s *ServiceUnavailableError) Unwrap() error {
+	return s.APIError
+}
+
 // Unauthorized
 type UnauthorizedError struct {
 	*core.APIError

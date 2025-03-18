@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	time "time"
 )
 
@@ -22,7 +22,28 @@ type CreateSessionResponse struct {
 	ExpiresAt  *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (c *CreateSessionResponse) GetSessionKey() *string {
+	if c == nil {
+		return nil
+	}
+	return c.SessionKey
+}
+
+func (c *CreateSessionResponse) GetNonce() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Nonce
+}
+
+func (c *CreateSessionResponse) GetExpiresAt() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.ExpiresAt
 }
 
 func (c *CreateSessionResponse) GetExtraProperties() map[string]interface{} {
@@ -33,7 +54,7 @@ func (c *CreateSessionResponse) UnmarshalJSON(data []byte) error {
 	type embed CreateSessionResponse
 	var unmarshaler = struct {
 		embed
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed: embed(*c),
 	}
@@ -42,14 +63,12 @@ func (c *CreateSessionResponse) UnmarshalJSON(data []byte) error {
 	}
 	*c = CreateSessionResponse(unmarshaler.embed)
 	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
-
-	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
 	if err != nil {
 		return err
 	}
 	c.extraProperties = extraProperties
-
-	c._rawJSON = json.RawMessage(data)
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -57,21 +76,21 @@ func (c *CreateSessionResponse) MarshalJSON() ([]byte, error) {
 	type embed CreateSessionResponse
 	var marshaler = struct {
 		embed
-		ExpiresAt *core.DateTime `json:"expires_at,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed:     embed(*c),
-		ExpiresAt: core.NewOptionalDateTime(c.ExpiresAt),
+		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
 	return json.Marshal(marshaler)
 }
 
 func (c *CreateSessionResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(c); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
