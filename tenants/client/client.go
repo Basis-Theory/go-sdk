@@ -4,6 +4,7 @@ package client
 
 import (
 	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	option "github.com/Basis-Theory/go-sdk/option"
 	connections "github.com/Basis-Theory/go-sdk/tenants/connections"
 	invitations "github.com/Basis-Theory/go-sdk/tenants/invitations"
@@ -16,7 +17,7 @@ import (
 
 type Client struct {
 	baseURL string
-	caller  *core.Caller
+	caller  *internal.Caller
 	header  http.Header
 
 	Connections *connections.Client
@@ -33,8 +34,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 	return &Client{
 		baseURL: options.BaseURL,
-		caller: core.NewCaller(
-			&core.CallerParams{
+		caller: internal.NewCaller(
+			&internal.CallerParams{
 				Client:      options.HTTPClient,
 				MaxAttempts: options.MaxAttempts,
 			},

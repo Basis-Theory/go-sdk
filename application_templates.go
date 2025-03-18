@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 )
 
 type ApplicationTemplate struct {
@@ -19,7 +19,63 @@ type ApplicationTemplate struct {
 	Permissions     []string      `json:"permissions,omitempty" url:"permissions,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (a *ApplicationTemplate) GetID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ID
+}
+
+func (a *ApplicationTemplate) GetName() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Name
+}
+
+func (a *ApplicationTemplate) GetDescription() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Description
+}
+
+func (a *ApplicationTemplate) GetApplicationType() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ApplicationType
+}
+
+func (a *ApplicationTemplate) GetTemplateType() *string {
+	if a == nil {
+		return nil
+	}
+	return a.TemplateType
+}
+
+func (a *ApplicationTemplate) GetIsStarter() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.IsStarter
+}
+
+func (a *ApplicationTemplate) GetRules() []*AccessRule {
+	if a == nil {
+		return nil
+	}
+	return a.Rules
+}
+
+func (a *ApplicationTemplate) GetPermissions() []string {
+	if a == nil {
+		return nil
+	}
+	return a.Permissions
 }
 
 func (a *ApplicationTemplate) GetExtraProperties() map[string]interface{} {
@@ -33,24 +89,22 @@ func (a *ApplicationTemplate) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*a = ApplicationTemplate(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
 	}
 	a.extraProperties = extraProperties
-
-	a._rawJSON = json.RawMessage(data)
+	a.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (a *ApplicationTemplate) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
+	if value, err := internal.StringifyJSON(a); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)

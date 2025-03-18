@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 )
 
 type PermissionsListRequest struct {
@@ -18,7 +18,28 @@ type Permission struct {
 	ApplicationTypes []string `json:"application_types,omitempty" url:"application_types,omitempty"`
 
 	extraProperties map[string]interface{}
-	_rawJSON        json.RawMessage
+	rawJSON         json.RawMessage
+}
+
+func (p *Permission) GetType() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Type
+}
+
+func (p *Permission) GetDescription() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Description
+}
+
+func (p *Permission) GetApplicationTypes() []string {
+	if p == nil {
+		return nil
+	}
+	return p.ApplicationTypes
 }
 
 func (p *Permission) GetExtraProperties() map[string]interface{} {
@@ -32,24 +53,22 @@ func (p *Permission) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*p = Permission(value)
-
-	extraProperties, err := core.ExtractExtraProperties(data, *p)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
 	if err != nil {
 		return err
 	}
 	p.extraProperties = extraProperties
-
-	p._rawJSON = json.RawMessage(data)
+	p.rawJSON = json.RawMessage(data)
 	return nil
 }
 
 func (p *Permission) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
+	if value, err := internal.StringifyJSON(p); err == nil {
 		return value
 	}
 	return fmt.Sprintf("%#v", p)
