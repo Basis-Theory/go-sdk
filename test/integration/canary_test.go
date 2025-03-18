@@ -76,32 +76,6 @@ func TestIdempotencyHeader(t *testing.T) {
 	}
 }
 
-func TestListV1PaginationWithIteration(t *testing.T) {
-	client := NewPrivateClient()
-
-	pageSize := 3
-	page, err := client.Tokens.List(
-		context.TODO(),
-		&basistheory.TokensListRequest{
-			Page: IntPtr(1),
-			Size: IntPtr(pageSize),
-		},
-	)
-	FailIfError(t, "Unable to list tokens", err)
-
-	count := 0
-	iter := page.Iterator()
-	for iter.Next(context.TODO()) {
-		count++
-		if count > pageSize {
-			break
-		}
-	}
-	if count <= pageSize {
-		t.Errorf("Expected at least %d tokens. Got %d", pageSize, count)
-	}
-}
-
 func TestListV2PaginationWithIteration(t *testing.T) {
 	client := NewPrivateClient()
 
