@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Basis-Theory/go-sdk/compare/v1.0.0...v1.1.0) (2025-03-18)
+
+
+### Features
+
+* Apple Pay support ([39af25d](https://github.com/Basis-Theory/go-sdk/commit/39af25d375dd506924d152e3801151de526abf96))
+
 # [1.0.0](https://github.com/Basis-Theory/go-sdk/compare/v0.6.1...v1.0.0) (2025-03-06)
 
 
