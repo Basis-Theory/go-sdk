@@ -3087,6 +3087,7 @@ type ThreeDsAuthentication struct {
 	PanTokenID                  *string                    `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
 	TokenID                     *string                    `json:"token_id,omitempty" url:"token_id,omitempty"`
 	TokenIntentID               *string                    `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	SessionID                   *string                    `json:"session_id,omitempty" url:"session_id,omitempty"`
 	ThreedsVersion              *string                    `json:"threeds_version,omitempty" url:"threeds_version,omitempty"`
 	AcsTransactionID            *string                    `json:"acs_transaction_id,omitempty" url:"acs_transaction_id,omitempty"`
 	DsTransactionID             *string                    `json:"ds_transaction_id,omitempty" url:"ds_transaction_id,omitempty"`
@@ -3097,6 +3098,7 @@ type ThreeDsAuthentication struct {
 	AuthenticationValue         *string                    `json:"authentication_value,omitempty" url:"authentication_value,omitempty"`
 	AuthenticationStatus        *string                    `json:"authentication_status,omitempty" url:"authentication_status,omitempty"`
 	AuthenticationStatusCode    *string                    `json:"authentication_status_code,omitempty" url:"authentication_status_code,omitempty"`
+	DirectoryStatusCode         *string                    `json:"directory_status_code,omitempty" url:"directory_status_code,omitempty"`
 	AuthenticationStatusReason  *string                    `json:"authentication_status_reason,omitempty" url:"authentication_status_reason,omitempty"`
 	Eci                         *string                    `json:"eci,omitempty" url:"eci,omitempty"`
 	AcsChallengeMandated        *string                    `json:"acs_challenge_mandated,omitempty" url:"acs_challenge_mandated,omitempty"`
@@ -3138,6 +3140,13 @@ func (t *ThreeDsAuthentication) GetTokenIntentID() *string {
 		return nil
 	}
 	return t.TokenIntentID
+}
+
+func (t *ThreeDsAuthentication) GetSessionID() *string {
+	if t == nil {
+		return nil
+	}
+	return t.SessionID
 }
 
 func (t *ThreeDsAuthentication) GetThreedsVersion() *string {
@@ -3208,6 +3217,13 @@ func (t *ThreeDsAuthentication) GetAuthenticationStatusCode() *string {
 		return nil
 	}
 	return t.AuthenticationStatusCode
+}
+
+func (t *ThreeDsAuthentication) GetDirectoryStatusCode() *string {
+	if t == nil {
+		return nil
+	}
+	return t.DirectoryStatusCode
 }
 
 func (t *ThreeDsAuthentication) GetAuthenticationStatusReason() *string {
@@ -3957,6 +3973,7 @@ type ThreeDsMerchantInfo struct {
 	Name         *string                  `json:"name,omitempty" url:"name,omitempty"`
 	CountryCode  *string                  `json:"country_code,omitempty" url:"country_code,omitempty"`
 	CategoryCode *string                  `json:"category_code,omitempty" url:"category_code,omitempty"`
+	URL          *string                  `json:"url,omitempty" url:"url,omitempty"`
 	RiskInfo     *ThreeDsMerchantRiskInfo `json:"risk_info,omitempty" url:"risk_info,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -3996,6 +4013,13 @@ func (t *ThreeDsMerchantInfo) GetCategoryCode() *string {
 		return nil
 	}
 	return t.CategoryCode
+}
+
+func (t *ThreeDsMerchantInfo) GetURL() *string {
+	if t == nil {
+		return nil
+	}
+	return t.URL
 }
 
 func (t *ThreeDsMerchantInfo) GetRiskInfo() *ThreeDsMerchantRiskInfo {

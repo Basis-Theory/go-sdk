@@ -105,14 +105,14 @@ func TestListV2PaginationWithIteration(t *testing.T) {
 func TestWebhooks(t *testing.T) {
 	client := NewManagementClient()
 
-	url := "https://echo.basistheory.com/" + uuid.NewString()
+	url := "https://echo.flock-dev.com/" + uuid.NewString()
 	webhookId := CreateWebhook(t, client, url)
 
 	GetWebhookAssertUrl(t, client, webhookId, url)
 
 	time.Sleep(2 * time.Second) // Required to avoid error `The webhook subscription is undergoing another concurrent operation. Please wait a few seconds, then try again.`
 
-	updateUrl := "https://echo.basistheory.com/" + uuid.NewString()
+	updateUrl := "https://echo.flock-dev.com/" + uuid.NewString()
 	UpdateWebhook(t, client, webhookId, updateUrl)
 
 	GetWebhookAssertUrl(t, client, webhookId, updateUrl)
