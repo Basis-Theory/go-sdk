@@ -571,6 +571,60 @@ func (a *AuthenticationResponse) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type BankDetails struct {
+	RoutingNumber      *string `json:"routing_number,omitempty" url:"routing_number,omitempty"`
+	AccountNumberLast4 *string `json:"account_number_last4,omitempty" url:"account_number_last4,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (b *BankDetails) GetRoutingNumber() *string {
+	if b == nil {
+		return nil
+	}
+	return b.RoutingNumber
+}
+
+func (b *BankDetails) GetAccountNumberLast4() *string {
+	if b == nil {
+		return nil
+	}
+	return b.AccountNumberLast4
+}
+
+func (b *BankDetails) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BankDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler BankDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BankDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BankDetails) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
+}
+
 type CardDetails struct {
 	Bin             *string                  `json:"bin,omitempty" url:"bin,omitempty"`
 	Last4           *string                  `json:"last4,omitempty" url:"last4,omitempty"`
@@ -1056,6 +1110,7 @@ type CreateTokenIntentResponse struct {
 	CreatedAt      *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ExpiresAt      *time.Time           `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	Card           *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
+	Bank           *BankDetails         `json:"bank,omitempty" url:"bank,omitempty"`
 	NetworkToken   *CardDetails         `json:"network_token,omitempty" url:"network_token,omitempty"`
 	Authentication *TokenAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Extras         *TokenIntentExtras   `json:"_extras,omitempty" url:"_extras,omitempty"`
@@ -1118,6 +1173,13 @@ func (c *CreateTokenIntentResponse) GetCard() *CardDetails {
 		return nil
 	}
 	return c.Card
+}
+
+func (c *CreateTokenIntentResponse) GetBank() *BankDetails {
+	if c == nil {
+		return nil
+	}
+	return c.Bank
 }
 
 func (c *CreateTokenIntentResponse) GetNetworkToken() *CardDetails {
