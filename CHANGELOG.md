@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Basis-Theory/go-sdk/compare/v1.1.0...v1.2.0) (2025-03-28)
+
+
+### Features
+
+* update threeds authentication props ([f349791](https://github.com/Basis-Theory/go-sdk/commit/f34979193effed81b6dd756da20f892d7634e3c4))
+
 # [1.1.0](https://github.com/Basis-Theory/go-sdk/compare/v1.0.0...v1.1.0) (2025-03-18)
 
 
