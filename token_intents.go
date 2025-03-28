@@ -23,6 +23,7 @@ type TokenIntent struct {
 	CreatedAt      *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ExpiresAt      *time.Time           `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	Card           *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
+	Bank           *BankDetails         `json:"bank,omitempty" url:"bank,omitempty"`
 	NetworkToken   *CardDetails         `json:"network_token,omitempty" url:"network_token,omitempty"`
 	Authentication *TokenAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Extras         *TokenIntentExtras   `json:"_extras,omitempty" url:"_extras,omitempty"`
@@ -85,6 +86,13 @@ func (t *TokenIntent) GetCard() *CardDetails {
 		return nil
 	}
 	return t.Card
+}
+
+func (t *TokenIntent) GetBank() *BankDetails {
+	if t == nil {
+		return nil
+	}
+	return t.Bank
 }
 
 func (t *TokenIntent) GetNetworkToken() *CardDetails {
