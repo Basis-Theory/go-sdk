@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Basis-Theory/go-sdk/compare/v1.2.0...v1.3.0) (2025-04-01)
+
+
+### Features
+
+* Add registerAll to Apple Pay Domains and network token create ([8eb26dc](https://github.com/Basis-Theory/go-sdk/commit/8eb26dcbe7a62c1caf8fd17f434b04899d50437f))
+
 # [1.2.0](https://github.com/Basis-Theory/go-sdk/compare/v1.1.0...v1.2.0) (2025-03-28)
 
 
