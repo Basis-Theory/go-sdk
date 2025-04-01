@@ -130,7 +130,7 @@ func (c *Client) Get(
 
 func (c *Client) Register(
 	ctx context.Context,
-	request *applepay.ApplePayDomainRegistrationRequest,
+	request *applepay.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
 ) (*gosdk.ApplePayDomainRegistrationResponse, error) {
 	options := core.NewRequestOptions(opts...)
@@ -178,7 +178,7 @@ func (c *Client) Register(
 		ctx,
 		&internal.CallParams{
 			URL:             endpointURL,
-			Method:          http.MethodPost,
+			Method:          http.MethodPut,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
 			BodyProperties:  options.BodyProperties,
