@@ -15,18 +15,18 @@ type CreateTokenIntentRequest struct {
 }
 
 type TokenIntent struct {
-	ID             *string              `json:"id,omitempty" url:"id,omitempty"`
-	Type           *string              `json:"type,omitempty" url:"type,omitempty"`
-	TenantID       *string              `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Fingerprint    *string              `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
-	CreatedBy      *string              `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt      *time.Time           `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ExpiresAt      *time.Time           `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	Card           *CardDetails         `json:"card,omitempty" url:"card,omitempty"`
-	Bank           *BankDetails         `json:"bank,omitempty" url:"bank,omitempty"`
-	NetworkToken   *CardDetails         `json:"network_token,omitempty" url:"network_token,omitempty"`
-	Authentication *TokenAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
-	Extras         *TokenIntentExtras   `json:"_extras,omitempty" url:"_extras,omitempty"`
+	ID             *string            `json:"id,omitempty" url:"id,omitempty"`
+	Type           *string            `json:"type,omitempty" url:"type,omitempty"`
+	TenantID       *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Fingerprint    *string            `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	CreatedBy      *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt      *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ExpiresAt      *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Card           *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
+	Bank           *BankDetails       `json:"bank,omitempty" url:"bank,omitempty"`
+	NetworkToken   *CardDetails       `json:"network_token,omitempty" url:"network_token,omitempty"`
+	Authentication interface{}        `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Extras         *TokenIntentExtras `json:"_extras,omitempty" url:"_extras,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -102,7 +102,7 @@ func (t *TokenIntent) GetNetworkToken() *CardDetails {
 	return t.NetworkToken
 }
 
-func (t *TokenIntent) GetAuthentication() *TokenAuthentication {
+func (t *TokenIntent) GetAuthentication() interface{} {
 	if t == nil {
 		return nil
 	}
