@@ -193,3 +193,69 @@ func (c *Client) Register(
 	}
 	return response, nil
 }
+
+func (c *Client) RegisterAll(
+	ctx context.Context,
+	request *applepay.ApplePayDomainRegistrationListRequest,
+	opts ...option.RequestOption,
+) (*gosdk.ApplePayDomainRegistrationResponse, error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := baseURL + "/connections/apple-pay/domain-registration"
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
+	headers.Set("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &gosdk.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &gosdk.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		422: func(apiError *core.APIError) error {
+			return &gosdk.UnprocessableEntityError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &gosdk.ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+
+	var response *gosdk.ApplePayDomainRegistrationResponse
+	if err := c.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}

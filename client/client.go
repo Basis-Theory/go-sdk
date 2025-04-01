@@ -12,6 +12,7 @@ import (
 	googlepay "github.com/Basis-Theory/go-sdk/googlepay"
 	internal "github.com/Basis-Theory/go-sdk/internal"
 	logs "github.com/Basis-Theory/go-sdk/logs"
+	networktokens "github.com/Basis-Theory/go-sdk/networktokens"
 	option "github.com/Basis-Theory/go-sdk/option"
 	permissions "github.com/Basis-Theory/go-sdk/permissions"
 	proxies "github.com/Basis-Theory/go-sdk/proxies"
@@ -36,6 +37,7 @@ type Client struct {
 	Applications         *applications.Client
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
+	NetworkTokens        *networktokens.Client
 	Tokens               *tokens.Client
 	Enrichments          *enrichments.Client
 	Googlepay            *googlepay.Client
@@ -69,6 +71,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Applications:         applications.NewClient(opts...),
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
+		NetworkTokens:        networktokens.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
 		Enrichments:          enrichments.NewClient(opts...),
 		Googlepay:            googlepay.NewClient(opts...),
