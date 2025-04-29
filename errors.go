@@ -79,6 +79,30 @@ func (f *ForbiddenError) Unwrap() error {
 	return f.APIError
 }
 
+// Server Error
+type InternalServerError struct {
+	*core.APIError
+	Body *ProblemDetails
+}
+
+func (i *InternalServerError) UnmarshalJSON(data []byte) error {
+	var body *ProblemDetails
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	i.StatusCode = 500
+	i.Body = body
+	return nil
+}
+
+func (i *InternalServerError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(i.Body)
+}
+
+func (i *InternalServerError) Unwrap() error {
+	return i.APIError
+}
+
 // Not Found
 type NotFoundError struct {
 	*core.APIError

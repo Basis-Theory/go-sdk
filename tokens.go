@@ -6,6 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/internal"
+	time "time"
 )
 
 type CreateTokenRequest struct {
@@ -51,6 +52,390 @@ type SearchTokensRequestV2 struct {
 	Query *string `json:"query,omitempty" url:"-"`
 	Start *string `json:"start,omitempty" url:"-"`
 	Size  *int    `json:"size,omitempty" url:"-"`
+}
+
+type BinDetails struct {
+	CardBrand       *string            `json:"card_brand,omitempty" url:"card_brand,omitempty"`
+	Type            *string            `json:"type,omitempty" url:"type,omitempty"`
+	Prepaid         *bool              `json:"prepaid,omitempty" url:"prepaid,omitempty"`
+	CardSegmentType *string            `json:"card_segment_type,omitempty" url:"card_segment_type,omitempty"`
+	Bank            *BinDetailsBank    `json:"bank,omitempty" url:"bank,omitempty"`
+	Product         *BinDetailsProduct `json:"product,omitempty" url:"product,omitempty"`
+	Country         *BinDetailsCountry `json:"country,omitempty" url:"country,omitempty"`
+	Reloadable      *bool              `json:"reloadable,omitempty" url:"reloadable,omitempty"`
+	PanOrToken      *string            `json:"pan_or_token,omitempty" url:"pan_or_token,omitempty"`
+	AccountUpdater  *bool              `json:"account_updater,omitempty" url:"account_updater,omitempty"`
+	Alm             *bool              `json:"alm,omitempty" url:"alm,omitempty"`
+	DomesticOnly    *bool              `json:"domestic_only,omitempty" url:"domestic_only,omitempty"`
+	GamblingBlocked *bool              `json:"gambling_blocked,omitempty" url:"gambling_blocked,omitempty"`
+	Level2          *bool              `json:"level2,omitempty" url:"level2,omitempty"`
+	Level3          *bool              `json:"level3,omitempty" url:"level3,omitempty"`
+	IssuerCurrency  *string            `json:"issuer_currency,omitempty" url:"issuer_currency,omitempty"`
+	ComboCard       *string            `json:"combo_card,omitempty" url:"combo_card,omitempty"`
+	BinLength       *int               `json:"bin_length,omitempty" url:"bin_length,omitempty"`
+	Authentication  interface{}        `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Cost            interface{}        `json:"cost,omitempty" url:"cost,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (b *BinDetails) GetCardBrand() *string {
+	if b == nil {
+		return nil
+	}
+	return b.CardBrand
+}
+
+func (b *BinDetails) GetType() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Type
+}
+
+func (b *BinDetails) GetPrepaid() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.Prepaid
+}
+
+func (b *BinDetails) GetCardSegmentType() *string {
+	if b == nil {
+		return nil
+	}
+	return b.CardSegmentType
+}
+
+func (b *BinDetails) GetBank() *BinDetailsBank {
+	if b == nil {
+		return nil
+	}
+	return b.Bank
+}
+
+func (b *BinDetails) GetProduct() *BinDetailsProduct {
+	if b == nil {
+		return nil
+	}
+	return b.Product
+}
+
+func (b *BinDetails) GetCountry() *BinDetailsCountry {
+	if b == nil {
+		return nil
+	}
+	return b.Country
+}
+
+func (b *BinDetails) GetReloadable() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.Reloadable
+}
+
+func (b *BinDetails) GetPanOrToken() *string {
+	if b == nil {
+		return nil
+	}
+	return b.PanOrToken
+}
+
+func (b *BinDetails) GetAccountUpdater() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.AccountUpdater
+}
+
+func (b *BinDetails) GetAlm() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.Alm
+}
+
+func (b *BinDetails) GetDomesticOnly() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.DomesticOnly
+}
+
+func (b *BinDetails) GetGamblingBlocked() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.GamblingBlocked
+}
+
+func (b *BinDetails) GetLevel2() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.Level2
+}
+
+func (b *BinDetails) GetLevel3() *bool {
+	if b == nil {
+		return nil
+	}
+	return b.Level3
+}
+
+func (b *BinDetails) GetIssuerCurrency() *string {
+	if b == nil {
+		return nil
+	}
+	return b.IssuerCurrency
+}
+
+func (b *BinDetails) GetComboCard() *string {
+	if b == nil {
+		return nil
+	}
+	return b.ComboCard
+}
+
+func (b *BinDetails) GetBinLength() *int {
+	if b == nil {
+		return nil
+	}
+	return b.BinLength
+}
+
+func (b *BinDetails) GetAuthentication() interface{} {
+	if b == nil {
+		return nil
+	}
+	return b.Authentication
+}
+
+func (b *BinDetails) GetCost() interface{} {
+	if b == nil {
+		return nil
+	}
+	return b.Cost
+}
+
+func (b *BinDetails) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BinDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler BinDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BinDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BinDetails) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
+}
+
+type BinDetailsBank struct {
+	Name      *string `json:"name,omitempty" url:"name,omitempty"`
+	Phone     *string `json:"phone,omitempty" url:"phone,omitempty"`
+	URL       *string `json:"url,omitempty" url:"url,omitempty"`
+	CleanName *string `json:"clean_name,omitempty" url:"clean_name,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (b *BinDetailsBank) GetName() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Name
+}
+
+func (b *BinDetailsBank) GetPhone() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Phone
+}
+
+func (b *BinDetailsBank) GetURL() *string {
+	if b == nil {
+		return nil
+	}
+	return b.URL
+}
+
+func (b *BinDetailsBank) GetCleanName() *string {
+	if b == nil {
+		return nil
+	}
+	return b.CleanName
+}
+
+func (b *BinDetailsBank) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BinDetailsBank) UnmarshalJSON(data []byte) error {
+	type unmarshaler BinDetailsBank
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BinDetailsBank(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BinDetailsBank) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
+}
+
+type BinDetailsCountry struct {
+	Alpha2  *string `json:"alpha2,omitempty" url:"alpha2,omitempty"`
+	Name    *string `json:"name,omitempty" url:"name,omitempty"`
+	Numeric *string `json:"numeric,omitempty" url:"numeric,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (b *BinDetailsCountry) GetAlpha2() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Alpha2
+}
+
+func (b *BinDetailsCountry) GetName() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Name
+}
+
+func (b *BinDetailsCountry) GetNumeric() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Numeric
+}
+
+func (b *BinDetailsCountry) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BinDetailsCountry) UnmarshalJSON(data []byte) error {
+	type unmarshaler BinDetailsCountry
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BinDetailsCountry(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BinDetailsCountry) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
+}
+
+type BinDetailsProduct struct {
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (b *BinDetailsProduct) GetCode() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Code
+}
+
+func (b *BinDetailsProduct) GetName() *string {
+	if b == nil {
+		return nil
+	}
+	return b.Name
+}
+
+func (b *BinDetailsProduct) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BinDetailsProduct) UnmarshalJSON(data []byte) error {
+	type unmarshaler BinDetailsProduct
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BinDetailsProduct(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BinDetailsProduct) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 type CursorPagination struct {
@@ -107,6 +492,316 @@ func (c *CursorPagination) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type Privacy struct {
+	Classification    *string `json:"classification,omitempty" url:"classification,omitempty"`
+	ImpactLevel       *string `json:"impact_level,omitempty" url:"impact_level,omitempty"`
+	RestrictionPolicy *string `json:"restriction_policy,omitempty" url:"restriction_policy,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *Privacy) GetClassification() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Classification
+}
+
+func (p *Privacy) GetImpactLevel() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ImpactLevel
+}
+
+func (p *Privacy) GetRestrictionPolicy() *string {
+	if p == nil {
+		return nil
+	}
+	return p.RestrictionPolicy
+}
+
+func (p *Privacy) GetExtraProperties() map[string]interface{} {
+	return p.extraProperties
+}
+
+func (p *Privacy) UnmarshalJSON(data []byte) error {
+	type unmarshaler Privacy
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = Privacy(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *Privacy) String() string {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+type Token struct {
+	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
+	Type                  *string            `json:"type,omitempty" url:"type,omitempty"`
+	TenantID              *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Data                  interface{}        `json:"data,omitempty" url:"data,omitempty"`
+	Metadata              map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
+	Enrichments           *TokenEnrichments  `json:"enrichments,omitempty" url:"enrichments,omitempty"`
+	CreatedBy             *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt             *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+	Card                  *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
+	Bank                  *BankDetails       `json:"bank,omitempty" url:"bank,omitempty"`
+	NetworkToken          *CardDetails       `json:"network_token,omitempty" url:"network_token,omitempty"`
+	ModifiedBy            *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt            *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	Fingerprint           *string            `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	FingerprintExpression *string            `json:"fingerprint_expression,omitempty" url:"fingerprint_expression,omitempty"`
+	Mask                  interface{}        `json:"mask,omitempty" url:"mask,omitempty"`
+	Privacy               *Privacy           `json:"privacy,omitempty" url:"privacy,omitempty"`
+	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"search_indexes,omitempty"`
+	ExpiresAt             *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
+	Aliases               []string           `json:"aliases,omitempty" url:"aliases,omitempty"`
+	Authentication        interface{}        `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Extras                *TokenExtras       `json:"_extras,omitempty" url:"_extras,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *Token) GetID() *string {
+	if t == nil {
+		return nil
+	}
+	return t.ID
+}
+
+func (t *Token) GetType() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Type
+}
+
+func (t *Token) GetTenantID() *string {
+	if t == nil {
+		return nil
+	}
+	return t.TenantID
+}
+
+func (t *Token) GetData() interface{} {
+	if t == nil {
+		return nil
+	}
+	return t.Data
+}
+
+func (t *Token) GetMetadata() map[string]*string {
+	if t == nil {
+		return nil
+	}
+	return t.Metadata
+}
+
+func (t *Token) GetEnrichments() *TokenEnrichments {
+	if t == nil {
+		return nil
+	}
+	return t.Enrichments
+}
+
+func (t *Token) GetCreatedBy() *string {
+	if t == nil {
+		return nil
+	}
+	return t.CreatedBy
+}
+
+func (t *Token) GetCreatedAt() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.CreatedAt
+}
+
+func (t *Token) GetCard() *CardDetails {
+	if t == nil {
+		return nil
+	}
+	return t.Card
+}
+
+func (t *Token) GetBank() *BankDetails {
+	if t == nil {
+		return nil
+	}
+	return t.Bank
+}
+
+func (t *Token) GetNetworkToken() *CardDetails {
+	if t == nil {
+		return nil
+	}
+	return t.NetworkToken
+}
+
+func (t *Token) GetModifiedBy() *string {
+	if t == nil {
+		return nil
+	}
+	return t.ModifiedBy
+}
+
+func (t *Token) GetModifiedAt() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.ModifiedAt
+}
+
+func (t *Token) GetFingerprint() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Fingerprint
+}
+
+func (t *Token) GetFingerprintExpression() *string {
+	if t == nil {
+		return nil
+	}
+	return t.FingerprintExpression
+}
+
+func (t *Token) GetMask() interface{} {
+	if t == nil {
+		return nil
+	}
+	return t.Mask
+}
+
+func (t *Token) GetPrivacy() *Privacy {
+	if t == nil {
+		return nil
+	}
+	return t.Privacy
+}
+
+func (t *Token) GetSearchIndexes() []string {
+	if t == nil {
+		return nil
+	}
+	return t.SearchIndexes
+}
+
+func (t *Token) GetExpiresAt() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.ExpiresAt
+}
+
+func (t *Token) GetContainers() []string {
+	if t == nil {
+		return nil
+	}
+	return t.Containers
+}
+
+func (t *Token) GetAliases() []string {
+	if t == nil {
+		return nil
+	}
+	return t.Aliases
+}
+
+func (t *Token) GetAuthentication() interface{} {
+	if t == nil {
+		return nil
+	}
+	return t.Authentication
+}
+
+func (t *Token) GetExtras() *TokenExtras {
+	if t == nil {
+		return nil
+	}
+	return t.Extras
+}
+
+func (t *Token) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *Token) UnmarshalJSON(data []byte) error {
+	type embed Token
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
+		ExpiresAt  *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = Token(unmarshaler.embed)
+	t.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	t.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
+	t.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *Token) MarshalJSON() ([]byte, error) {
+	type embed Token
+	var marshaler = struct {
+		embed
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
+		ExpiresAt  *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:      embed(*t),
+		CreatedAt:  internal.NewOptionalDateTime(t.CreatedAt),
+		ModifiedAt: internal.NewOptionalDateTime(t.ModifiedAt),
+		ExpiresAt:  internal.NewOptionalDateTime(t.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *Token) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
 type TokenCursorPaginatedList struct {
 	Pagination *CursorPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
 	Data       []*Token          `json:"data,omitempty" url:"data,omitempty"`
@@ -150,6 +845,176 @@ func (t *TokenCursorPaginatedList) UnmarshalJSON(data []byte) error {
 }
 
 func (t *TokenCursorPaginatedList) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TokenEnrichments struct {
+	BinDetails  *BinDetails                  `json:"bin_details,omitempty" url:"bin_details,omitempty"`
+	CardDetails *TokenEnrichmentsCardDetails `json:"card_details,omitempty" url:"card_details,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TokenEnrichments) GetBinDetails() *BinDetails {
+	if t == nil {
+		return nil
+	}
+	return t.BinDetails
+}
+
+func (t *TokenEnrichments) GetCardDetails() *TokenEnrichmentsCardDetails {
+	if t == nil {
+		return nil
+	}
+	return t.CardDetails
+}
+
+func (t *TokenEnrichments) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenEnrichments) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenEnrichments
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenEnrichments(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenEnrichments) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TokenEnrichmentsCardDetails struct {
+	Bin   *string `json:"bin,omitempty" url:"bin,omitempty"`
+	Last4 *string `json:"last4,omitempty" url:"last4,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TokenEnrichmentsCardDetails) GetBin() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Bin
+}
+
+func (t *TokenEnrichmentsCardDetails) GetLast4() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Last4
+}
+
+func (t *TokenEnrichmentsCardDetails) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenEnrichmentsCardDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenEnrichmentsCardDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenEnrichmentsCardDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenEnrichmentsCardDetails) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TokenExtras struct {
+	Deduplicated          *bool                        `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+	TspDetails            *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
+	DeduplicationBehavior *string                      `json:"deduplication_behavior,omitempty" url:"deduplication_behavior,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TokenExtras) GetDeduplicated() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.Deduplicated
+}
+
+func (t *TokenExtras) GetTspDetails() *TokenServiceProviderDetails {
+	if t == nil {
+		return nil
+	}
+	return t.TspDetails
+}
+
+func (t *TokenExtras) GetDeduplicationBehavior() *string {
+	if t == nil {
+		return nil
+	}
+	return t.DeduplicationBehavior
+}
+
+func (t *TokenExtras) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TokenExtras) UnmarshalJSON(data []byte) error {
+	type unmarshaler TokenExtras
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TokenExtras(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TokenExtras) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value

@@ -4,7 +4,6 @@ package networktokens
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
 	core "github.com/Basis-Theory/go-sdk/core"
 	internal "github.com/Basis-Theory/go-sdk/internal"
 	option "github.com/Basis-Theory/go-sdk/option"
@@ -37,9 +36,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.CreateNetworkTokenRequest,
 	opts ...option.RequestOption,
-) (*gosdk.Token, error) {
+) error {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -51,36 +49,7 @@ func (c *Client) Create(
 		c.header.Clone(),
 		options.ToHeader(),
 	)
-	headers.Set("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		503: func(apiError *core.APIError) error {
-			return &gosdk.ServiceUnavailableError{
-				APIError: apiError,
-			}
-		},
-	}
 
-	var response *gosdk.Token
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -91,12 +60,9 @@ func (c *Client) Create(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
-			Request:         request,
-			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	); err != nil {
-		return nil, err
+		return err
 	}
-	return response, nil
+	return nil
 }
