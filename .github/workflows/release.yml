@@ -13,7 +13,7 @@ jobs:
       CI: 1
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
@@ -25,7 +25,7 @@ jobs:
           channel: ${{ vars.SLACK_DUCKBOT_RELEASE_CHANNEL_ID }}
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "yarn"
