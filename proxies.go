@@ -54,6 +54,7 @@ type Proxy struct {
 	Configuration     map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
 	ProxyHost         *string            `json:"proxy_host,omitempty" url:"proxy_host,omitempty"`
 	Timeout           *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
+	ClientCertificate *string            `json:"client_certificate,omitempty" url:"client_certificate,omitempty"`
 	CreatedBy         *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt         *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ModifiedBy        *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
@@ -159,6 +160,13 @@ func (p *Proxy) GetTimeout() *int {
 		return nil
 	}
 	return p.Timeout
+}
+
+func (p *Proxy) GetClientCertificate() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ClientCertificate
 }
 
 func (p *Proxy) GetCreatedBy() *string {
