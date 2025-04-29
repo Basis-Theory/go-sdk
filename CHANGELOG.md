@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/Basis-Theory/go-sdk/compare/v1.3.0...v1.4.0) (2025-04-29)
+
+
+### Features
+
+* update GH action ([#59](https://github.com/Basis-Theory/go-sdk/issues/59)) ([7d43aed](https://github.com/Basis-Theory/go-sdk/commit/7d43aed605235f6d5d1e8e981fe25c252288f44f))
+
 # [1.3.0](https://github.com/Basis-Theory/go-sdk/compare/v1.2.0...v1.3.0) (2025-04-01)
 
 
