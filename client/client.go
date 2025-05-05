@@ -3,6 +3,7 @@
 package client
 
 import (
+	accountupdaterclient "github.com/Basis-Theory/go-sdk/accountupdater/client"
 	applepayclient "github.com/Basis-Theory/go-sdk/applepay/client"
 	applicationkeys "github.com/Basis-Theory/go-sdk/applicationkeys"
 	applications "github.com/Basis-Theory/go-sdk/applications"
@@ -49,6 +50,7 @@ type Client struct {
 	Sessions             *sessions.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
+	AccountUpdater       *accountupdaterclient.Client
 	Tenants              *tenantsclient.Client
 	Threeds              *threedsclient.Client
 }
@@ -83,6 +85,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Sessions:             sessions.NewClient(opts...),
 		TokenIntents:         tokenintents.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
+		AccountUpdater:       accountupdaterclient.NewClient(opts...),
 		Tenants:              tenantsclient.NewClient(opts...),
 		Threeds:              threedsclient.NewClient(opts...),
 	}
