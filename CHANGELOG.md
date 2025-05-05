@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/Basis-Theory/go-sdk/compare/v1.4.0...v1.5.0) (2025-05-05)
+
+
+### Features
+
+* adds account updater endpoints ([#60](https://github.com/Basis-Theory/go-sdk/issues/60)) ([1f95d37](https://github.com/Basis-Theory/go-sdk/commit/1f95d3777c697fa7133465c2a7dd76f941198ca0))
+
 # [1.4.0](https://github.com/Basis-Theory/go-sdk/compare/v1.3.0...v1.4.0) (2025-04-29)
 
 
