@@ -9,6 +9,7 @@ import (
 type AuthenticateThreeDsSessionRequest struct {
 	AuthenticationCategory    string                           `json:"authentication_category" url:"-"`
 	AuthenticationType        string                           `json:"authentication_type" url:"-"`
+	CardBrand                 *string                          `json:"card_brand,omitempty" url:"-"`
 	ChallengePreference       *string                          `json:"challenge_preference,omitempty" url:"-"`
 	RequestDecoupledChallenge *bool                            `json:"request_decoupled_challenge,omitempty" url:"-"`
 	DecoupledChallengeMaxTime *int                             `json:"decoupled_challenge_max_time,omitempty" url:"-"`
