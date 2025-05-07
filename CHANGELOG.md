@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/Basis-Theory/go-sdk/compare/v1.5.0...v1.6.0) (2025-05-07)
+
+
+### Features
+
+* add network tokens and 3ds co-badged cards props ([0a18382](https://github.com/Basis-Theory/go-sdk/commit/0a18382fa2ec38b9937d048f9d5451c3d8d79472))
+
 # [1.5.0](https://github.com/Basis-Theory/go-sdk/compare/v1.4.0...v1.5.0) (2025-05-05)
 
 
