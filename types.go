@@ -2010,13 +2010,14 @@ func (c *CreateTenantConnectionResponse) String() string {
 }
 
 type CreateThreeDsSessionResponse struct {
-	ID                    *string `json:"id,omitempty" url:"id,omitempty"`
-	Type                  *string `json:"type,omitempty" url:"type,omitempty"`
-	CardBrand             *string `json:"cardBrand,omitempty" url:"cardBrand,omitempty"`
-	MethodURL             *string `json:"method_url,omitempty" url:"method_url,omitempty"`
-	MethodNotificationURL *string `json:"method_notification_url,omitempty" url:"method_notification_url,omitempty"`
-	DirectoryServerID     *string `json:"directory_server_id,omitempty" url:"directory_server_id,omitempty"`
-	RecommendedVersion    *string `json:"recommended_version,omitempty" url:"recommended_version,omitempty"`
+	ID                    *string  `json:"id,omitempty" url:"id,omitempty"`
+	Type                  *string  `json:"type,omitempty" url:"type,omitempty"`
+	CardBrand             *string  `json:"cardBrand,omitempty" url:"cardBrand,omitempty"`
+	AdditionalCardBrands  []string `json:"additional_card_brands,omitempty" url:"additional_card_brands,omitempty"`
+	MethodURL             *string  `json:"method_url,omitempty" url:"method_url,omitempty"`
+	MethodNotificationURL *string  `json:"method_notification_url,omitempty" url:"method_notification_url,omitempty"`
+	DirectoryServerID     *string  `json:"directory_server_id,omitempty" url:"directory_server_id,omitempty"`
+	RecommendedVersion    *string  `json:"recommended_version,omitempty" url:"recommended_version,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2041,6 +2042,13 @@ func (c *CreateThreeDsSessionResponse) GetCardBrand() *string {
 		return nil
 	}
 	return c.CardBrand
+}
+
+func (c *CreateThreeDsSessionResponse) GetAdditionalCardBrands() []string {
+	if c == nil {
+		return nil
+	}
+	return c.AdditionalCardBrands
 }
 
 func (c *CreateThreeDsSessionResponse) GetMethodURL() *string {
@@ -5854,24 +5862,25 @@ func (t *ThreeDsRequestorInfo) String() string {
 }
 
 type ThreeDsSession struct {
-	ID               *string                `json:"id,omitempty" url:"id,omitempty"`
-	Type             *string                `json:"type,omitempty" url:"type,omitempty"`
-	TenantID         *string                `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	PanTokenID       *string                `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
-	TokenID          *string                `json:"token_id,omitempty" url:"token_id,omitempty"`
-	TokenIntentID    *string                `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
-	CardBrand        *string                `json:"card_brand,omitempty" url:"card_brand,omitempty"`
-	ExpirationDate   *time.Time             `json:"expiration_date,omitempty" url:"expiration_date,omitempty"`
-	CreatedDate      *time.Time             `json:"created_date,omitempty" url:"created_date,omitempty"`
-	CreatedBy        *string                `json:"created_by,omitempty" url:"created_by,omitempty"`
-	ModifiedDate     *time.Time             `json:"modified_date,omitempty" url:"modified_date,omitempty"`
-	ModifiedBy       *string                `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	Device           *string                `json:"device,omitempty" url:"device,omitempty"`
-	DeviceInfo       *ThreeDsDeviceInfo     `json:"device_info,omitempty" url:"device_info,omitempty"`
-	WebChallengeMode *string                `json:"web_challenge_mode,omitempty" url:"web_challenge_mode,omitempty"`
-	Version          *ThreeDsVersion        `json:"version,omitempty" url:"version,omitempty"`
-	Method           *ThreeDsMethod         `json:"method,omitempty" url:"method,omitempty"`
-	Authentication   *ThreeDsAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	ID                   *string                `json:"id,omitempty" url:"id,omitempty"`
+	Type                 *string                `json:"type,omitempty" url:"type,omitempty"`
+	TenantID             *string                `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	PanTokenID           *string                `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
+	TokenID              *string                `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID        *string                `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	CardBrand            *string                `json:"card_brand,omitempty" url:"card_brand,omitempty"`
+	AdditionalCardBrands []string               `json:"additional_card_brands,omitempty" url:"additional_card_brands,omitempty"`
+	ExpirationDate       *time.Time             `json:"expiration_date,omitempty" url:"expiration_date,omitempty"`
+	CreatedDate          *time.Time             `json:"created_date,omitempty" url:"created_date,omitempty"`
+	CreatedBy            *string                `json:"created_by,omitempty" url:"created_by,omitempty"`
+	ModifiedDate         *time.Time             `json:"modified_date,omitempty" url:"modified_date,omitempty"`
+	ModifiedBy           *string                `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	Device               *string                `json:"device,omitempty" url:"device,omitempty"`
+	DeviceInfo           *ThreeDsDeviceInfo     `json:"device_info,omitempty" url:"device_info,omitempty"`
+	WebChallengeMode     *string                `json:"web_challenge_mode,omitempty" url:"web_challenge_mode,omitempty"`
+	Version              *ThreeDsVersion        `json:"version,omitempty" url:"version,omitempty"`
+	Method               *ThreeDsMethod         `json:"method,omitempty" url:"method,omitempty"`
+	Authentication       *ThreeDsAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -5924,6 +5933,13 @@ func (t *ThreeDsSession) GetCardBrand() *string {
 		return nil
 	}
 	return t.CardBrand
+}
+
+func (t *ThreeDsSession) GetAdditionalCardBrands() []string {
+	if t == nil {
+		return nil
+	}
+	return t.AdditionalCardBrands
 }
 
 func (t *ThreeDsSession) GetExpirationDate() *time.Time {

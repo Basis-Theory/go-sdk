@@ -4,6 +4,7 @@ package networktokens
 
 import (
 	context "context"
+	gosdk "github.com/Basis-Theory/go-sdk"
 	core "github.com/Basis-Theory/go-sdk/core"
 	internal "github.com/Basis-Theory/go-sdk/internal"
 	option "github.com/Basis-Theory/go-sdk/option"
@@ -65,4 +66,71 @@ func (c *Client) Create(
 		return err
 	}
 	return nil
+}
+
+func (c *Client) Cryptogram(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*gosdk.NetworkTokenCryptogram, error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/network-tokens/%v/cryptogram",
+		id,
+	)
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &gosdk.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &gosdk.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &gosdk.NotFoundError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &gosdk.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
+
+	var response *gosdk.NetworkTokenCryptogram
+	if err := c.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
 }
