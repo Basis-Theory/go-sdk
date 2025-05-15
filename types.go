@@ -839,6 +839,140 @@ func (a *AssuranceDetails) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type AuthenticateThreeDsSessionRequest struct {
+	AuthenticationCategory    string                     `json:"authentication_category" url:"authentication_category"`
+	AuthenticationType        string                     `json:"authentication_type" url:"authentication_type"`
+	CardBrand                 *string                    `json:"card_brand,omitempty" url:"card_brand,omitempty"`
+	ChallengePreference       *string                    `json:"challenge_preference,omitempty" url:"challenge_preference,omitempty"`
+	RequestDecoupledChallenge *bool                      `json:"request_decoupled_challenge,omitempty" url:"request_decoupled_challenge,omitempty"`
+	DecoupledChallengeMaxTime *int                       `json:"decoupled_challenge_max_time,omitempty" url:"decoupled_challenge_max_time,omitempty"`
+	PurchaseInfo              *ThreeDsPurchaseInfo       `json:"purchase_info,omitempty" url:"purchase_info,omitempty"`
+	MerchantInfo              *ThreeDsMerchantInfo       `json:"merchant_info,omitempty" url:"merchant_info,omitempty"`
+	RequestorInfo             *ThreeDsRequestorInfo      `json:"requestor_info,omitempty" url:"requestor_info,omitempty"`
+	CardholderInfo            *ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"cardholder_info,omitempty"`
+	BroadcastInfo             interface{}                `json:"broadcast_info,omitempty" url:"broadcast_info,omitempty"`
+	MessageExtensions         []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"message_extensions,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetAuthenticationCategory() string {
+	if a == nil {
+		return ""
+	}
+	return a.AuthenticationCategory
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetAuthenticationType() string {
+	if a == nil {
+		return ""
+	}
+	return a.AuthenticationType
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetCardBrand() *string {
+	if a == nil {
+		return nil
+	}
+	return a.CardBrand
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetChallengePreference() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ChallengePreference
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetRequestDecoupledChallenge() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.RequestDecoupledChallenge
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetDecoupledChallengeMaxTime() *int {
+	if a == nil {
+		return nil
+	}
+	return a.DecoupledChallengeMaxTime
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetPurchaseInfo() *ThreeDsPurchaseInfo {
+	if a == nil {
+		return nil
+	}
+	return a.PurchaseInfo
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetMerchantInfo() *ThreeDsMerchantInfo {
+	if a == nil {
+		return nil
+	}
+	return a.MerchantInfo
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetRequestorInfo() *ThreeDsRequestorInfo {
+	if a == nil {
+		return nil
+	}
+	return a.RequestorInfo
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetCardholderInfo() *ThreeDsCardholderInfo {
+	if a == nil {
+		return nil
+	}
+	return a.CardholderInfo
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetBroadcastInfo() interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.BroadcastInfo
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetMessageExtensions() []*ThreeDsMessageExtension {
+	if a == nil {
+		return nil
+	}
+	return a.MessageExtensions
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthenticateThreeDsSessionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthenticateThreeDsSessionRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthenticateThreeDsSessionRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthenticateThreeDsSessionRequest) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 type AuthenticationResponse struct {
 	MerchantIdentifier *string `json:"merchant_identifier,omitempty" url:"merchant_identifier,omitempty"`
 	AuthenticationData *string `json:"authentication_data,omitempty" url:"authentication_data,omitempty"`
@@ -4000,38 +4134,39 @@ func (t *ThreeDsAddress) String() string {
 }
 
 type ThreeDsAuthentication struct {
-	PanTokenID                  *string                    `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
-	TokenID                     *string                    `json:"token_id,omitempty" url:"token_id,omitempty"`
-	TokenIntentID               *string                    `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
-	SessionID                   *string                    `json:"session_id,omitempty" url:"session_id,omitempty"`
-	ThreedsVersion              *string                    `json:"threeds_version,omitempty" url:"threeds_version,omitempty"`
-	AcsTransactionID            *string                    `json:"acs_transaction_id,omitempty" url:"acs_transaction_id,omitempty"`
-	DsTransactionID             *string                    `json:"ds_transaction_id,omitempty" url:"ds_transaction_id,omitempty"`
-	SdkTransactionID            *string                    `json:"sdk_transaction_id,omitempty" url:"sdk_transaction_id,omitempty"`
-	AcsReferenceNumber          *string                    `json:"acs_reference_number,omitempty" url:"acs_reference_number,omitempty"`
-	DsReferenceNumber           *string                    `json:"ds_reference_number,omitempty" url:"ds_reference_number,omitempty"`
-	LiabilityShifted            *bool                      `json:"liability_shifted,omitempty" url:"liability_shifted,omitempty"`
-	AuthenticationValue         *string                    `json:"authentication_value,omitempty" url:"authentication_value,omitempty"`
-	AuthenticationStatus        *string                    `json:"authentication_status,omitempty" url:"authentication_status,omitempty"`
-	AuthenticationStatusCode    *string                    `json:"authentication_status_code,omitempty" url:"authentication_status_code,omitempty"`
-	DirectoryStatusCode         *string                    `json:"directory_status_code,omitempty" url:"directory_status_code,omitempty"`
-	AuthenticationStatusReason  *string                    `json:"authentication_status_reason,omitempty" url:"authentication_status_reason,omitempty"`
-	Eci                         *string                    `json:"eci,omitempty" url:"eci,omitempty"`
-	AcsChallengeMandated        *string                    `json:"acs_challenge_mandated,omitempty" url:"acs_challenge_mandated,omitempty"`
-	AcsDecoupledAuthentication  *string                    `json:"acs_decoupled_authentication,omitempty" url:"acs_decoupled_authentication,omitempty"`
-	AuthenticationChallengeType *string                    `json:"authentication_challenge_type,omitempty" url:"authentication_challenge_type,omitempty"`
-	AcsRenderingType            *ThreeDsAcsRenderingType   `json:"acs_rendering_type,omitempty" url:"acs_rendering_type,omitempty"`
-	AcsSignedContent            *string                    `json:"acs_signed_content,omitempty" url:"acs_signed_content,omitempty"`
-	AcsChallengeURL             *string                    `json:"acs_challenge_url,omitempty" url:"acs_challenge_url,omitempty"`
-	ChallengePreference         *string                    `json:"challenge_preference,omitempty" url:"challenge_preference,omitempty"`
-	ChallengePreferenceCode     *string                    `json:"challenge_preference_code,omitempty" url:"challenge_preference_code,omitempty"`
-	ChallengeAttempts           *string                    `json:"challenge_attempts,omitempty" url:"challenge_attempts,omitempty"`
-	ChallengeCancelReason       *string                    `json:"challenge_cancel_reason,omitempty" url:"challenge_cancel_reason,omitempty"`
-	ChallengeCancelReasonCode   *string                    `json:"challenge_cancel_reason_code,omitempty" url:"challenge_cancel_reason_code,omitempty"`
-	CardholderInfo              *string                    `json:"cardholder_info,omitempty" url:"cardholder_info,omitempty"`
-	WhitelistStatus             *string                    `json:"whitelist_status,omitempty" url:"whitelist_status,omitempty"`
-	WhitelistStatusSource       *string                    `json:"whitelist_status_source,omitempty" url:"whitelist_status_source,omitempty"`
-	MessageExtensions           []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"message_extensions,omitempty"`
+	PanTokenID                     *string                    `json:"pan_token_id,omitempty" url:"pan_token_id,omitempty"`
+	TokenID                        *string                    `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID                  *string                    `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	SessionID                      *string                    `json:"session_id,omitempty" url:"session_id,omitempty"`
+	ThreedsVersion                 *string                    `json:"threeds_version,omitempty" url:"threeds_version,omitempty"`
+	AcsTransactionID               *string                    `json:"acs_transaction_id,omitempty" url:"acs_transaction_id,omitempty"`
+	DsTransactionID                *string                    `json:"ds_transaction_id,omitempty" url:"ds_transaction_id,omitempty"`
+	SdkTransactionID               *string                    `json:"sdk_transaction_id,omitempty" url:"sdk_transaction_id,omitempty"`
+	AcsReferenceNumber             *string                    `json:"acs_reference_number,omitempty" url:"acs_reference_number,omitempty"`
+	DsReferenceNumber              *string                    `json:"ds_reference_number,omitempty" url:"ds_reference_number,omitempty"`
+	LiabilityShifted               *bool                      `json:"liability_shifted,omitempty" url:"liability_shifted,omitempty"`
+	AuthenticationValue            *string                    `json:"authentication_value,omitempty" url:"authentication_value,omitempty"`
+	AuthenticationStatus           *string                    `json:"authentication_status,omitempty" url:"authentication_status,omitempty"`
+	AuthenticationStatusCode       *string                    `json:"authentication_status_code,omitempty" url:"authentication_status_code,omitempty"`
+	DirectoryStatusCode            *string                    `json:"directory_status_code,omitempty" url:"directory_status_code,omitempty"`
+	AuthenticationStatusReason     *string                    `json:"authentication_status_reason,omitempty" url:"authentication_status_reason,omitempty"`
+	AuthenticationStatusReasonCode *string                    `json:"authentication_status_reason_code,omitempty" url:"authentication_status_reason_code,omitempty"`
+	Eci                            *string                    `json:"eci,omitempty" url:"eci,omitempty"`
+	AcsChallengeMandated           *string                    `json:"acs_challenge_mandated,omitempty" url:"acs_challenge_mandated,omitempty"`
+	AcsDecoupledAuthentication     *string                    `json:"acs_decoupled_authentication,omitempty" url:"acs_decoupled_authentication,omitempty"`
+	AuthenticationChallengeType    *string                    `json:"authentication_challenge_type,omitempty" url:"authentication_challenge_type,omitempty"`
+	AcsRenderingType               *ThreeDsAcsRenderingType   `json:"acs_rendering_type,omitempty" url:"acs_rendering_type,omitempty"`
+	AcsSignedContent               *string                    `json:"acs_signed_content,omitempty" url:"acs_signed_content,omitempty"`
+	AcsChallengeURL                *string                    `json:"acs_challenge_url,omitempty" url:"acs_challenge_url,omitempty"`
+	ChallengePreference            *string                    `json:"challenge_preference,omitempty" url:"challenge_preference,omitempty"`
+	ChallengePreferenceCode        *string                    `json:"challenge_preference_code,omitempty" url:"challenge_preference_code,omitempty"`
+	ChallengeAttempts              *string                    `json:"challenge_attempts,omitempty" url:"challenge_attempts,omitempty"`
+	ChallengeCancelReason          *string                    `json:"challenge_cancel_reason,omitempty" url:"challenge_cancel_reason,omitempty"`
+	ChallengeCancelReasonCode      *string                    `json:"challenge_cancel_reason_code,omitempty" url:"challenge_cancel_reason_code,omitempty"`
+	CardholderInfo                 *string                    `json:"cardholder_info,omitempty" url:"cardholder_info,omitempty"`
+	WhitelistStatus                *string                    `json:"whitelist_status,omitempty" url:"whitelist_status,omitempty"`
+	WhitelistStatusSource          *string                    `json:"whitelist_status_source,omitempty" url:"whitelist_status_source,omitempty"`
+	MessageExtensions              []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"message_extensions,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -4147,6 +4282,13 @@ func (t *ThreeDsAuthentication) GetAuthenticationStatusReason() *string {
 		return nil
 	}
 	return t.AuthenticationStatusReason
+}
+
+func (t *ThreeDsAuthentication) GetAuthenticationStatusReasonCode() *string {
+	if t == nil {
+		return nil
+	}
+	return t.AuthenticationStatusReasonCode
 }
 
 func (t *ThreeDsAuthentication) GetEci() *string {
@@ -6201,6 +6343,7 @@ type TokenExtras struct {
 	Deduplicated          *bool                        `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
 	TspDetails            *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
 	DeduplicationBehavior *string                      `json:"deduplication_behavior,omitempty" url:"deduplication_behavior,omitempty"`
+	NetworkTokenIDs       []string                     `json:"network_token_ids,omitempty" url:"network_token_ids,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -6225,6 +6368,13 @@ func (t *TokenExtras) GetDeduplicationBehavior() *string {
 		return nil
 	}
 	return t.DeduplicationBehavior
+}
+
+func (t *TokenExtras) GetNetworkTokenIDs() []string {
+	if t == nil {
+		return nil
+	}
+	return t.NetworkTokenIDs
 }
 
 func (t *TokenExtras) GetExtraProperties() map[string]interface{} {
@@ -6260,7 +6410,8 @@ func (t *TokenExtras) String() string {
 }
 
 type TokenIntentExtras struct {
-	TspDetails *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
+	TspDetails      *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
+	NetworkTokenIDs []string                     `json:"network_token_ids,omitempty" url:"network_token_ids,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -6271,6 +6422,13 @@ func (t *TokenIntentExtras) GetTspDetails() *TokenServiceProviderDetails {
 		return nil
 	}
 	return t.TspDetails
+}
+
+func (t *TokenIntentExtras) GetNetworkTokenIDs() []string {
+	if t == nil {
+		return nil
+	}
+	return t.NetworkTokenIDs
 }
 
 func (t *TokenIntentExtras) GetExtraProperties() map[string]interface{} {

@@ -11,6 +11,8 @@ import (
 
 type CreateNetworkTokenRequest struct {
 	Data           *Card           `json:"data,omitempty" url:"-"`
+	TokenID        *string         `json:"token_id,omitempty" url:"-"`
+	TokenIntentID  *string         `json:"token_intent_id,omitempty" url:"-"`
 	CardholderInfo *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
 }
 
@@ -233,13 +235,15 @@ func (c *CardholderInfo) String() string {
 }
 
 type NetworkToken struct {
-	ID           *string      `json:"id,omitempty" url:"id,omitempty"`
-	TenantID     *string      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Data         *Card        `json:"data,omitempty" url:"data,omitempty"`
-	NetworkToken *CardDetails `json:"network_token,omitempty" url:"network_token,omitempty"`
-	Status       *string      `json:"status,omitempty" url:"status,omitempty"`
-	CreatedBy    *string      `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt    *time.Time   `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ID            *string      `json:"id,omitempty" url:"id,omitempty"`
+	TenantID      *string      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Data          *Card        `json:"data,omitempty" url:"data,omitempty"`
+	NetworkToken  *CardDetails `json:"network_token,omitempty" url:"network_token,omitempty"`
+	Status        *string      `json:"status,omitempty" url:"status,omitempty"`
+	CreatedBy     *string      `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt     *time.Time   `json:"created_at,omitempty" url:"created_at,omitempty"`
+	TokenID       *string      `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID *string      `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -292,6 +296,20 @@ func (n *NetworkToken) GetCreatedAt() *time.Time {
 		return nil
 	}
 	return n.CreatedAt
+}
+
+func (n *NetworkToken) GetTokenID() *string {
+	if n == nil {
+		return nil
+	}
+	return n.TokenID
+}
+
+func (n *NetworkToken) GetTokenIntentID() *string {
+	if n == nil {
+		return nil
+	}
+	return n.TokenIntentID
 }
 
 func (n *NetworkToken) GetExtraProperties() map[string]interface{} {

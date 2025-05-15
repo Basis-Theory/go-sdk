@@ -6,27 +6,13 @@ import (
 	gosdk "github.com/Basis-Theory/go-sdk"
 )
 
-type AuthenticateThreeDsSessionRequest struct {
-	AuthenticationCategory    string                           `json:"authentication_category" url:"-"`
-	AuthenticationType        string                           `json:"authentication_type" url:"-"`
-	CardBrand                 *string                          `json:"card_brand,omitempty" url:"-"`
-	ChallengePreference       *string                          `json:"challenge_preference,omitempty" url:"-"`
-	RequestDecoupledChallenge *bool                            `json:"request_decoupled_challenge,omitempty" url:"-"`
-	DecoupledChallengeMaxTime *int                             `json:"decoupled_challenge_max_time,omitempty" url:"-"`
-	PurchaseInfo              *gosdk.ThreeDsPurchaseInfo       `json:"purchase_info,omitempty" url:"-"`
-	MerchantInfo              *gosdk.ThreeDsMerchantInfo       `json:"merchant_info,omitempty" url:"-"`
-	RequestorInfo             *gosdk.ThreeDsRequestorInfo      `json:"requestor_info,omitempty" url:"-"`
-	CardholderInfo            *gosdk.ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"-"`
-	BroadcastInfo             interface{}                      `json:"broadcast_info,omitempty" url:"-"`
-	MessageExtensions         []*gosdk.ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"-"`
-}
-
 type CreateThreeDsSessionRequest struct {
-	Pan              *string                  `json:"pan,omitempty" url:"-"`
-	TokenID          *string                  `json:"token_id,omitempty" url:"-"`
-	TokenIntentID    *string                  `json:"token_intent_id,omitempty" url:"-"`
-	Type             *string                  `json:"type,omitempty" url:"-"`
-	Device           *string                  `json:"device,omitempty" url:"-"`
-	WebChallengeMode *string                  `json:"web_challenge_mode,omitempty" url:"-"`
-	DeviceInfo       *gosdk.ThreeDsDeviceInfo `json:"device_info,omitempty" url:"-"`
+	Pan                   *string                                  `json:"pan,omitempty" url:"-"`
+	TokenID               *string                                  `json:"token_id,omitempty" url:"-"`
+	TokenIntentID         *string                                  `json:"token_intent_id,omitempty" url:"-"`
+	Type                  *string                                  `json:"type,omitempty" url:"-"`
+	Device                *string                                  `json:"device,omitempty" url:"-"`
+	WebChallengeMode      *string                                  `json:"web_challenge_mode,omitempty" url:"-"`
+	DeviceInfo            *gosdk.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
+	AuthenticationRequest *gosdk.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
 }
