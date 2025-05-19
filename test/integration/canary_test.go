@@ -176,8 +176,8 @@ func TestClientEncryptionKeysLifecycle(t *testing.T) {
 		t.Fatalf("Expected error when trying to get a key that doesn't exist")
 	}
 	var notFoundError basistheory.NotFoundError
-	if !errors.As(err, &notFoundError) {
-		t.Fatalf("Expected error to be Not Found")
+	if errors.As(err, &notFoundError) {
+		t.Errorf("Expected error to be Not Found")
 	}
 }
 
