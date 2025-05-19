@@ -133,6 +133,54 @@ func TestWebhooks(t *testing.T) {
 	}
 }
 
+func TestClientEncryptionKeysLifecycle(t *testing.T) {
+	client := NewManagementClient()
+
+	key, err := client.Keys.Create(
+		context.TODO(),
+		&basistheory.ClientEncryptionKeyRequest{},
+	)
+	FailIfError(t, "Failed to create key", err)
+
+	if key.ID == nil {
+		t.Fatalf("Expected key ID to be defined")
+	}
+	if key.PublicKeyPem == nil {
+		t.Fatalf("Expected public key PEM to be defined")
+	}
+
+	retrievedKey, err := client.Keys.Get(
+		context.TODO(),
+		*key.ID,
+	)
+	FailIfError(t, "Failed to get key", err)
+
+	if retrievedKey.ID == nil || *retrievedKey.ID != *key.ID {
+		t.Fatalf("Expected retrieved key ID to match created key ID")
+	}
+	if retrievedKey.ExpiresAt == nil {
+		t.Fatalf("Expected expires at to be defined")
+	}
+
+	err = client.Keys.Delete(
+		context.TODO(),
+		*key.ID,
+	)
+	FailIfError(t, "Failed to delete key", err)
+
+	_, err = client.Keys.Get(
+		context.TODO(),
+		*key.ID,
+	)
+	if err == nil {
+		t.Fatalf("Expected error when trying to get a key that doesn't exist")
+	}
+	var notFoundError basistheory.NotFoundError
+	if !errors.As(err, &notFoundError) {
+		t.Fatalf("Expected error to be Not Found")
+	}
+}
+
 func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) string {
 	response, err := manageClient.Proxies.Create(
 		context.TODO(),
