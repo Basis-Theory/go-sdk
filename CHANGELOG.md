@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/Basis-Theory/go-sdk/compare/v1.6.0...v1.7.0) (2025-05-20)
+
+
+### Features
+
+* Add client encryption keys ([#66](https://github.com/Basis-Theory/go-sdk/issues/66)) ([1e27f6d](https://github.com/Basis-Theory/go-sdk/commit/1e27f6d89f599c7ace36398b5a348dd55e5dc0c2))
+
 # [1.6.0](https://github.com/Basis-Theory/go-sdk/compare/v1.5.0...v1.6.0) (2025-05-07)
 
 
