@@ -46,7 +46,7 @@ func (c *Client) Create(
 		c.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/apple-pay/session"
+	endpointURL := baseURL + "/connections/apple-pay/session"
 	headers := internal.MergeHeaders(
 		c.header.Clone(),
 		options.ToHeader(),

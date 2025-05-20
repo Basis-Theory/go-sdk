@@ -46,7 +46,7 @@ func (c *Client) Deregister(
 		c.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/apple-pay/domain-deregistration"
+	endpointURL := baseURL + "/connections/apple-pay/domain-deregistration"
 	headers := internal.MergeHeaders(
 		c.header.Clone(),
 		options.ToHeader(),
@@ -94,7 +94,7 @@ func (c *Client) Get(
 		c.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/apple-pay/domain-registration"
+	endpointURL := baseURL + "/connections/apple-pay/domain-registration"
 	headers := internal.MergeHeaders(
 		c.header.Clone(),
 		options.ToHeader(),
@@ -138,7 +138,7 @@ func (c *Client) Register(
 		c.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/apple-pay/domain-registration"
+	endpointURL := baseURL + "/connections/apple-pay/domain-registration"
 	headers := internal.MergeHeaders(
 		c.header.Clone(),
 		options.ToHeader(),
@@ -204,7 +204,7 @@ func (c *Client) RegisterAll(
 		c.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/apple-pay/domain-registration"
+	endpointURL := baseURL + "/connections/apple-pay/domain-registration"
 	headers := internal.MergeHeaders(
 		c.header.Clone(),
 		options.ToHeader(),
