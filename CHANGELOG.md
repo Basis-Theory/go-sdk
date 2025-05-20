@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/Basis-Theory/go-sdk/compare/v1.7.0...v2.0.0) (2025-05-20)
+
+
+### Features
+
+* Add Apple Pay Token support ([bedfbb7](https://github.com/Basis-Theory/go-sdk/commit/bedfbb78d8583aa30e6667ddfe82cc3a9df14f0a))
+
+
+### BREAKING CHANGES
+
+* The old methods for using Apple Pay and Token Intents have moved to the "connection" namespace.
+
 # [1.7.0](https://github.com/Basis-Theory/go-sdk/compare/v1.6.0...v1.7.0) (2025-05-20)
 
 
