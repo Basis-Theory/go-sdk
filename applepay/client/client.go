@@ -42,18 +42,18 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-func (c *Client) Tokenize(
+func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.ApplePayTokenizeRequest,
+	request *gosdk.ApplePayCreateRequest,
 	opts ...option.RequestOption,
-) (*gosdk.ApplePayTokenizeResponse, error) {
+) (*gosdk.ApplePayCreateResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
 		c.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/connections/apple-pay/tokenize"
+	endpointURL := baseURL + "/apple-pay"
 	headers := internal.MergeHeaders(
 		c.header.Clone(),
 		options.ToHeader(),
@@ -82,7 +82,7 @@ func (c *Client) Tokenize(
 		},
 	}
 
-	var response *gosdk.ApplePayTokenizeResponse
+	var response *gosdk.ApplePayCreateResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -94,6 +94,58 @@ func (c *Client) Tokenize(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *Client) Get(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*gosdk.ApplePayToken, error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/apple-pay/%v",
+		id,
+	)
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		401: func(apiError *core.APIError) error {
+			return &gosdk.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+	}
+
+	var response *gosdk.ApplePayToken
+	if err := c.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
 			Response:        &response,
 			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
