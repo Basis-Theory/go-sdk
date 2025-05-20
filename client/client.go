@@ -8,6 +8,7 @@ import (
 	applicationkeys "github.com/Basis-Theory/go-sdk/applicationkeys"
 	applications "github.com/Basis-Theory/go-sdk/applications"
 	applicationtemplates "github.com/Basis-Theory/go-sdk/applicationtemplates"
+	connectionclient "github.com/Basis-Theory/go-sdk/connection/client"
 	core "github.com/Basis-Theory/go-sdk/core"
 	enrichments "github.com/Basis-Theory/go-sdk/enrichments"
 	googlepay "github.com/Basis-Theory/go-sdk/googlepay"
@@ -35,10 +36,10 @@ type Client struct {
 	caller  *internal.Caller
 	header  http.Header
 
-	ApplePay             *applepayclient.Client
 	Applications         *applications.Client
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
+	ApplePay             *applepayclient.Client
 	Tokens               *tokens.Client
 	Enrichments          *enrichments.Client
 	Googlepay            *googlepay.Client
@@ -53,6 +54,7 @@ type Client struct {
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
 	AccountUpdater       *accountupdaterclient.Client
+	Connection           *connectionclient.Client
 	Tenants              *tenantsclient.Client
 	Threeds              *threedsclient.Client
 }
@@ -71,10 +73,10 @@ func NewClient(opts ...option.RequestOption) *Client {
 			},
 		),
 		header:               options.ToHeader(),
-		ApplePay:             applepayclient.NewClient(opts...),
 		Applications:         applications.NewClient(opts...),
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
+		ApplePay:             applepayclient.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
 		Enrichments:          enrichments.NewClient(opts...),
 		Googlepay:            googlepay.NewClient(opts...),
@@ -89,6 +91,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		TokenIntents:         tokenintents.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		AccountUpdater:       accountupdaterclient.NewClient(opts...),
+		Connection:           connectionclient.NewClient(opts...),
 		Tenants:              tenantsclient.NewClient(opts...),
 		Threeds:              threedsclient.NewClient(opts...),
 	}
