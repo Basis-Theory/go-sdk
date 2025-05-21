@@ -3,16 +3,16 @@
 package threeds
 
 import (
-	gosdk "github.com/Basis-Theory/go-sdk"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
 )
 
 type CreateThreeDsSessionRequest struct {
-	Pan                   *string                                  `json:"pan,omitempty" url:"-"`
-	TokenID               *string                                  `json:"token_id,omitempty" url:"-"`
-	TokenIntentID         *string                                  `json:"token_intent_id,omitempty" url:"-"`
-	Type                  *string                                  `json:"type,omitempty" url:"-"`
-	Device                *string                                  `json:"device,omitempty" url:"-"`
-	WebChallengeMode      *string                                  `json:"web_challenge_mode,omitempty" url:"-"`
-	DeviceInfo            *gosdk.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
-	AuthenticationRequest *gosdk.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
+	Pan                   *string                               `json:"pan,omitempty" url:"-"`
+	TokenID               *string                               `json:"token_id,omitempty" url:"-"`
+	TokenIntentID         *string                               `json:"token_intent_id,omitempty" url:"-"`
+	Type                  *string                               `json:"type,omitempty" url:"-"`
+	Device                *string                               `json:"device,omitempty" url:"-"`
+	WebChallengeMode      *string                               `json:"web_challenge_mode,omitempty" url:"-"`
+	DeviceInfo            *v2.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
+	AuthenticationRequest *v2.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
 }

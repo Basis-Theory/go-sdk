@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/Basis-Theory/go-sdk/core"
+	"github.com/Basis-Theory/go-sdk/v2/core"
 	"github.com/stretchr/testify/assert"
 )
 

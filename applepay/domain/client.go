@@ -4,10 +4,10 @@ package domain
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -37,7 +37,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Deregister(
 	ctx context.Context,
-	request *gosdk.ApplePayDomainDeregistrationRequest,
+	request *v2.ApplePayDomainDeregistrationRequest,
 	opts ...option.RequestOption,
 ) error {
 	options := core.NewRequestOptions(opts...)
@@ -54,12 +54,12 @@ func (c *Client) Deregister(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -87,7 +87,7 @@ func (c *Client) Deregister(
 func (c *Client) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*gosdk.ApplePayDomainRegistrationResponse, error) {
+) (*v2.ApplePayDomainRegistrationResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -101,13 +101,13 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ApplePayDomainRegistrationResponse
+	var response *v2.ApplePayDomainRegistrationResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -129,9 +129,9 @@ func (c *Client) Get(
 
 func (c *Client) Register(
 	ctx context.Context,
-	request *gosdk.ApplePayDomainRegistrationRequest,
+	request *v2.ApplePayDomainRegistrationRequest,
 	opts ...option.RequestOption,
-) (*gosdk.ApplePayDomainRegistrationResponse, error) {
+) (*v2.ApplePayDomainRegistrationResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -146,33 +146,33 @@ func (c *Client) Register(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 		503: func(apiError *core.APIError) error {
-			return &gosdk.ServiceUnavailableError{
+			return &v2.ServiceUnavailableError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ApplePayDomainRegistrationResponse
+	var response *v2.ApplePayDomainRegistrationResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -195,9 +195,9 @@ func (c *Client) Register(
 
 func (c *Client) RegisterAll(
 	ctx context.Context,
-	request *gosdk.ApplePayDomainRegistrationListRequest,
+	request *v2.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
-) (*gosdk.ApplePayDomainRegistrationResponse, error) {
+) (*v2.ApplePayDomainRegistrationResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -212,33 +212,33 @@ func (c *Client) RegisterAll(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 		503: func(apiError *core.APIError) error {
-			return &gosdk.ServiceUnavailableError{
+			return &v2.ServiceUnavailableError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ApplePayDomainRegistrationResponse
+	var response *v2.ApplePayDomainRegistrationResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

@@ -4,11 +4,11 @@ package members
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
-	tenants "github.com/Basis-Theory/go-sdk/tenants"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
+	tenants "github.com/Basis-Theory/go-sdk/v2/tenants"
 	http "net/http"
 	os "os"
 )
@@ -40,7 +40,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *tenants.MembersListRequest,
 	opts ...option.RequestOption,
-) (*gosdk.TenantMemberResponsePaginatedList, error) {
+) (*v2.TenantMemberResponsePaginatedList, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,18 +61,18 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.TenantMemberResponsePaginatedList
+	var response *v2.TenantMemberResponsePaginatedList
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -97,7 +97,7 @@ func (c *Client) Update(
 	memberID string,
 	request *tenants.UpdateTenantMemberRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.TenantMemberResponse, error) {
+) (*v2.TenantMemberResponse, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -115,23 +115,23 @@ func (c *Client) Update(
 	headers.Set("Content-Type", "application/json-patch+json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.TenantMemberResponse
+	var response *v2.TenantMemberResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -173,22 +173,22 @@ func (c *Client) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},

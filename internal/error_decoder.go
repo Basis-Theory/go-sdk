@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Basis-Theory/go-sdk/core"
+	"github.com/Basis-Theory/go-sdk/v2/core"
 )
 
 // ErrorDecoder decodes *http.Response errors and returns a
