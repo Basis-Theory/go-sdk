@@ -3,10 +3,10 @@
 package tenants
 
 import (
-	gosdk "github.com/Basis-Theory/go-sdk"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
 )
 
 type CreateTenantConnectionRequest struct {
-	Strategy string                         `json:"strategy" url:"-"`
-	Options  *gosdk.TenantConnectionOptions `json:"options,omitempty" url:"-"`
+	Strategy string                      `json:"strategy" url:"-"`
+	Options  *v2.TenantConnectionOptions `json:"options,omitempty" url:"-"`
 }

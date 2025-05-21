@@ -4,11 +4,11 @@ package connections
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
-	tenants "github.com/Basis-Theory/go-sdk/tenants"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
+	tenants "github.com/Basis-Theory/go-sdk/v2/tenants"
 	http "net/http"
 	os "os"
 )
@@ -40,7 +40,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *tenants.CreateTenantConnectionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.CreateTenantConnectionResponse, error) {
+) (*v2.CreateTenantConnectionResponse, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -55,23 +55,23 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.CreateTenantConnectionResponse
+	var response *v2.CreateTenantConnectionResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -95,7 +95,7 @@ func (c *Client) Create(
 func (c *Client) Delete(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*gosdk.CreateTenantConnectionResponse, error) {
+) (*v2.CreateTenantConnectionResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -109,23 +109,23 @@ func (c *Client) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.CreateTenantConnectionResponse
+	var response *v2.CreateTenantConnectionResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

@@ -4,10 +4,10 @@ package sessions
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -38,7 +38,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) Create(
 	ctx context.Context,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.CreateSessionResponse, error) {
+) (*v2.CreateSessionResponse, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -52,23 +52,23 @@ func (c *Client) Create(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.CreateSessionResponse
+	var response *v2.CreateSessionResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -90,7 +90,7 @@ func (c *Client) Create(
 
 func (c *Client) Authorize(
 	ctx context.Context,
-	request *gosdk.AuthorizeSessionRequest,
+	request *v2.AuthorizeSessionRequest,
 	opts ...option.IdempotentRequestOption,
 ) error {
 	options := core.NewIdempotentRequestOptions(opts...)
@@ -107,27 +107,27 @@ func (c *Client) Authorize(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		409: func(apiError *core.APIError) error {
-			return &gosdk.ConflictError{
+			return &v2.ConflictError{
 				APIError: apiError,
 			}
 		},

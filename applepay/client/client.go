@@ -4,12 +4,12 @@ package client
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	domain "github.com/Basis-Theory/go-sdk/applepay/domain"
-	session "github.com/Basis-Theory/go-sdk/applepay/session"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	domain "github.com/Basis-Theory/go-sdk/v2/applepay/domain"
+	session "github.com/Basis-Theory/go-sdk/v2/applepay/session"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -44,9 +44,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.ApplePayCreateRequest,
+	request *v2.ApplePayCreateRequest,
 	opts ...option.RequestOption,
-) (*gosdk.ApplePayCreateResponse, error) {
+) (*v2.ApplePayCreateResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,28 +61,28 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ApplePayCreateResponse
+	var response *v2.ApplePayCreateResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -107,7 +107,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.ApplePayToken, error) {
+) (*v2.ApplePayToken, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -124,18 +124,18 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ApplePayToken
+	var response *v2.ApplePayToken
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

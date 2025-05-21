@@ -4,11 +4,11 @@ package jobs
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	accountupdater "github.com/Basis-Theory/go-sdk/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	accountupdater "github.com/Basis-Theory/go-sdk/v2/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -41,7 +41,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.AccountUpdaterJob, error) {
+) (*v2.AccountUpdaterJob, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -58,23 +58,23 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.AccountUpdaterJob
+	var response *v2.AccountUpdaterJob
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -99,7 +99,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *accountupdater.JobsListRequest,
 	opts ...option.RequestOption,
-) (*gosdk.AccountUpdaterJobList, error) {
+) (*v2.AccountUpdaterJobList, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -120,18 +120,18 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.AccountUpdaterJobList
+	var response *v2.AccountUpdaterJobList
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -155,7 +155,7 @@ func (c *Client) List(
 func (c *Client) Create(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*gosdk.AccountUpdaterJob, error) {
+) (*v2.AccountUpdaterJob, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -169,23 +169,23 @@ func (c *Client) Create(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.AccountUpdaterJob
+	var response *v2.AccountUpdaterJob
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

@@ -3,7 +3,7 @@ package internal
 import (
 	"context"
 
-	"github.com/Basis-Theory/go-sdk/core"
+	"github.com/Basis-Theory/go-sdk/v2/core"
 )
 
 // PagerMode represents the different types of pagination modes.

@@ -4,11 +4,11 @@ package sessions
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
-	threeds "github.com/Basis-Theory/go-sdk/threeds"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
+	threeds "github.com/Basis-Theory/go-sdk/v2/threeds"
 	http "net/http"
 	os "os"
 )
@@ -40,7 +40,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *threeds.CreateThreeDsSessionRequest,
 	opts ...option.RequestOption,
-) (*gosdk.CreateThreeDsSessionResponse, error) {
+) (*v2.CreateThreeDsSessionResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -55,23 +55,23 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.CreateThreeDsSessionResponse
+	var response *v2.CreateThreeDsSessionResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -95,9 +95,9 @@ func (c *Client) Create(
 func (c *Client) Authenticate(
 	ctx context.Context,
 	sessionID string,
-	request *gosdk.AuthenticateThreeDsSessionRequest,
+	request *v2.AuthenticateThreeDsSessionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.ThreeDsAuthentication, error) {
+) (*v2.ThreeDsAuthentication, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -115,23 +115,23 @@ func (c *Client) Authenticate(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ThreeDsAuthentication
+	var response *v2.ThreeDsAuthentication
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -156,7 +156,7 @@ func (c *Client) GetChallengeResult(
 	ctx context.Context,
 	sessionID string,
 	opts ...option.RequestOption,
-) (*gosdk.ThreeDsAuthentication, error) {
+) (*v2.ThreeDsAuthentication, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -173,23 +173,23 @@ func (c *Client) GetChallengeResult(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ThreeDsAuthentication
+	var response *v2.ThreeDsAuthentication
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -213,7 +213,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.ThreeDsSession, error) {
+) (*v2.ThreeDsSession, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -230,18 +230,18 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ThreeDsSession
+	var response *v2.ThreeDsSession
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

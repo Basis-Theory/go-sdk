@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Basis-Theory/go-sdk/core"
+	"github.com/Basis-Theory/go-sdk/v2/core"
 )
 
 const (
