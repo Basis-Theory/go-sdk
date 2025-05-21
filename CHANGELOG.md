@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/Basis-Theory/go-sdk/compare/v2.0.0...v2.0.1) (2025-05-21)
+
+
+### Bug Fixes
+
+* Update module to /v2 ([#69](https://github.com/Basis-Theory/go-sdk/issues/69)) ([7ab831e](https://github.com/Basis-Theory/go-sdk/commit/7ab831e868673e5303b46e83b7cb82ce03ef584d))
+
 # [2.0.0](https://github.com/Basis-Theory/go-sdk/compare/v1.7.0...v2.0.0) (2025-05-20)
 
 
