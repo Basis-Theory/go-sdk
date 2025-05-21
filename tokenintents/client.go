@@ -4,10 +4,10 @@ package tokenintents
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -39,7 +39,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.TokenIntent, error) {
+) (*v2.TokenIntent, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -56,23 +56,23 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.TokenIntent
+	var response *v2.TokenIntent
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -113,17 +113,17 @@ func (c *Client) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -149,9 +149,9 @@ func (c *Client) Delete(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.CreateTokenIntentRequest,
+	request *v2.CreateTokenIntentRequest,
 	opts ...option.RequestOption,
-) (*gosdk.CreateTokenIntentResponse, error) {
+) (*v2.CreateTokenIntentResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -166,23 +166,23 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.CreateTokenIntentResponse
+	var response *v2.CreateTokenIntentResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

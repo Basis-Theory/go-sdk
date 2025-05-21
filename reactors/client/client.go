@@ -5,11 +5,11 @@ package client
 import (
 	context "context"
 	fmt "fmt"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
-	results "github.com/Basis-Theory/go-sdk/reactors/results"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
+	results "github.com/Basis-Theory/go-sdk/v2/reactors/results"
 	http "net/http"
 	os "os"
 )
@@ -42,9 +42,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *gosdk.ReactorsListRequest,
+	request *v2.ReactorsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*gosdk.Reactor], error) {
+) (*core.Page[*v2.Reactor], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -62,17 +62,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -102,10 +102,10 @@ func (c *Client) List(
 	if request.Page != nil {
 		next = *request.Page
 	}
-	readPageResponse := func(response *gosdk.ReactorPaginatedList) *internal.PageResponse[*int, *gosdk.Reactor] {
+	readPageResponse := func(response *v2.ReactorPaginatedList) *internal.PageResponse[*int, *v2.Reactor] {
 		next += 1
 		results := response.Data
-		return &internal.PageResponse[*int, *gosdk.Reactor]{
+		return &internal.PageResponse[*int, *v2.Reactor]{
 			Next:    &next,
 			Results: results,
 		}
@@ -120,9 +120,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.CreateReactorRequest,
+	request *v2.CreateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.Reactor, error) {
+) (*v2.Reactor, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -137,23 +137,23 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Reactor
+	var response *v2.Reactor
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -178,7 +178,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.Reactor, error) {
+) (*v2.Reactor, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -195,23 +195,23 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Reactor
+	var response *v2.Reactor
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -234,9 +234,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *gosdk.UpdateReactorRequest,
+	request *v2.UpdateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.Reactor, error) {
+) (*v2.Reactor, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -254,28 +254,28 @@ func (c *Client) Update(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Reactor
+	var response *v2.Reactor
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -317,17 +317,17 @@ func (c *Client) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -354,7 +354,7 @@ func (c *Client) Delete(
 func (c *Client) Patch(
 	ctx context.Context,
 	id string,
-	request *gosdk.PatchReactorRequest,
+	request *v2.PatchReactorRequest,
 	opts ...option.IdempotentRequestOption,
 ) error {
 	options := core.NewIdempotentRequestOptions(opts...)
@@ -374,22 +374,22 @@ func (c *Client) Patch(
 	headers.Set("Content-Type", "application/merge-patch+json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -417,9 +417,9 @@ func (c *Client) Patch(
 func (c *Client) React(
 	ctx context.Context,
 	id string,
-	request *gosdk.ReactRequest,
+	request *v2.ReactRequest,
 	opts ...option.RequestOption,
-) (*gosdk.ReactResponse, error) {
+) (*v2.ReactResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -437,33 +437,33 @@ func (c *Client) React(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.ReactResponse
+	var response *v2.ReactResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -487,9 +487,9 @@ func (c *Client) React(
 func (c *Client) ReactAsync(
 	ctx context.Context,
 	id string,
-	request *gosdk.ReactRequestAsync,
+	request *v2.ReactRequestAsync,
 	opts ...option.RequestOption,
-) (*gosdk.AsyncReactResponse, error) {
+) (*v2.AsyncReactResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -507,33 +507,33 @@ func (c *Client) ReactAsync(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &gosdk.UnprocessableEntityError{
+			return &v2.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.AsyncReactResponse
+	var response *v2.AsyncReactResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

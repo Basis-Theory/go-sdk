@@ -4,10 +4,10 @@ package enrichments
 
 import (
 	context "context"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -37,9 +37,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) BankAccountVerify(
 	ctx context.Context,
-	request *gosdk.BankVerificationRequest,
+	request *v2.BankVerificationRequest,
 	opts ...option.RequestOption,
-) (*gosdk.BankVerificationResponse, error) {
+) (*v2.BankVerificationResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -54,23 +54,23 @@ func (c *Client) BankAccountVerify(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.BankVerificationResponse
+	var response *v2.BankVerificationResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

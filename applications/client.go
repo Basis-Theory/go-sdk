@@ -5,10 +5,10 @@ package applications
 import (
 	context "context"
 	fmt "fmt"
-	gosdk "github.com/Basis-Theory/go-sdk"
-	core "github.com/Basis-Theory/go-sdk/core"
-	internal "github.com/Basis-Theory/go-sdk/internal"
-	option "github.com/Basis-Theory/go-sdk/option"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
+	core "github.com/Basis-Theory/go-sdk/v2/core"
+	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	option "github.com/Basis-Theory/go-sdk/v2/option"
 	http "net/http"
 	os "os"
 )
@@ -38,9 +38,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *gosdk.ApplicationsListRequest,
+	request *v2.ApplicationsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*gosdk.Application], error) {
+) (*core.Page[*v2.Application], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -58,17 +58,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -98,10 +98,10 @@ func (c *Client) List(
 	if request.Page != nil {
 		next = *request.Page
 	}
-	readPageResponse := func(response *gosdk.ApplicationPaginatedList) *internal.PageResponse[*int, *gosdk.Application] {
+	readPageResponse := func(response *v2.ApplicationPaginatedList) *internal.PageResponse[*int, *v2.Application] {
 		next += 1
 		results := response.Data
-		return &internal.PageResponse[*int, *gosdk.Application]{
+		return &internal.PageResponse[*int, *v2.Application]{
 			Next:    &next,
 			Results: results,
 		}
@@ -116,9 +116,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *gosdk.CreateApplicationRequest,
+	request *v2.CreateApplicationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.Application, error) {
+) (*v2.Application, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -133,23 +133,23 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Application
+	var response *v2.Application
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -174,7 +174,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*gosdk.Application, error) {
+) (*v2.Application, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -191,23 +191,23 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Application
+	var response *v2.Application
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -230,9 +230,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *gosdk.UpdateApplicationRequest,
+	request *v2.UpdateApplicationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*gosdk.Application, error) {
+) (*v2.Application, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -250,28 +250,28 @@ func (c *Client) Update(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &gosdk.BadRequestError{
+			return &v2.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Application
+	var response *v2.Application
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -313,17 +313,17 @@ func (c *Client) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &gosdk.ForbiddenError{
+			return &v2.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -350,7 +350,7 @@ func (c *Client) Delete(
 func (c *Client) GetByKey(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*gosdk.Application, error) {
+) (*v2.Application, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -364,18 +364,18 @@ func (c *Client) GetByKey(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &gosdk.UnauthorizedError{
+			return &v2.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &gosdk.NotFoundError{
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *gosdk.Application
+	var response *v2.Application
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

@@ -3,7 +3,7 @@
 package tenants
 
 import (
-	gosdk "github.com/Basis-Theory/go-sdk"
+	v2 "github.com/Basis-Theory/go-sdk/v2"
 )
 
 type CreateTenantInvitationRequest struct {
@@ -12,8 +12,8 @@ type CreateTenantInvitationRequest struct {
 }
 
 type InvitationsListRequest struct {
-	Status *gosdk.TenantInvitationStatus `json:"-" url:"status,omitempty"`
-	Page   *int                          `json:"-" url:"page,omitempty"`
-	Start  *string                       `json:"-" url:"start,omitempty"`
-	Size   *int                          `json:"-" url:"size,omitempty"`
+	Status *v2.TenantInvitationStatus `json:"-" url:"status,omitempty"`
+	Page   *int                       `json:"-" url:"page,omitempty"`
+	Start  *string                    `json:"-" url:"start,omitempty"`
+	Size   *int                       `json:"-" url:"size,omitempty"`
 }
