@@ -12,6 +12,7 @@ type CreateTokenRequest struct {
 	ID                    *string            `json:"id,omitempty" url:"-"`
 	Type                  *string            `json:"type,omitempty" url:"-"`
 	Data                  interface{}        `json:"data,omitempty" url:"-"`
+	Encrypted             *string            `json:"encrypted,omitempty" url:"-"`
 	Privacy               *Privacy           `json:"privacy,omitempty" url:"-"`
 	Metadata              map[string]*string `json:"metadata,omitempty" url:"-"`
 	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"-"`

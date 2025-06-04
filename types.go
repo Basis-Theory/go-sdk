@@ -6784,6 +6784,7 @@ type TokenExtras struct {
 	TspDetails            *TokenServiceProviderDetails `json:"tsp_details,omitempty" url:"tsp_details,omitempty"`
 	DeduplicationBehavior *string                      `json:"deduplication_behavior,omitempty" url:"deduplication_behavior,omitempty"`
 	NetworkTokenIDs       []string                     `json:"network_token_ids,omitempty" url:"network_token_ids,omitempty"`
+	DecryptedPayload      *bool                        `json:"decrypted_payload,omitempty" url:"decrypted_payload,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -6815,6 +6816,13 @@ func (t *TokenExtras) GetNetworkTokenIDs() []string {
 		return nil
 	}
 	return t.NetworkTokenIDs
+}
+
+func (t *TokenExtras) GetDecryptedPayload() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.DecryptedPayload
 }
 
 func (t *TokenExtras) GetExtraProperties() map[string]interface{} {
