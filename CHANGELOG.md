@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/Basis-Theory/go-sdk/compare/v2.0.1...v2.1.0) (2025-06-04)
+
+
+### Features
+
+* Add Apple Pay unlink support ([bf2b023](https://github.com/Basis-Theory/go-sdk/commit/bf2b0237a21af1bd207e47791230c405af604110))
+
 ## [2.0.1](https://github.com/Basis-Theory/go-sdk/compare/v2.0.0...v2.0.1) (2025-05-21)
 
 
