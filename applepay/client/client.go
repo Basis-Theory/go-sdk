@@ -133,6 +133,11 @@ func (c *Client) Get(
 				APIError: apiError,
 			}
 		},
+		404: func(apiError *core.APIError) error {
+			return &v2.NotFoundError{
+				APIError: apiError,
+			}
+		},
 	}
 
 	var response *v2.ApplePayToken
@@ -151,6 +156,63 @@ func (c *Client) Get(
 		},
 	); err != nil {
 		return nil, err
+	}
+	return response, nil
+}
+
+func (c *Client) Unlink(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (string, error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/apple-pay/%v/unlink",
+		id,
+	)
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		401: func(apiError *core.APIError) error {
+			return &v2.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &v2.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		422: func(apiError *core.APIError) error {
+			return &v2.UnprocessableEntityError{
+				APIError: apiError,
+			}
+		},
+	}
+
+	var response string
+	if err := c.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	); err != nil {
+		return "", err
 	}
 	return response, nil
 }
