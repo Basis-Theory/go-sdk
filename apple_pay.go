@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	time "time"
 )
 
@@ -192,6 +192,8 @@ type ApplePayToken struct {
 	ExpiresAt      *time.Time      `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	CreatedBy      *string         `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt      *time.Time      `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy     *string         `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt     *time.Time      `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Card           *CardDetails    `json:"card,omitempty" url:"card,omitempty"`
 	Data           interface{}     `json:"data,omitempty" url:"data,omitempty"`
 	Authentication *Authentication `json:"authentication,omitempty" url:"authentication,omitempty"`
@@ -249,6 +251,20 @@ func (a *ApplePayToken) GetCreatedAt() *time.Time {
 	return a.CreatedAt
 }
 
+func (a *ApplePayToken) GetModifiedBy() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ModifiedBy
+}
+
+func (a *ApplePayToken) GetModifiedAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.ModifiedAt
+}
+
 func (a *ApplePayToken) GetCard() *CardDetails {
 	if a == nil {
 		return nil
@@ -278,8 +294,9 @@ func (a *ApplePayToken) UnmarshalJSON(data []byte) error {
 	type embed ApplePayToken
 	var unmarshaler = struct {
 		embed
-		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
-		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		ExpiresAt  *internal.DateTime `json:"expires_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed: embed(*a),
 	}
@@ -289,6 +306,7 @@ func (a *ApplePayToken) UnmarshalJSON(data []byte) error {
 	*a = ApplePayToken(unmarshaler.embed)
 	a.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
 	a.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	a.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
@@ -302,12 +320,14 @@ func (a *ApplePayToken) MarshalJSON() ([]byte, error) {
 	type embed ApplePayToken
 	var marshaler = struct {
 		embed
-		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
-		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		ExpiresAt  *internal.DateTime `json:"expires_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
-		embed:     embed(*a),
-		ExpiresAt: internal.NewOptionalDateTime(a.ExpiresAt),
-		CreatedAt: internal.NewOptionalDateTime(a.CreatedAt),
+		embed:      embed(*a),
+		ExpiresAt:  internal.NewOptionalDateTime(a.ExpiresAt),
+		CreatedAt:  internal.NewOptionalDateTime(a.CreatedAt),
+		ModifiedAt: internal.NewOptionalDateTime(a.ModifiedAt),
 	}
 	return json.Marshal(marshaler)
 }

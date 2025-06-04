@@ -4,12 +4,12 @@ package client
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	domain "github.com/Basis-Theory/go-sdk/v2/applepay/domain"
-	session "github.com/Basis-Theory/go-sdk/v2/applepay/session"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	domain "github.com/Basis-Theory/go-sdk/applepay/domain"
+	session "github.com/Basis-Theory/go-sdk/applepay/session"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -44,9 +44,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.ApplePayCreateRequest,
+	request *gosdk.ApplePayCreateRequest,
 	opts ...option.RequestOption,
-) (*v2.ApplePayCreateResponse, error) {
+) (*gosdk.ApplePayCreateResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,28 +61,28 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &gosdk.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.ApplePayCreateResponse
+	var response *gosdk.ApplePayCreateResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -107,7 +107,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v2.ApplePayToken, error) {
+) (*gosdk.ApplePayToken, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -124,18 +124,23 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &gosdk.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.ApplePayToken
+	var response *gosdk.ApplePayToken
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -151,6 +156,63 @@ func (c *Client) Get(
 		},
 	); err != nil {
 		return nil, err
+	}
+	return response, nil
+}
+
+func (c *Client) Unlink(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (string, error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/apple-pay/%v/unlink",
+		id,
+	)
+	headers := internal.MergeHeaders(
+		c.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		401: func(apiError *core.APIError) error {
+			return &gosdk.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &gosdk.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		422: func(apiError *core.APIError) error {
+			return &gosdk.UnprocessableEntityError{
+				APIError: apiError,
+			}
+		},
+	}
+
+	var response string
+	if err := c.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	); err != nil {
+		return "", err
 	}
 	return response, nil
 }

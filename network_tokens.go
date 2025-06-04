@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
+	internal "github.com/Basis-Theory/go-sdk/internal"
 	time "time"
 )
 
@@ -238,10 +238,13 @@ type NetworkToken struct {
 	ID            *string      `json:"id,omitempty" url:"id,omitempty"`
 	TenantID      *string      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
 	Data          *Card        `json:"data,omitempty" url:"data,omitempty"`
+	Card          *CardDetails `json:"card,omitempty" url:"card,omitempty"`
 	NetworkToken  *CardDetails `json:"network_token,omitempty" url:"network_token,omitempty"`
 	Status        *string      `json:"status,omitempty" url:"status,omitempty"`
 	CreatedBy     *string      `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt     *time.Time   `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy    *string      `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt    *time.Time   `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	TokenID       *string      `json:"token_id,omitempty" url:"token_id,omitempty"`
 	TokenIntentID *string      `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
 
@@ -268,6 +271,13 @@ func (n *NetworkToken) GetData() *Card {
 		return nil
 	}
 	return n.Data
+}
+
+func (n *NetworkToken) GetCard() *CardDetails {
+	if n == nil {
+		return nil
+	}
+	return n.Card
 }
 
 func (n *NetworkToken) GetNetworkToken() *CardDetails {
@@ -298,6 +308,20 @@ func (n *NetworkToken) GetCreatedAt() *time.Time {
 	return n.CreatedAt
 }
 
+func (n *NetworkToken) GetModifiedBy() *string {
+	if n == nil {
+		return nil
+	}
+	return n.ModifiedBy
+}
+
+func (n *NetworkToken) GetModifiedAt() *time.Time {
+	if n == nil {
+		return nil
+	}
+	return n.ModifiedAt
+}
+
 func (n *NetworkToken) GetTokenID() *string {
 	if n == nil {
 		return nil
@@ -320,7 +344,8 @@ func (n *NetworkToken) UnmarshalJSON(data []byte) error {
 	type embed NetworkToken
 	var unmarshaler = struct {
 		embed
-		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
 		embed: embed(*n),
 	}
@@ -329,6 +354,7 @@ func (n *NetworkToken) UnmarshalJSON(data []byte) error {
 	}
 	*n = NetworkToken(unmarshaler.embed)
 	n.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	n.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *n)
 	if err != nil {
 		return err
@@ -342,10 +368,12 @@ func (n *NetworkToken) MarshalJSON() ([]byte, error) {
 	type embed NetworkToken
 	var marshaler = struct {
 		embed
-		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
 	}{
-		embed:     embed(*n),
-		CreatedAt: internal.NewOptionalDateTime(n.CreatedAt),
+		embed:      embed(*n),
+		CreatedAt:  internal.NewOptionalDateTime(n.CreatedAt),
+		ModifiedAt: internal.NewOptionalDateTime(n.ModifiedAt),
 	}
 	return json.Marshal(marshaler)
 }

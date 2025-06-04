@@ -4,10 +4,10 @@ package roles
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -38,7 +38,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) ([]*v2.Role, error) {
+) ([]*gosdk.Role, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -52,18 +52,18 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response []*v2.Role
+	var response []*gosdk.Role
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

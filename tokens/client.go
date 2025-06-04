@@ -5,10 +5,10 @@ package tokens
 import (
 	context "context"
 	fmt "fmt"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -55,22 +55,22 @@ func (c *Client) Detokenize(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		409: func(apiError *core.APIError) error {
-			return &v2.ConflictError{
+			return &gosdk.ConflictError{
 				APIError: apiError,
 			}
 		},
@@ -116,22 +116,22 @@ func (c *Client) Tokenize(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		409: func(apiError *core.APIError) error {
-			return &v2.ConflictError{
+			return &gosdk.ConflictError{
 				APIError: apiError,
 			}
 		},
@@ -160,9 +160,9 @@ func (c *Client) Tokenize(
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v2.TokensListRequest,
+	request *gosdk.TokensListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Token], error) {
+) (*core.Page[*gosdk.Token], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -180,12 +180,12 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -215,10 +215,10 @@ func (c *Client) List(
 	if request.Page != nil {
 		next = *request.Page
 	}
-	readPageResponse := func(response *v2.TokenPaginatedList) *internal.PageResponse[*int, *v2.Token] {
+	readPageResponse := func(response *gosdk.TokenPaginatedList) *internal.PageResponse[*int, *gosdk.Token] {
 		next += 1
 		results := response.Data
-		return &internal.PageResponse[*int, *v2.Token]{
+		return &internal.PageResponse[*int, *gosdk.Token]{
 			Next:    &next,
 			Results: results,
 		}
@@ -233,9 +233,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.CreateTokenRequest,
+	request *gosdk.CreateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Token, error) {
+) (*gosdk.Token, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -250,28 +250,28 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		409: func(apiError *core.APIError) error {
-			return &v2.ConflictError{
+			return &gosdk.ConflictError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.Token
+	var response *gosdk.Token
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -294,9 +294,9 @@ func (c *Client) Create(
 
 func (c *Client) Search(
 	ctx context.Context,
-	request *v2.SearchTokensRequest,
+	request *gosdk.SearchTokensRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.TokenPaginatedList, error) {
+) (*gosdk.TokenPaginatedList, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -311,23 +311,23 @@ func (c *Client) Search(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.TokenPaginatedList
+	var response *gosdk.TokenPaginatedList
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -352,7 +352,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v2.Token, error) {
+) (*gosdk.Token, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -369,23 +369,23 @@ func (c *Client) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &gosdk.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.Token
+	var response *gosdk.Token
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -426,22 +426,22 @@ func (c *Client) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &gosdk.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -468,9 +468,9 @@ func (c *Client) Delete(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v2.UpdateTokenRequest,
+	request *gosdk.UpdateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Token, error) {
+) (*gosdk.Token, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -488,33 +488,33 @@ func (c *Client) Update(
 	headers.Set("Content-Type", "application/merge-patch+json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &gosdk.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		409: func(apiError *core.APIError) error {
-			return &v2.ConflictError{
+			return &gosdk.ConflictError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.Token
+	var response *gosdk.Token
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -537,9 +537,9 @@ func (c *Client) Update(
 
 func (c *Client) ListV2(
 	ctx context.Context,
-	request *v2.TokensListV2Request,
+	request *gosdk.TokensListV2Request,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Token], error) {
+) (*core.Page[*gosdk.Token], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -557,12 +557,12 @@ func (c *Client) ListV2(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -588,14 +588,14 @@ func (c *Client) ListV2(
 			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		}
 	}
-	readPageResponse := func(response *v2.TokenCursorPaginatedList) *internal.PageResponse[*string, *v2.Token] {
+	readPageResponse := func(response *gosdk.TokenCursorPaginatedList) *internal.PageResponse[*string, *gosdk.Token] {
 		var zeroValue *string
 		var next *string
 		if response.Pagination != nil {
 			next = response.Pagination.Next
 		}
 		results := response.Data
-		return &internal.PageResponse[*string, *v2.Token]{
+		return &internal.PageResponse[*string, *gosdk.Token]{
 			Next:    next,
 			Results: results,
 			Done:    next == zeroValue,
@@ -611,9 +611,9 @@ func (c *Client) ListV2(
 
 func (c *Client) SearchV2(
 	ctx context.Context,
-	request *v2.SearchTokensRequestV2,
+	request *gosdk.SearchTokensRequestV2,
 	opts ...option.IdempotentRequestOption,
-) (*v2.TokenCursorPaginatedList, error) {
+) (*gosdk.TokenCursorPaginatedList, error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -628,23 +628,23 @@ func (c *Client) SearchV2(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.TokenCursorPaginatedList
+	var response *gosdk.TokenCursorPaginatedList
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

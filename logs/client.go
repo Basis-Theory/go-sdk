@@ -5,10 +5,10 @@ package logs
 import (
 	context "context"
 	fmt "fmt"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -38,9 +38,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v2.LogsListRequest,
+	request *gosdk.LogsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Log], error) {
+) (*core.Page[*gosdk.Log], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -58,17 +58,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -98,10 +98,10 @@ func (c *Client) List(
 	if request.Page != nil {
 		next = *request.Page
 	}
-	readPageResponse := func(response *v2.LogPaginatedList) *internal.PageResponse[*int, *v2.Log] {
+	readPageResponse := func(response *gosdk.LogPaginatedList) *internal.PageResponse[*int, *gosdk.Log] {
 		next += 1
 		results := response.Data
-		return &internal.PageResponse[*int, *v2.Log]{
+		return &internal.PageResponse[*int, *gosdk.Log]{
 			Next:    &next,
 			Results: results,
 		}
@@ -117,7 +117,7 @@ func (c *Client) List(
 func (c *Client) GetEntityTypes(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) ([]*v2.LogEntityType, error) {
+) ([]*gosdk.LogEntityType, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -131,18 +131,18 @@ func (c *Client) GetEntityTypes(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response []*v2.LogEntityType
+	var response []*gosdk.LogEntityType
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

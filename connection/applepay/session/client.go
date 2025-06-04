@@ -4,10 +4,10 @@ package session
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -37,7 +37,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.ApplePaySessionRequest,
+	request *gosdk.ApplePaySessionRequest,
 	opts ...option.RequestOption,
 ) (string, error) {
 	options := core.NewRequestOptions(opts...)
@@ -54,22 +54,22 @@ func (c *Client) Create(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &gosdk.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},

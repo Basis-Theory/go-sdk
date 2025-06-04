@@ -3,10 +3,10 @@
 package client
 
 import (
-	applepayclient "github.com/Basis-Theory/go-sdk/v2/connection/applepay/client"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	applepayclient "github.com/Basis-Theory/go-sdk/connection/applepay/client"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )

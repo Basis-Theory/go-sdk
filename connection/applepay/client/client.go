@@ -4,13 +4,13 @@ package client
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	connection "github.com/Basis-Theory/go-sdk/v2/connection"
-	domain "github.com/Basis-Theory/go-sdk/v2/connection/applepay/domain"
-	session "github.com/Basis-Theory/go-sdk/v2/connection/applepay/session"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	connection "github.com/Basis-Theory/go-sdk/connection"
+	domain "github.com/Basis-Theory/go-sdk/connection/applepay/domain"
+	session "github.com/Basis-Theory/go-sdk/connection/applepay/session"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -47,7 +47,7 @@ func (c *Client) Tokenize(
 	ctx context.Context,
 	request *connection.ApplePayTokenizeRequest,
 	opts ...option.RequestOption,
-) (*v2.ApplePayTokenizeResponse, error) {
+) (*gosdk.ApplePayTokenizeResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -62,28 +62,28 @@ func (c *Client) Tokenize(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &gosdk.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.ApplePayTokenizeResponse
+	var response *gosdk.ApplePayTokenizeResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

@@ -4,11 +4,11 @@ package realtime
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	accountupdater "github.com/Basis-Theory/go-sdk/v2/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	gosdk "github.com/Basis-Theory/go-sdk"
+	accountupdater "github.com/Basis-Theory/go-sdk/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
 	http "net/http"
 	os "os"
 )
@@ -41,7 +41,7 @@ func (c *Client) Invoke(
 	ctx context.Context,
 	request *accountupdater.AccountUpdaterRealTimeRequest,
 	opts ...option.RequestOption,
-) (*v2.AccountUpdaterRealTimeResponse, error) {
+) (*gosdk.AccountUpdaterRealTimeResponse, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -56,28 +56,28 @@ func (c *Client) Invoke(
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &gosdk.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &gosdk.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &gosdk.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &gosdk.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
 
-	var response *v2.AccountUpdaterRealTimeResponse
+	var response *gosdk.AccountUpdaterRealTimeResponse
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

@@ -3,14 +3,14 @@
 package client
 
 import (
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
-	connections "github.com/Basis-Theory/go-sdk/v2/tenants/connections"
-	invitations "github.com/Basis-Theory/go-sdk/v2/tenants/invitations"
-	members "github.com/Basis-Theory/go-sdk/v2/tenants/members"
-	owner "github.com/Basis-Theory/go-sdk/v2/tenants/owner"
-	self "github.com/Basis-Theory/go-sdk/v2/tenants/self"
+	core "github.com/Basis-Theory/go-sdk/core"
+	internal "github.com/Basis-Theory/go-sdk/internal"
+	option "github.com/Basis-Theory/go-sdk/option"
+	connections "github.com/Basis-Theory/go-sdk/tenants/connections"
+	invitations "github.com/Basis-Theory/go-sdk/tenants/invitations"
+	members "github.com/Basis-Theory/go-sdk/tenants/members"
+	owner "github.com/Basis-Theory/go-sdk/tenants/owner"
+	self "github.com/Basis-Theory/go-sdk/tenants/self"
 	http "net/http"
 	os "os"
 )

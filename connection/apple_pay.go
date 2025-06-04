@@ -3,9 +3,9 @@
 package connection
 
 import (
-	v2 "github.com/Basis-Theory/go-sdk/v2"
+	gosdk "github.com/Basis-Theory/go-sdk"
 )
 
 type ApplePayTokenizeRequest struct {
-	ApplePaymentMethodToken *v2.ApplePayMethodToken `json:"apple_payment_method_token,omitempty" url:"-"`
+	ApplePaymentMethodToken *gosdk.ApplePayMethodToken `json:"apple_payment_method_token,omitempty" url:"-"`
 }
