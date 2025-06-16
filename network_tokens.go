@@ -235,18 +235,19 @@ func (c *CardholderInfo) String() string {
 }
 
 type NetworkToken struct {
-	ID            *string      `json:"id,omitempty" url:"id,omitempty"`
-	TenantID      *string      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Data          *Card        `json:"data,omitempty" url:"data,omitempty"`
-	Card          *CardDetails `json:"card,omitempty" url:"card,omitempty"`
-	NetworkToken  *CardDetails `json:"network_token,omitempty" url:"network_token,omitempty"`
-	Status        *string      `json:"status,omitempty" url:"status,omitempty"`
-	CreatedBy     *string      `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt     *time.Time   `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy    *string      `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt    *time.Time   `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	TokenID       *string      `json:"token_id,omitempty" url:"token_id,omitempty"`
-	TokenIntentID *string      `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	ID            *string             `json:"id,omitempty" url:"id,omitempty"`
+	TenantID      *string             `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Data          *Card               `json:"data,omitempty" url:"data,omitempty"`
+	Card          *CardDetails        `json:"card,omitempty" url:"card,omitempty"`
+	NetworkToken  *CardDetails        `json:"network_token,omitempty" url:"network_token,omitempty"`
+	Status        *string             `json:"status,omitempty" url:"status,omitempty"`
+	CreatedBy     *string             `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt     *time.Time          `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy    *string             `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt    *time.Time          `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	TokenID       *string             `json:"token_id,omitempty" url:"token_id,omitempty"`
+	TokenIntentID *string             `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	Extras        *NetworkTokenExtras `json:"_extras,omitempty" url:"_extras,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -334,6 +335,13 @@ func (n *NetworkToken) GetTokenIntentID() *string {
 		return nil
 	}
 	return n.TokenIntentID
+}
+
+func (n *NetworkToken) GetExtras() *NetworkTokenExtras {
+	if n == nil {
+		return nil
+	}
+	return n.Extras
 }
 
 func (n *NetworkToken) GetExtraProperties() map[string]interface{} {
@@ -433,6 +441,52 @@ func (n *NetworkTokenCryptogram) UnmarshalJSON(data []byte) error {
 }
 
 func (n *NetworkTokenCryptogram) String() string {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NetworkTokenExtras struct {
+	Deduplicated *bool `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NetworkTokenExtras) GetDeduplicated() *bool {
+	if n == nil {
+		return nil
+	}
+	return n.Deduplicated
+}
+
+func (n *NetworkTokenExtras) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
+}
+
+func (n *NetworkTokenExtras) UnmarshalJSON(data []byte) error {
+	type unmarshaler NetworkTokenExtras
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NetworkTokenExtras(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NetworkTokenExtras) String() string {
 	if len(n.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
