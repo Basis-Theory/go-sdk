@@ -15,4 +15,5 @@ type CreateThreeDsSessionRequest struct {
 	WebChallengeMode      *string                               `json:"web_challenge_mode,omitempty" url:"-"`
 	DeviceInfo            *v2.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
 	AuthenticationRequest *v2.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
+	CallbackURLs          *v2.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
 }

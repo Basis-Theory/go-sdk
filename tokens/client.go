@@ -292,62 +292,6 @@ func (c *Client) Create(
 	return response, nil
 }
 
-func (c *Client) Search(
-	ctx context.Context,
-	request *v2.SearchTokensRequest,
-	opts ...option.IdempotentRequestOption,
-) (*v2.TokenPaginatedList, error) {
-	options := core.NewIdempotentRequestOptions(opts...)
-	baseURL := internal.ResolveBaseURL(
-		options.BaseURL,
-		c.baseURL,
-		"https://api.basistheory.com",
-	)
-	endpointURL := baseURL + "/tokens/search"
-	headers := internal.MergeHeaders(
-		c.header.Clone(),
-		options.ToHeader(),
-	)
-	headers.Set("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-	}
-
-	var response *v2.TokenPaginatedList
-	if err := c.caller.Call(
-		ctx,
-		&internal.CallParams{
-			URL:             endpointURL,
-			Method:          http.MethodPost,
-			Headers:         headers,
-			MaxAttempts:     options.MaxAttempts,
-			BodyProperties:  options.BodyProperties,
-			QueryParameters: options.QueryParameters,
-			Client:          options.HTTPClient,
-			Request:         request,
-			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
-		},
-	); err != nil {
-		return nil, err
-	}
-	return response, nil
-}
-
 func (c *Client) Get(
 	ctx context.Context,
 	id string,
