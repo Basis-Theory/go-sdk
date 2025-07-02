@@ -2077,6 +2077,53 @@ func (c *Condition) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CreateAccountUpdaterJobRequest struct {
+	// Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
+	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"deduplicate_tokens,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CreateAccountUpdaterJobRequest) GetDeduplicateTokens() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.DeduplicateTokens
+}
+
+func (c *CreateAccountUpdaterJobRequest) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateAccountUpdaterJobRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateAccountUpdaterJobRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreateAccountUpdaterJobRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateAccountUpdaterJobRequest) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CreateReactorFormulaRequest struct {
 	ID                *string                           `json:"id,omitempty" url:"id,omitempty"`
 	Type              string                            `json:"type" url:"type"`
@@ -2234,6 +2281,7 @@ type CreateThreeDsSessionResponse struct {
 	MethodNotificationURL *string  `json:"method_notification_url,omitempty" url:"method_notification_url,omitempty"`
 	DirectoryServerID     *string  `json:"directory_server_id,omitempty" url:"directory_server_id,omitempty"`
 	RecommendedVersion    *string  `json:"recommended_version,omitempty" url:"recommended_version,omitempty"`
+	RedirectURL           *string  `json:"redirect_url,omitempty" url:"redirect_url,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2293,6 +2341,13 @@ func (c *CreateThreeDsSessionResponse) GetRecommendedVersion() *string {
 		return nil
 	}
 	return c.RecommendedVersion
+}
+
+func (c *CreateThreeDsSessionResponse) GetRedirectURL() *string {
+	if c == nil {
+		return nil
+	}
+	return c.RedirectURL
 }
 
 func (c *CreateThreeDsSessionResponse) GetExtraProperties() map[string]interface{} {
@@ -4864,6 +4919,60 @@ func (t *ThreeDsAuthentication) UnmarshalJSON(data []byte) error {
 }
 
 func (t *ThreeDsAuthentication) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type ThreeDsCallbackURLs struct {
+	Success *string `json:"success,omitempty" url:"success,omitempty"`
+	Failure *string `json:"failure,omitempty" url:"failure,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThreeDsCallbackURLs) GetSuccess() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Success
+}
+
+func (t *ThreeDsCallbackURLs) GetFailure() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Failure
+}
+
+func (t *ThreeDsCallbackURLs) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *ThreeDsCallbackURLs) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThreeDsCallbackURLs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThreeDsCallbackURLs(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThreeDsCallbackURLs) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value

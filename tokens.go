@@ -41,13 +41,6 @@ type TokensListV2Request struct {
 	Size        *int               `json:"-" url:"size,omitempty"`
 }
 
-type SearchTokensRequest struct {
-	Query *string `json:"query,omitempty" url:"-"`
-	Page  *int    `json:"page,omitempty" url:"-"`
-	Start *string `json:"start,omitempty" url:"-"`
-	Size  *int    `json:"size,omitempty" url:"-"`
-}
-
 type SearchTokensRequestV2 struct {
 	Query *string `json:"query,omitempty" url:"-"`
 	Start *string `json:"start,omitempty" url:"-"`

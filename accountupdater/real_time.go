@@ -9,4 +9,6 @@ type AccountUpdaterRealTimeRequest struct {
 	ExpirationYear *int `json:"expiration_year,omitempty" url:"-"`
 	// The 2-digit expiration month of the account number. Not required if the card token already stores this value.
 	ExpirationMonth *int `json:"expiration_month,omitempty" url:"-"`
+	// Whether deduplication should be enabled when creating the new token. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
+	DeduplicateToken *bool `json:"deduplicate_token,omitempty" url:"-"`
 }
