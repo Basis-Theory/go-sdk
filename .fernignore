@@ -12,5 +12,4 @@ test/integration/canary_test.go
 
 CHANGELOG.md
 package.json
-README.md
 yarn.lock
