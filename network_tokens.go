@@ -240,6 +240,7 @@ type NetworkToken struct {
 	Data          *Card               `json:"data,omitempty" url:"data,omitempty"`
 	Card          *CardDetails        `json:"card,omitempty" url:"card,omitempty"`
 	NetworkToken  *CardDetails        `json:"network_token,omitempty" url:"network_token,omitempty"`
+	Par           *string             `json:"par,omitempty" url:"par,omitempty"`
 	Status        *string             `json:"status,omitempty" url:"status,omitempty"`
 	CreatedBy     *string             `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt     *time.Time          `json:"created_at,omitempty" url:"created_at,omitempty"`
@@ -286,6 +287,13 @@ func (n *NetworkToken) GetNetworkToken() *CardDetails {
 		return nil
 	}
 	return n.NetworkToken
+}
+
+func (n *NetworkToken) GetPar() *string {
+	if n == nil {
+		return nil
+	}
+	return n.Par
 }
 
 func (n *NetworkToken) GetStatus() *string {
