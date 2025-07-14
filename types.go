@@ -2077,53 +2077,6 @@ func (c *Condition) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type CreateAccountUpdaterJobRequest struct {
-	// Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
-	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"deduplicate_tokens,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (c *CreateAccountUpdaterJobRequest) GetDeduplicateTokens() *bool {
-	if c == nil {
-		return nil
-	}
-	return c.DeduplicateTokens
-}
-
-func (c *CreateAccountUpdaterJobRequest) GetExtraProperties() map[string]interface{} {
-	return c.extraProperties
-}
-
-func (c *CreateAccountUpdaterJobRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler CreateAccountUpdaterJobRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CreateAccountUpdaterJobRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-	c.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateAccountUpdaterJobRequest) String() string {
-	if len(c.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
 type CreateReactorFormulaRequest struct {
 	ID                *string                           `json:"id,omitempty" url:"id,omitempty"`
 	Type              string                            `json:"type" url:"type"`
