@@ -10,6 +10,7 @@ import (
 	applicationtemplates "github.com/Basis-Theory/go-sdk/v2/applicationtemplates"
 	connectionclient "github.com/Basis-Theory/go-sdk/v2/connection/client"
 	core "github.com/Basis-Theory/go-sdk/v2/core"
+	documentsclient "github.com/Basis-Theory/go-sdk/v2/documents/client"
 	enrichments "github.com/Basis-Theory/go-sdk/v2/enrichments"
 	googlepay "github.com/Basis-Theory/go-sdk/v2/googlepay"
 	internal "github.com/Basis-Theory/go-sdk/v2/internal"
@@ -40,6 +41,7 @@ type Client struct {
 	ApplicationKeys      *applicationkeys.Client
 	ApplicationTemplates *applicationtemplates.Client
 	ApplePay             *applepayclient.Client
+	Documents            *documentsclient.Client
 	Tokens               *tokens.Client
 	Enrichments          *enrichments.Client
 	Googlepay            *googlepay.Client
@@ -77,6 +79,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		ApplicationKeys:      applicationkeys.NewClient(opts...),
 		ApplicationTemplates: applicationtemplates.NewClient(opts...),
 		ApplePay:             applepayclient.NewClient(opts...),
+		Documents:            documentsclient.NewClient(opts...),
 		Tokens:               tokens.NewClient(opts...),
 		Enrichments:          enrichments.NewClient(opts...),
 		Googlepay:            googlepay.NewClient(opts...),
