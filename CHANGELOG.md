@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/Basis-Theory/go-sdk/compare/v2.1.0...v2.2.0) (2025-07-22)
+
+
+### Features
+
+* Add documents ([d81ef55](https://github.com/Basis-Theory/go-sdk/commit/d81ef55b35feb1d4f4d2590df19cc2974ac8e506))
+
 # [2.1.0](https://github.com/Basis-Theory/go-sdk/compare/v2.0.1...v2.1.0) (2025-06-04)
 
 
