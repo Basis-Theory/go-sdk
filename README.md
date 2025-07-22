@@ -1,9 +1,8 @@
-# Basis Theory Go Library
+# BasisTheory Go Library
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
-[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/basis-theory/go-sdk)
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FBasis-Theory%2Fgo-sdk)
 
-The Basis Theory Go library provides convenient access to the Basis Theory API from Go.
+The BasisTheory Go library provides convenient access to the BasisTheory API from Go.
 
 ## Requirements
 
@@ -19,24 +18,27 @@ go get github.com/basis-theory/go-sdk
 
 ## Usage
 
+Instantiate and use the client with the following:
+
 ```go
+package example
+
 import (
-  "github.com/basis-theory/go-sdk"
-  basistheoryclient "github.com/basis-theory/go-sdk/client"
-  "github.com/basis-theory/go-sdk/option"
+    client "github.com/Basis-Theory/go-sdk/v2/client"
+    option "github.com/Basis-Theory/go-sdk/v2/option"
+    context "context"
 )
 
-client := basistheoryclient.NewClient(
-  option.WithAPIKey("<YOUR_API_KEY>"),
-)
-
-response, err := client.Applications.Create(
-  context.TODO(),
-  &basistheory.CreateApplicationRequest{
-    Name: "name",
-    Type: "type",
-  },
-)
+func do() () {
+    client := client.NewClient(
+        option.WithAPIKey(
+            "<value>",
+        ),
+    )
+    client.Tenants.Self.Get(
+        context.TODO(),
+    )
+}
 ```
 
 ## Optional Parameters
@@ -119,38 +121,33 @@ response, err := client.Applications.Create(
 
 ## Request Options
 
-A variety of request options are included to adapt the behavior of the library, which includes
-configuring authorization tokens, or providing your own instrumented `*http.Client`. Both of
-these options are shown below:
+A variety of request options are included to adapt the behavior of the library, which includes configuring
+authorization tokens, or providing your own instrumented `*http.Client`.
 
-```go
-client := basistheoryclient.NewClient(
-  option.WithAPIKey("<YOUR_API_KEY>"),
-  option.WithHTTPClient(
-    &http.Client{
-      Timeout: 5 * time.Second,
-    },
-  ),
-)
-```
-
-These request options can either be specified on the client so that they're applied on _every_
-request (shown above), or for an individual request like so:
-
-```go
-response, err := client.Applications.Create(
-  ctx,
-  &basistheory.CreateApplicationRequest{
-    Name:      "name",
-    Type:      "type",
-  },
-  option.WithAPIKey("<YOUR_API_KEY>"),
-)
-```
+These request options can either be
+specified on the client so that they're applied on every request, or for an individual request, like so:
 
 > Providing your own `*http.Client` is recommended. Otherwise, the `http.DefaultClient` will be used,
 > and your client will wait indefinitely for a response (unless the per-request, context-based timeout
 > is used).
+
+```go
+// Specify default options applied on every request.
+client := client.NewClient(
+    option.WithToken("<YOUR_API_KEY>"),
+    option.WithHTTPClient(
+        &http.Client{
+            Timeout: 5 * time.Second,
+        },
+    ),
+)
+
+// Specify options for an individual request.
+response, err := client.Tenants.Self.Get(
+    ...,
+    option.WithToken("<YOUR_API_KEY>"),
+)
+```
 
 ## Automatic Retries
 
@@ -189,58 +186,17 @@ response, err := client.Applications.Create(
 
 ## Errors
 
-Structured error types are returned from API calls that return non-success status codes. For example,
-you can check if the error was due to an unauthorized request (i.e. status code 401) with the following:
+Structured error types are returned from API calls that return non-success status codes. These errors are compatible
+with the `errors.Is` and `errors.As` APIs, so you can access the error like so:
 
 ```go
-response, err := client.Applications.Create(
-  ctx,
-  &basistheory.CreateApplicationRequest{
-    Name:      "name",
-    Type:      "type",
-  },
-)
+response, err := client.Tenants.Self.Get(...)
 if err != nil {
-  if unauthorizedErr, ok := err.(*basistheory.UnauthorizedError);
-    // Do something with the unauthorized request ...
-  }
-  return err
-}
-```
-
-These errors are also compatible with the `errors.Is` and `errors.As` APIs, so you can access the error
-like so:
-
-```go
-response, err := client.Applications.Create(
-  ctx,
-  &basistheory.CreateApplicationRequest{
-    Name:      "name",
-    Type:      "type",
-  },
-)
-if err != nil {
-  var unauthorizedErr *basistheory.UnauthorizedError
-  if errors.As(err, unauthorizedErr) {
-    // Do something with the unauthorized request ...
-  }
-  return err
-}
-```
-
-If you'd like to wrap the errors with additional information and still retain the ability
-to access the type with `errors.Is` and `errors.As`, you can use the `%w` directive:
-
-```go
-response, err := client.Applications.Create(
-  ctx,
-  &basistheory.CreateApplicationRequest{
-    Name:      "name",
-    Type:      "type",
-  },
-)
-if err != nil {
-  return fmt.Errorf("failed to create application: %w", err)
+    var apiError *core.APIError
+    if errors.As(err, apiError) {
+        // Do something with the API error ...
+    }
+    return err
 }
 ```
 
@@ -252,5 +208,56 @@ otherwise they would be overwritten upon the next generated release. Feel free t
 a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
 an issue first to discuss with us!
 
-On the other hand, contributions to the `README.md` are always very welcome!
- 
+On the other hand, contributions to the README are always very welcome!
+## Documentation
+
+API reference documentation is available [here](https://api.basistheory.com).
+
+## Environments
+
+You can choose between different environments by using the `option.WithBaseURL` option. You can configure any arbitrary base
+URL, which is particularly useful in test environments.
+
+```go
+client := client.NewClient(
+    option.WithBaseURL(basis-theory.Environments.Default),
+)
+```
+
+## Advanced
+
+### Retries
+
+The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
+as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
+retry limit (default: 2).
+
+A request is deemed retryable when any of the following HTTP status codes is returned:
+
+- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
+- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
+
+Use the `option.WithMaxAttempts` option to configure this behavior for the entire client or an individual request:
+
+```go
+client := client.NewClient(
+    option.WithMaxAttempts(1),
+)
+
+response, err := client.Tenants.Self.Get(
+    ...,
+    option.WithMaxAttempts(1),
+)
+```
+
+### Timeouts
+
+Setting a timeout for each individual request is as simple as using the standard context library. Setting a one second timeout for an individual API call looks like the following:
+
+```go
+ctx, cancel := context.WithTimeout(ctx, time.Second)
+defer cancel()
+
+response, err := client.Tenants.Self.Get(ctx, ...)
+```
