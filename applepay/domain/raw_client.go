@@ -5,6 +5,7 @@ package domain
 import (
 	context "context"
 	v2 "github.com/Basis-Theory/go-sdk/v2"
+	applepay "github.com/Basis-Theory/go-sdk/v2/applepay"
 	core "github.com/Basis-Theory/go-sdk/v2/core"
 	internal "github.com/Basis-Theory/go-sdk/v2/internal"
 	option "github.com/Basis-Theory/go-sdk/v2/option"
@@ -32,7 +33,7 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) Deregister(
 	ctx context.Context,
-	request *v2.ApplePayDomainDeregistrationRequest,
+	request *applepay.ApplePayDomainDeregistrationRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[any], error) {
 	options := core.NewRequestOptions(opts...)
@@ -46,6 +47,7 @@ func (r *RawClient) Deregister(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
 			return &v2.UnauthorizedError{
@@ -131,7 +133,7 @@ func (r *RawClient) Get(
 
 func (r *RawClient) Register(
 	ctx context.Context,
-	request *v2.ApplePayDomainRegistrationRequest,
+	request *applepay.ApplePayDomainRegistrationRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[*v2.ApplePayDomainRegistrationResponse], error) {
 	options := core.NewRequestOptions(opts...)
@@ -145,6 +147,7 @@ func (r *RawClient) Register(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &v2.BadRequestError{
@@ -200,7 +203,7 @@ func (r *RawClient) Register(
 
 func (r *RawClient) RegisterAll(
 	ctx context.Context,
-	request *v2.ApplePayDomainRegistrationListRequest,
+	request *applepay.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[*v2.ApplePayDomainRegistrationResponse], error) {
 	options := core.NewRequestOptions(opts...)
@@ -214,6 +217,7 @@ func (r *RawClient) RegisterAll(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &v2.BadRequestError{
