@@ -487,144 +487,6 @@ func (a *AdditionalCardDetails) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ApplePayDomainDeregistrationRequest struct {
-	Domain string `json:"domain" url:"domain"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *ApplePayDomainDeregistrationRequest) GetDomain() string {
-	if a == nil {
-		return ""
-	}
-	return a.Domain
-}
-
-func (a *ApplePayDomainDeregistrationRequest) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *ApplePayDomainDeregistrationRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePayDomainDeregistrationRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplePayDomainDeregistrationRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplePayDomainDeregistrationRequest) String() string {
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type ApplePayDomainRegistrationListRequest struct {
-	Domains []string `json:"domains,omitempty" url:"domains,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *ApplePayDomainRegistrationListRequest) GetDomains() []string {
-	if a == nil {
-		return nil
-	}
-	return a.Domains
-}
-
-func (a *ApplePayDomainRegistrationListRequest) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *ApplePayDomainRegistrationListRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePayDomainRegistrationListRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplePayDomainRegistrationListRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplePayDomainRegistrationListRequest) String() string {
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type ApplePayDomainRegistrationRequest struct {
-	Domain string `json:"domain" url:"domain"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *ApplePayDomainRegistrationRequest) GetDomain() string {
-	if a == nil {
-		return ""
-	}
-	return a.Domain
-}
-
-func (a *ApplePayDomainRegistrationRequest) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *ApplePayDomainRegistrationRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePayDomainRegistrationRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplePayDomainRegistrationRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplePayDomainRegistrationRequest) String() string {
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
 type ApplePayDomainRegistrationResponse struct {
 	Domains []*DomainRegistrationResponse `json:"domains,omitempty" url:"domains,omitempty"`
 
@@ -671,39 +533,31 @@ func (a *ApplePayDomainRegistrationResponse) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ApplePayMethodToken struct {
-	PaymentData           *PaymentData `json:"paymentData,omitempty" url:"paymentData,omitempty"`
-	TransactionIdentifier *string      `json:"transactionIdentifier,omitempty" url:"transactionIdentifier,omitempty"`
+type ApplePayTokenizeRequest struct {
+	ApplePaymentMethodToken *ApplePayMethodToken `json:"apple_payment_method_token,omitempty" url:"apple_payment_method_token,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (a *ApplePayMethodToken) GetPaymentData() *PaymentData {
+func (a *ApplePayTokenizeRequest) GetApplePaymentMethodToken() *ApplePayMethodToken {
 	if a == nil {
 		return nil
 	}
-	return a.PaymentData
+	return a.ApplePaymentMethodToken
 }
 
-func (a *ApplePayMethodToken) GetTransactionIdentifier() *string {
-	if a == nil {
-		return nil
-	}
-	return a.TransactionIdentifier
-}
-
-func (a *ApplePayMethodToken) GetExtraProperties() map[string]interface{} {
+func (a *ApplePayTokenizeRequest) GetExtraProperties() map[string]interface{} {
 	return a.extraProperties
 }
 
-func (a *ApplePayMethodToken) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePayMethodToken
+func (a *ApplePayTokenizeRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayTokenizeRequest
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*a = ApplePayMethodToken(value)
+	*a = ApplePayTokenizeRequest(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
@@ -713,69 +567,7 @@ func (a *ApplePayMethodToken) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (a *ApplePayMethodToken) String() string {
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type ApplePaySessionRequest struct {
-	ValidationURL *string `json:"validation_url,omitempty" url:"validation_url,omitempty"`
-	DisplayName   *string `json:"display_name,omitempty" url:"display_name,omitempty"`
-	Domain        *string `json:"domain,omitempty" url:"domain,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *ApplePaySessionRequest) GetValidationURL() *string {
-	if a == nil {
-		return nil
-	}
-	return a.ValidationURL
-}
-
-func (a *ApplePaySessionRequest) GetDisplayName() *string {
-	if a == nil {
-		return nil
-	}
-	return a.DisplayName
-}
-
-func (a *ApplePaySessionRequest) GetDomain() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Domain
-}
-
-func (a *ApplePaySessionRequest) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *ApplePaySessionRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePaySessionRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplePaySessionRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplePaySessionRequest) String() string {
+func (a *ApplePayTokenizeRequest) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -2538,6 +2330,148 @@ func (c *CreateTokenIntentResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CreateTokenRequest struct {
+	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
+	Type                  *string            `json:"type,omitempty" url:"type,omitempty"`
+	Data                  interface{}        `json:"data,omitempty" url:"data,omitempty"`
+	Encrypted             *string            `json:"encrypted,omitempty" url:"encrypted,omitempty"`
+	Privacy               *Privacy           `json:"privacy,omitempty" url:"privacy,omitempty"`
+	Metadata              map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
+	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"search_indexes,omitempty"`
+	FingerprintExpression *string            `json:"fingerprint_expression,omitempty" url:"fingerprint_expression,omitempty"`
+	Mask                  interface{}        `json:"mask,omitempty" url:"mask,omitempty"`
+	DeduplicateToken      *bool              `json:"deduplicate_token,omitempty" url:"deduplicate_token,omitempty"`
+	ExpiresAt             *string            `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
+	TokenIntentID         *string            `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CreateTokenRequest) GetID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *CreateTokenRequest) GetType() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Type
+}
+
+func (c *CreateTokenRequest) GetData() interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.Data
+}
+
+func (c *CreateTokenRequest) GetEncrypted() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Encrypted
+}
+
+func (c *CreateTokenRequest) GetPrivacy() *Privacy {
+	if c == nil {
+		return nil
+	}
+	return c.Privacy
+}
+
+func (c *CreateTokenRequest) GetMetadata() map[string]*string {
+	if c == nil {
+		return nil
+	}
+	return c.Metadata
+}
+
+func (c *CreateTokenRequest) GetSearchIndexes() []string {
+	if c == nil {
+		return nil
+	}
+	return c.SearchIndexes
+}
+
+func (c *CreateTokenRequest) GetFingerprintExpression() *string {
+	if c == nil {
+		return nil
+	}
+	return c.FingerprintExpression
+}
+
+func (c *CreateTokenRequest) GetMask() interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.Mask
+}
+
+func (c *CreateTokenRequest) GetDeduplicateToken() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.DeduplicateToken
+}
+
+func (c *CreateTokenRequest) GetExpiresAt() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ExpiresAt
+}
+
+func (c *CreateTokenRequest) GetContainers() []string {
+	if c == nil {
+		return nil
+	}
+	return c.Containers
+}
+
+func (c *CreateTokenRequest) GetTokenIntentID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.TokenIntentID
+}
+
+func (c *CreateTokenRequest) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CreateTokenRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateTokenRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreateTokenRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateTokenRequest) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type DomainRegistrationResponse struct {
 	Domain *string `json:"domain,omitempty" url:"domain,omitempty"`
 	Status *string `json:"status,omitempty" url:"status,omitempty"`
@@ -3364,74 +3298,96 @@ func (g *GetTokensV2) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-type Header struct {
-	PublicKeyHash      *string `json:"publicKeyHash,omitempty" url:"publicKeyHash,omitempty"`
-	EphemeralPublicKey *string `json:"ephemeralPublicKey,omitempty" url:"ephemeralPublicKey,omitempty"`
-	TransactionID      *string `json:"transactionId,omitempty" url:"transactionId,omitempty"`
-	ApplicationData    *string `json:"applicationData,omitempty" url:"applicationData,omitempty"`
+type GooglePayTokenizeRequest struct {
+	GooglePaymentMethodToken *GooglePayMethodToken `json:"google_payment_method_token,omitempty" url:"google_payment_method_token,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (h *Header) GetPublicKeyHash() *string {
-	if h == nil {
+func (g *GooglePayTokenizeRequest) GetGooglePaymentMethodToken() *GooglePayMethodToken {
+	if g == nil {
 		return nil
 	}
-	return h.PublicKeyHash
+	return g.GooglePaymentMethodToken
 }
 
-func (h *Header) GetEphemeralPublicKey() *string {
-	if h == nil {
-		return nil
-	}
-	return h.EphemeralPublicKey
+func (g *GooglePayTokenizeRequest) GetExtraProperties() map[string]interface{} {
+	return g.extraProperties
 }
 
-func (h *Header) GetTransactionID() *string {
-	if h == nil {
-		return nil
-	}
-	return h.TransactionID
-}
-
-func (h *Header) GetApplicationData() *string {
-	if h == nil {
-		return nil
-	}
-	return h.ApplicationData
-}
-
-func (h *Header) GetExtraProperties() map[string]interface{} {
-	return h.extraProperties
-}
-
-func (h *Header) UnmarshalJSON(data []byte) error {
-	type unmarshaler Header
+func (g *GooglePayTokenizeRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayTokenizeRequest
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*h = Header(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *h)
+	*g = GooglePayTokenizeRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
 	if err != nil {
 		return err
 	}
-	h.extraProperties = extraProperties
-	h.rawJSON = json.RawMessage(data)
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (h *Header) String() string {
-	if len(h.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
+func (g *GooglePayTokenizeRequest) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := internal.StringifyJSON(h); err == nil {
+	if value, err := internal.StringifyJSON(g); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", h)
+	return fmt.Sprintf("%#v", g)
+}
+
+type GooglePayTokenizeResponse struct {
+	TokenIntent *CreateTokenIntentResponse `json:"token_intent,omitempty" url:"token_intent,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePayTokenizeResponse) GetTokenIntent() *CreateTokenIntentResponse {
+	if g == nil {
+		return nil
+	}
+	return g.TokenIntent
+}
+
+func (g *GooglePayTokenizeResponse) GetExtraProperties() map[string]interface{} {
+	return g.extraProperties
+}
+
+func (g *GooglePayTokenizeResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayTokenizeResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GooglePayTokenizeResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GooglePayTokenizeResponse) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
 }
 
 type Pagination struct {
@@ -3509,76 +3465,6 @@ func (p *Pagination) UnmarshalJSON(data []byte) error {
 }
 
 func (p *Pagination) String() string {
-	if len(p.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PaymentData struct {
-	Data      *string `json:"data,omitempty" url:"data,omitempty"`
-	Signature *string `json:"signature,omitempty" url:"signature,omitempty"`
-	Header    *Header `json:"header,omitempty" url:"header,omitempty"`
-	Version   *string `json:"version,omitempty" url:"version,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (p *PaymentData) GetData() *string {
-	if p == nil {
-		return nil
-	}
-	return p.Data
-}
-
-func (p *PaymentData) GetSignature() *string {
-	if p == nil {
-		return nil
-	}
-	return p.Signature
-}
-
-func (p *PaymentData) GetHeader() *Header {
-	if p == nil {
-		return nil
-	}
-	return p.Header
-}
-
-func (p *PaymentData) GetVersion() *string {
-	if p == nil {
-		return nil
-	}
-	return p.Version
-}
-
-func (p *PaymentData) GetExtraProperties() map[string]interface{} {
-	return p.extraProperties
-}
-
-func (p *PaymentData) UnmarshalJSON(data []byte) error {
-	type unmarshaler PaymentData
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PaymentData(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *p)
-	if err != nil {
-		return err
-	}
-	p.extraProperties = extraProperties
-	p.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PaymentData) String() string {
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value

@@ -4,7 +4,7 @@ package session
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
+	applepay "github.com/Basis-Theory/go-sdk/v2/applepay"
 	core "github.com/Basis-Theory/go-sdk/v2/core"
 	internal "github.com/Basis-Theory/go-sdk/v2/internal"
 	option "github.com/Basis-Theory/go-sdk/v2/option"
@@ -40,7 +40,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.ApplePaySessionRequest,
+	request *applepay.ApplePaySessionRequest,
 	opts ...option.RequestOption,
 ) (string, error) {
 	response, err := c.WithRawResponse.Create(

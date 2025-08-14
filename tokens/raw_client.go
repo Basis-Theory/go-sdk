@@ -174,7 +174,6 @@ func (r *RawClient) Create(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
-	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &v2.BadRequestError{

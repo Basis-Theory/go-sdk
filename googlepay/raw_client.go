@@ -30,18 +30,18 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 	}
 }
 
-func (r *RawClient) Tokenize(
+func (r *RawClient) Create(
 	ctx context.Context,
-	request *v2.GooglePayTokenizeRequest,
+	request *v2.GooglePayCreateRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.GooglePayTokenizeResponse], error) {
+) (*core.Response[*v2.GooglePayCreateResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
 		r.baseURL,
 		"https://api.basistheory.com",
 	)
-	endpointURL := baseURL + "/connections/google-pay/tokenize"
+	endpointURL := baseURL + "/google-pay"
 	headers := internal.MergeHeaders(
 		r.header.Clone(),
 		options.ToHeader(),
@@ -74,7 +74,7 @@ func (r *RawClient) Tokenize(
 			}
 		},
 	}
-	var response *v2.GooglePayTokenizeResponse
+	var response *v2.GooglePayCreateResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -93,7 +93,129 @@ func (r *RawClient) Tokenize(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.GooglePayTokenizeResponse]{
+	return &core.Response[*v2.GooglePayCreateResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) Get(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*core.Response[*v2.GooglePayToken], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/google-pay/%v",
+		id,
+	)
+	headers := internal.MergeHeaders(
+		r.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		401: func(apiError *core.APIError) error {
+			return &v2.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &v2.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &v2.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *v2.GooglePayToken
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*v2.GooglePayToken]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) Delete(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*core.Response[string], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/google-pay/%v",
+		id,
+	)
+	headers := internal.MergeHeaders(
+		r.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		401: func(apiError *core.APIError) error {
+			return &v2.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &v2.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &v2.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response string
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodDelete,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[string]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

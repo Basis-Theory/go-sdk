@@ -5,6 +5,7 @@ package domain
 import (
 	context "context"
 	v2 "github.com/Basis-Theory/go-sdk/v2"
+	applepay "github.com/Basis-Theory/go-sdk/v2/applepay"
 	core "github.com/Basis-Theory/go-sdk/v2/core"
 	internal "github.com/Basis-Theory/go-sdk/v2/internal"
 	option "github.com/Basis-Theory/go-sdk/v2/option"
@@ -40,7 +41,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Deregister(
 	ctx context.Context,
-	request *v2.ApplePayDomainDeregistrationRequest,
+	request *applepay.ApplePayDomainDeregistrationRequest,
 	opts ...option.RequestOption,
 ) error {
 	_, err := c.WithRawResponse.Deregister(
@@ -70,7 +71,7 @@ func (c *Client) Get(
 
 func (c *Client) Register(
 	ctx context.Context,
-	request *v2.ApplePayDomainRegistrationRequest,
+	request *applepay.ApplePayDomainRegistrationRequest,
 	opts ...option.RequestOption,
 ) (*v2.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.Register(
@@ -86,7 +87,7 @@ func (c *Client) Register(
 
 func (c *Client) RegisterAll(
 	ctx context.Context,
-	request *v2.ApplePayDomainRegistrationListRequest,
+	request *applepay.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
 ) (*v2.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.RegisterAll(

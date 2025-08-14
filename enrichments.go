@@ -14,6 +14,80 @@ type BankVerificationRequest struct {
 	RoutingNumber *string `json:"routing_number,omitempty" url:"-"`
 }
 
+type EnrichmentsGetCardDetailsRequest struct {
+	Bin string `json:"-" url:"bin"`
+}
+
+type AdditionalCardDetail struct {
+	Brand   *string            `json:"brand,omitempty" url:"brand,omitempty"`
+	Funding *string            `json:"funding,omitempty" url:"funding,omitempty"`
+	Segment *string            `json:"segment,omitempty" url:"segment,omitempty"`
+	Issuer  *CardIssuerDetails `json:"issuer,omitempty" url:"issuer,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AdditionalCardDetail) GetBrand() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Brand
+}
+
+func (a *AdditionalCardDetail) GetFunding() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Funding
+}
+
+func (a *AdditionalCardDetail) GetSegment() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Segment
+}
+
+func (a *AdditionalCardDetail) GetIssuer() *CardIssuerDetails {
+	if a == nil {
+		return nil
+	}
+	return a.Issuer
+}
+
+func (a *AdditionalCardDetail) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AdditionalCardDetail) UnmarshalJSON(data []byte) error {
+	type unmarshaler AdditionalCardDetail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AdditionalCardDetail(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AdditionalCardDetail) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 type BankVerificationResponse struct {
 	Status *string `json:"status,omitempty" url:"status,omitempty"`
 
@@ -58,4 +132,136 @@ func (b *BankVerificationResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", b)
+}
+
+type CardDetailsResponse struct {
+	Brand      *string                 `json:"brand,omitempty" url:"brand,omitempty"`
+	Funding    *string                 `json:"funding,omitempty" url:"funding,omitempty"`
+	Segment    *string                 `json:"segment,omitempty" url:"segment,omitempty"`
+	Issuer     *CardIssuerDetails      `json:"issuer,omitempty" url:"issuer,omitempty"`
+	Additional []*AdditionalCardDetail `json:"additional,omitempty" url:"additional,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardDetailsResponse) GetBrand() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Brand
+}
+
+func (c *CardDetailsResponse) GetFunding() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Funding
+}
+
+func (c *CardDetailsResponse) GetSegment() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Segment
+}
+
+func (c *CardDetailsResponse) GetIssuer() *CardIssuerDetails {
+	if c == nil {
+		return nil
+	}
+	return c.Issuer
+}
+
+func (c *CardDetailsResponse) GetAdditional() []*AdditionalCardDetail {
+	if c == nil {
+		return nil
+	}
+	return c.Additional
+}
+
+func (c *CardDetailsResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardDetailsResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardDetailsResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardDetailsResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardDetailsResponse) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CardIssuerDetails struct {
+	Country *string `json:"country,omitempty" url:"country,omitempty"`
+	Name    *string `json:"name,omitempty" url:"name,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardIssuerDetails) GetCountry() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Country
+}
+
+func (c *CardIssuerDetails) GetName() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Name
+}
+
+func (c *CardIssuerDetails) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardIssuerDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardIssuerDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardIssuerDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardIssuerDetails) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }

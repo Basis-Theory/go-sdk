@@ -38,18 +38,50 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-func (c *Client) Tokenize(
+func (c *Client) Create(
 	ctx context.Context,
-	request *v2.GooglePayTokenizeRequest,
+	request *v2.GooglePayCreateRequest,
 	opts ...option.RequestOption,
-) (*v2.GooglePayTokenizeResponse, error) {
-	response, err := c.WithRawResponse.Tokenize(
+) (*v2.GooglePayCreateResponse, error) {
+	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
 		opts...,
 	)
 	if err != nil {
 		return nil, err
+	}
+	return response.Body, nil
+}
+
+func (c *Client) Get(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*v2.GooglePayToken, error) {
+	response, err := c.WithRawResponse.Get(
+		ctx,
+		id,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+func (c *Client) Delete(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (string, error) {
+	response, err := c.WithRawResponse.Delete(
+		ctx,
+		id,
+		opts...,
+	)
+	if err != nil {
+		return "", err
 	}
 	return response.Body, nil
 }
