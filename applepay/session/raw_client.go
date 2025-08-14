@@ -5,6 +5,7 @@ package session
 import (
 	context "context"
 	v2 "github.com/Basis-Theory/go-sdk/v2"
+	applepay "github.com/Basis-Theory/go-sdk/v2/applepay"
 	core "github.com/Basis-Theory/go-sdk/v2/core"
 	internal "github.com/Basis-Theory/go-sdk/v2/internal"
 	option "github.com/Basis-Theory/go-sdk/v2/option"
@@ -32,7 +33,7 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) Create(
 	ctx context.Context,
-	request *v2.ApplePaySessionRequest,
+	request *applepay.ApplePaySessionRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[string], error) {
 	options := core.NewRequestOptions(opts...)
@@ -46,6 +47,7 @@ func (r *RawClient) Create(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &v2.BadRequestError{

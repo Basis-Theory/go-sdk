@@ -53,3 +53,19 @@ func (c *Client) BankAccountVerify(
 	}
 	return response.Body, nil
 }
+
+func (c *Client) Getcarddetails(
+	ctx context.Context,
+	request *v2.EnrichmentsGetCardDetailsRequest,
+	opts ...option.RequestOption,
+) (*v2.CardDetailsResponse, error) {
+	response, err := c.WithRawResponse.Getcarddetails(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}

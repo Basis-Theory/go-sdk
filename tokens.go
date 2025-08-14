@@ -8,22 +8,6 @@ import (
 	internal "github.com/Basis-Theory/go-sdk/v2/internal"
 )
 
-type CreateTokenRequest struct {
-	ID                    *string            `json:"id,omitempty" url:"-"`
-	Type                  *string            `json:"type,omitempty" url:"-"`
-	Data                  interface{}        `json:"data,omitempty" url:"-"`
-	Encrypted             *string            `json:"encrypted,omitempty" url:"-"`
-	Privacy               *Privacy           `json:"privacy,omitempty" url:"-"`
-	Metadata              map[string]*string `json:"metadata,omitempty" url:"-"`
-	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"-"`
-	FingerprintExpression *string            `json:"fingerprint_expression,omitempty" url:"-"`
-	Mask                  interface{}        `json:"mask,omitempty" url:"-"`
-	DeduplicateToken      *bool              `json:"deduplicate_token,omitempty" url:"-"`
-	ExpiresAt             *string            `json:"expires_at,omitempty" url:"-"`
-	Containers            []string           `json:"containers,omitempty" url:"-"`
-	TokenIntentID         *string            `json:"token_intent_id,omitempty" url:"-"`
-}
-
 type TokensListRequest struct {
 	ID       []*string          `json:"-" url:"id,omitempty"`
 	Metadata map[string]*string `json:"-" url:"metadata,omitempty"`
