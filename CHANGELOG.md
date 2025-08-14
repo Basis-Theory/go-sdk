@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/Basis-Theory/go-sdk/compare/v2.3.0...v3.0.0) (2025-08-14)
+
+
+### Features
+
+* Add Google Pay endpoints ([062841e](https://github.com/Basis-Theory/go-sdk/commit/062841ece7801763211a69874dee782c9b916d7f))
+
+
+### BREAKING CHANGES
+
+* Deprecating old Google Pay and Apple Pay endpoints
+
 # [2.3.0](https://github.com/Basis-Theory/go-sdk/compare/v2.2.0...v2.3.0) (2025-07-29)
 
 
