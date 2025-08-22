@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/Basis-Theory/go-sdk/compare/v3.0.0...v3.1.0) (2025-08-22)
+
+
+### Features
+
+* Add DELETE endpoint for ApplePay ([7da4ed1](https://github.com/Basis-Theory/go-sdk/commit/7da4ed1b8dd8055ad20a0a10ca24a1802d68f12b))
+
 # [3.0.0](https://github.com/Basis-Theory/go-sdk/compare/v2.3.0...v3.0.0) (2025-08-14)
 
 
