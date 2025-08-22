@@ -156,7 +156,7 @@ func (r *RawClient) Get(
 	}, nil
 }
 
-func (r *RawClient) Unlink(
+func (r *RawClient) Delete(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
@@ -168,7 +168,7 @@ func (r *RawClient) Unlink(
 		"https://api.basistheory.com",
 	)
 	endpointURL := internal.EncodeURL(
-		baseURL+"/apple-pay/%v/unlink",
+		baseURL+"/apple-pay/%v",
 		id,
 	)
 	headers := internal.MergeHeaders(
@@ -186,8 +186,8 @@ func (r *RawClient) Unlink(
 				APIError: apiError,
 			}
 		},
-		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+		404: func(apiError *core.APIError) error {
+			return &v2.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -197,7 +197,7 @@ func (r *RawClient) Unlink(
 		ctx,
 		&internal.CallParams{
 			URL:             endpointURL,
-			Method:          http.MethodPost,
+			Method:          http.MethodDelete,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
 			BodyProperties:  options.BodyProperties,
