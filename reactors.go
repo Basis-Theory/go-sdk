@@ -14,6 +14,8 @@ type CreateReactorRequest struct {
 	Code          string             `json:"code" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
+	Dependencies  map[string]*string `json:"dependencies,omitempty" url:"-"`
+	Runtime       *string            `json:"runtime,omitempty" url:"-"`
 }
 
 type ReactorsListRequest struct {
@@ -168,6 +170,8 @@ type Reactor struct {
 	ModifiedBy    *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
+	Dependencies  map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	Runtime       *string            `json:"runtime,omitempty" url:"runtime,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -248,6 +252,20 @@ func (r *Reactor) GetConfiguration() map[string]*string {
 		return nil
 	}
 	return r.Configuration
+}
+
+func (r *Reactor) GetDependencies() map[string]*string {
+	if r == nil {
+		return nil
+	}
+	return r.Dependencies
+}
+
+func (r *Reactor) GetRuntime() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Runtime
 }
 
 func (r *Reactor) GetExtraProperties() map[string]interface{} {
@@ -659,4 +677,6 @@ type UpdateReactorRequest struct {
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          string             `json:"code" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
+	Dependencies  map[string]*string `json:"dependencies,omitempty" url:"-"`
+	Runtime       *string            `json:"runtime,omitempty" url:"-"`
 }

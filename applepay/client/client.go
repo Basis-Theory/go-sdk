@@ -76,12 +76,12 @@ func (c *Client) Get(
 	return response.Body, nil
 }
 
-func (c *Client) Unlink(
+func (c *Client) Delete(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
 ) (string, error) {
-	response, err := c.WithRawResponse.Unlink(
+	response, err := c.WithRawResponse.Delete(
 		ctx,
 		id,
 		opts...,
