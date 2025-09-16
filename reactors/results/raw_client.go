@@ -4,10 +4,10 @@ package results
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 )
 
@@ -53,22 +53,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &v3.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},

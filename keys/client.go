@@ -4,10 +4,10 @@ package keys
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 	os "os"
 )
@@ -41,7 +41,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) ([]*v2.ClientEncryptionKeyMetadataResponse, error) {
+) ([]*v3.ClientEncryptionKeyMetadataResponse, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		opts...,
@@ -54,9 +54,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.ClientEncryptionKeyRequest,
+	request *v3.ClientEncryptionKeyRequest,
 	opts ...option.RequestOption,
-) (*v2.ClientEncryptionKeyResponse, error) {
+) (*v3.ClientEncryptionKeyResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -72,7 +72,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v2.ClientEncryptionKeyMetadataResponse, error) {
+) (*v3.ClientEncryptionKeyMetadataResponse, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

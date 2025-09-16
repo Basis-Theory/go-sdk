@@ -4,11 +4,11 @@ package jobs
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	accountupdater "github.com/Basis-Theory/go-sdk/v2/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	accountupdater "github.com/Basis-Theory/go-sdk/v3/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.AccountUpdaterJob], error) {
+) (*core.Response[*v3.AccountUpdaterJob], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -52,22 +52,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.AccountUpdaterJob
+	var response *v3.AccountUpdaterJob
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -85,7 +85,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.AccountUpdaterJob]{
+	return &core.Response[*v3.AccountUpdaterJob]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -96,7 +96,7 @@ func (r *RawClient) List(
 	ctx context.Context,
 	request *accountupdater.JobsListRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.AccountUpdaterJobList], error) {
+) (*core.Response[*v3.AccountUpdaterJobList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -117,17 +117,17 @@ func (r *RawClient) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.AccountUpdaterJobList
+	var response *v3.AccountUpdaterJobList
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -145,7 +145,7 @@ func (r *RawClient) List(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.AccountUpdaterJobList]{
+	return &core.Response[*v3.AccountUpdaterJobList]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -155,7 +155,7 @@ func (r *RawClient) List(
 func (r *RawClient) Create(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.AccountUpdaterJob], error) {
+) (*core.Response[*v3.AccountUpdaterJob], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -169,22 +169,22 @@ func (r *RawClient) Create(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &v3.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.AccountUpdaterJob
+	var response *v3.AccountUpdaterJob
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -202,7 +202,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.AccountUpdaterJob]{
+	return &core.Response[*v3.AccountUpdaterJob]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

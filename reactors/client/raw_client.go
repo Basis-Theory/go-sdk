@@ -4,10 +4,10 @@ package client
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 )
 
@@ -32,9 +32,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) Create(
 	ctx context.Context,
-	request *v2.CreateReactorRequest,
+	request *v3.CreateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v2.Reactor], error) {
+) (*core.Response[*v3.Reactor], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -49,22 +49,22 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Reactor
+	var response *v3.Reactor
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -83,7 +83,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Reactor]{
+	return &core.Response[*v3.Reactor]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -94,7 +94,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Reactor], error) {
+) (*core.Response[*v3.Reactor], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -111,22 +111,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Reactor
+	var response *v3.Reactor
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -144,7 +144,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Reactor]{
+	return &core.Response[*v3.Reactor]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -154,9 +154,9 @@ func (r *RawClient) Get(
 func (r *RawClient) Update(
 	ctx context.Context,
 	id string,
-	request *v2.UpdateReactorRequest,
+	request *v3.UpdateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v2.Reactor], error) {
+) (*core.Response[*v3.Reactor], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -174,27 +174,27 @@ func (r *RawClient) Update(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Reactor
+	var response *v3.Reactor
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -213,7 +213,7 @@ func (r *RawClient) Update(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Reactor]{
+	return &core.Response[*v3.Reactor]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -241,17 +241,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -282,7 +282,7 @@ func (r *RawClient) Delete(
 func (r *RawClient) Patch(
 	ctx context.Context,
 	id string,
-	request *v2.PatchReactorRequest,
+	request *v3.PatchReactorRequest,
 	opts ...option.IdempotentRequestOption,
 ) (*core.Response[any], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
@@ -302,22 +302,22 @@ func (r *RawClient) Patch(
 	headers.Add("Content-Type", "application/merge-patch+json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -349,9 +349,9 @@ func (r *RawClient) Patch(
 func (r *RawClient) React(
 	ctx context.Context,
 	id string,
-	request *v2.ReactRequest,
+	request *v3.ReactRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.ReactResponse], error) {
+) (*core.Response[*v3.ReactResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -369,32 +369,32 @@ func (r *RawClient) React(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &v3.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.ReactResponse
+	var response *v3.ReactResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -413,7 +413,7 @@ func (r *RawClient) React(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.ReactResponse]{
+	return &core.Response[*v3.ReactResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -423,9 +423,9 @@ func (r *RawClient) React(
 func (r *RawClient) ReactAsync(
 	ctx context.Context,
 	id string,
-	request *v2.ReactRequestAsync,
+	request *v3.ReactRequestAsync,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.AsyncReactResponse], error) {
+) (*core.Response[*v3.AsyncReactResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -443,32 +443,32 @@ func (r *RawClient) ReactAsync(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &v3.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.AsyncReactResponse
+	var response *v3.AsyncReactResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -487,7 +487,7 @@ func (r *RawClient) ReactAsync(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.AsyncReactResponse]{
+	return &core.Response[*v3.AsyncReactResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

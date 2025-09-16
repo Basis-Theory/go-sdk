@@ -4,11 +4,11 @@ package self
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
-	tenants "github.com/Basis-Theory/go-sdk/v2/tenants"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
+	tenants "github.com/Basis-Theory/go-sdk/v3/tenants"
 	http "net/http"
 	os "os"
 )
@@ -42,7 +42,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) GetUsageReports(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v2.TenantUsageReport, error) {
+) (*v3.TenantUsageReport, error) {
 	response, err := c.WithRawResponse.GetUsageReports(
 		ctx,
 		opts...,
@@ -56,7 +56,7 @@ func (c *Client) GetUsageReports(
 func (c *Client) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v2.Tenant, error) {
+) (*v3.Tenant, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		opts...,
@@ -71,7 +71,7 @@ func (c *Client) Update(
 	ctx context.Context,
 	request *tenants.UpdateTenantRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Tenant, error) {
+) (*v3.Tenant, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		request,

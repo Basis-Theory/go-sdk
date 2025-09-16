@@ -2,7 +2,7 @@
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FBasis-Theory%2Fgo-sdk)
 
-The BasisTheory Go library provides convenient access to the BasisTheory API from Go.
+The BasisTheory Go library provides convenient access to the BasisTheory APIs from Go.
 
 ## Requirements
 
@@ -24,8 +24,8 @@ Instantiate and use the client with the following:
 package example
 
 import (
-    client "github.com/Basis-Theory/go-sdk/v2/client"
-    option "github.com/Basis-Theory/go-sdk/v2/option"
+    client "github.com/Basis-Theory/go-sdk/v3/client"
+    option "github.com/Basis-Theory/go-sdk/v3/option"
     context "context"
 )
 

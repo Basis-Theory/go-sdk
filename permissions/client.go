@@ -4,10 +4,10 @@ package permissions
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 	os "os"
 )
@@ -40,9 +40,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v2.PermissionsListRequest,
+	request *v3.PermissionsListRequest,
 	opts ...option.RequestOption,
-) ([]*v2.Permission, error) {
+) ([]*v3.Permission, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		request,

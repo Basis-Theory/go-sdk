@@ -4,10 +4,10 @@ package applicationkeys
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 )
 
@@ -33,9 +33,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 func (r *RawClient) List(
 	ctx context.Context,
 	id string,
-	request *v2.ApplicationKeysListRequest,
+	request *v3.ApplicationKeysListRequest,
 	opts ...option.RequestOption,
-) (*core.Response[[]*v2.ApplicationKey], error) {
+) (*core.Response[[]*v3.ApplicationKey], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -59,22 +59,22 @@ func (r *RawClient) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response []*v2.ApplicationKey
+	var response []*v3.ApplicationKey
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -92,7 +92,7 @@ func (r *RawClient) List(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[[]*v2.ApplicationKey]{
+	return &core.Response[[]*v3.ApplicationKey]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -103,7 +103,7 @@ func (r *RawClient) Create(
 	ctx context.Context,
 	id string,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v2.ApplicationKey], error) {
+) (*core.Response[*v3.ApplicationKey], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -120,22 +120,22 @@ func (r *RawClient) Create(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v2.UnprocessableEntityError{
+			return &v3.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.ApplicationKey
+	var response *v3.ApplicationKey
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -153,7 +153,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.ApplicationKey]{
+	return &core.Response[*v3.ApplicationKey]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -165,7 +165,7 @@ func (r *RawClient) Get(
 	id string,
 	keyID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.ApplicationKey], error) {
+) (*core.Response[*v3.ApplicationKey], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -183,22 +183,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.ApplicationKey
+	var response *v3.ApplicationKey
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -216,7 +216,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.ApplicationKey]{
+	return &core.Response[*v3.ApplicationKey]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -246,17 +246,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
