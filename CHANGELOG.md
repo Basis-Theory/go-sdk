@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/Basis-Theory/go-sdk/compare/v3.1.0...v3.2.0) (2025-09-17)
+
+
+### Features
+
+* update module to /v3 ([#88](https://github.com/Basis-Theory/go-sdk/issues/88)) ([998a2e3](https://github.com/Basis-Theory/go-sdk/commit/998a2e364292a880911e672926c8854c47bd7b9e))
+
 # [3.1.0](https://github.com/Basis-Theory/go-sdk/compare/v3.0.0...v3.1.0) (2025-08-22)
 
 
