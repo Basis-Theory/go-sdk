@@ -4,17 +4,17 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	basistheory "github.com/Basis-Theory/go-sdk/v2"
-	"github.com/google/uuid"
 	"net/http"
 	"net/url"
 	"os"
 	"testing"
 	"time"
-)
-import (
-	basistheoryclient "github.com/Basis-Theory/go-sdk/v2/client"
-	"github.com/Basis-Theory/go-sdk/v2/option"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v3"
+	"github.com/google/uuid"
+
+	basistheoryclient "github.com/Basis-Theory/go-sdk/v3/client"
+	"github.com/Basis-Theory/go-sdk/v3/option"
 )
 
 func TestTenantSelf(t *testing.T) {

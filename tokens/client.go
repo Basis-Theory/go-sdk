@@ -5,10 +5,10 @@ package tokens
 import (
 	context "context"
 	fmt "fmt"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 	os "os"
 )
@@ -73,9 +73,9 @@ func (c *Client) Tokenize(
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v2.TokensListRequest,
+	request *v3.TokensListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Token], error) {
+) (*core.Page[*v3.Token], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -93,12 +93,12 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -128,10 +128,10 @@ func (c *Client) List(
 		next = *request.Page
 	}
 
-	readPageResponse := func(response *v2.TokenPaginatedList) *internal.PageResponse[*int, *v2.Token] {
+	readPageResponse := func(response *v3.TokenPaginatedList) *internal.PageResponse[*int, *v3.Token] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v2.Token]{
+		return &internal.PageResponse[*int, *v3.Token]{
 			Next:    &next,
 			Results: results,
 		}
@@ -146,9 +146,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.CreateTokenRequest,
+	request *v3.CreateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Token, error) {
+) (*v3.Token, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -164,7 +164,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v2.Token, error) {
+) (*v3.Token, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -195,9 +195,9 @@ func (c *Client) Delete(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v2.UpdateTokenRequest,
+	request *v3.UpdateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Token, error) {
+) (*v3.Token, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -212,9 +212,9 @@ func (c *Client) Update(
 
 func (c *Client) ListV2(
 	ctx context.Context,
-	request *v2.TokensListV2Request,
+	request *v3.TokensListV2Request,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Token], error) {
+) (*core.Page[*v3.Token], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -232,12 +232,12 @@ func (c *Client) ListV2(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -262,14 +262,14 @@ func (c *Client) ListV2(
 			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		}
 	}
-	readPageResponse := func(response *v2.TokenCursorPaginatedList) *internal.PageResponse[*string, *v2.Token] {
+	readPageResponse := func(response *v3.TokenCursorPaginatedList) *internal.PageResponse[*string, *v3.Token] {
 		var zeroValue *string
 		var next *string
 		if response.Pagination != nil {
 			next = response.Pagination.Next
 		}
 		results := response.GetData()
-		return &internal.PageResponse[*string, *v2.Token]{
+		return &internal.PageResponse[*string, *v3.Token]{
 			Next:    next,
 			Results: results,
 			Done:    next == zeroValue,
@@ -285,9 +285,9 @@ func (c *Client) ListV2(
 
 func (c *Client) SearchV2(
 	ctx context.Context,
-	request *v2.SearchTokensRequestV2,
+	request *v3.SearchTokensRequestV2,
 	opts ...option.IdempotentRequestOption,
-) (*v2.TokenCursorPaginatedList, error) {
+) (*v3.TokenCursorPaginatedList, error) {
 	response, err := c.WithRawResponse.SearchV2(
 		ctx,
 		request,

@@ -5,10 +5,10 @@ package logs
 import (
 	context "context"
 	fmt "fmt"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 	os "os"
 )
@@ -41,9 +41,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v2.LogsListRequest,
+	request *v3.LogsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Log], error) {
+) (*core.Page[*v3.Log], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,17 +61,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -101,10 +101,10 @@ func (c *Client) List(
 		next = *request.Page
 	}
 
-	readPageResponse := func(response *v2.LogPaginatedList) *internal.PageResponse[*int, *v2.Log] {
+	readPageResponse := func(response *v3.LogPaginatedList) *internal.PageResponse[*int, *v3.Log] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v2.Log]{
+		return &internal.PageResponse[*int, *v3.Log]{
 			Next:    &next,
 			Results: results,
 		}
@@ -120,7 +120,7 @@ func (c *Client) List(
 func (c *Client) GetEntityTypes(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) ([]*v2.LogEntityType, error) {
+) ([]*v3.LogEntityType, error) {
 	response, err := c.WithRawResponse.GetEntityTypes(
 		ctx,
 		opts...,

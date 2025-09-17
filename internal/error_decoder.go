@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Basis-Theory/go-sdk/v2/core"
+	"github.com/Basis-Theory/go-sdk/v3/core"
 )
 
 // ErrorDecoder decodes *http.Response errors and returns a

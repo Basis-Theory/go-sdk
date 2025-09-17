@@ -5,10 +5,10 @@ package applications
 import (
 	context "context"
 	fmt "fmt"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 	os "os"
 )
@@ -41,9 +41,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v2.ApplicationsListRequest,
+	request *v3.ApplicationsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.Application], error) {
+) (*core.Page[*v3.Application], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,17 +61,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -101,10 +101,10 @@ func (c *Client) List(
 		next = *request.Page
 	}
 
-	readPageResponse := func(response *v2.ApplicationPaginatedList) *internal.PageResponse[*int, *v2.Application] {
+	readPageResponse := func(response *v3.ApplicationPaginatedList) *internal.PageResponse[*int, *v3.Application] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v2.Application]{
+		return &internal.PageResponse[*int, *v3.Application]{
 			Next:    &next,
 			Results: results,
 		}
@@ -119,9 +119,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v2.CreateApplicationRequest,
+	request *v3.CreateApplicationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Application, error) {
+) (*v3.Application, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -137,7 +137,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v2.Application, error) {
+) (*v3.Application, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -152,9 +152,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v2.UpdateApplicationRequest,
+	request *v3.UpdateApplicationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v2.Application, error) {
+) (*v3.Application, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -186,7 +186,7 @@ func (c *Client) Delete(
 func (c *Client) GetByKey(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v2.Application, error) {
+) (*v3.Application, error) {
 	response, err := c.WithRawResponse.GetByKey(
 		ctx,
 		opts...,

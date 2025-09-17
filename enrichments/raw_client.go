@@ -4,10 +4,10 @@ package enrichments
 
 import (
 	context "context"
-	v2 "github.com/Basis-Theory/go-sdk/v2"
-	core "github.com/Basis-Theory/go-sdk/v2/core"
-	internal "github.com/Basis-Theory/go-sdk/v2/internal"
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	v3 "github.com/Basis-Theory/go-sdk/v3"
+	core "github.com/Basis-Theory/go-sdk/v3/core"
+	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
 )
 
@@ -32,9 +32,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) BankAccountVerify(
 	ctx context.Context,
-	request *v2.BankVerificationRequest,
+	request *v3.BankVerificationRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.BankVerificationResponse], error) {
+) (*core.Response[*v3.BankVerificationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -49,22 +49,22 @@ func (r *RawClient) BankAccountVerify(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.BankVerificationResponse
+	var response *v3.BankVerificationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -83,7 +83,7 @@ func (r *RawClient) BankAccountVerify(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.BankVerificationResponse]{
+	return &core.Response[*v3.BankVerificationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -92,9 +92,9 @@ func (r *RawClient) BankAccountVerify(
 
 func (r *RawClient) Getcarddetails(
 	ctx context.Context,
-	request *v2.EnrichmentsGetCardDetailsRequest,
+	request *v3.EnrichmentsGetCardDetailsRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.CardDetailsResponse], error) {
+) (*core.Response[*v3.CardDetailsResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -115,17 +115,17 @@ func (r *RawClient) Getcarddetails(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v2.ForbiddenError{
+			return &v3.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.CardDetailsResponse
+	var response *v3.CardDetailsResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -143,7 +143,7 @@ func (r *RawClient) Getcarddetails(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.CardDetailsResponse]{
+	return &core.Response[*v3.CardDetailsResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

@@ -3,7 +3,7 @@
 package client
 
 import (
-	option "github.com/Basis-Theory/go-sdk/v2/option"
+	option "github.com/Basis-Theory/go-sdk/v3/option"
 	assert "github.com/stretchr/testify/assert"
 	http "net/http"
 	testing "testing"
