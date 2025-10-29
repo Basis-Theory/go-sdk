@@ -8,14 +8,6 @@ import (
 	internal "github.com/Basis-Theory/go-sdk/v3/internal"
 )
 
-type TokensListRequest struct {
-	ID       []*string          `json:"-" url:"id,omitempty"`
-	Metadata map[string]*string `json:"-" url:"metadata,omitempty"`
-	Page     *int               `json:"-" url:"page,omitempty"`
-	Start    *string            `json:"-" url:"start,omitempty"`
-	Size     *int               `json:"-" url:"size,omitempty"`
-}
-
 type TokensListV2Request struct {
 	Type        *string            `json:"-" url:"type,omitempty"`
 	Container   *string            `json:"-" url:"container,omitempty"`
@@ -128,60 +120,6 @@ func (t *TokenCursorPaginatedList) UnmarshalJSON(data []byte) error {
 }
 
 func (t *TokenCursorPaginatedList) String() string {
-	if len(t.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TokenPaginatedList struct {
-	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
-	Data       []*Token    `json:"data,omitempty" url:"data,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (t *TokenPaginatedList) GetPagination() *Pagination {
-	if t == nil {
-		return nil
-	}
-	return t.Pagination
-}
-
-func (t *TokenPaginatedList) GetData() []*Token {
-	if t == nil {
-		return nil
-	}
-	return t.Data
-}
-
-func (t *TokenPaginatedList) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TokenPaginatedList) UnmarshalJSON(data []byte) error {
-	type unmarshaler TokenPaginatedList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TokenPaginatedList(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-	t.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TokenPaginatedList) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value

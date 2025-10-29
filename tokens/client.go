@@ -4,7 +4,6 @@ package tokens
 
 import (
 	context "context"
-	fmt "fmt"
 	v3 "github.com/Basis-Theory/go-sdk/v3"
 	core "github.com/Basis-Theory/go-sdk/v3/core"
 	internal "github.com/Basis-Theory/go-sdk/v3/internal"
@@ -71,95 +70,6 @@ func (c *Client) Tokenize(
 	return response.Body, nil
 }
 
-func (c *Client) List(
-	ctx context.Context,
-	request *v3.TokensListRequest,
-	opts ...option.RequestOption,
-) (*core.Page[*v3.Token], error) {
-	options := core.NewRequestOptions(opts...)
-	baseURL := internal.ResolveBaseURL(
-		options.BaseURL,
-		c.baseURL,
-		"https://api.basistheory.com",
-	)
-	endpointURL := baseURL + "/tokens"
-	queryParams, err := internal.QueryValues(request)
-	if err != nil {
-		return nil, err
-	}
-	headers := internal.MergeHeaders(
-		c.header.Clone(),
-		options.ToHeader(),
-	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-	}
-	prepareCall := func(pageRequest *internal.PageRequest[*int]) *internal.CallParams {
-		if pageRequest.Cursor != nil {
-			queryParams.Set("page", fmt.Sprintf("%v", pageRequest.Cursor))
-		}
-		nextURL := endpointURL
-		if len(queryParams) > 0 {
-			nextURL += "?" + queryParams.Encode()
-		}
-		return &internal.CallParams{
-			URL:             nextURL,
-			Method:          http.MethodGet,
-			Headers:         headers,
-			MaxAttempts:     options.MaxAttempts,
-			BodyProperties:  options.BodyProperties,
-			QueryParameters: options.QueryParameters,
-			Client:          options.HTTPClient,
-			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
-		}
-	}
-	next := 1
-	if request.Page != nil {
-		next = *request.Page
-	}
-
-	readPageResponse := func(response *v3.TokenPaginatedList) *internal.PageResponse[*int, *v3.Token] {
-		next += 1
-		results := response.GetData()
-		return &internal.PageResponse[*int, *v3.Token]{
-			Next:    &next,
-			Results: results,
-		}
-	}
-	pager := internal.NewOffsetPager(
-		c.caller,
-		prepareCall,
-		readPageResponse,
-	)
-	return pager.GetPage(ctx, &next)
-}
-
-func (c *Client) Create(
-	ctx context.Context,
-	request *v3.CreateTokenRequest,
-	opts ...option.IdempotentRequestOption,
-) (*v3.Token, error) {
-	response, err := c.WithRawResponse.Create(
-		ctx,
-		request,
-		opts...,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return response.Body, nil
-}
-
 func (c *Client) Get(
 	ctx context.Context,
 	id string,
@@ -201,6 +111,22 @@ func (c *Client) Update(
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+func (c *Client) Create(
+	ctx context.Context,
+	request *v3.CreateTokenRequest,
+	opts ...option.IdempotentRequestOption,
+) (*v3.Token, error) {
+	response, err := c.WithRawResponse.Create(
+		ctx,
 		request,
 		opts...,
 	)

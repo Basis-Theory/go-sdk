@@ -49,6 +49,7 @@ type Proxy struct {
 	TenantID           *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
 	Name               *string            `json:"name,omitempty" url:"name,omitempty"`
 	DestinationURL     *string            `json:"destination_url,omitempty" url:"destination_url,omitempty"`
+	State              *string            `json:"state,omitempty" url:"state,omitempty"`
 	RequestReactorID   *string            `json:"request_reactor_id,omitempty" url:"request_reactor_id,omitempty"`
 	ResponseReactorID  *string            `json:"response_reactor_id,omitempty" url:"response_reactor_id,omitempty"`
 	RequireAuth        *bool              `json:"require_auth,omitempty" url:"require_auth,omitempty"`
@@ -103,6 +104,13 @@ func (p *Proxy) GetDestinationURL() *string {
 		return nil
 	}
 	return p.DestinationURL
+}
+
+func (p *Proxy) GetState() *string {
+	if p == nil {
+		return nil
+	}
+	return p.State
 }
 
 func (p *Proxy) GetRequestReactorID() *string {
@@ -412,10 +420,12 @@ func (p *ProxyTransform) String() string {
 }
 
 type ProxyTransformOptions struct {
-	Token      *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
-	Identifier *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
-	Value      *string             `json:"value,omitempty" url:"value,omitempty"`
-	Location   *string             `json:"location,omitempty" url:"location,omitempty"`
+	Token        *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
+	Identifier   *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
+	Value        *string             `json:"value,omitempty" url:"value,omitempty"`
+	Location     *string             `json:"location,omitempty" url:"location,omitempty"`
+	Runtime      *string             `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Dependencies map[string]*string  `json:"dependencies,omitempty" url:"dependencies,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -447,6 +457,20 @@ func (p *ProxyTransformOptions) GetLocation() *string {
 		return nil
 	}
 	return p.Location
+}
+
+func (p *ProxyTransformOptions) GetRuntime() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Runtime
+}
+
+func (p *ProxyTransformOptions) GetDependencies() map[string]*string {
+	if p == nil {
+		return nil
+	}
+	return p.Dependencies
 }
 
 func (p *ProxyTransformOptions) GetExtraProperties() map[string]interface{} {
