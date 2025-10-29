@@ -15,14 +15,14 @@ type GooglePayCreateRequest struct {
 }
 
 type GooglePayCreateResponse struct {
-	GooglePay   *GooglePayCreateTokenResponse `json:"google_pay,omitempty" url:"google_pay,omitempty"`
-	TokenIntent *CreateTokenIntentResponse    `json:"token_intent,omitempty" url:"token_intent,omitempty"`
+	GooglePay   *GooglePayToken            `json:"google_pay,omitempty" url:"google_pay,omitempty"`
+	TokenIntent *CreateTokenIntentResponse `json:"token_intent,omitempty" url:"token_intent,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (g *GooglePayCreateResponse) GetGooglePay() *GooglePayCreateTokenResponse {
+func (g *GooglePayCreateResponse) GetGooglePay() *GooglePayToken {
 	if g == nil {
 		return nil
 	}
@@ -57,130 +57,6 @@ func (g *GooglePayCreateResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (g *GooglePayCreateResponse) String() string {
-	if len(g.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-type GooglePayCreateTokenResponse struct {
-	ID        *string                      `json:"id,omitempty" url:"id,omitempty"`
-	TenantID  *string                      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Status    *string                      `json:"status,omitempty" url:"status,omitempty"`
-	ExpiresAt *time.Time                   `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	CreatedBy *string                      `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt *time.Time                   `json:"created_at,omitempty" url:"created_at,omitempty"`
-	Card      *CardDetails                 `json:"card,omitempty" url:"card,omitempty"`
-	Details   *TokenServiceProviderDetails `json:"details,omitempty" url:"details,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (g *GooglePayCreateTokenResponse) GetID() *string {
-	if g == nil {
-		return nil
-	}
-	return g.ID
-}
-
-func (g *GooglePayCreateTokenResponse) GetTenantID() *string {
-	if g == nil {
-		return nil
-	}
-	return g.TenantID
-}
-
-func (g *GooglePayCreateTokenResponse) GetStatus() *string {
-	if g == nil {
-		return nil
-	}
-	return g.Status
-}
-
-func (g *GooglePayCreateTokenResponse) GetExpiresAt() *time.Time {
-	if g == nil {
-		return nil
-	}
-	return g.ExpiresAt
-}
-
-func (g *GooglePayCreateTokenResponse) GetCreatedBy() *string {
-	if g == nil {
-		return nil
-	}
-	return g.CreatedBy
-}
-
-func (g *GooglePayCreateTokenResponse) GetCreatedAt() *time.Time {
-	if g == nil {
-		return nil
-	}
-	return g.CreatedAt
-}
-
-func (g *GooglePayCreateTokenResponse) GetCard() *CardDetails {
-	if g == nil {
-		return nil
-	}
-	return g.Card
-}
-
-func (g *GooglePayCreateTokenResponse) GetDetails() *TokenServiceProviderDetails {
-	if g == nil {
-		return nil
-	}
-	return g.Details
-}
-
-func (g *GooglePayCreateTokenResponse) GetExtraProperties() map[string]interface{} {
-	return g.extraProperties
-}
-
-func (g *GooglePayCreateTokenResponse) UnmarshalJSON(data []byte) error {
-	type embed GooglePayCreateTokenResponse
-	var unmarshaler = struct {
-		embed
-		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
-		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
-	}{
-		embed: embed(*g),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*g = GooglePayCreateTokenResponse(unmarshaler.embed)
-	g.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
-	g.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	extraProperties, err := internal.ExtractExtraProperties(data, *g)
-	if err != nil {
-		return err
-	}
-	g.extraProperties = extraProperties
-	g.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GooglePayCreateTokenResponse) MarshalJSON() ([]byte, error) {
-	type embed GooglePayCreateTokenResponse
-	var marshaler = struct {
-		embed
-		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
-		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
-	}{
-		embed:     embed(*g),
-		ExpiresAt: internal.NewOptionalDateTime(g.ExpiresAt),
-		CreatedAt: internal.NewOptionalDateTime(g.CreatedAt),
-	}
-	return json.Marshal(marshaler)
-}
-
-func (g *GooglePayCreateTokenResponse) String() string {
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -275,6 +151,7 @@ type GooglePayToken struct {
 	Data           interface{}                  `json:"data,omitempty" url:"data,omitempty"`
 	Authentication *TokenAuthentication         `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Details        *TokenServiceProviderDetails `json:"details,omitempty" url:"details,omitempty"`
+	Fingerprint    *string                      `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -362,6 +239,13 @@ func (g *GooglePayToken) GetDetails() *TokenServiceProviderDetails {
 		return nil
 	}
 	return g.Details
+}
+
+func (g *GooglePayToken) GetFingerprint() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Fingerprint
 }
 
 func (g *GooglePayToken) GetExtraProperties() map[string]interface{} {

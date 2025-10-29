@@ -37,7 +37,7 @@ func (c *ClientEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
 
 type ClientEncryptionKeyMetadataResponse struct {
 	ID        *string    `json:"id,omitempty" url:"id,omitempty"`
-	ExpiresAt *time.Time `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -65,7 +65,7 @@ func (c *ClientEncryptionKeyMetadataResponse) UnmarshalJSON(data []byte) error {
 	type embed ClientEncryptionKeyMetadataResponse
 	var unmarshaler = struct {
 		embed
-		ExpiresAt *internal.DateTime `json:"expiresAt,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed: embed(*c),
 	}
@@ -87,7 +87,7 @@ func (c *ClientEncryptionKeyMetadataResponse) MarshalJSON() ([]byte, error) {
 	type embed ClientEncryptionKeyMetadataResponse
 	var marshaler = struct {
 		embed
-		ExpiresAt *internal.DateTime `json:"expiresAt,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed:     embed(*c),
 		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
@@ -108,19 +108,19 @@ func (c *ClientEncryptionKeyMetadataResponse) String() string {
 }
 
 type ClientEncryptionKeyResponse struct {
-	ID           *string    `json:"id,omitempty" url:"id,omitempty"`
-	PublicKeyPem *string    `json:"publicKeyPEM,omitempty" url:"publicKeyPEM,omitempty"`
-	ExpiresAt    *time.Time `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	KeyID        *string    `json:"key_id,omitempty" url:"key_id,omitempty"`
+	PublicKeyPem *string    `json:"public_key_pem,omitempty" url:"public_key_pem,omitempty"`
+	ExpiresAt    *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (c *ClientEncryptionKeyResponse) GetID() *string {
+func (c *ClientEncryptionKeyResponse) GetKeyID() *string {
 	if c == nil {
 		return nil
 	}
-	return c.ID
+	return c.KeyID
 }
 
 func (c *ClientEncryptionKeyResponse) GetPublicKeyPem() *string {
@@ -145,7 +145,7 @@ func (c *ClientEncryptionKeyResponse) UnmarshalJSON(data []byte) error {
 	type embed ClientEncryptionKeyResponse
 	var unmarshaler = struct {
 		embed
-		ExpiresAt *internal.DateTime `json:"expiresAt,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed: embed(*c),
 	}
@@ -167,7 +167,7 @@ func (c *ClientEncryptionKeyResponse) MarshalJSON() ([]byte, error) {
 	type embed ClientEncryptionKeyResponse
 	var marshaler = struct {
 		embed
-		ExpiresAt *internal.DateTime `json:"expiresAt,omitempty"`
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
 	}{
 		embed:     embed(*c),
 		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
