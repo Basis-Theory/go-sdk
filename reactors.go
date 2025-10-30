@@ -14,8 +14,8 @@ type CreateReactorRequest struct {
 	Code          string             `json:"code" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Dependencies  map[string]*string `json:"dependencies,omitempty" url:"-"`
 	Runtime       *string            `json:"runtime,omitempty" url:"-"`
+	Options       *RuntimeOptions    `json:"options,omitempty" url:"-"`
 }
 
 type ReactorsListRequest struct {
@@ -31,6 +31,8 @@ type PatchReactorRequest struct {
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          *string            `json:"code,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
+	Runtime       *string            `json:"runtime,omitempty" url:"-"`
+	Options       *RuntimeOptions    `json:"options,omitempty" url:"-"`
 }
 
 type ReactRequest struct {
@@ -163,6 +165,7 @@ type Reactor struct {
 	TenantID      *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
 	Name          *string            `json:"name,omitempty" url:"name,omitempty"`
 	Formula       *ReactorFormula    `json:"formula,omitempty" url:"formula,omitempty"`
+	State         *string            `json:"state,omitempty" url:"state,omitempty"`
 	Code          *string            `json:"code,omitempty" url:"code,omitempty"`
 	Application   *Application       `json:"application,omitempty" url:"application,omitempty"`
 	CreatedBy     *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
@@ -170,8 +173,8 @@ type Reactor struct {
 	ModifiedBy    *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
-	Dependencies  map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
 	Runtime       *string            `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Options       *RuntimeOptions    `json:"options,omitempty" url:"options,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -203,6 +206,13 @@ func (r *Reactor) GetFormula() *ReactorFormula {
 		return nil
 	}
 	return r.Formula
+}
+
+func (r *Reactor) GetState() *string {
+	if r == nil {
+		return nil
+	}
+	return r.State
 }
 
 func (r *Reactor) GetCode() *string {
@@ -254,18 +264,18 @@ func (r *Reactor) GetConfiguration() map[string]*string {
 	return r.Configuration
 }
 
-func (r *Reactor) GetDependencies() map[string]*string {
-	if r == nil {
-		return nil
-	}
-	return r.Dependencies
-}
-
 func (r *Reactor) GetRuntime() *string {
 	if r == nil {
 		return nil
 	}
 	return r.Runtime
+}
+
+func (r *Reactor) GetOptions() *RuntimeOptions {
+	if r == nil {
+		return nil
+	}
+	return r.Options
 }
 
 func (r *Reactor) GetExtraProperties() map[string]interface{} {
@@ -672,11 +682,57 @@ func (r *ReactorPaginatedList) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
+type RuntimeOptions struct {
+	Dependencies map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RuntimeOptions) GetDependencies() map[string]*string {
+	if r == nil {
+		return nil
+	}
+	return r.Dependencies
+}
+
+func (r *RuntimeOptions) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RuntimeOptions) UnmarshalJSON(data []byte) error {
+	type unmarshaler RuntimeOptions
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RuntimeOptions(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RuntimeOptions) String() string {
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
 type UpdateReactorRequest struct {
 	Name          string             `json:"name" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          string             `json:"code" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Dependencies  map[string]*string `json:"dependencies,omitempty" url:"-"`
 	Runtime       *string            `json:"runtime,omitempty" url:"-"`
+	Options       *RuntimeOptions    `json:"options,omitempty" url:"-"`
 }

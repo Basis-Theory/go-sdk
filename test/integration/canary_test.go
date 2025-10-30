@@ -142,7 +142,7 @@ func TestClientEncryptionKeysLifecycle(t *testing.T) {
 	)
 	FailIfError(t, "Failed to create key", err)
 
-	if key.ID == nil {
+	if key.KeyID == nil {
 		t.Fatalf("Expected key ID to be defined")
 	}
 	if key.PublicKeyPem == nil {
@@ -151,11 +151,11 @@ func TestClientEncryptionKeysLifecycle(t *testing.T) {
 
 	retrievedKey, err := client.Keys.Get(
 		context.TODO(),
-		*key.ID,
+		*key.KeyID,
 	)
 	FailIfError(t, "Failed to get key", err)
 
-	if retrievedKey.ID == nil || *retrievedKey.ID != *key.ID {
+	if retrievedKey.KeyID == nil || *retrievedKey.KeyID != *key.KeyID {
 		t.Fatalf("Expected retrieved key ID to match created key ID")
 	}
 	if retrievedKey.ExpiresAt == nil {
@@ -164,13 +164,13 @@ func TestClientEncryptionKeysLifecycle(t *testing.T) {
 
 	err = client.Keys.Delete(
 		context.TODO(),
-		*key.ID,
+		*key.KeyID,
 	)
 	FailIfError(t, "Failed to delete key", err)
 
 	_, err = client.Keys.Get(
 		context.TODO(),
-		*key.ID,
+		*key.KeyID,
 	)
 	if err == nil {
 		t.Fatalf("Expected error when trying to get a key that doesn't exist")
