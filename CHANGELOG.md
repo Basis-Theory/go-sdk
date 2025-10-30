@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/Basis-Theory/go-sdk/compare/v3.2.0...v4.0.0) (2025-10-30)
+
+
+### Features
+
+* renaming keys endpoint properties, and removing get tokens v1  ([#90](https://github.com/Basis-Theory/go-sdk/issues/90)) ([a48f03a](https://github.com/Basis-Theory/go-sdk/commit/a48f03aa204ddf3dbbe2d331eb78604c5b4f92ca))
+
+
+### BREAKING CHANGES
+
+* The get tokens v1 endpoint was removed, and the properties of the keys endpoint were renamed
+
 # [3.2.0](https://github.com/Basis-Theory/go-sdk/compare/v3.1.0...v3.2.0) (2025-09-17)
 
 
