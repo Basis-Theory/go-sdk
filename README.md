@@ -4,6 +4,24 @@
 
 The BasisTheory Go library provides convenient access to the BasisTheory APIs from Go.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Optional Parameters](#optional-parameters)
+- [Automatic Pagination](#automatic-pagination)
+- [Timeouts](#timeouts)
+- [Request Options](#request-options)
+- [Automatic Retries](#automatic-retries)
+- [Errors](#errors)
+- [Contributing](#contributing)
+- [Documentation](#documentation)
+- [Environments](#environments)
+- [Advanced](#advanced)
+  - [Response Headers](#response-headers)
+  - [Retries](#retries)
+  - [Timeouts](#timeouts)
+
 ## Requirements
 
 This module requires Go version >= 1.18.
@@ -220,7 +238,7 @@ URL, which is particularly useful in test environments.
 
 ```go
 client := client.NewClient(
-    option.WithBaseURL(basistheory.Environments.Default),
+    option.WithBaseURL(basistheory.Environments.Production),
 )
 ```
 

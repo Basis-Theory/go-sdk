@@ -5,10 +5,9 @@ package client
 import (
 	context "context"
 	v3 "github.com/Basis-Theory/go-sdk/v3"
-	domain "github.com/Basis-Theory/go-sdk/v3/applepay/domain"
-	client "github.com/Basis-Theory/go-sdk/v3/applepay/merchant/client"
-	session "github.com/Basis-Theory/go-sdk/v3/applepay/session"
 	core "github.com/Basis-Theory/go-sdk/v3/core"
+	googlepay "github.com/Basis-Theory/go-sdk/v3/googlepay"
+	certificates "github.com/Basis-Theory/go-sdk/v3/googlepay/merchant/certificates"
 	internal "github.com/Basis-Theory/go-sdk/v3/internal"
 	option "github.com/Basis-Theory/go-sdk/v3/option"
 	http "net/http"
@@ -17,9 +16,7 @@ import (
 
 type Client struct {
 	WithRawResponse *RawClient
-	Merchant        *client.Client
-	Domain          *domain.Client
-	Session         *session.Client
+	Certificates    *certificates.Client
 
 	baseURL string
 	caller  *internal.Caller
@@ -32,9 +29,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Merchant:        client.NewClient(opts...),
-		Domain:          domain.NewClient(opts...),
-		Session:         session.NewClient(opts...),
+		Certificates:    certificates.NewClient(opts...),
 		WithRawResponse: NewRawClient(options),
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
@@ -47,27 +42,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-func (c *Client) Create(
-	ctx context.Context,
-	request *v3.ApplePayCreateRequest,
-	opts ...option.RequestOption,
-) (*v3.ApplePayCreateResponse, error) {
-	response, err := c.WithRawResponse.Create(
-		ctx,
-		request,
-		opts...,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return response.Body, nil
-}
-
 func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v3.ApplePayToken, error) {
+) (*v3.GooglePayMerchant, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -83,14 +62,30 @@ func (c *Client) Delete(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (string, error) {
-	response, err := c.WithRawResponse.Delete(
+) error {
+	_, err := c.WithRawResponse.Delete(
 		ctx,
 		id,
 		opts...,
 	)
 	if err != nil {
-		return "", err
+		return err
+	}
+	return nil
+}
+
+func (c *Client) Create(
+	ctx context.Context,
+	request *googlepay.GooglePayMerchantRegisterRequest,
+	opts ...option.RequestOption,
+) (*v3.GooglePayMerchant, error) {
+	response, err := c.WithRawResponse.Create(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
 	}
 	return response.Body, nil
 }

@@ -7,7 +7,7 @@ package basistheory
 // RequestOption to override the client's default environment,
 // if any.
 var Environments = struct {
-	Default string
+	Production string
 }{
-	Default: "https://api.basistheory.com",
+	Production: "https://api.basistheory.com",
 }

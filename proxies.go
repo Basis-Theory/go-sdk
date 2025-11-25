@@ -420,12 +420,13 @@ func (p *ProxyTransform) String() string {
 }
 
 type ProxyTransformOptions struct {
-	Token        *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
-	Identifier   *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
-	Value        *string             `json:"value,omitempty" url:"value,omitempty"`
-	Location     *string             `json:"location,omitempty" url:"location,omitempty"`
-	Runtime      *string             `json:"runtime,omitempty" url:"runtime,omitempty"`
-	Dependencies map[string]*string  `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	Token           *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
+	Identifier      *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
+	Value           *string             `json:"value,omitempty" url:"value,omitempty"`
+	Location        *string             `json:"location,omitempty" url:"location,omitempty"`
+	Runtime         *string             `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Dependencies    map[string]*string  `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	WarmConcurrency *int                `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -471,6 +472,13 @@ func (p *ProxyTransformOptions) GetDependencies() map[string]*string {
 		return nil
 	}
 	return p.Dependencies
+}
+
+func (p *ProxyTransformOptions) GetWarmConcurrency() *int {
+	if p == nil {
+		return nil
+	}
+	return p.WarmConcurrency
 }
 
 func (p *ProxyTransformOptions) GetExtraProperties() map[string]interface{} {
