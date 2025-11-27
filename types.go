@@ -647,137 +647,105 @@ func (a *ApplePayMerchant) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-type ApplePayToken struct {
-	ID             *string         `json:"id,omitempty" url:"id,omitempty"`
-	Type           *string         `json:"type,omitempty" url:"type,omitempty"`
-	TenantID       *string         `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Status         *string         `json:"status,omitempty" url:"status,omitempty"`
-	ExpiresAt      *time.Time      `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	CreatedBy      *string         `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt      *time.Time      `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy     *string         `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt     *time.Time      `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	Card           *CardDetails    `json:"card,omitempty" url:"card,omitempty"`
-	Data           interface{}     `json:"data,omitempty" url:"data,omitempty"`
-	Authentication *Authentication `json:"authentication,omitempty" url:"authentication,omitempty"`
-	Fingerprint    *string         `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+type ApplePayMerchantCertificates struct {
+	ID                                        *string    `json:"id,omitempty" url:"id,omitempty"`
+	TenantID                                  *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Domain                                    *string    `json:"domain,omitempty" url:"domain,omitempty"`
+	MerchantCertificateExpirationDate         *time.Time `json:"merchant_certificate_expiration_date,omitempty" url:"merchant_certificate_expiration_date,omitempty"`
+	MerchantCertificateFingerprint            *string    `json:"merchant_certificate_fingerprint,omitempty" url:"merchant_certificate_fingerprint,omitempty"`
+	PaymentProcessorCertificateExpirationDate *time.Time `json:"payment_processor_certificate_expiration_date,omitempty" url:"payment_processor_certificate_expiration_date,omitempty"`
+	PaymentProcessorCertificateFingerprint    *string    `json:"payment_processor_certificate_fingerprint,omitempty" url:"payment_processor_certificate_fingerprint,omitempty"`
+	CreatedBy                                 *string    `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt                                 *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (a *ApplePayToken) GetID() *string {
+func (a *ApplePayMerchantCertificates) GetID() *string {
 	if a == nil {
 		return nil
 	}
 	return a.ID
 }
 
-func (a *ApplePayToken) GetType() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Type
-}
-
-func (a *ApplePayToken) GetTenantID() *string {
+func (a *ApplePayMerchantCertificates) GetTenantID() *string {
 	if a == nil {
 		return nil
 	}
 	return a.TenantID
 }
 
-func (a *ApplePayToken) GetStatus() *string {
+func (a *ApplePayMerchantCertificates) GetDomain() *string {
 	if a == nil {
 		return nil
 	}
-	return a.Status
+	return a.Domain
 }
 
-func (a *ApplePayToken) GetExpiresAt() *time.Time {
+func (a *ApplePayMerchantCertificates) GetMerchantCertificateExpirationDate() *time.Time {
 	if a == nil {
 		return nil
 	}
-	return a.ExpiresAt
+	return a.MerchantCertificateExpirationDate
 }
 
-func (a *ApplePayToken) GetCreatedBy() *string {
+func (a *ApplePayMerchantCertificates) GetMerchantCertificateFingerprint() *string {
+	if a == nil {
+		return nil
+	}
+	return a.MerchantCertificateFingerprint
+}
+
+func (a *ApplePayMerchantCertificates) GetPaymentProcessorCertificateExpirationDate() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.PaymentProcessorCertificateExpirationDate
+}
+
+func (a *ApplePayMerchantCertificates) GetPaymentProcessorCertificateFingerprint() *string {
+	if a == nil {
+		return nil
+	}
+	return a.PaymentProcessorCertificateFingerprint
+}
+
+func (a *ApplePayMerchantCertificates) GetCreatedBy() *string {
 	if a == nil {
 		return nil
 	}
 	return a.CreatedBy
 }
 
-func (a *ApplePayToken) GetCreatedAt() *time.Time {
+func (a *ApplePayMerchantCertificates) GetCreatedAt() *time.Time {
 	if a == nil {
 		return nil
 	}
 	return a.CreatedAt
 }
 
-func (a *ApplePayToken) GetModifiedBy() *string {
-	if a == nil {
-		return nil
-	}
-	return a.ModifiedBy
-}
-
-func (a *ApplePayToken) GetModifiedAt() *time.Time {
-	if a == nil {
-		return nil
-	}
-	return a.ModifiedAt
-}
-
-func (a *ApplePayToken) GetCard() *CardDetails {
-	if a == nil {
-		return nil
-	}
-	return a.Card
-}
-
-func (a *ApplePayToken) GetData() interface{} {
-	if a == nil {
-		return nil
-	}
-	return a.Data
-}
-
-func (a *ApplePayToken) GetAuthentication() *Authentication {
-	if a == nil {
-		return nil
-	}
-	return a.Authentication
-}
-
-func (a *ApplePayToken) GetFingerprint() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Fingerprint
-}
-
-func (a *ApplePayToken) GetExtraProperties() map[string]interface{} {
+func (a *ApplePayMerchantCertificates) GetExtraProperties() map[string]interface{} {
 	return a.extraProperties
 }
 
-func (a *ApplePayToken) UnmarshalJSON(data []byte) error {
-	type embed ApplePayToken
+func (a *ApplePayMerchantCertificates) UnmarshalJSON(data []byte) error {
+	type embed ApplePayMerchantCertificates
 	var unmarshaler = struct {
 		embed
-		ExpiresAt  *internal.DateTime `json:"expires_at,omitempty"`
-		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
+		MerchantCertificateExpirationDate         *internal.DateTime `json:"merchant_certificate_expiration_date,omitempty"`
+		PaymentProcessorCertificateExpirationDate *internal.DateTime `json:"payment_processor_certificate_expiration_date,omitempty"`
+		CreatedAt                                 *internal.DateTime `json:"created_at,omitempty"`
 	}{
 		embed: embed(*a),
 	}
 	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = ApplePayToken(unmarshaler.embed)
-	a.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	*a = ApplePayMerchantCertificates(unmarshaler.embed)
+	a.MerchantCertificateExpirationDate = unmarshaler.MerchantCertificateExpirationDate.TimePtr()
+	a.PaymentProcessorCertificateExpirationDate = unmarshaler.PaymentProcessorCertificateExpirationDate.TimePtr()
 	a.CreatedAt = unmarshaler.CreatedAt.TimePtr()
-	a.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
@@ -787,23 +755,23 @@ func (a *ApplePayToken) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (a *ApplePayToken) MarshalJSON() ([]byte, error) {
-	type embed ApplePayToken
+func (a *ApplePayMerchantCertificates) MarshalJSON() ([]byte, error) {
+	type embed ApplePayMerchantCertificates
 	var marshaler = struct {
 		embed
-		ExpiresAt  *internal.DateTime `json:"expires_at,omitempty"`
-		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
-		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
+		MerchantCertificateExpirationDate         *internal.DateTime `json:"merchant_certificate_expiration_date,omitempty"`
+		PaymentProcessorCertificateExpirationDate *internal.DateTime `json:"payment_processor_certificate_expiration_date,omitempty"`
+		CreatedAt                                 *internal.DateTime `json:"created_at,omitempty"`
 	}{
-		embed:      embed(*a),
-		ExpiresAt:  internal.NewOptionalDateTime(a.ExpiresAt),
-		CreatedAt:  internal.NewOptionalDateTime(a.CreatedAt),
-		ModifiedAt: internal.NewOptionalDateTime(a.ModifiedAt),
+		embed:                             embed(*a),
+		MerchantCertificateExpirationDate: internal.NewOptionalDateTime(a.MerchantCertificateExpirationDate),
+		PaymentProcessorCertificateExpirationDate: internal.NewOptionalDateTime(a.PaymentProcessorCertificateExpirationDate),
+		CreatedAt: internal.NewOptionalDateTime(a.CreatedAt),
 	}
 	return json.Marshal(marshaler)
 }
 
-func (a *ApplePayToken) String() string {
+func (a *ApplePayMerchantCertificates) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -1336,68 +1304,6 @@ func (a *AuthenticateThreeDsSessionRequest) UnmarshalJSON(data []byte) error {
 }
 
 func (a *AuthenticateThreeDsSessionRequest) String() string {
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type Authentication struct {
-	ThreedsCryptogram       *string                              `json:"threeds_cryptogram,omitempty" url:"threeds_cryptogram,omitempty"`
-	EciIndicator            *string                              `json:"eci_indicator,omitempty" url:"eci_indicator,omitempty"`
-	AuthenticationResponses []*SubmerchantAuthenticationResponse `json:"authentication_responses,omitempty" url:"authentication_responses,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *Authentication) GetThreedsCryptogram() *string {
-	if a == nil {
-		return nil
-	}
-	return a.ThreedsCryptogram
-}
-
-func (a *Authentication) GetEciIndicator() *string {
-	if a == nil {
-		return nil
-	}
-	return a.EciIndicator
-}
-
-func (a *Authentication) GetAuthenticationResponses() []*SubmerchantAuthenticationResponse {
-	if a == nil {
-		return nil
-	}
-	return a.AuthenticationResponses
-}
-
-func (a *Authentication) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
-}
-
-func (a *Authentication) UnmarshalJSON(data []byte) error {
-	type unmarshaler Authentication
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = Authentication(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *Authentication) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -3564,6 +3470,210 @@ func (g *GetTokensV2) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+type GooglePayMerchant struct {
+	ID                 *string    `json:"id,omitempty" url:"id,omitempty"`
+	TenantID           *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	MerchantIdentifier *string    `json:"merchant_identifier,omitempty" url:"merchant_identifier,omitempty"`
+	CreatedBy          *string    `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt          *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePayMerchant) GetID() *string {
+	if g == nil {
+		return nil
+	}
+	return g.ID
+}
+
+func (g *GooglePayMerchant) GetTenantID() *string {
+	if g == nil {
+		return nil
+	}
+	return g.TenantID
+}
+
+func (g *GooglePayMerchant) GetMerchantIdentifier() *string {
+	if g == nil {
+		return nil
+	}
+	return g.MerchantIdentifier
+}
+
+func (g *GooglePayMerchant) GetCreatedBy() *string {
+	if g == nil {
+		return nil
+	}
+	return g.CreatedBy
+}
+
+func (g *GooglePayMerchant) GetCreatedAt() *time.Time {
+	if g == nil {
+		return nil
+	}
+	return g.CreatedAt
+}
+
+func (g *GooglePayMerchant) GetExtraProperties() map[string]interface{} {
+	return g.extraProperties
+}
+
+func (g *GooglePayMerchant) UnmarshalJSON(data []byte) error {
+	type embed GooglePayMerchant
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*g),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*g = GooglePayMerchant(unmarshaler.embed)
+	g.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GooglePayMerchant) MarshalJSON() ([]byte, error) {
+	type embed GooglePayMerchant
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*g),
+		CreatedAt: internal.NewOptionalDateTime(g.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (g *GooglePayMerchant) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+type GooglePayMerchantCertificates struct {
+	ID                                *string    `json:"id,omitempty" url:"id,omitempty"`
+	TenantID                          *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	MerchantCertificateExpirationDate *time.Time `json:"merchant_certificate_expiration_date,omitempty" url:"merchant_certificate_expiration_date,omitempty"`
+	MerchantCertificateFingerprint    *string    `json:"merchant_certificate_fingerprint,omitempty" url:"merchant_certificate_fingerprint,omitempty"`
+	CreatedBy                         *string    `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt                         *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePayMerchantCertificates) GetID() *string {
+	if g == nil {
+		return nil
+	}
+	return g.ID
+}
+
+func (g *GooglePayMerchantCertificates) GetTenantID() *string {
+	if g == nil {
+		return nil
+	}
+	return g.TenantID
+}
+
+func (g *GooglePayMerchantCertificates) GetMerchantCertificateExpirationDate() *time.Time {
+	if g == nil {
+		return nil
+	}
+	return g.MerchantCertificateExpirationDate
+}
+
+func (g *GooglePayMerchantCertificates) GetMerchantCertificateFingerprint() *string {
+	if g == nil {
+		return nil
+	}
+	return g.MerchantCertificateFingerprint
+}
+
+func (g *GooglePayMerchantCertificates) GetCreatedBy() *string {
+	if g == nil {
+		return nil
+	}
+	return g.CreatedBy
+}
+
+func (g *GooglePayMerchantCertificates) GetCreatedAt() *time.Time {
+	if g == nil {
+		return nil
+	}
+	return g.CreatedAt
+}
+
+func (g *GooglePayMerchantCertificates) GetExtraProperties() map[string]interface{} {
+	return g.extraProperties
+}
+
+func (g *GooglePayMerchantCertificates) UnmarshalJSON(data []byte) error {
+	type embed GooglePayMerchantCertificates
+	var unmarshaler = struct {
+		embed
+		MerchantCertificateExpirationDate *internal.DateTime `json:"merchant_certificate_expiration_date,omitempty"`
+		CreatedAt                         *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*g),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*g = GooglePayMerchantCertificates(unmarshaler.embed)
+	g.MerchantCertificateExpirationDate = unmarshaler.MerchantCertificateExpirationDate.TimePtr()
+	g.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GooglePayMerchantCertificates) MarshalJSON() ([]byte, error) {
+	type embed GooglePayMerchantCertificates
+	var marshaler = struct {
+		embed
+		MerchantCertificateExpirationDate *internal.DateTime `json:"merchant_certificate_expiration_date,omitempty"`
+		CreatedAt                         *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:                             embed(*g),
+		MerchantCertificateExpirationDate: internal.NewOptionalDateTime(g.MerchantCertificateExpirationDate),
+		CreatedAt:                         internal.NewOptionalDateTime(g.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (g *GooglePayMerchantCertificates) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
 type GooglePayTokenizeRequest struct {
 	GooglePaymentMethodToken *GooglePayMethodToken `json:"google_payment_method_token,omitempty" url:"google_payment_method_token,omitempty"`
 
@@ -3999,68 +4109,6 @@ func (s *StringStringKeyValuePair) UnmarshalJSON(data []byte) error {
 }
 
 func (s *StringStringKeyValuePair) String() string {
-	if len(s.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type SubmerchantAuthenticationResponse struct {
-	MerchantIdentifier *string `json:"merchant_identifier,omitempty" url:"merchant_identifier,omitempty"`
-	AuthenticationData *string `json:"authentication_data,omitempty" url:"authentication_data,omitempty"`
-	TransactionAmount  *string `json:"transaction_amount,omitempty" url:"transaction_amount,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (s *SubmerchantAuthenticationResponse) GetMerchantIdentifier() *string {
-	if s == nil {
-		return nil
-	}
-	return s.MerchantIdentifier
-}
-
-func (s *SubmerchantAuthenticationResponse) GetAuthenticationData() *string {
-	if s == nil {
-		return nil
-	}
-	return s.AuthenticationData
-}
-
-func (s *SubmerchantAuthenticationResponse) GetTransactionAmount() *string {
-	if s == nil {
-		return nil
-	}
-	return s.TransactionAmount
-}
-
-func (s *SubmerchantAuthenticationResponse) GetExtraProperties() map[string]interface{} {
-	return s.extraProperties
-}
-
-func (s *SubmerchantAuthenticationResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler SubmerchantAuthenticationResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SubmerchantAuthenticationResponse(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *s)
-	if err != nil {
-		return err
-	}
-	s.extraProperties = extraProperties
-	s.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SubmerchantAuthenticationResponse) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -5152,9 +5200,56 @@ func (t *ThreeDsAuthentication) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+type ThreeDsBrandingOptions struct {
+	HideBasisTheoryBranding *bool `json:"hide_basis_theory_branding,omitempty" url:"hide_basis_theory_branding,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *ThreeDsBrandingOptions) GetHideBasisTheoryBranding() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.HideBasisTheoryBranding
+}
+
+func (t *ThreeDsBrandingOptions) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *ThreeDsBrandingOptions) UnmarshalJSON(data []byte) error {
+	type unmarshaler ThreeDsBrandingOptions
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ThreeDsBrandingOptions(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ThreeDsBrandingOptions) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
 type ThreeDsCallbackURLs struct {
-	Success *string `json:"success,omitempty" url:"success,omitempty"`
-	Failure *string `json:"failure,omitempty" url:"failure,omitempty"`
+	Success  *string                 `json:"success,omitempty" url:"success,omitempty"`
+	Failure  *string                 `json:"failure,omitempty" url:"failure,omitempty"`
+	Branding *ThreeDsBrandingOptions `json:"branding,omitempty" url:"branding,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -5172,6 +5267,13 @@ func (t *ThreeDsCallbackURLs) GetFailure() *string {
 		return nil
 	}
 	return t.Failure
+}
+
+func (t *ThreeDsCallbackURLs) GetBranding() *ThreeDsBrandingOptions {
+	if t == nil {
+		return nil
+	}
+	return t.Branding
 }
 
 func (t *ThreeDsCallbackURLs) GetExtraProperties() map[string]interface{} {

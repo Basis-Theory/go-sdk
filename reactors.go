@@ -683,7 +683,11 @@ func (r *ReactorPaginatedList) String() string {
 }
 
 type RuntimeOptions struct {
-	Dependencies map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	Dependencies    map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	WarmConcurrency *int               `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
+	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
+	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
+	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -694,6 +698,34 @@ func (r *RuntimeOptions) GetDependencies() map[string]*string {
 		return nil
 	}
 	return r.Dependencies
+}
+
+func (r *RuntimeOptions) GetWarmConcurrency() *int {
+	if r == nil {
+		return nil
+	}
+	return r.WarmConcurrency
+}
+
+func (r *RuntimeOptions) GetTimeout() *int {
+	if r == nil {
+		return nil
+	}
+	return r.Timeout
+}
+
+func (r *RuntimeOptions) GetResources() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Resources
+}
+
+func (r *RuntimeOptions) GetPermissions() []string {
+	if r == nil {
+		return nil
+	}
+	return r.Permissions
 }
 
 func (r *RuntimeOptions) GetExtraProperties() map[string]interface{} {
