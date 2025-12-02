@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/Basis-Theory/go-sdk/compare/v4.0.0...v4.1.0) (2025-12-02)
+
+
+### Features
+
+* supporting new environments ([c112499](https://github.com/Basis-Theory/go-sdk/commit/c1124990fa8a87fa2dd51ce1f02228bc17e6264b))
+
 # [4.0.0](https://github.com/Basis-Theory/go-sdk/compare/v3.2.0...v4.0.0) (2025-10-30)
 
 
