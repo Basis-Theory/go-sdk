@@ -10,8 +10,9 @@ import (
 )
 
 type GooglePayCreateRequest struct {
-	ExpiresAt         *string               `json:"expires_at,omitempty" url:"-"`
-	GooglePaymentData *GooglePayMethodToken `json:"google_payment_data,omitempty" url:"-"`
+	ExpiresAt              *string               `json:"expires_at,omitempty" url:"-"`
+	GooglePaymentData      *GooglePayMethodToken `json:"google_payment_data,omitempty" url:"-"`
+	MerchantRegistrationID *string               `json:"merchant_registration_id,omitempty" url:"-"`
 }
 
 type GooglePayCreateResponse struct {

@@ -8,6 +8,12 @@ package basistheory
 // if any.
 var Environments = struct {
 	Default string
+	Us      string
+	Eu      string
+	Test    string
 }{
 	Default: "https://api.basistheory.com",
+	Us:      "https://api.basistheory.com",
+	Eu:      "https://api.basistheory.com",
+	Test:    "https://api.test.basistheory.com",
 }
