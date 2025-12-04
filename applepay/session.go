@@ -3,7 +3,8 @@
 package applepay
 
 type ApplePaySessionRequest struct {
-	ValidationURL *string `json:"validation_url,omitempty" url:"-"`
-	DisplayName   *string `json:"display_name,omitempty" url:"-"`
-	Domain        *string `json:"domain,omitempty" url:"-"`
+	ValidationURL          *string `json:"validation_url,omitempty" url:"-"`
+	DisplayName            *string `json:"display_name,omitempty" url:"-"`
+	Domain                 *string `json:"domain,omitempty" url:"-"`
+	MerchantRegistrationID *string `json:"merchant_registration_id,omitempty" url:"-"`
 }
