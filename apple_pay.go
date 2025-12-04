@@ -10,8 +10,9 @@ import (
 )
 
 type ApplePayCreateRequest struct {
-	ExpiresAt        *string              `json:"expires_at,omitempty" url:"-"`
-	ApplePaymentData *ApplePayMethodToken `json:"apple_payment_data,omitempty" url:"-"`
+	ExpiresAt              *string              `json:"expires_at,omitempty" url:"-"`
+	ApplePaymentData       *ApplePayMethodToken `json:"apple_payment_data,omitempty" url:"-"`
+	MerchantRegistrationID *string              `json:"merchant_registration_id,omitempty" url:"-"`
 }
 
 type ApplePayCreateResponse struct {

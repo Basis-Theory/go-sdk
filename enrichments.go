@@ -19,10 +19,11 @@ type EnrichmentsGetCardDetailsRequest struct {
 }
 
 type AdditionalCardDetail struct {
-	Brand   *string            `json:"brand,omitempty" url:"brand,omitempty"`
-	Funding *string            `json:"funding,omitempty" url:"funding,omitempty"`
-	Segment *string            `json:"segment,omitempty" url:"segment,omitempty"`
-	Issuer  *CardIssuerDetails `json:"issuer,omitempty" url:"issuer,omitempty"`
+	Brand    *string            `json:"brand,omitempty" url:"brand,omitempty"`
+	Funding  *string            `json:"funding,omitempty" url:"funding,omitempty"`
+	Segment  *string            `json:"segment,omitempty" url:"segment,omitempty"`
+	Issuer   *CardIssuerDetails `json:"issuer,omitempty" url:"issuer,omitempty"`
+	BinRange []*CardBinRange    `json:"binRange,omitempty" url:"binRange,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -54,6 +55,13 @@ func (a *AdditionalCardDetail) GetIssuer() *CardIssuerDetails {
 		return nil
 	}
 	return a.Issuer
+}
+
+func (a *AdditionalCardDetail) GetBinRange() []*CardBinRange {
+	if a == nil {
+		return nil
+	}
+	return a.BinRange
 }
 
 func (a *AdditionalCardDetail) GetExtraProperties() map[string]interface{} {
@@ -134,11 +142,66 @@ func (b *BankVerificationResponse) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
+type CardBinRange struct {
+	BinMin *string `json:"binMin,omitempty" url:"binMin,omitempty"`
+	BinMax *string `json:"binMax,omitempty" url:"binMax,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardBinRange) GetBinMin() *string {
+	if c == nil {
+		return nil
+	}
+	return c.BinMin
+}
+
+func (c *CardBinRange) GetBinMax() *string {
+	if c == nil {
+		return nil
+	}
+	return c.BinMax
+}
+
+func (c *CardBinRange) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardBinRange) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardBinRange
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardBinRange(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardBinRange) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CardDetailsResponse struct {
 	Brand      *string                 `json:"brand,omitempty" url:"brand,omitempty"`
 	Funding    *string                 `json:"funding,omitempty" url:"funding,omitempty"`
 	Segment    *string                 `json:"segment,omitempty" url:"segment,omitempty"`
 	Issuer     *CardIssuerDetails      `json:"issuer,omitempty" url:"issuer,omitempty"`
+	BinRange   []*CardBinRange         `json:"binRange,omitempty" url:"binRange,omitempty"`
 	Additional []*AdditionalCardDetail `json:"additional,omitempty" url:"additional,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -171,6 +234,13 @@ func (c *CardDetailsResponse) GetIssuer() *CardIssuerDetails {
 		return nil
 	}
 	return c.Issuer
+}
+
+func (c *CardDetailsResponse) GetBinRange() []*CardBinRange {
+	if c == nil {
+		return nil
+	}
+	return c.BinRange
 }
 
 func (c *CardDetailsResponse) GetAdditional() []*AdditionalCardDetail {
