@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v3"
+	basistheory "github.com/Basis-Theory/go-sdk/v4"
 	"github.com/google/uuid"
 
-	basistheoryclient "github.com/Basis-Theory/go-sdk/v3/client"
-	"github.com/Basis-Theory/go-sdk/v3/option"
+	basistheoryclient "github.com/Basis-Theory/go-sdk/v4/client"
+	"github.com/Basis-Theory/go-sdk/v4/option"
 )
 
 func TestTenantSelf(t *testing.T) {
