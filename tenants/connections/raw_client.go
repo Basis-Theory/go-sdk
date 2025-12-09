@@ -4,11 +4,11 @@ package connections
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
-	tenants "github.com/Basis-Theory/go-sdk/v3/tenants"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
+	tenants "github.com/Basis-Theory/go-sdk/v4/tenants"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) Create(
 	ctx context.Context,
 	request *tenants.CreateTenantConnectionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v3.CreateTenantConnectionResponse], error) {
+) (*core.Response[*v4.CreateTenantConnectionResponse], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -50,22 +50,22 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v3.BadRequestError{
+			return &v4.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.CreateTenantConnectionResponse
+	var response *v4.CreateTenantConnectionResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -84,7 +84,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.CreateTenantConnectionResponse]{
+	return &core.Response[*v4.CreateTenantConnectionResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -94,7 +94,7 @@ func (r *RawClient) Create(
 func (r *RawClient) Delete(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[*v3.CreateTenantConnectionResponse], error) {
+) (*core.Response[*v4.CreateTenantConnectionResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -108,22 +108,22 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v3.NotFoundError{
+			return &v4.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.CreateTenantConnectionResponse
+	var response *v4.CreateTenantConnectionResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -141,7 +141,7 @@ func (r *RawClient) Delete(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.CreateTenantConnectionResponse]{
+	return &core.Response[*v4.CreateTenantConnectionResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

@@ -4,10 +4,10 @@ package owner
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 )
 
@@ -33,7 +33,7 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 func (r *RawClient) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[*v3.TenantMemberResponse], error) {
+) (*core.Response[*v4.TenantMemberResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -47,22 +47,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v3.NotFoundError{
+			return &v4.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.TenantMemberResponse
+	var response *v4.TenantMemberResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -80,7 +80,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.TenantMemberResponse]{
+	return &core.Response[*v4.TenantMemberResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

@@ -4,11 +4,11 @@ package domain
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	applepay "github.com/Basis-Theory/go-sdk/v3/applepay"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	applepay "github.com/Basis-Theory/go-sdk/v4/applepay"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -58,7 +58,7 @@ func (c *Client) Deregister(
 func (c *Client) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v3.ApplePayDomainRegistrationResponse, error) {
+) (*v4.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		opts...,
@@ -73,7 +73,7 @@ func (c *Client) Register(
 	ctx context.Context,
 	request *applepay.ApplePayDomainRegistrationRequest,
 	opts ...option.RequestOption,
-) (*v3.ApplePayDomainRegistrationResponse, error) {
+) (*v4.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.Register(
 		ctx,
 		request,
@@ -89,7 +89,7 @@ func (c *Client) RegisterAll(
 	ctx context.Context,
 	request *applepay.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
-) (*v3.ApplePayDomainRegistrationResponse, error) {
+) (*v4.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.RegisterAll(
 		ctx,
 		request,

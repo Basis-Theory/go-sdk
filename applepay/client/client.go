@@ -4,13 +4,13 @@ package client
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	domain "github.com/Basis-Theory/go-sdk/v3/applepay/domain"
-	client "github.com/Basis-Theory/go-sdk/v3/applepay/merchant/client"
-	session "github.com/Basis-Theory/go-sdk/v3/applepay/session"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	domain "github.com/Basis-Theory/go-sdk/v4/applepay/domain"
+	client "github.com/Basis-Theory/go-sdk/v4/applepay/merchant/client"
+	session "github.com/Basis-Theory/go-sdk/v4/applepay/session"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -49,9 +49,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v3.ApplePayCreateRequest,
+	request *v4.ApplePayCreateRequest,
 	opts ...option.RequestOption,
-) (*v3.ApplePayCreateResponse, error) {
+) (*v4.ApplePayCreateResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -67,7 +67,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v3.ApplePayToken, error) {
+) (*v4.ApplePayToken, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

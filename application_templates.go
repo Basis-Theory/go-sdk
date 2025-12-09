@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
 )
 
 type ApplicationTemplate struct {

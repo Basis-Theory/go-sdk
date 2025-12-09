@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
 	time "time"
 )
 
@@ -14,8 +14,7 @@ type CreateReactorRequest struct {
 	Code          string             `json:"code" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Runtime       *string            `json:"runtime,omitempty" url:"-"`
-	Options       *RuntimeOptions    `json:"options,omitempty" url:"-"`
+	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
 }
 
 type ReactorsListRequest struct {
@@ -31,8 +30,7 @@ type PatchReactorRequest struct {
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          *string            `json:"code,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Runtime       *string            `json:"runtime,omitempty" url:"-"`
-	Options       *RuntimeOptions    `json:"options,omitempty" url:"-"`
+	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
 }
 
 type ReactRequest struct {
@@ -173,8 +171,7 @@ type Reactor struct {
 	ModifiedBy    *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
-	Runtime       *string            `json:"runtime,omitempty" url:"runtime,omitempty"`
-	Options       *RuntimeOptions    `json:"options,omitempty" url:"options,omitempty"`
+	Runtime       *Runtime           `json:"runtime,omitempty" url:"runtime,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -264,18 +261,11 @@ func (r *Reactor) GetConfiguration() map[string]*string {
 	return r.Configuration
 }
 
-func (r *Reactor) GetRuntime() *string {
+func (r *Reactor) GetRuntime() *Runtime {
 	if r == nil {
 		return nil
 	}
 	return r.Runtime
-}
-
-func (r *Reactor) GetOptions() *RuntimeOptions {
-	if r == nil {
-		return nil
-	}
-	return r.Options
 }
 
 func (r *Reactor) GetExtraProperties() map[string]interface{} {
@@ -682,89 +672,10 @@ func (r *ReactorPaginatedList) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-type RuntimeOptions struct {
-	Dependencies    map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
-	WarmConcurrency *int               `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
-	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
-	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
-	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (r *RuntimeOptions) GetDependencies() map[string]*string {
-	if r == nil {
-		return nil
-	}
-	return r.Dependencies
-}
-
-func (r *RuntimeOptions) GetWarmConcurrency() *int {
-	if r == nil {
-		return nil
-	}
-	return r.WarmConcurrency
-}
-
-func (r *RuntimeOptions) GetTimeout() *int {
-	if r == nil {
-		return nil
-	}
-	return r.Timeout
-}
-
-func (r *RuntimeOptions) GetResources() *string {
-	if r == nil {
-		return nil
-	}
-	return r.Resources
-}
-
-func (r *RuntimeOptions) GetPermissions() []string {
-	if r == nil {
-		return nil
-	}
-	return r.Permissions
-}
-
-func (r *RuntimeOptions) GetExtraProperties() map[string]interface{} {
-	return r.extraProperties
-}
-
-func (r *RuntimeOptions) UnmarshalJSON(data []byte) error {
-	type unmarshaler RuntimeOptions
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RuntimeOptions(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-	r.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RuntimeOptions) String() string {
-	if len(r.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
 type UpdateReactorRequest struct {
 	Name          string             `json:"name" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          string             `json:"code" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Runtime       *string            `json:"runtime,omitempty" url:"-"`
-	Options       *RuntimeOptions    `json:"options,omitempty" url:"-"`
+	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
 }

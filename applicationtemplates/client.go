@@ -4,10 +4,10 @@ package applicationtemplates
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -41,7 +41,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) ([]*v3.ApplicationTemplate, error) {
+) ([]*v4.ApplicationTemplate, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		opts...,
@@ -56,7 +56,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v3.ApplicationTemplate, error) {
+) (*v4.ApplicationTemplate, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
