@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/Basis-Theory/go-sdk/compare/v4.1.0...v4.2.0) (2025-12-09)
+
+
+### Features
+
+* Change Reactor Runtime to object ([74360ad](https://github.com/Basis-Theory/go-sdk/commit/74360adbf23cfcd4890d17a9a08749a53a6c02ba))
+
 # [4.1.0](https://github.com/Basis-Theory/go-sdk/compare/v4.0.0...v4.1.0) (2025-12-02)
 
 
