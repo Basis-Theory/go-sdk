@@ -4,11 +4,11 @@ package client
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	data "github.com/Basis-Theory/go-sdk/v3/documents/data"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	data "github.com/Basis-Theory/go-sdk/v4/documents/data"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -43,9 +43,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Upload(
 	ctx context.Context,
-	request *v3.DocumentsUploadRequest,
+	request *v4.DocumentsUploadRequest,
 	opts ...option.RequestOption,
-) (*v3.Document, error) {
+) (*v4.Document, error) {
 	response, err := c.WithRawResponse.Upload(
 		ctx,
 		request,
@@ -61,7 +61,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v3.Document, error) {
+) (*v4.Document, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

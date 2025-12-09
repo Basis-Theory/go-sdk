@@ -4,10 +4,10 @@ package tokens
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -74,7 +74,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v3.Token, error) {
+) (*v4.Token, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -105,9 +105,9 @@ func (c *Client) Delete(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v3.UpdateTokenRequest,
+	request *v4.UpdateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v3.Token, error) {
+) (*v4.Token, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -122,9 +122,9 @@ func (c *Client) Update(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v3.CreateTokenRequest,
+	request *v4.CreateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v3.Token, error) {
+) (*v4.Token, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -138,9 +138,9 @@ func (c *Client) Create(
 
 func (c *Client) ListV2(
 	ctx context.Context,
-	request *v3.TokensListV2Request,
+	request *v4.TokensListV2Request,
 	opts ...option.RequestOption,
-) (*core.Page[*v3.Token], error) {
+) (*core.Page[*v4.Token], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -158,12 +158,12 @@ func (c *Client) ListV2(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -188,14 +188,14 @@ func (c *Client) ListV2(
 			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		}
 	}
-	readPageResponse := func(response *v3.TokenCursorPaginatedList) *internal.PageResponse[*string, *v3.Token] {
+	readPageResponse := func(response *v4.TokenCursorPaginatedList) *internal.PageResponse[*string, *v4.Token] {
 		var zeroValue *string
 		var next *string
 		if response.Pagination != nil {
 			next = response.Pagination.Next
 		}
 		results := response.GetData()
-		return &internal.PageResponse[*string, *v3.Token]{
+		return &internal.PageResponse[*string, *v4.Token]{
 			Next:    next,
 			Results: results,
 			Done:    next == zeroValue,
@@ -211,9 +211,9 @@ func (c *Client) ListV2(
 
 func (c *Client) SearchV2(
 	ctx context.Context,
-	request *v3.SearchTokensRequestV2,
+	request *v4.SearchTokensRequestV2,
 	opts ...option.IdempotentRequestOption,
-) (*v3.TokenCursorPaginatedList, error) {
+) (*v4.TokenCursorPaginatedList, error) {
 	response, err := c.WithRawResponse.SearchV2(
 		ctx,
 		request,

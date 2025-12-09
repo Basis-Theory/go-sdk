@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/Basis-Theory/go-sdk/v3/core"
+	"github.com/Basis-Theory/go-sdk/v4/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

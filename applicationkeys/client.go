@@ -4,10 +4,10 @@ package applicationkeys
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -41,9 +41,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) List(
 	ctx context.Context,
 	id string,
-	request *v3.ApplicationKeysListRequest,
+	request *v4.ApplicationKeysListRequest,
 	opts ...option.RequestOption,
-) ([]*v3.ApplicationKey, error) {
+) ([]*v4.ApplicationKey, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		id,
@@ -60,7 +60,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	id string,
 	opts ...option.IdempotentRequestOption,
-) (*v3.ApplicationKey, error) {
+) (*v4.ApplicationKey, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		id,
@@ -77,7 +77,7 @@ func (c *Client) Get(
 	id string,
 	keyID string,
 	opts ...option.RequestOption,
-) (*v3.ApplicationKey, error) {
+) (*v4.ApplicationKey, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

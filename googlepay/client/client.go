@@ -4,11 +4,11 @@ package client
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	client "github.com/Basis-Theory/go-sdk/v3/googlepay/merchant/client"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	client "github.com/Basis-Theory/go-sdk/v4/googlepay/merchant/client"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )
@@ -43,9 +43,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v3.GooglePayCreateRequest,
+	request *v4.GooglePayCreateRequest,
 	opts ...option.RequestOption,
-) (*v3.GooglePayCreateResponse, error) {
+) (*v4.GooglePayCreateResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -61,7 +61,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v3.GooglePayToken, error) {
+) (*v4.GooglePayToken, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

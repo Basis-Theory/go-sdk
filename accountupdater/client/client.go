@@ -3,11 +3,11 @@
 package client
 
 import (
-	jobs "github.com/Basis-Theory/go-sdk/v3/accountupdater/jobs"
-	realtime "github.com/Basis-Theory/go-sdk/v3/accountupdater/realtime"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
+	jobs "github.com/Basis-Theory/go-sdk/v4/accountupdater/jobs"
+	realtime "github.com/Basis-Theory/go-sdk/v4/accountupdater/realtime"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
 	http "net/http"
 	os "os"
 )

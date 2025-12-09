@@ -4,11 +4,11 @@ package sessions
 
 import (
 	context "context"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
-	threeds "github.com/Basis-Theory/go-sdk/v3/threeds"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
+	threeds "github.com/Basis-Theory/go-sdk/v4/threeds"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) Create(
 	ctx context.Context,
 	request *threeds.CreateThreeDsSessionRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v3.CreateThreeDsSessionResponse], error) {
+) (*core.Response[*v4.CreateThreeDsSessionResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -50,22 +50,22 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v3.BadRequestError{
+			return &v4.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.CreateThreeDsSessionResponse
+	var response *v4.CreateThreeDsSessionResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -84,7 +84,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.CreateThreeDsSessionResponse]{
+	return &core.Response[*v4.CreateThreeDsSessionResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -94,9 +94,9 @@ func (r *RawClient) Create(
 func (r *RawClient) Authenticate(
 	ctx context.Context,
 	sessionID string,
-	request *v3.AuthenticateThreeDsSessionRequest,
+	request *v4.AuthenticateThreeDsSessionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v3.ThreeDsAuthentication], error) {
+) (*core.Response[*v4.ThreeDsAuthentication], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -113,22 +113,22 @@ func (r *RawClient) Authenticate(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v3.NotFoundError{
+			return &v4.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.ThreeDsAuthentication
+	var response *v4.ThreeDsAuthentication
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -147,7 +147,7 @@ func (r *RawClient) Authenticate(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.ThreeDsAuthentication]{
+	return &core.Response[*v4.ThreeDsAuthentication]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -158,7 +158,7 @@ func (r *RawClient) GetChallengeResult(
 	ctx context.Context,
 	sessionID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v3.ThreeDsAuthentication], error) {
+) (*core.Response[*v4.ThreeDsAuthentication], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -175,22 +175,22 @@ func (r *RawClient) GetChallengeResult(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v3.NotFoundError{
+			return &v4.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.ThreeDsAuthentication
+	var response *v4.ThreeDsAuthentication
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -208,7 +208,7 @@ func (r *RawClient) GetChallengeResult(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.ThreeDsAuthentication]{
+	return &core.Response[*v4.ThreeDsAuthentication]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -219,7 +219,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v3.ThreeDsSession], error) {
+) (*core.Response[*v4.ThreeDsSession], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -236,17 +236,17 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v3.NotFoundError{
+			return &v4.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v3.ThreeDsSession
+	var response *v4.ThreeDsSession
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -264,7 +264,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v3.ThreeDsSession]{
+	return &core.Response[*v4.ThreeDsSession]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

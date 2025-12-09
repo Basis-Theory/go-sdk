@@ -3,10 +3,10 @@
 package client
 
 import (
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
-	sessions "github.com/Basis-Theory/go-sdk/v3/threeds/sessions"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
+	sessions "github.com/Basis-Theory/go-sdk/v4/threeds/sessions"
 	http "net/http"
 	os "os"
 )

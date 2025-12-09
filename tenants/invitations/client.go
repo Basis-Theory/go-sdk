@@ -5,11 +5,11 @@ package invitations
 import (
 	context "context"
 	fmt "fmt"
-	v3 "github.com/Basis-Theory/go-sdk/v3"
-	core "github.com/Basis-Theory/go-sdk/v3/core"
-	internal "github.com/Basis-Theory/go-sdk/v3/internal"
-	option "github.com/Basis-Theory/go-sdk/v3/option"
-	tenants "github.com/Basis-Theory/go-sdk/v3/tenants"
+	v4 "github.com/Basis-Theory/go-sdk/v4"
+	core "github.com/Basis-Theory/go-sdk/v4/core"
+	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	option "github.com/Basis-Theory/go-sdk/v4/option"
+	tenants "github.com/Basis-Theory/go-sdk/v4/tenants"
 	http "net/http"
 	os "os"
 )
@@ -44,7 +44,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *tenants.InvitationsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v3.TenantInvitationResponse], error) {
+) (*core.Page[*v4.TenantInvitationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -62,12 +62,12 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v3.UnauthorizedError{
+			return &v4.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v3.ForbiddenError{
+			return &v4.ForbiddenError{
 				APIError: apiError,
 			}
 		},
@@ -97,10 +97,10 @@ func (c *Client) List(
 		next = *request.Page
 	}
 
-	readPageResponse := func(response *v3.TenantInvitationResponsePaginatedList) *internal.PageResponse[*int, *v3.TenantInvitationResponse] {
+	readPageResponse := func(response *v4.TenantInvitationResponsePaginatedList) *internal.PageResponse[*int, *v4.TenantInvitationResponse] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v3.TenantInvitationResponse]{
+		return &internal.PageResponse[*int, *v4.TenantInvitationResponse]{
 			Next:    &next,
 			Results: results,
 		}
@@ -117,7 +117,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *tenants.CreateTenantInvitationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v3.TenantInvitationResponse, error) {
+) (*v4.TenantInvitationResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -133,7 +133,7 @@ func (c *Client) Resend(
 	ctx context.Context,
 	invitationID string,
 	opts ...option.IdempotentRequestOption,
-) (*v3.TenantInvitationResponse, error) {
+) (*v4.TenantInvitationResponse, error) {
 	response, err := c.WithRawResponse.Resend(
 		ctx,
 		invitationID,
@@ -149,7 +149,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	invitationID string,
 	opts ...option.RequestOption,
-) (*v3.TenantInvitationResponse, error) {
+) (*v4.TenantInvitationResponse, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		invitationID,
