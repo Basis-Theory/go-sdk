@@ -4066,6 +4066,92 @@ func (r *ReactorFormulaPaginatedList) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
+type Runtime struct {
+	Image           *string            `json:"image,omitempty" url:"image,omitempty"`
+	Dependencies    map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	WarmConcurrency *int               `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
+	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
+	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
+	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *Runtime) GetImage() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Image
+}
+
+func (r *Runtime) GetDependencies() map[string]*string {
+	if r == nil {
+		return nil
+	}
+	return r.Dependencies
+}
+
+func (r *Runtime) GetWarmConcurrency() *int {
+	if r == nil {
+		return nil
+	}
+	return r.WarmConcurrency
+}
+
+func (r *Runtime) GetTimeout() *int {
+	if r == nil {
+		return nil
+	}
+	return r.Timeout
+}
+
+func (r *Runtime) GetResources() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Resources
+}
+
+func (r *Runtime) GetPermissions() []string {
+	if r == nil {
+		return nil
+	}
+	return r.Permissions
+}
+
+func (r *Runtime) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *Runtime) UnmarshalJSON(data []byte) error {
+	type unmarshaler Runtime
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = Runtime(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *Runtime) String() string {
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
 type StringStringKeyValuePair struct {
 	Key   string `json:"key" url:"key"`
 	Value string `json:"value" url:"value"`

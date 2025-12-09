@@ -420,16 +420,11 @@ func (p *ProxyTransform) String() string {
 }
 
 type ProxyTransformOptions struct {
-	Token           *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
-	Identifier      *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
-	Value           *string             `json:"value,omitempty" url:"value,omitempty"`
-	Location        *string             `json:"location,omitempty" url:"location,omitempty"`
-	Runtime         *string             `json:"runtime,omitempty" url:"runtime,omitempty"`
-	Dependencies    map[string]*string  `json:"dependencies,omitempty" url:"dependencies,omitempty"`
-	Permissions     []string            `json:"permissions,omitempty" url:"permissions,omitempty"`
-	WarmConcurrency *int                `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
-	Timeout         *int                `json:"timeout,omitempty" url:"timeout,omitempty"`
-	Resources       *string             `json:"resources,omitempty" url:"resources,omitempty"`
+	Token      *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
+	Identifier *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
+	Value      *string             `json:"value,omitempty" url:"value,omitempty"`
+	Location   *string             `json:"location,omitempty" url:"location,omitempty"`
+	Runtime    *Runtime            `json:"runtime,omitempty" url:"runtime,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -463,46 +458,11 @@ func (p *ProxyTransformOptions) GetLocation() *string {
 	return p.Location
 }
 
-func (p *ProxyTransformOptions) GetRuntime() *string {
+func (p *ProxyTransformOptions) GetRuntime() *Runtime {
 	if p == nil {
 		return nil
 	}
 	return p.Runtime
-}
-
-func (p *ProxyTransformOptions) GetDependencies() map[string]*string {
-	if p == nil {
-		return nil
-	}
-	return p.Dependencies
-}
-
-func (p *ProxyTransformOptions) GetPermissions() []string {
-	if p == nil {
-		return nil
-	}
-	return p.Permissions
-}
-
-func (p *ProxyTransformOptions) GetWarmConcurrency() *int {
-	if p == nil {
-		return nil
-	}
-	return p.WarmConcurrency
-}
-
-func (p *ProxyTransformOptions) GetTimeout() *int {
-	if p == nil {
-		return nil
-	}
-	return p.Timeout
-}
-
-func (p *ProxyTransformOptions) GetResources() *string {
-	if p == nil {
-		return nil
-	}
-	return p.Resources
 }
 
 func (p *ProxyTransformOptions) GetExtraProperties() map[string]interface{} {
