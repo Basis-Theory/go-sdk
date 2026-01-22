@@ -33,15 +33,6 @@ type PatchReactorRequest struct {
 	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
 }
 
-type ReactRequest struct {
-	Args        interface{} `json:"args,omitempty" url:"-"`
-	CallbackURL *string     `json:"callback_url,omitempty" url:"-"`
-}
-
-type ReactRequestAsync struct {
-	Args interface{} `json:"args,omitempty" url:"-"`
-}
-
 type AsyncReactResponse struct {
 	AsyncReactorRequestID *string `json:"asyncReactorRequestId,omitempty" url:"asyncReactorRequestId,omitempty"`
 
@@ -86,6 +77,68 @@ func (a *AsyncReactResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
+}
+
+type PendingReactor struct {
+	Code          *string            `json:"code,omitempty" url:"code,omitempty"`
+	Runtime       *Runtime           `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PendingReactor) GetCode() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Code
+}
+
+func (p *PendingReactor) GetRuntime() *Runtime {
+	if p == nil {
+		return nil
+	}
+	return p.Runtime
+}
+
+func (p *PendingReactor) GetConfiguration() map[string]*string {
+	if p == nil {
+		return nil
+	}
+	return p.Configuration
+}
+
+func (p *PendingReactor) GetExtraProperties() map[string]interface{} {
+	return p.extraProperties
+}
+
+func (p *PendingReactor) UnmarshalJSON(data []byte) error {
+	type unmarshaler PendingReactor
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PendingReactor(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PendingReactor) String() string {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
 }
 
 type ReactResponse struct {
@@ -172,6 +225,7 @@ type Reactor struct {
 	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
 	Runtime       *Runtime           `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Requested     *RequestedReactor  `json:"requested,omitempty" url:"requested,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -266,6 +320,13 @@ func (r *Reactor) GetRuntime() *Runtime {
 		return nil
 	}
 	return r.Runtime
+}
+
+func (r *Reactor) GetRequested() *RequestedReactor {
+	if r == nil {
+		return nil
+	}
+	return r.Requested
 }
 
 func (r *Reactor) GetExtraProperties() map[string]interface{} {
@@ -661,6 +722,76 @@ func (r *ReactorPaginatedList) UnmarshalJSON(data []byte) error {
 }
 
 func (r *ReactorPaginatedList) String() string {
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type RequestedReactor struct {
+	Reactor      *PendingReactor        `json:"reactor,omitempty" url:"reactor,omitempty"`
+	ErrorCode    *string                `json:"error_code,omitempty" url:"error_code,omitempty"`
+	ErrorMessage *string                `json:"error_message,omitempty" url:"error_message,omitempty"`
+	ErrorDetails map[string]interface{} `json:"error_details,omitempty" url:"error_details,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RequestedReactor) GetReactor() *PendingReactor {
+	if r == nil {
+		return nil
+	}
+	return r.Reactor
+}
+
+func (r *RequestedReactor) GetErrorCode() *string {
+	if r == nil {
+		return nil
+	}
+	return r.ErrorCode
+}
+
+func (r *RequestedReactor) GetErrorMessage() *string {
+	if r == nil {
+		return nil
+	}
+	return r.ErrorMessage
+}
+
+func (r *RequestedReactor) GetErrorDetails() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.ErrorDetails
+}
+
+func (r *RequestedReactor) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RequestedReactor) UnmarshalJSON(data []byte) error {
+	type unmarshaler RequestedReactor
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RequestedReactor(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RequestedReactor) String() string {
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value

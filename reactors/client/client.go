@@ -207,7 +207,7 @@ func (c *Client) Patch(
 func (c *Client) React(
 	ctx context.Context,
 	id string,
-	request *v4.ReactRequest,
+	request any,
 	opts ...option.RequestOption,
 ) (*v4.ReactResponse, error) {
 	response, err := c.WithRawResponse.React(
@@ -225,7 +225,7 @@ func (c *Client) React(
 func (c *Client) ReactAsync(
 	ctx context.Context,
 	id string,
-	request *v4.ReactRequestAsync,
+	request any,
 	opts ...option.RequestOption,
 ) (*v4.AsyncReactResponse, error) {
 	response, err := c.WithRawResponse.ReactAsync(

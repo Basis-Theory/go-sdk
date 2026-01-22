@@ -349,7 +349,7 @@ func (r *RawClient) Patch(
 func (r *RawClient) React(
 	ctx context.Context,
 	id string,
-	request *v4.ReactRequest,
+	request any,
 	opts ...option.RequestOption,
 ) (*core.Response[*v4.ReactResponse], error) {
 	options := core.NewRequestOptions(opts...)
@@ -366,7 +366,6 @@ func (r *RawClient) React(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
-	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &v4.BadRequestError{
@@ -423,7 +422,7 @@ func (r *RawClient) React(
 func (r *RawClient) ReactAsync(
 	ctx context.Context,
 	id string,
-	request *v4.ReactRequestAsync,
+	request any,
 	opts ...option.RequestOption,
 ) (*core.Response[*v4.AsyncReactResponse], error) {
 	options := core.NewRequestOptions(opts...)
@@ -440,7 +439,6 @@ func (r *RawClient) ReactAsync(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
-	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &v4.BadRequestError{
