@@ -4,10 +4,10 @@ package applications
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 )
 
@@ -32,9 +32,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) Create(
 	ctx context.Context,
-	request *v4.CreateApplicationRequest,
+	request *v5.CreateApplicationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v4.Application], error) {
+) (*core.Response[*v5.Application], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -49,22 +49,22 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.Application
+	var response *v5.Application
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -83,7 +83,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.Application]{
+	return &core.Response[*v5.Application]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -94,7 +94,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.Application], error) {
+) (*core.Response[*v5.Application], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -111,22 +111,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.Application
+	var response *v5.Application
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -144,7 +144,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.Application]{
+	return &core.Response[*v5.Application]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -154,9 +154,9 @@ func (r *RawClient) Get(
 func (r *RawClient) Update(
 	ctx context.Context,
 	id string,
-	request *v4.UpdateApplicationRequest,
+	request *v5.UpdateApplicationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v4.Application], error) {
+) (*core.Response[*v5.Application], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -174,27 +174,27 @@ func (r *RawClient) Update(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.Application
+	var response *v5.Application
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -213,7 +213,7 @@ func (r *RawClient) Update(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.Application]{
+	return &core.Response[*v5.Application]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -241,17 +241,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -282,7 +282,7 @@ func (r *RawClient) Delete(
 func (r *RawClient) GetByKey(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.Application], error) {
+) (*core.Response[*v5.Application], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -296,17 +296,17 @@ func (r *RawClient) GetByKey(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.Application
+	var response *v5.Application
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -324,7 +324,7 @@ func (r *RawClient) GetByKey(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.Application]{
+	return &core.Response[*v5.Application]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

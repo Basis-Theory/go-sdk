@@ -4,11 +4,11 @@ package members
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	tenants "github.com/Basis-Theory/go-sdk/v4/tenants"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
 	http "net/http"
 	os "os"
 )
@@ -43,7 +43,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *tenants.MembersListRequest,
 	opts ...option.RequestOption,
-) (*v4.TenantMemberResponsePaginatedList, error) {
+) (*v5.TenantMemberResponsePaginatedList, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		request,
@@ -60,7 +60,7 @@ func (c *Client) Update(
 	memberID string,
 	request *tenants.UpdateTenantMemberRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.TenantMemberResponse, error) {
+) (*v5.TenantMemberResponse, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		memberID,

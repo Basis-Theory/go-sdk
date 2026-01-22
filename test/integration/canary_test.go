@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v4"
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	"github.com/google/uuid"
 
-	basistheoryclient "github.com/Basis-Theory/go-sdk/v4/client"
-	"github.com/Basis-Theory/go-sdk/v4/option"
+	basistheoryclient "github.com/Basis-Theory/go-sdk/v5/client"
+	"github.com/Basis-Theory/go-sdk/v5/option"
 )
 
 func TestTenantSelf(t *testing.T) {
@@ -375,8 +375,8 @@ func React(t *testing.T, client *basistheoryclient.Client, reactorId string) {
 	x, err := client.Reactors.React(
 		context.TODO(),
 		reactorId,
-		&basistheory.ReactRequest{
-			Args: args,
+		map[string]interface{}{
+			"args": args,
 		},
 	)
 	FailIfError(t, "Failed to react in Reactor", err)

@@ -3,7 +3,7 @@
 package threeds
 
 import (
-	v4 "github.com/Basis-Theory/go-sdk/v4"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
 )
 
 type CreateThreeDsSessionRequest struct {
@@ -13,7 +13,7 @@ type CreateThreeDsSessionRequest struct {
 	Type                  *string                               `json:"type,omitempty" url:"-"`
 	Device                *string                               `json:"device,omitempty" url:"-"`
 	WebChallengeMode      *string                               `json:"web_challenge_mode,omitempty" url:"-"`
-	DeviceInfo            *v4.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
-	AuthenticationRequest *v4.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
-	CallbackURLs          *v4.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
+	DeviceInfo            *v5.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
+	AuthenticationRequest *v5.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
+	CallbackURLs          *v5.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
 }
