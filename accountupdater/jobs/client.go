@@ -4,11 +4,11 @@ package jobs
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	accountupdater "github.com/Basis-Theory/go-sdk/v4/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	accountupdater "github.com/Basis-Theory/go-sdk/v5/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -44,7 +44,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.AccountUpdaterJob, error) {
+) (*v5.AccountUpdaterJob, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -61,7 +61,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *accountupdater.JobsListRequest,
 	opts ...option.RequestOption,
-) (*v4.AccountUpdaterJobList, error) {
+) (*v5.AccountUpdaterJobList, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		request,
@@ -77,7 +77,7 @@ func (c *Client) List(
 func (c *Client) Create(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v4.AccountUpdaterJob, error) {
+) (*v5.AccountUpdaterJob, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		opts...,

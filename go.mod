@@ -1,4 +1,4 @@
-module github.com/Basis-Theory/go-sdk/v4
+module github.com/Basis-Theory/go-sdk/v5
 
 go 1.18
 

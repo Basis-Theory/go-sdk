@@ -4,11 +4,11 @@ package realtime
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	accountupdater "github.com/Basis-Theory/go-sdk/v4/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	accountupdater "github.com/Basis-Theory/go-sdk/v5/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -44,7 +44,7 @@ func (c *Client) Invoke(
 	ctx context.Context,
 	request *accountupdater.AccountUpdaterRealTimeRequest,
 	opts ...option.RequestOption,
-) (*v4.AccountUpdaterRealTimeResponse, error) {
+) (*v5.AccountUpdaterRealTimeResponse, error) {
 	response, err := c.WithRawResponse.Invoke(
 		ctx,
 		request,

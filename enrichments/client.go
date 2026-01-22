@@ -4,10 +4,10 @@ package enrichments
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -40,9 +40,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) BankAccountVerify(
 	ctx context.Context,
-	request *v4.BankVerificationRequest,
+	request *v5.BankVerificationRequest,
 	opts ...option.RequestOption,
-) (*v4.BankVerificationResponse, error) {
+) (*v5.BankVerificationResponse, error) {
 	response, err := c.WithRawResponse.BankAccountVerify(
 		ctx,
 		request,
@@ -56,9 +56,9 @@ func (c *Client) BankAccountVerify(
 
 func (c *Client) Getcarddetails(
 	ctx context.Context,
-	request *v4.EnrichmentsGetCardDetailsRequest,
+	request *v5.EnrichmentsGetCardDetailsRequest,
 	opts ...option.RequestOption,
-) (*v4.CardDetailsResponse, error) {
+) (*v5.CardDetailsResponse, error) {
 	response, err := c.WithRawResponse.Getcarddetails(
 		ctx,
 		request,

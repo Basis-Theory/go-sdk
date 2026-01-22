@@ -4,10 +4,10 @@ package keys
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 )
 
@@ -33,7 +33,7 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 func (r *RawClient) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[[]*v4.ClientEncryptionKeyMetadataResponse], error) {
+) (*core.Response[[]*v5.ClientEncryptionKeyMetadataResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -47,22 +47,22 @@ func (r *RawClient) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v4.InternalServerError{
+			return &v5.InternalServerError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response []*v4.ClientEncryptionKeyMetadataResponse
+	var response []*v5.ClientEncryptionKeyMetadataResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -80,7 +80,7 @@ func (r *RawClient) List(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[[]*v4.ClientEncryptionKeyMetadataResponse]{
+	return &core.Response[[]*v5.ClientEncryptionKeyMetadataResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -89,9 +89,9 @@ func (r *RawClient) List(
 
 func (r *RawClient) Create(
 	ctx context.Context,
-	request *v4.ClientEncryptionKeyRequest,
+	request *v5.ClientEncryptionKeyRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.ClientEncryptionKeyResponse], error) {
+) (*core.Response[*v5.ClientEncryptionKeyResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -106,32 +106,32 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json-patch+json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v4.UnprocessableEntityError{
+			return &v5.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v4.InternalServerError{
+			return &v5.InternalServerError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.ClientEncryptionKeyResponse
+	var response *v5.ClientEncryptionKeyResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -150,7 +150,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.ClientEncryptionKeyResponse]{
+	return &core.Response[*v5.ClientEncryptionKeyResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -161,7 +161,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.ClientEncryptionKeyMetadataResponse], error) {
+) (*core.Response[*v5.ClientEncryptionKeyMetadataResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -178,27 +178,27 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v4.InternalServerError{
+			return &v5.InternalServerError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.ClientEncryptionKeyMetadataResponse
+	var response *v5.ClientEncryptionKeyMetadataResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -216,7 +216,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.ClientEncryptionKeyMetadataResponse]{
+	return &core.Response[*v5.ClientEncryptionKeyMetadataResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -244,22 +244,22 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v4.InternalServerError{
+			return &v5.InternalServerError{
 				APIError: apiError,
 			}
 		},

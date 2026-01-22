@@ -4,10 +4,10 @@ package session
 
 import (
 	context "context"
-	applepay "github.com/Basis-Theory/go-sdk/v4/applepay"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	applepay "github.com/Basis-Theory/go-sdk/v5/applepay"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )

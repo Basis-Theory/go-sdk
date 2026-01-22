@@ -4,11 +4,11 @@ package sessions
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	threeds "github.com/Basis-Theory/go-sdk/v4/threeds"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	threeds "github.com/Basis-Theory/go-sdk/v5/threeds"
 	http "net/http"
 	os "os"
 )
@@ -43,7 +43,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *threeds.CreateThreeDsSessionRequest,
 	opts ...option.RequestOption,
-) (*v4.CreateThreeDsSessionResponse, error) {
+) (*v5.CreateThreeDsSessionResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -58,9 +58,9 @@ func (c *Client) Create(
 func (c *Client) Authenticate(
 	ctx context.Context,
 	sessionID string,
-	request *v4.AuthenticateThreeDsSessionRequest,
+	request *v5.AuthenticateThreeDsSessionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.ThreeDsAuthentication, error) {
+) (*v5.ThreeDsAuthentication, error) {
 	response, err := c.WithRawResponse.Authenticate(
 		ctx,
 		sessionID,
@@ -77,7 +77,7 @@ func (c *Client) GetChallengeResult(
 	ctx context.Context,
 	sessionID string,
 	opts ...option.RequestOption,
-) (*v4.ThreeDsAuthentication, error) {
+) (*v5.ThreeDsAuthentication, error) {
 	response, err := c.WithRawResponse.GetChallengeResult(
 		ctx,
 		sessionID,
@@ -93,7 +93,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.ThreeDsSession, error) {
+) (*v5.ThreeDsSession, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	time "time"
 )
 
@@ -14,6 +14,7 @@ type CreateNetworkTokenRequest struct {
 	TokenID        *string         `json:"token_id,omitempty" url:"-"`
 	TokenIntentID  *string         `json:"token_intent_id,omitempty" url:"-"`
 	CardholderInfo *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
+	MerchantID     *string         `json:"merchant_id,omitempty" url:"-"`
 }
 
 type Address struct {

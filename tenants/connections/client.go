@@ -4,11 +4,11 @@ package connections
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	tenants "github.com/Basis-Theory/go-sdk/v4/tenants"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
 	http "net/http"
 	os "os"
 )
@@ -43,7 +43,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *tenants.CreateTenantConnectionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.CreateTenantConnectionResponse, error) {
+) (*v5.CreateTenantConnectionResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -58,7 +58,7 @@ func (c *Client) Create(
 func (c *Client) Delete(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v4.CreateTenantConnectionResponse, error) {
+) (*v5.CreateTenantConnectionResponse, error) {
 	response, err := c.WithRawResponse.Delete(
 		ctx,
 		opts...,

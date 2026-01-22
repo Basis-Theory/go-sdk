@@ -42,8 +42,8 @@ Instantiate and use the client with the following:
 package example
 
 import (
-    client "github.com/Basis-Theory/go-sdk/v4/client"
-    option "github.com/Basis-Theory/go-sdk/v4/option"
+    client "github.com/Basis-Theory/go-sdk/v5/client"
+    option "github.com/Basis-Theory/go-sdk/v5/option"
     context "context"
 )
 

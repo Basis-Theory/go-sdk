@@ -4,11 +4,11 @@ package certificates
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	merchant "github.com/Basis-Theory/go-sdk/v4/googlepay/merchant"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	merchant "github.com/Basis-Theory/go-sdk/v5/googlepay/merchant"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 )
 
@@ -36,7 +36,7 @@ func (r *RawClient) Get(
 	merchantID string,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.GooglePayMerchantCertificates], error) {
+) (*core.Response[*v5.GooglePayMerchantCertificates], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -54,22 +54,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.GooglePayMerchantCertificates
+	var response *v5.GooglePayMerchantCertificates
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -87,7 +87,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.GooglePayMerchantCertificates]{
+	return &core.Response[*v5.GooglePayMerchantCertificates]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -117,17 +117,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -160,7 +160,7 @@ func (r *RawClient) Create(
 	merchantID string,
 	request *merchant.GooglePayMerchantCertificatesRegisterRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.GooglePayMerchantCertificates], error) {
+) (*core.Response[*v5.GooglePayMerchantCertificates], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -178,22 +178,22 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.GooglePayMerchantCertificates
+	var response *v5.GooglePayMerchantCertificates
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -212,7 +212,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.GooglePayMerchantCertificates]{
+	return &core.Response[*v5.GooglePayMerchantCertificates]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

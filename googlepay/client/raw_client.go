@@ -4,10 +4,10 @@ package client
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 )
 
@@ -32,9 +32,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) Create(
 	ctx context.Context,
-	request *v4.GooglePayCreateRequest,
+	request *v5.GooglePayCreateRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.GooglePayCreateResponse], error) {
+) (*core.Response[*v5.GooglePayCreateResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -49,32 +49,32 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		409: func(apiError *core.APIError) error {
-			return &v4.ConflictError{
+			return &v5.ConflictError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v4.UnprocessableEntityError{
+			return &v5.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.GooglePayCreateResponse
+	var response *v5.GooglePayCreateResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -93,7 +93,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.GooglePayCreateResponse]{
+	return &core.Response[*v5.GooglePayCreateResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -104,7 +104,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.GooglePayToken], error) {
+) (*core.Response[*v5.GooglePayToken], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -121,22 +121,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.GooglePayToken
+	var response *v5.GooglePayToken
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -154,7 +154,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.GooglePayToken]{
+	return &core.Response[*v5.GooglePayToken]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -182,17 +182,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
