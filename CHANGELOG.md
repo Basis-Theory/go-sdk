@@ -1,3 +1,15 @@
+# [5.0.0](https://github.com/Basis-Theory/go-sdk/compare/v4.2.0...v5.0.0) (2026-01-22)
+
+
+### Features
+
+* Updating Reactor Request objects ([08c420c](https://github.com/Basis-Theory/go-sdk/commit/08c420ce82aebb23554bbc115c0fb5990e0a09fa))
+
+
+### BREAKING CHANGES
+
+* This version removes the existing Reactors Request objects for Reactors and Reactors Async, allowing the use of dynamic objects
+
 # [4.2.0](https://github.com/Basis-Theory/go-sdk/compare/v4.1.0...v4.2.0) (2025-12-09)
 
 
