@@ -375,8 +375,8 @@ func React(t *testing.T, client *basistheoryclient.Client, reactorId string) {
 	x, err := client.Reactors.React(
 		context.TODO(),
 		reactorId,
-		&basistheory.ReactRequest{
-			Args: args,
+		map[string]interface{}{
+			"args": args,
 		},
 	)
 	FailIfError(t, "Failed to react in Reactor", err)
