@@ -10,17 +10,18 @@ import (
 )
 
 type CreateProxyRequest struct {
-	Name               string             `json:"name" url:"-"`
-	DestinationURL     string             `json:"destination_url" url:"-"`
-	RequestReactorID   *string            `json:"request_reactor_id,omitempty" url:"-"`
-	ResponseReactorID  *string            `json:"response_reactor_id,omitempty" url:"-"`
-	RequestTransform   *ProxyTransform    `json:"request_transform,omitempty" url:"-"`
-	ResponseTransform  *ProxyTransform    `json:"response_transform,omitempty" url:"-"`
-	RequestTransforms  []*ProxyTransform  `json:"request_transforms,omitempty" url:"-"`
-	ResponseTransforms []*ProxyTransform  `json:"response_transforms,omitempty" url:"-"`
-	Application        *Application       `json:"application,omitempty" url:"-"`
-	Configuration      map[string]*string `json:"configuration,omitempty" url:"-"`
-	RequireAuth        *bool              `json:"require_auth,omitempty" url:"-"`
+	Name                  string             `json:"name" url:"-"`
+	DestinationURL        string             `json:"destination_url" url:"-"`
+	RequestReactorID      *string            `json:"request_reactor_id,omitempty" url:"-"`
+	ResponseReactorID     *string            `json:"response_reactor_id,omitempty" url:"-"`
+	RequestTransform      *ProxyTransform    `json:"request_transform,omitempty" url:"-"`
+	ResponseTransform     *ProxyTransform    `json:"response_transform,omitempty" url:"-"`
+	RequestTransforms     []*ProxyTransform  `json:"request_transforms,omitempty" url:"-"`
+	ResponseTransforms    []*ProxyTransform  `json:"response_transforms,omitempty" url:"-"`
+	Application           *Application       `json:"application,omitempty" url:"-"`
+	Configuration         map[string]*string `json:"configuration,omitempty" url:"-"`
+	RequireAuth           *bool              `json:"require_auth,omitempty" url:"-"`
+	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"-"`
 }
 
 type ProxiesListRequest struct {
@@ -32,15 +33,16 @@ type ProxiesListRequest struct {
 }
 
 type PatchProxyRequest struct {
-	Name               *string            `json:"name,omitempty" url:"-"`
-	DestinationURL     *string            `json:"destination_url,omitempty" url:"-"`
-	RequestTransform   *ProxyTransform    `json:"request_transform,omitempty" url:"-"`
-	ResponseTransform  *ProxyTransform    `json:"response_transform,omitempty" url:"-"`
-	RequestTransforms  []*ProxyTransform  `json:"request_transforms,omitempty" url:"-"`
-	ResponseTransforms []*ProxyTransform  `json:"response_transforms,omitempty" url:"-"`
-	Application        *Application       `json:"application,omitempty" url:"-"`
-	Configuration      map[string]*string `json:"configuration,omitempty" url:"-"`
-	RequireAuth        *bool              `json:"require_auth,omitempty" url:"-"`
+	Name                  *string            `json:"name,omitempty" url:"-"`
+	DestinationURL        *string            `json:"destination_url,omitempty" url:"-"`
+	RequestTransform      *ProxyTransform    `json:"request_transform,omitempty" url:"-"`
+	ResponseTransform     *ProxyTransform    `json:"response_transform,omitempty" url:"-"`
+	RequestTransforms     []*ProxyTransform  `json:"request_transforms,omitempty" url:"-"`
+	ResponseTransforms    []*ProxyTransform  `json:"response_transforms,omitempty" url:"-"`
+	Application           *Application       `json:"application,omitempty" url:"-"`
+	Configuration         map[string]*string `json:"configuration,omitempty" url:"-"`
+	RequireAuth           *bool              `json:"require_auth,omitempty" url:"-"`
+	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"-"`
 }
 
 type PendingProxy struct {
@@ -122,29 +124,30 @@ func (p *PendingProxy) String() string {
 }
 
 type Proxy struct {
-	ID                 *string            `json:"id,omitempty" url:"id,omitempty"`
-	Key                *string            `json:"key,omitempty" url:"key,omitempty"`
-	TenantID           *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Name               *string            `json:"name,omitempty" url:"name,omitempty"`
-	DestinationURL     *string            `json:"destination_url,omitempty" url:"destination_url,omitempty"`
-	State              *string            `json:"state,omitempty" url:"state,omitempty"`
-	RequestReactorID   *string            `json:"request_reactor_id,omitempty" url:"request_reactor_id,omitempty"`
-	ResponseReactorID  *string            `json:"response_reactor_id,omitempty" url:"response_reactor_id,omitempty"`
-	RequireAuth        *bool              `json:"require_auth,omitempty" url:"require_auth,omitempty"`
-	RequestTransform   *ProxyTransform    `json:"request_transform,omitempty" url:"request_transform,omitempty"`
-	ResponseTransform  *ProxyTransform    `json:"response_transform,omitempty" url:"response_transform,omitempty"`
-	RequestTransforms  []*ProxyTransform  `json:"request_transforms,omitempty" url:"request_transforms,omitempty"`
-	ResponseTransforms []*ProxyTransform  `json:"response_transforms,omitempty" url:"response_transforms,omitempty"`
-	ApplicationID      *string            `json:"application_id,omitempty" url:"application_id,omitempty"`
-	Configuration      map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
-	ProxyHost          *string            `json:"proxy_host,omitempty" url:"proxy_host,omitempty"`
-	Timeout            *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
-	ClientCertificate  *string            `json:"client_certificate,omitempty" url:"client_certificate,omitempty"`
-	Requested          *RequestedProxy    `json:"requested,omitempty" url:"requested,omitempty"`
-	CreatedBy          *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt          *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy         *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt         *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
+	Key                   *string            `json:"key,omitempty" url:"key,omitempty"`
+	TenantID              *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Name                  *string            `json:"name,omitempty" url:"name,omitempty"`
+	DestinationURL        *string            `json:"destination_url,omitempty" url:"destination_url,omitempty"`
+	State                 *string            `json:"state,omitempty" url:"state,omitempty"`
+	RequestReactorID      *string            `json:"request_reactor_id,omitempty" url:"request_reactor_id,omitempty"`
+	ResponseReactorID     *string            `json:"response_reactor_id,omitempty" url:"response_reactor_id,omitempty"`
+	RequireAuth           *bool              `json:"require_auth,omitempty" url:"require_auth,omitempty"`
+	RequestTransform      *ProxyTransform    `json:"request_transform,omitempty" url:"request_transform,omitempty"`
+	ResponseTransform     *ProxyTransform    `json:"response_transform,omitempty" url:"response_transform,omitempty"`
+	RequestTransforms     []*ProxyTransform  `json:"request_transforms,omitempty" url:"request_transforms,omitempty"`
+	ResponseTransforms    []*ProxyTransform  `json:"response_transforms,omitempty" url:"response_transforms,omitempty"`
+	ApplicationID         *string            `json:"application_id,omitempty" url:"application_id,omitempty"`
+	Configuration         map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
+	ProxyHost             *string            `json:"proxy_host,omitempty" url:"proxy_host,omitempty"`
+	Timeout               *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
+	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"disable_detokenization,omitempty"`
+	ClientCertificate     *string            `json:"client_certificate,omitempty" url:"client_certificate,omitempty"`
+	Requested             *RequestedProxy    `json:"requested,omitempty" url:"requested,omitempty"`
+	CreatedBy             *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt             *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy            *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt            *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -267,6 +270,13 @@ func (p *Proxy) GetTimeout() *int {
 		return nil
 	}
 	return p.Timeout
+}
+
+func (p *Proxy) GetDisableDetokenization() *bool {
+	if p == nil {
+		return nil
+	}
+	return p.DisableDetokenization
 }
 
 func (p *Proxy) GetClientCertificate() *string {
@@ -654,15 +664,16 @@ func (r *RequestedProxy) String() string {
 }
 
 type UpdateProxyRequest struct {
-	Name               string             `json:"name" url:"-"`
-	DestinationURL     string             `json:"destination_url" url:"-"`
-	RequestReactorID   *string            `json:"request_reactor_id,omitempty" url:"-"`
-	ResponseReactorID  *string            `json:"response_reactor_id,omitempty" url:"-"`
-	RequestTransform   *ProxyTransform    `json:"request_transform,omitempty" url:"-"`
-	ResponseTransform  *ProxyTransform    `json:"response_transform,omitempty" url:"-"`
-	RequestTransforms  []*ProxyTransform  `json:"request_transforms,omitempty" url:"-"`
-	ResponseTransforms []*ProxyTransform  `json:"response_transforms,omitempty" url:"-"`
-	Application        *Application       `json:"application,omitempty" url:"-"`
-	Configuration      map[string]*string `json:"configuration,omitempty" url:"-"`
-	RequireAuth        *bool              `json:"require_auth,omitempty" url:"-"`
+	Name                  string             `json:"name" url:"-"`
+	DestinationURL        string             `json:"destination_url" url:"-"`
+	RequestReactorID      *string            `json:"request_reactor_id,omitempty" url:"-"`
+	ResponseReactorID     *string            `json:"response_reactor_id,omitempty" url:"-"`
+	RequestTransform      *ProxyTransform    `json:"request_transform,omitempty" url:"-"`
+	ResponseTransform     *ProxyTransform    `json:"response_transform,omitempty" url:"-"`
+	RequestTransforms     []*ProxyTransform  `json:"request_transforms,omitempty" url:"-"`
+	ResponseTransforms    []*ProxyTransform  `json:"response_transforms,omitempty" url:"-"`
+	Application           *Application       `json:"application,omitempty" url:"-"`
+	Configuration         map[string]*string `json:"configuration,omitempty" url:"-"`
+	RequireAuth           *bool              `json:"require_auth,omitempty" url:"-"`
+	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"-"`
 }
