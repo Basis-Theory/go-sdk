@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/Basis-Theory/go-sdk/compare/v5.0.0...v5.1.0) (2026-01-27)
+
+
+### Features
+
+* add disable_detokenization to proxy configuration  ([85404e7](https://github.com/Basis-Theory/go-sdk/commit/85404e7411bcc7ecdd87e3901c41c96286959a70))
+
 # [5.0.0](https://github.com/Basis-Theory/go-sdk/compare/v4.2.0...v5.0.0) (2026-01-22)
 
 
