@@ -1,3 +1,10 @@
+# [5.2.0](https://github.com/Basis-Theory/go-sdk/compare/v5.1.0...v5.2.0) (2026-02-04)
+
+
+### Features
+
+* Adding 3DS metadata attributes ([#105](https://github.com/Basis-Theory/go-sdk/issues/105)) ([98ad4ac](https://github.com/Basis-Theory/go-sdk/commit/98ad4ac3fa62539e8ac8016153c4faea1e8810eb))
+
 # [5.1.0](https://github.com/Basis-Theory/go-sdk/compare/v5.0.0...v5.1.0) (2026-01-27)
 
 
