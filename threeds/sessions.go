@@ -16,4 +16,5 @@ type CreateThreeDsSessionRequest struct {
 	DeviceInfo            *v5.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
 	AuthenticationRequest *v5.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
 	CallbackURLs          *v5.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
+	Metadata              map[string]*string                    `json:"metadata,omitempty" url:"-"`
 }
