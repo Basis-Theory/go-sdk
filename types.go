@@ -2122,6 +2122,8 @@ func (c *Condition) String() string {
 type CreateAccountUpdaterJobRequest struct {
 	// Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
 	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"deduplicate_tokens,omitempty"`
+	// Tenant merchant identifier
+	MerchantID *string `json:"merchant_id,omitempty" url:"merchant_id,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2132,6 +2134,13 @@ func (c *CreateAccountUpdaterJobRequest) GetDeduplicateTokens() *bool {
 		return nil
 	}
 	return c.DeduplicateTokens
+}
+
+func (c *CreateAccountUpdaterJobRequest) GetMerchantID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.MerchantID
 }
 
 func (c *CreateAccountUpdaterJobRequest) GetExtraProperties() map[string]interface{} {
@@ -2315,15 +2324,16 @@ func (c *CreateTenantConnectionResponse) String() string {
 }
 
 type CreateThreeDsSessionResponse struct {
-	ID                    *string  `json:"id,omitempty" url:"id,omitempty"`
-	Type                  *string  `json:"type,omitempty" url:"type,omitempty"`
-	CardBrand             *string  `json:"cardBrand,omitempty" url:"cardBrand,omitempty"`
-	AdditionalCardBrands  []string `json:"additional_card_brands,omitempty" url:"additional_card_brands,omitempty"`
-	MethodURL             *string  `json:"method_url,omitempty" url:"method_url,omitempty"`
-	MethodNotificationURL *string  `json:"method_notification_url,omitempty" url:"method_notification_url,omitempty"`
-	DirectoryServerID     *string  `json:"directory_server_id,omitempty" url:"directory_server_id,omitempty"`
-	RecommendedVersion    *string  `json:"recommended_version,omitempty" url:"recommended_version,omitempty"`
-	RedirectURL           *string  `json:"redirect_url,omitempty" url:"redirect_url,omitempty"`
+	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
+	Type                  *string            `json:"type,omitempty" url:"type,omitempty"`
+	CardBrand             *string            `json:"cardBrand,omitempty" url:"cardBrand,omitempty"`
+	AdditionalCardBrands  []string           `json:"additional_card_brands,omitempty" url:"additional_card_brands,omitempty"`
+	MethodURL             *string            `json:"method_url,omitempty" url:"method_url,omitempty"`
+	MethodNotificationURL *string            `json:"method_notification_url,omitempty" url:"method_notification_url,omitempty"`
+	DirectoryServerID     *string            `json:"directory_server_id,omitempty" url:"directory_server_id,omitempty"`
+	RecommendedVersion    *string            `json:"recommended_version,omitempty" url:"recommended_version,omitempty"`
+	RedirectURL           *string            `json:"redirect_url,omitempty" url:"redirect_url,omitempty"`
+	Metadata              map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2390,6 +2400,13 @@ func (c *CreateThreeDsSessionResponse) GetRedirectURL() *string {
 		return nil
 	}
 	return c.RedirectURL
+}
+
+func (c *CreateThreeDsSessionResponse) GetMetadata() map[string]*string {
+	if c == nil {
+		return nil
+	}
+	return c.Metadata
 }
 
 func (c *CreateThreeDsSessionResponse) GetExtraProperties() map[string]interface{} {
@@ -6652,6 +6669,7 @@ type ThreeDsSession struct {
 	Version              *ThreeDsVersion        `json:"version,omitempty" url:"version,omitempty"`
 	Method               *ThreeDsMethod         `json:"method,omitempty" url:"method,omitempty"`
 	Authentication       *ThreeDsAuthentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Metadata             map[string]*string     `json:"metadata,omitempty" url:"metadata,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -6788,6 +6806,13 @@ func (t *ThreeDsSession) GetAuthentication() *ThreeDsAuthentication {
 		return nil
 	}
 	return t.Authentication
+}
+
+func (t *ThreeDsSession) GetMetadata() map[string]*string {
+	if t == nil {
+		return nil
+	}
+	return t.Metadata
 }
 
 func (t *ThreeDsSession) GetExtraProperties() map[string]interface{} {
