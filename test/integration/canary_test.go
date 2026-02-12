@@ -466,7 +466,11 @@ func DeleteWebhook(t *testing.T, client *basistheoryclient.Client, webhookId str
 	err := client.Webhooks.Delete(
 		context.TODO(),
 		webhookId)
-	FailIfError(t, "Unable to delete webhook", err)
+	// Ignore 404 errors - webhook may have been cleaned up by another process or test
+	var notFoundError *basistheory.NotFoundError
+	if err != nil && !errors.As(err, &notFoundError) {
+		FailIfError(t, "Unable to delete webhook", err)
+	}
 }
 
 func GetWebhookAssertUrl(t *testing.T, client *basistheoryclient.Client, webhookId string, url string) {
