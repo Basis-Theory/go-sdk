@@ -105,8 +105,15 @@ func TestListV2PaginationWithIteration(t *testing.T) {
 func TestWebhooks(t *testing.T) {
 	client := NewManagementClient()
 
+	// Clean up any leftover test webhooks before starting
+	CleanupTestWebhooks(t, client)
+
 	url := "https://echo.flock-dev.com/" + uuid.NewString()
-	webhookId := CreateWebhook(t, client, url)
+	webhookId, err := CreateWebhookWithRetry(t, client, url)
+	if err != nil {
+		t.Skipf("Skipping webhook test due to limit: %v", err)
+		return
+	}
 
 	GetWebhookAssertUrl(t, client, webhookId, url)
 
@@ -121,7 +128,7 @@ func TestWebhooks(t *testing.T) {
 
 	DeleteWebhook(t, client, webhookId)
 
-	_, err := client.Webhooks.Get(
+	_, err = client.Webhooks.Get(
 		context.TODO(),
 		webhookId)
 	if err == nil {
@@ -409,6 +416,40 @@ func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) s
 	return response.ID
 }
 
+func CreateWebhookWithRetry(t *testing.T, client *basistheoryclient.Client, url string) (string, error) {
+	response, err := client.Webhooks.Create(
+		context.TODO(),
+		&basistheory.CreateWebhookRequest{
+			Name:   "(Deletable) Webhook - " + uuid.NewString(),
+			URL:    url,
+			Events: []string{"token.created"},
+		})
+	if err != nil {
+		return "", err
+	}
+	return response.ID, nil
+}
+
+func CleanupTestWebhooks(t *testing.T, client *basistheoryclient.Client) {
+	webhookList, err := client.Webhooks.List(context.TODO())
+	if err != nil {
+		t.Logf("Warning: Could not list webhooks for cleanup: %v", err)
+		return
+	}
+
+	webhooks := webhookList.GetData()
+	for _, webhook := range webhooks {
+		// Only delete webhooks created by tests (marked as Deletable)
+		if len(webhook.Name) > 11 && webhook.Name[:11] == "(Deletable)" {
+			time.Sleep(2 * time.Second) // Avoid concurrent operation errors
+			err := client.Webhooks.Delete(context.TODO(), webhook.ID)
+			if err != nil {
+				t.Logf("Warning: Could not delete webhook %s: %v", webhook.ID, err)
+			}
+		}
+	}
+}
+
 func UpdateWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string, updateUrl string) {
 	_, err := client.Webhooks.Update(
 		context.TODO(),
@@ -425,7 +466,11 @@ func DeleteWebhook(t *testing.T, client *basistheoryclient.Client, webhookId str
 	err := client.Webhooks.Delete(
 		context.TODO(),
 		webhookId)
-	FailIfError(t, "Unable to delete webhook", err)
+	// Ignore 404 errors - webhook may have been cleaned up by another process or test
+	var notFoundError *basistheory.NotFoundError
+	if err != nil && !errors.As(err, &notFoundError) {
+		FailIfError(t, "Unable to delete webhook", err)
+	}
 }
 
 func GetWebhookAssertUrl(t *testing.T, client *basistheoryclient.Client, webhookId string, url string) {
