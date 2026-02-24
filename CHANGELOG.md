@@ -1,3 +1,10 @@
+# [5.3.0](https://github.com/Basis-Theory/go-sdk/compare/v5.2.0...v5.3.0) (2026-02-24)
+
+
+### Features
+
+* Updating API contracts ([#108](https://github.com/Basis-Theory/go-sdk/issues/108)) ([5764fcd](https://github.com/Basis-Theory/go-sdk/commit/5764fcd9c7ce9c64c374b6a05ead316030511681))
+
 # [5.2.0](https://github.com/Basis-Theory/go-sdk/compare/v5.1.0...v5.2.0) (2026-02-04)
 
 
