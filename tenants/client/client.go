@@ -10,17 +10,19 @@ import (
 	invitations "github.com/Basis-Theory/go-sdk/v5/tenants/invitations"
 	members "github.com/Basis-Theory/go-sdk/v5/tenants/members"
 	owner "github.com/Basis-Theory/go-sdk/v5/tenants/owner"
+	securitycontact "github.com/Basis-Theory/go-sdk/v5/tenants/securitycontact"
 	self "github.com/Basis-Theory/go-sdk/v5/tenants/self"
 	http "net/http"
 	os "os"
 )
 
 type Client struct {
-	Connections *connections.Client
-	Invitations *invitations.Client
-	Members     *members.Client
-	Owner       *owner.Client
-	Self        *self.Client
+	SecurityContact *securitycontact.Client
+	Connections     *connections.Client
+	Invitations     *invitations.Client
+	Members         *members.Client
+	Owner           *owner.Client
+	Self            *self.Client
 
 	baseURL string
 	caller  *internal.Caller
@@ -33,12 +35,13 @@ func NewClient(opts ...option.RequestOption) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Connections: connections.NewClient(opts...),
-		Invitations: invitations.NewClient(opts...),
-		Members:     members.NewClient(opts...),
-		Owner:       owner.NewClient(opts...),
-		Self:        self.NewClient(opts...),
-		baseURL:     options.BaseURL,
+		SecurityContact: securitycontact.NewClient(opts...),
+		Connections:     connections.NewClient(opts...),
+		Invitations:     invitations.NewClient(opts...),
+		Members:         members.NewClient(opts...),
+		Owner:           owner.NewClient(opts...),
+		Self:            self.NewClient(opts...),
+		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
 				Client:      options.HTTPClient,
