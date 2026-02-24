@@ -4086,6 +4086,7 @@ func (r *ReactorFormulaPaginatedList) String() string {
 type Runtime struct {
 	Image           *string            `json:"image,omitempty" url:"image,omitempty"`
 	Dependencies    map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	Resolutions     map[string]*string `json:"resolutions,omitempty" url:"resolutions,omitempty"`
 	WarmConcurrency *int               `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
 	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
 	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
@@ -4107,6 +4108,13 @@ func (r *Runtime) GetDependencies() map[string]*string {
 		return nil
 	}
 	return r.Dependencies
+}
+
+func (r *Runtime) GetResolutions() map[string]*string {
+	if r == nil {
+		return nil
+	}
+	return r.Resolutions
 }
 
 func (r *Runtime) GetWarmConcurrency() *int {

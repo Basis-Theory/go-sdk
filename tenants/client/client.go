@@ -3,6 +3,8 @@
 package client
 
 import (
+	context "context"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
@@ -16,11 +18,12 @@ import (
 )
 
 type Client struct {
-	Connections *connections.Client
-	Invitations *invitations.Client
-	Members     *members.Client
-	Owner       *owner.Client
-	Self        *self.Client
+	WithRawResponse *RawClient
+	Connections     *connections.Client
+	Invitations     *invitations.Client
+	Members         *members.Client
+	Owner           *owner.Client
+	Self            *self.Client
 
 	baseURL string
 	caller  *internal.Caller
@@ -33,12 +36,13 @@ func NewClient(opts ...option.RequestOption) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Connections: connections.NewClient(opts...),
-		Invitations: invitations.NewClient(opts...),
-		Members:     members.NewClient(opts...),
-		Owner:       owner.NewClient(opts...),
-		Self:        self.NewClient(opts...),
-		baseURL:     options.BaseURL,
+		Connections:     connections.NewClient(opts...),
+		Invitations:     invitations.NewClient(opts...),
+		Members:         members.NewClient(opts...),
+		Owner:           owner.NewClient(opts...),
+		Self:            self.NewClient(opts...),
+		WithRawResponse: NewRawClient(options),
+		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
 				Client:      options.HTTPClient,
@@ -47,4 +51,34 @@ func NewClient(opts ...option.RequestOption) *Client {
 		),
 		header: options.ToHeader(),
 	}
+}
+
+func (c *Client) Getsecuritycontact(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) (*v5.SecurityContactEmailResponse, error) {
+	response, err := c.WithRawResponse.Getsecuritycontact(
+		ctx,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+func (c *Client) Updatesecuritycontact(
+	ctx context.Context,
+	request *v5.SecurityContactEmailRequest,
+	opts ...option.RequestOption,
+) (*v5.SecurityContactEmailResponse, error) {
+	response, err := c.WithRawResponse.Updatesecuritycontact(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
 }
