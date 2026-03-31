@@ -1,3 +1,10 @@
+# [5.4.0](https://github.com/Basis-Theory/go-sdk/compare/v5.3.0...v5.4.0) (2026-03-31)
+
+
+### Features
+
+* Add metatdata to 3DS authenticate session ([1f25326](https://github.com/Basis-Theory/go-sdk/commit/1f253263172cf35ccdd61dbc78fd472f29f2a1e2))
+
 # [5.3.0](https://github.com/Basis-Theory/go-sdk/compare/v5.2.0...v5.3.0) (2026-02-24)
 
 
