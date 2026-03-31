@@ -1194,6 +1194,7 @@ type AuthenticateThreeDsSessionRequest struct {
 	CardholderInfo            *ThreeDsCardholderInfo     `json:"cardholder_info,omitempty" url:"cardholder_info,omitempty"`
 	BroadcastInfo             interface{}                `json:"broadcast_info,omitempty" url:"broadcast_info,omitempty"`
 	MessageExtensions         []*ThreeDsMessageExtension `json:"message_extensions,omitempty" url:"message_extensions,omitempty"`
+	Metadata                  map[string]*string         `json:"metadata,omitempty" url:"metadata,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1281,6 +1282,13 @@ func (a *AuthenticateThreeDsSessionRequest) GetMessageExtensions() []*ThreeDsMes
 		return nil
 	}
 	return a.MessageExtensions
+}
+
+func (a *AuthenticateThreeDsSessionRequest) GetMetadata() map[string]*string {
+	if a == nil {
+		return nil
+	}
+	return a.Metadata
 }
 
 func (a *AuthenticateThreeDsSessionRequest) GetExtraProperties() map[string]interface{} {
