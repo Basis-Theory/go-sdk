@@ -505,6 +505,335 @@ func (a *AdditionalCardDetails) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+type Agent struct {
+	ID              *string          `json:"id,omitempty" url:"id,omitempty"`
+	Name            *string          `json:"name,omitempty" url:"name,omitempty"`
+	Status          *string          `json:"status,omitempty" url:"status,omitempty"`
+	EnrollmentIDs   []string         `json:"enrollment_ids,omitempty" url:"enrollment_ids,omitempty"`
+	InstanceDetails *InstanceDetails `json:"instance_details,omitempty" url:"instance_details,omitempty"`
+	CreatedAt       *time.Time       `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *Agent) GetID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ID
+}
+
+func (a *Agent) GetName() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Name
+}
+
+func (a *Agent) GetEnrollmentIDs() []string {
+	if a == nil {
+		return nil
+	}
+	return a.EnrollmentIDs
+}
+
+func (a *Agent) GetInstanceDetails() *InstanceDetails {
+	if a == nil {
+		return nil
+	}
+	return a.InstanceDetails
+}
+
+func (a *Agent) GetCreatedAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.CreatedAt
+}
+
+func (a *Agent) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *Agent) UnmarshalJSON(data []byte) error {
+	type embed Agent
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = Agent(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *Agent) MarshalJSON() ([]byte, error) {
+	type embed Agent
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: internal.NewOptionalDateTime(a.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (a *Agent) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AgenticCard struct {
+	Brand           *AgenticCardBrand `json:"brand,omitempty" url:"brand,omitempty"`
+	Bin             *string           `json:"bin,omitempty" url:"bin,omitempty"`
+	Last4           *string           `json:"last4,omitempty" url:"last4,omitempty"`
+	ExpirationMonth *int              `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
+	ExpirationYear  *int              `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
+	Display         *CardDisplay      `json:"display,omitempty" url:"display,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AgenticCard) GetBrand() *AgenticCardBrand {
+	if a == nil {
+		return nil
+	}
+	return a.Brand
+}
+
+func (a *AgenticCard) GetBin() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Bin
+}
+
+func (a *AgenticCard) GetLast4() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Last4
+}
+
+func (a *AgenticCard) GetExpirationMonth() *int {
+	if a == nil {
+		return nil
+	}
+	return a.ExpirationMonth
+}
+
+func (a *AgenticCard) GetExpirationYear() *int {
+	if a == nil {
+		return nil
+	}
+	return a.ExpirationYear
+}
+
+func (a *AgenticCard) GetDisplay() *CardDisplay {
+	if a == nil {
+		return nil
+	}
+	return a.Display
+}
+
+func (a *AgenticCard) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AgenticCard) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgenticCard
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AgenticCard(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AgenticCard) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AgenticCardBrand string
+
+const (
+	AgenticCardBrandVisa       AgenticCardBrand = "visa"
+	AgenticCardBrandMastercard AgenticCardBrand = "mastercard"
+)
+
+func NewAgenticCardBrandFromString(s string) (AgenticCardBrand, error) {
+	switch s {
+	case "visa":
+		return AgenticCardBrandVisa, nil
+	case "mastercard":
+		return AgenticCardBrandMastercard, nil
+	}
+	var t AgenticCardBrand
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AgenticCardBrand) Ptr() *AgenticCardBrand {
+	return &a
+}
+
+type AgenticMerchant struct {
+	Name         string  `json:"name" url:"name"`
+	URL          string  `json:"url" url:"url"`
+	CountryCode  string  `json:"country_code" url:"country_code"`
+	CategoryCode *string `json:"category_code,omitempty" url:"category_code,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AgenticMerchant) GetName() string {
+	if a == nil {
+		return ""
+	}
+	return a.Name
+}
+
+func (a *AgenticMerchant) GetURL() string {
+	if a == nil {
+		return ""
+	}
+	return a.URL
+}
+
+func (a *AgenticMerchant) GetCountryCode() string {
+	if a == nil {
+		return ""
+	}
+	return a.CountryCode
+}
+
+func (a *AgenticMerchant) GetCategoryCode() *string {
+	if a == nil {
+		return nil
+	}
+	return a.CategoryCode
+}
+
+func (a *AgenticMerchant) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AgenticMerchant) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgenticMerchant
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AgenticMerchant(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AgenticMerchant) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type Amount struct {
+	Value    string  `json:"value" url:"value"`
+	Currency *string `json:"currency,omitempty" url:"currency,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *Amount) GetValue() string {
+	if a == nil {
+		return ""
+	}
+	return a.Value
+}
+
+func (a *Amount) GetCurrency() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Currency
+}
+
+func (a *Amount) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *Amount) UnmarshalJSON(data []byte) error {
+	type unmarshaler Amount
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = Amount(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *Amount) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 type ApplePayDomainRegistrationResponse struct {
 	Domains []*DomainRegistrationResponse `json:"domains,omitempty" url:"domains,omitempty"`
 
@@ -1949,6 +2278,60 @@ func (c *CardDetails) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CardDisplay struct {
+	ArtURL          *string `json:"art_url,omitempty" url:"art_url,omitempty"`
+	BackgroundColor *string `json:"background_color,omitempty" url:"background_color,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardDisplay) GetArtURL() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ArtURL
+}
+
+func (c *CardDisplay) GetBackgroundColor() *string {
+	if c == nil {
+		return nil
+	}
+	return c.BackgroundColor
+}
+
+func (c *CardDisplay) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardDisplay) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardDisplay
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardDisplay(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardDisplay) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CardIssuer struct {
 	Country *string `json:"country,omitempty" url:"country,omitempty"`
 	Name    *string `json:"name,omitempty" url:"name,omitempty"`
@@ -2127,11 +2510,179 @@ func (c *Condition) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type ConfirmationEntry struct {
+	TransactionReferenceID *string           `json:"transaction_reference_id,omitempty" url:"transaction_reference_id,omitempty"`
+	TransactionStatus      TransactionStatus `json:"transaction_status" url:"transaction_status"`
+	TransactionType        TransactionType   `json:"transaction_type" url:"transaction_type"`
+	TransactionTimestamp   *time.Time        `json:"transaction_timestamp,omitempty" url:"transaction_timestamp,omitempty"`
+	MandatesCompleted      *bool             `json:"mandates_completed,omitempty" url:"mandates_completed,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConfirmationEntry) GetTransactionReferenceID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.TransactionReferenceID
+}
+
+func (c *ConfirmationEntry) GetTransactionStatus() TransactionStatus {
+	if c == nil {
+		return ""
+	}
+	return c.TransactionStatus
+}
+
+func (c *ConfirmationEntry) GetTransactionType() TransactionType {
+	if c == nil {
+		return ""
+	}
+	return c.TransactionType
+}
+
+func (c *ConfirmationEntry) GetTransactionTimestamp() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.TransactionTimestamp
+}
+
+func (c *ConfirmationEntry) GetMandatesCompleted() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.MandatesCompleted
+}
+
+func (c *ConfirmationEntry) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConfirmationEntry) UnmarshalJSON(data []byte) error {
+	type embed ConfirmationEntry
+	var unmarshaler = struct {
+		embed
+		TransactionTimestamp *internal.DateTime `json:"transaction_timestamp,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ConfirmationEntry(unmarshaler.embed)
+	c.TransactionTimestamp = unmarshaler.TransactionTimestamp.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConfirmationEntry) MarshalJSON() ([]byte, error) {
+	type embed ConfirmationEntry
+	var marshaler = struct {
+		embed
+		TransactionTimestamp *internal.DateTime `json:"transaction_timestamp,omitempty"`
+	}{
+		embed:                embed(*c),
+		TransactionTimestamp: internal.NewOptionalDateTime(c.TransactionTimestamp),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *ConfirmationEntry) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type Consumer struct {
+	Email        string  `json:"email" url:"email"`
+	ID           *string `json:"id,omitempty" url:"id,omitempty"`
+	CountryCode  *string `json:"country_code,omitempty" url:"country_code,omitempty"`
+	LanguageCode *string `json:"language_code,omitempty" url:"language_code,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *Consumer) GetEmail() string {
+	if c == nil {
+		return ""
+	}
+	return c.Email
+}
+
+func (c *Consumer) GetID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *Consumer) GetCountryCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.CountryCode
+}
+
+func (c *Consumer) GetLanguageCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.LanguageCode
+}
+
+func (c *Consumer) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *Consumer) UnmarshalJSON(data []byte) error {
+	type unmarshaler Consumer
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = Consumer(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *Consumer) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CreateAccountUpdaterJobRequest struct {
 	// Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
 	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"deduplicate_tokens,omitempty"`
 	// Tenant merchant identifier
 	MerchantID *string `json:"merchant_id,omitempty" url:"merchant_id,omitempty"`
+	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns.
+	ResultVersion *CreateAccountUpdaterJobRequestResultVersion `json:"result_version,omitempty" url:"result_version,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2149,6 +2700,13 @@ func (c *CreateAccountUpdaterJobRequest) GetMerchantID() *string {
 		return nil
 	}
 	return c.MerchantID
+}
+
+func (c *CreateAccountUpdaterJobRequest) GetResultVersion() *CreateAccountUpdaterJobRequestResultVersion {
+	if c == nil {
+		return nil
+	}
+	return c.ResultVersion
 }
 
 func (c *CreateAccountUpdaterJobRequest) GetExtraProperties() map[string]interface{} {
@@ -2181,6 +2739,29 @@ func (c *CreateAccountUpdaterJobRequest) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns.
+type CreateAccountUpdaterJobRequestResultVersion string
+
+const (
+	CreateAccountUpdaterJobRequestResultVersionOne  CreateAccountUpdaterJobRequestResultVersion = "1"
+	CreateAccountUpdaterJobRequestResultVersionOne1 CreateAccountUpdaterJobRequestResultVersion = "1.1"
+)
+
+func NewCreateAccountUpdaterJobRequestResultVersionFromString(s string) (CreateAccountUpdaterJobRequestResultVersion, error) {
+	switch s {
+	case "1":
+		return CreateAccountUpdaterJobRequestResultVersionOne, nil
+	case "1.1":
+		return CreateAccountUpdaterJobRequestResultVersionOne1, nil
+	}
+	var t CreateAccountUpdaterJobRequestResultVersion
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CreateAccountUpdaterJobRequestResultVersion) Ptr() *CreateAccountUpdaterJobRequestResultVersion {
+	return &c
 }
 
 type CreateReactorFormulaRequest struct {
@@ -2747,6 +3328,445 @@ func (c *CreateTokenRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type Credentials struct {
+	Card      *CredentialsCard `json:"card,omitempty" url:"card,omitempty"`
+	ExpiresAt *time.Time       `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *Credentials) GetCard() *CredentialsCard {
+	if c == nil {
+		return nil
+	}
+	return c.Card
+}
+
+func (c *Credentials) GetExpiresAt() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.ExpiresAt
+}
+
+func (c *Credentials) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *Credentials) UnmarshalJSON(data []byte) error {
+	type embed Credentials
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = Credentials(unmarshaler.embed)
+	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *Credentials) MarshalJSON() ([]byte, error) {
+	type embed Credentials
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*c),
+		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *Credentials) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CredentialsCard struct {
+	Number          *string `json:"number,omitempty" url:"number,omitempty"`
+	ExpirationMonth *int    `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
+	ExpirationYear  *int    `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
+	Cvc             *string `json:"cvc,omitempty" url:"cvc,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsCard) GetNumber() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Number
+}
+
+func (c *CredentialsCard) GetExpirationMonth() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ExpirationMonth
+}
+
+func (c *CredentialsCard) GetExpirationYear() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ExpirationYear
+}
+
+func (c *CredentialsCard) GetCvc() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Cvc
+}
+
+func (c *CredentialsCard) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CredentialsCard) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsCard
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsCard(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsCard) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type DeliveryMethod string
+
+const (
+	DeliveryMethodNoDelivery     DeliveryMethod = "no-delivery"
+	DeliveryMethodAddressBilling DeliveryMethod = "address-billing"
+	DeliveryMethodAddressOnFile  DeliveryMethod = "address-on-file"
+	DeliveryMethodAddressOther   DeliveryMethod = "address-other"
+	DeliveryMethodPickup         DeliveryMethod = "pickup"
+	DeliveryMethodElectronic     DeliveryMethod = "electronic"
+)
+
+func NewDeliveryMethodFromString(s string) (DeliveryMethod, error) {
+	switch s {
+	case "no-delivery":
+		return DeliveryMethodNoDelivery, nil
+	case "address-billing":
+		return DeliveryMethodAddressBilling, nil
+	case "address-on-file":
+		return DeliveryMethodAddressOnFile, nil
+	case "address-other":
+		return DeliveryMethodAddressOther, nil
+	case "pickup":
+		return DeliveryMethodPickup, nil
+	case "electronic":
+		return DeliveryMethodElectronic, nil
+	}
+	var t DeliveryMethod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeliveryMethod) Ptr() *DeliveryMethod {
+	return &d
+}
+
+type DeviceContext struct {
+	ScreenHeight      int                       `json:"screen_height" url:"screen_height"`
+	ScreenWidth       int                       `json:"screen_width" url:"screen_width"`
+	UserAgentString   string                    `json:"user_agent_string" url:"user_agent_string"`
+	LanguageCode      string                    `json:"language_code" url:"language_code"`
+	TimeZone          string                    `json:"time_zone" url:"time_zone"`
+	JavaScriptEnabled bool                      `json:"java_script_enabled" url:"java_script_enabled"`
+	ClientDeviceID    string                    `json:"client_device_id" url:"client_device_id"`
+	ClientReferenceID string                    `json:"client_reference_id" url:"client_reference_id"`
+	PlatformType      DeviceContextPlatformType `json:"platform_type" url:"platform_type"`
+	ColorDepth        *int                      `json:"color_depth,omitempty" url:"color_depth,omitempty"`
+	AcceptHeader      *string                   `json:"accept_header,omitempty" url:"accept_header,omitempty"`
+	// Auto-filled from request IP if not provided
+	IPAddress      *string                      `json:"ip_address,omitempty" url:"ip_address,omitempty"`
+	SessionContext *DeviceContextSessionContext `json:"session_context,omitempty" url:"session_context,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DeviceContext) GetScreenHeight() int {
+	if d == nil {
+		return 0
+	}
+	return d.ScreenHeight
+}
+
+func (d *DeviceContext) GetScreenWidth() int {
+	if d == nil {
+		return 0
+	}
+	return d.ScreenWidth
+}
+
+func (d *DeviceContext) GetUserAgentString() string {
+	if d == nil {
+		return ""
+	}
+	return d.UserAgentString
+}
+
+func (d *DeviceContext) GetLanguageCode() string {
+	if d == nil {
+		return ""
+	}
+	return d.LanguageCode
+}
+
+func (d *DeviceContext) GetTimeZone() string {
+	if d == nil {
+		return ""
+	}
+	return d.TimeZone
+}
+
+func (d *DeviceContext) GetJavaScriptEnabled() bool {
+	if d == nil {
+		return false
+	}
+	return d.JavaScriptEnabled
+}
+
+func (d *DeviceContext) GetClientDeviceID() string {
+	if d == nil {
+		return ""
+	}
+	return d.ClientDeviceID
+}
+
+func (d *DeviceContext) GetClientReferenceID() string {
+	if d == nil {
+		return ""
+	}
+	return d.ClientReferenceID
+}
+
+func (d *DeviceContext) GetPlatformType() DeviceContextPlatformType {
+	if d == nil {
+		return ""
+	}
+	return d.PlatformType
+}
+
+func (d *DeviceContext) GetColorDepth() *int {
+	if d == nil {
+		return nil
+	}
+	return d.ColorDepth
+}
+
+func (d *DeviceContext) GetAcceptHeader() *string {
+	if d == nil {
+		return nil
+	}
+	return d.AcceptHeader
+}
+
+func (d *DeviceContext) GetIPAddress() *string {
+	if d == nil {
+		return nil
+	}
+	return d.IPAddress
+}
+
+func (d *DeviceContext) GetSessionContext() *DeviceContextSessionContext {
+	if d == nil {
+		return nil
+	}
+	return d.SessionContext
+}
+
+func (d *DeviceContext) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeviceContext) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceContext
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceContext(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceContext) String() string {
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DeviceContextPlatformType string
+
+const (
+	DeviceContextPlatformTypeWeb    DeviceContextPlatformType = "WEB"
+	DeviceContextPlatformTypeMobile DeviceContextPlatformType = "MOBILE"
+	DeviceContextPlatformTypeNative DeviceContextPlatformType = "NATIVE"
+)
+
+func NewDeviceContextPlatformTypeFromString(s string) (DeviceContextPlatformType, error) {
+	switch s {
+	case "WEB":
+		return DeviceContextPlatformTypeWeb, nil
+	case "MOBILE":
+		return DeviceContextPlatformTypeMobile, nil
+	case "NATIVE":
+		return DeviceContextPlatformTypeNative, nil
+	}
+	var t DeviceContextPlatformType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeviceContextPlatformType) Ptr() *DeviceContextPlatformType {
+	return &d
+}
+
+type DeviceContextSessionContext struct {
+	SecureToken *string `json:"secure_token,omitempty" url:"secure_token,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DeviceContextSessionContext) GetSecureToken() *string {
+	if d == nil {
+		return nil
+	}
+	return d.SecureToken
+}
+
+func (d *DeviceContextSessionContext) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeviceContextSessionContext) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeviceContextSessionContext
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeviceContextSessionContext(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeviceContextSessionContext) String() string {
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+type DeviceType string
+
+const (
+	DeviceTypeMobilePhone          DeviceType = "mobile-phone"
+	DeviceTypeTablet               DeviceType = "tablet"
+	DeviceTypeLaptop               DeviceType = "laptop"
+	DeviceTypePersonalAssistant    DeviceType = "personal-assistant"
+	DeviceTypeConnectedAuto        DeviceType = "connected-auto"
+	DeviceTypeHomeAppliance        DeviceType = "home-appliance"
+	DeviceTypeWearable             DeviceType = "wearable"
+	DeviceTypeStationaryComputer   DeviceType = "stationary-computer"
+	DeviceTypeEReader              DeviceType = "e-reader"
+	DeviceTypeHandheldGamingDevice DeviceType = "handheld-gaming-device"
+	DeviceTypeOther                DeviceType = "other"
+)
+
+func NewDeviceTypeFromString(s string) (DeviceType, error) {
+	switch s {
+	case "mobile-phone":
+		return DeviceTypeMobilePhone, nil
+	case "tablet":
+		return DeviceTypeTablet, nil
+	case "laptop":
+		return DeviceTypeLaptop, nil
+	case "personal-assistant":
+		return DeviceTypePersonalAssistant, nil
+	case "connected-auto":
+		return DeviceTypeConnectedAuto, nil
+	case "home-appliance":
+		return DeviceTypeHomeAppliance, nil
+	case "wearable":
+		return DeviceTypeWearable, nil
+	case "stationary-computer":
+		return DeviceTypeStationaryComputer, nil
+	case "e-reader":
+		return DeviceTypeEReader, nil
+	case "handheld-gaming-device":
+		return DeviceTypeHandheldGamingDevice, nil
+	case "other":
+		return DeviceTypeOther, nil
+	}
+	var t DeviceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeviceType) Ptr() *DeviceType {
+	return &d
+}
+
 type DomainRegistrationResponse struct {
 	Domain *string `json:"domain,omitempty" url:"domain,omitempty"`
 	Status *string `json:"status,omitempty" url:"status,omitempty"`
@@ -2799,6 +3819,389 @@ func (d *DomainRegistrationResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", d)
+}
+
+type EncryptionJwk struct {
+	Kid string `json:"kid" url:"kid"`
+	N   string `json:"n" url:"n"`
+	E   string `json:"e" url:"e"`
+	kty string
+	use string
+	alg string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EncryptionJwk) GetKid() string {
+	if e == nil {
+		return ""
+	}
+	return e.Kid
+}
+
+func (e *EncryptionJwk) GetN() string {
+	if e == nil {
+		return ""
+	}
+	return e.N
+}
+
+func (e *EncryptionJwk) GetE() string {
+	if e == nil {
+		return ""
+	}
+	return e.E
+}
+
+func (e *EncryptionJwk) Kty() string {
+	return e.kty
+}
+
+func (e *EncryptionJwk) Use() string {
+	return e.use
+}
+
+func (e *EncryptionJwk) Alg() string {
+	return e.alg
+}
+
+func (e *EncryptionJwk) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EncryptionJwk) UnmarshalJSON(data []byte) error {
+	type embed EncryptionJwk
+	var unmarshaler = struct {
+		embed
+		Kty string `json:"kty"`
+		Use string `json:"use"`
+		Alg string `json:"alg"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = EncryptionJwk(unmarshaler.embed)
+	if unmarshaler.Kty != "RSA" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", e, "RSA", unmarshaler.Kty)
+	}
+	e.kty = unmarshaler.Kty
+	if unmarshaler.Use != "enc" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", e, "enc", unmarshaler.Use)
+	}
+	e.use = unmarshaler.Use
+	if unmarshaler.Alg != "RSA-OAEP-256" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", e, "RSA-OAEP-256", unmarshaler.Alg)
+	}
+	e.alg = unmarshaler.Alg
+	extraProperties, err := internal.ExtractExtraProperties(data, *e, "kty", "use", "alg")
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EncryptionJwk) MarshalJSON() ([]byte, error) {
+	type embed EncryptionJwk
+	var marshaler = struct {
+		embed
+		Kty string `json:"kty"`
+		Use string `json:"use"`
+		Alg string `json:"alg"`
+	}{
+		embed: embed(*e),
+		Kty:   "RSA",
+		Use:   "enc",
+		Alg:   "RSA-OAEP-256",
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *EncryptionJwk) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type Enrollment struct {
+	ID        *string             `json:"id,omitempty" url:"id,omitempty"`
+	Provider  *EnrollmentProvider `json:"provider,omitempty" url:"provider,omitempty"`
+	Status    *EnrollmentStatus   `json:"status,omitempty" url:"status,omitempty"`
+	Card      *AgenticCard        `json:"card,omitempty" url:"card,omitempty"`
+	AgentIDs  []string            `json:"agent_ids,omitempty" url:"agent_ids,omitempty"`
+	CreatedAt *time.Time          `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *Enrollment) GetID() *string {
+	if e == nil {
+		return nil
+	}
+	return e.ID
+}
+
+func (e *Enrollment) GetProvider() *EnrollmentProvider {
+	if e == nil {
+		return nil
+	}
+	return e.Provider
+}
+
+func (e *Enrollment) GetStatus() *EnrollmentStatus {
+	if e == nil {
+		return nil
+	}
+	return e.Status
+}
+
+func (e *Enrollment) GetCard() *AgenticCard {
+	if e == nil {
+		return nil
+	}
+	return e.Card
+}
+
+func (e *Enrollment) GetAgentIDs() []string {
+	if e == nil {
+		return nil
+	}
+	return e.AgentIDs
+}
+
+func (e *Enrollment) GetCreatedAt() *time.Time {
+	if e == nil {
+		return nil
+	}
+	return e.CreatedAt
+}
+
+func (e *Enrollment) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *Enrollment) UnmarshalJSON(data []byte) error {
+	type embed Enrollment
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = Enrollment(unmarshaler.embed)
+	e.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *Enrollment) MarshalJSON() ([]byte, error) {
+	type embed Enrollment
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*e),
+		CreatedAt: internal.NewOptionalDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *Enrollment) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EnrollmentList struct {
+	Pagination *EnrollmentListPagination `json:"pagination" url:"pagination"`
+	Data       []*Enrollment             `json:"data" url:"data"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentList) GetPagination() *EnrollmentListPagination {
+	if e == nil {
+		return nil
+	}
+	return e.Pagination
+}
+
+func (e *EnrollmentList) GetData() []*Enrollment {
+	if e == nil {
+		return nil
+	}
+	return e.Data
+}
+
+func (e *EnrollmentList) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EnrollmentList) UnmarshalJSON(data []byte) error {
+	type unmarshaler EnrollmentList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EnrollmentList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EnrollmentList) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EnrollmentListPagination struct {
+	NextCursor *string `json:"next_cursor,omitempty" url:"next_cursor,omitempty"`
+	HasMore    *bool   `json:"has_more,omitempty" url:"has_more,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EnrollmentListPagination) GetNextCursor() *string {
+	if e == nil {
+		return nil
+	}
+	return e.NextCursor
+}
+
+func (e *EnrollmentListPagination) GetHasMore() *bool {
+	if e == nil {
+		return nil
+	}
+	return e.HasMore
+}
+
+func (e *EnrollmentListPagination) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EnrollmentListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler EnrollmentListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EnrollmentListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EnrollmentListPagination) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+type EnrollmentProvider string
+
+const (
+	EnrollmentProviderVisa           EnrollmentProvider = "visa"
+	EnrollmentProviderMastercard     EnrollmentProvider = "mastercard"
+	EnrollmentProviderVisaMock       EnrollmentProvider = "visa-mock"
+	EnrollmentProviderMastercardMock EnrollmentProvider = "mastercard-mock"
+)
+
+func NewEnrollmentProviderFromString(s string) (EnrollmentProvider, error) {
+	switch s {
+	case "visa":
+		return EnrollmentProviderVisa, nil
+	case "mastercard":
+		return EnrollmentProviderMastercard, nil
+	case "visa-mock":
+		return EnrollmentProviderVisaMock, nil
+	case "mastercard-mock":
+		return EnrollmentProviderMastercardMock, nil
+	}
+	var t EnrollmentProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EnrollmentProvider) Ptr() *EnrollmentProvider {
+	return &e
+}
+
+type EnrollmentStatus string
+
+const (
+	EnrollmentStatusPendingVerification EnrollmentStatus = "pending_verification"
+	EnrollmentStatusActive              EnrollmentStatus = "active"
+	EnrollmentStatusSuspended           EnrollmentStatus = "suspended"
+	EnrollmentStatusDeleted             EnrollmentStatus = "deleted"
+	EnrollmentStatusFailed              EnrollmentStatus = "failed"
+)
+
+func NewEnrollmentStatusFromString(s string) (EnrollmentStatus, error) {
+	switch s {
+	case "pending_verification":
+		return EnrollmentStatusPendingVerification, nil
+	case "active":
+		return EnrollmentStatusActive, nil
+	case "suspended":
+		return EnrollmentStatusSuspended, nil
+	case "deleted":
+		return EnrollmentStatusDeleted, nil
+	case "failed":
+		return EnrollmentStatusFailed, nil
+	}
+	var t EnrollmentStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EnrollmentStatus) Ptr() *EnrollmentStatus {
+	return &e
 }
 
 type EventTypes = []string
@@ -3791,6 +5194,628 @@ func (g *GooglePayTokenizeResponse) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+type InstanceDetails struct {
+	// IPv4 address
+	IPAddress *string     `json:"ip_address,omitempty" url:"ip_address,omitempty"`
+	Brand     *string     `json:"brand,omitempty" url:"brand,omitempty"`
+	Type      *DeviceType `json:"type,omitempty" url:"type,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (i *InstanceDetails) GetIPAddress() *string {
+	if i == nil {
+		return nil
+	}
+	return i.IPAddress
+}
+
+func (i *InstanceDetails) GetBrand() *string {
+	if i == nil {
+		return nil
+	}
+	return i.Brand
+}
+
+func (i *InstanceDetails) GetType() *DeviceType {
+	if i == nil {
+		return nil
+	}
+	return i.Type
+}
+
+func (i *InstanceDetails) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *InstanceDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler InstanceDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = InstanceDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+	i.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *InstanceDetails) String() string {
+	if len(i.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
+}
+
+type Instruction struct {
+	ID           *string            `json:"id,omitempty" url:"id,omitempty"`
+	EnrollmentID *string            `json:"enrollment_id,omitempty" url:"enrollment_id,omitempty"`
+	Status       *InstructionStatus `json:"status,omitempty" url:"status,omitempty"`
+	Amount       *Amount            `json:"amount,omitempty" url:"amount,omitempty"`
+	Description  *string            `json:"description,omitempty" url:"description,omitempty"`
+	ExpiresAt    *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Recurring    *Recurring         `json:"recurring,omitempty" url:"recurring,omitempty"`
+	CreatedAt    *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (i *Instruction) GetID() *string {
+	if i == nil {
+		return nil
+	}
+	return i.ID
+}
+
+func (i *Instruction) GetEnrollmentID() *string {
+	if i == nil {
+		return nil
+	}
+	return i.EnrollmentID
+}
+
+func (i *Instruction) GetStatus() *InstructionStatus {
+	if i == nil {
+		return nil
+	}
+	return i.Status
+}
+
+func (i *Instruction) GetAmount() *Amount {
+	if i == nil {
+		return nil
+	}
+	return i.Amount
+}
+
+func (i *Instruction) GetDescription() *string {
+	if i == nil {
+		return nil
+	}
+	return i.Description
+}
+
+func (i *Instruction) GetExpiresAt() *time.Time {
+	if i == nil {
+		return nil
+	}
+	return i.ExpiresAt
+}
+
+func (i *Instruction) GetRecurring() *Recurring {
+	if i == nil {
+		return nil
+	}
+	return i.Recurring
+}
+
+func (i *Instruction) GetCreatedAt() *time.Time {
+	if i == nil {
+		return nil
+	}
+	return i.CreatedAt
+}
+
+func (i *Instruction) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *Instruction) UnmarshalJSON(data []byte) error {
+	type embed Instruction
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed: embed(*i),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*i = Instruction(unmarshaler.embed)
+	i.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	i.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+	i.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *Instruction) MarshalJSON() ([]byte, error) {
+	type embed Instruction
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+	}{
+		embed:     embed(*i),
+		ExpiresAt: internal.NewOptionalDateTime(i.ExpiresAt),
+		CreatedAt: internal.NewOptionalDateTime(i.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (i *Instruction) String() string {
+	if len(i.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
+}
+
+type InstructionList struct {
+	Pagination *InstructionListPagination `json:"pagination" url:"pagination"`
+	Data       []*Instruction             `json:"data" url:"data"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (i *InstructionList) GetPagination() *InstructionListPagination {
+	if i == nil {
+		return nil
+	}
+	return i.Pagination
+}
+
+func (i *InstructionList) GetData() []*Instruction {
+	if i == nil {
+		return nil
+	}
+	return i.Data
+}
+
+func (i *InstructionList) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *InstructionList) UnmarshalJSON(data []byte) error {
+	type unmarshaler InstructionList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = InstructionList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+	i.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *InstructionList) String() string {
+	if len(i.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
+}
+
+type InstructionListPagination struct {
+	NextCursor *string `json:"next_cursor,omitempty" url:"next_cursor,omitempty"`
+	HasMore    *bool   `json:"has_more,omitempty" url:"has_more,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (i *InstructionListPagination) GetNextCursor() *string {
+	if i == nil {
+		return nil
+	}
+	return i.NextCursor
+}
+
+func (i *InstructionListPagination) GetHasMore() *bool {
+	if i == nil {
+		return nil
+	}
+	return i.HasMore
+}
+
+func (i *InstructionListPagination) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *InstructionListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler InstructionListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = InstructionListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+	i.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *InstructionListPagination) String() string {
+	if len(i.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
+}
+
+type InstructionStatus string
+
+const (
+	InstructionStatusActive              InstructionStatus = "active"
+	InstructionStatusPending             InstructionStatus = "pending"
+	InstructionStatusPendingVerification InstructionStatus = "pending_verification"
+	InstructionStatusApproved            InstructionStatus = "approved"
+	InstructionStatusCancelled           InstructionStatus = "cancelled"
+	InstructionStatusExpired             InstructionStatus = "expired"
+)
+
+func NewInstructionStatusFromString(s string) (InstructionStatus, error) {
+	switch s {
+	case "active":
+		return InstructionStatusActive, nil
+	case "pending":
+		return InstructionStatusPending, nil
+	case "pending_verification":
+		return InstructionStatusPendingVerification, nil
+	case "approved":
+		return InstructionStatusApproved, nil
+	case "cancelled":
+		return InstructionStatusCancelled, nil
+	case "expired":
+		return InstructionStatusExpired, nil
+	}
+	var t InstructionStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i InstructionStatus) Ptr() *InstructionStatus {
+	return &i
+}
+
+type MppChallenge struct {
+	ID               string   `json:"id" url:"id"`
+	Realm            string   `json:"realm" url:"realm"`
+	Amount           string   `json:"amount" url:"amount"`
+	Currency         string   `json:"currency" url:"currency"`
+	AcceptedNetworks []string `json:"accepted_networks" url:"accepted_networks"`
+	MerchantName     string   `json:"merchant_name" url:"merchant_name"`
+	// Mutually exclusive with jwks_uri
+	EncryptionJwk *EncryptionJwk `json:"encryption_jwk,omitempty" url:"encryption_jwk,omitempty"`
+	// Mutually exclusive with encryption_jwk
+	JwksURI *string `json:"jwks_uri,omitempty" url:"jwks_uri,omitempty"`
+	// Required when jwks_uri is provided
+	Kid *string `json:"kid,omitempty" url:"kid,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MppChallenge) GetID() string {
+	if m == nil {
+		return ""
+	}
+	return m.ID
+}
+
+func (m *MppChallenge) GetRealm() string {
+	if m == nil {
+		return ""
+	}
+	return m.Realm
+}
+
+func (m *MppChallenge) GetAmount() string {
+	if m == nil {
+		return ""
+	}
+	return m.Amount
+}
+
+func (m *MppChallenge) GetCurrency() string {
+	if m == nil {
+		return ""
+	}
+	return m.Currency
+}
+
+func (m *MppChallenge) GetAcceptedNetworks() []string {
+	if m == nil {
+		return nil
+	}
+	return m.AcceptedNetworks
+}
+
+func (m *MppChallenge) GetMerchantName() string {
+	if m == nil {
+		return ""
+	}
+	return m.MerchantName
+}
+
+func (m *MppChallenge) GetEncryptionJwk() *EncryptionJwk {
+	if m == nil {
+		return nil
+	}
+	return m.EncryptionJwk
+}
+
+func (m *MppChallenge) GetJwksURI() *string {
+	if m == nil {
+		return nil
+	}
+	return m.JwksURI
+}
+
+func (m *MppChallenge) GetKid() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Kid
+}
+
+func (m *MppChallenge) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MppChallenge) UnmarshalJSON(data []byte) error {
+	type unmarshaler MppChallenge
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MppChallenge(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MppChallenge) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MppCredentialsRequest struct {
+	Challenge *MppChallenge `json:"challenge" url:"challenge"`
+	// Mutually exclusive with card_id
+	Source *MppSource `json:"source,omitempty" url:"source,omitempty"`
+	// Mutually exclusive with source
+	CardID *string `json:"card_id,omitempty" url:"card_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MppCredentialsRequest) GetChallenge() *MppChallenge {
+	if m == nil {
+		return nil
+	}
+	return m.Challenge
+}
+
+func (m *MppCredentialsRequest) GetSource() *MppSource {
+	if m == nil {
+		return nil
+	}
+	return m.Source
+}
+
+func (m *MppCredentialsRequest) GetCardID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.CardID
+}
+
+func (m *MppCredentialsRequest) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MppCredentialsRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler MppCredentialsRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MppCredentialsRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MppCredentialsRequest) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+// Encrypted payment credentials response
+type MppCredentialsResponse = map[string]interface{}
+
+type MppSource struct {
+	Type MppSourceType `json:"type" url:"type"`
+	// Token ID (required for token, network_token, apple_pay, google_pay)
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Enrollment ID (VIC only, mutually exclusive with id)
+	EnrollmentID *string `json:"enrollment_id,omitempty" url:"enrollment_id,omitempty"`
+	// Required for VIC with token id
+	Consumer *Consumer `json:"consumer,omitempty" url:"consumer,omitempty"`
+	// Agent ID (VIC only)
+	AgentID *string `json:"agent_id,omitempty" url:"agent_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MppSource) GetType() MppSourceType {
+	if m == nil {
+		return ""
+	}
+	return m.Type
+}
+
+func (m *MppSource) GetID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.ID
+}
+
+func (m *MppSource) GetEnrollmentID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.EnrollmentID
+}
+
+func (m *MppSource) GetConsumer() *Consumer {
+	if m == nil {
+		return nil
+	}
+	return m.Consumer
+}
+
+func (m *MppSource) GetAgentID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.AgentID
+}
+
+func (m *MppSource) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MppSource) UnmarshalJSON(data []byte) error {
+	type unmarshaler MppSource
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MppSource(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MppSource) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MppSourceType string
+
+const (
+	MppSourceTypeToken                   MppSourceType = "token"
+	MppSourceTypeNetworkToken            MppSourceType = "network_token"
+	MppSourceTypeApplePay                MppSourceType = "apple_pay"
+	MppSourceTypeGooglePay               MppSourceType = "google_pay"
+	MppSourceTypeVisaIntelligentCommerce MppSourceType = "visa_intelligent_commerce"
+)
+
+func NewMppSourceTypeFromString(s string) (MppSourceType, error) {
+	switch s {
+	case "token":
+		return MppSourceTypeToken, nil
+	case "network_token":
+		return MppSourceTypeNetworkToken, nil
+	case "apple_pay":
+		return MppSourceTypeApplePay, nil
+	case "google_pay":
+		return MppSourceTypeGooglePay, nil
+	case "visa_intelligent_commerce":
+		return MppSourceTypeVisaIntelligentCommerce, nil
+	}
+	var t MppSourceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (m MppSourceType) Ptr() *MppSourceType {
+	return &m
+}
+
 type Pagination struct {
 	TotalItems *int    `json:"total_items,omitempty" url:"total_items,omitempty"`
 	PageNumber *int    `json:"page_number,omitempty" url:"page_number,omitempty"`
@@ -4032,10 +6057,118 @@ func (p *ProblemDetails) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
+type Product struct {
+	Name     string  `json:"name" url:"name"`
+	Price    float64 `json:"price" url:"price"`
+	Quantity int     `json:"quantity" url:"quantity"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *Product) GetName() string {
+	if p == nil {
+		return ""
+	}
+	return p.Name
+}
+
+func (p *Product) GetPrice() float64 {
+	if p == nil {
+		return 0
+	}
+	return p.Price
+}
+
+func (p *Product) GetQuantity() int {
+	if p == nil {
+		return 0
+	}
+	return p.Quantity
+}
+
+func (p *Product) GetExtraProperties() map[string]interface{} {
+	return p.extraProperties
+}
+
+func (p *Product) UnmarshalJSON(data []byte) error {
+	type unmarshaler Product
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = Product(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *Product) String() string {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
 // A public signing key in PEM format. The key is represented as a string
 // and includes the BEGIN and END markers along with the base64-encoded
 // key data.
 type PublicKey = string
+
+type PublishConfirmationRequest struct {
+	ConfirmationData []*ConfirmationEntry `json:"confirmation_data" url:"confirmation_data"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PublishConfirmationRequest) GetConfirmationData() []*ConfirmationEntry {
+	if p == nil {
+		return nil
+	}
+	return p.ConfirmationData
+}
+
+func (p *PublishConfirmationRequest) GetExtraProperties() map[string]interface{} {
+	return p.extraProperties
+}
+
+func (p *PublishConfirmationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler PublishConfirmationRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PublishConfirmationRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PublishConfirmationRequest) String() string {
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
 
 type ReactorFormulaPaginatedList struct {
 	Pagination *Pagination       `json:"pagination,omitempty" url:"pagination,omitempty"`
@@ -4089,6 +6222,77 @@ func (r *ReactorFormulaPaginatedList) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", r)
+}
+
+type Recurring struct {
+	Frequency RecurringFrequency `json:"frequency" url:"frequency"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *Recurring) GetFrequency() RecurringFrequency {
+	if r == nil {
+		return ""
+	}
+	return r.Frequency
+}
+
+func (r *Recurring) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *Recurring) UnmarshalJSON(data []byte) error {
+	type unmarshaler Recurring
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = Recurring(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *Recurring) String() string {
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+type RecurringFrequency string
+
+const (
+	RecurringFrequencyWeekly  RecurringFrequency = "weekly"
+	RecurringFrequencyMonthly RecurringFrequency = "monthly"
+	RecurringFrequencyYearly  RecurringFrequency = "yearly"
+)
+
+func NewRecurringFrequencyFromString(s string) (RecurringFrequency, error) {
+	switch s {
+	case "weekly":
+		return RecurringFrequencyWeekly, nil
+	case "monthly":
+		return RecurringFrequencyMonthly, nil
+	case "yearly":
+		return RecurringFrequencyYearly, nil
+	}
+	var t RecurringFrequency
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RecurringFrequency) Ptr() *RecurringFrequency {
+	return &r
 }
 
 type Runtime struct {
@@ -4220,6 +6424,130 @@ func (s *SecurityContactEmailResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (s *SecurityContactEmailResponse) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type ShippingAddress struct {
+	Line1       string `json:"line1" url:"line1"`
+	City        string `json:"city" url:"city"`
+	State       string `json:"state" url:"state"`
+	PostalCode  string `json:"postal_code" url:"postal_code"`
+	CountryCode string `json:"country_code" url:"country_code"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *ShippingAddress) GetLine1() string {
+	if s == nil {
+		return ""
+	}
+	return s.Line1
+}
+
+func (s *ShippingAddress) GetCity() string {
+	if s == nil {
+		return ""
+	}
+	return s.City
+}
+
+func (s *ShippingAddress) GetState() string {
+	if s == nil {
+		return ""
+	}
+	return s.State
+}
+
+func (s *ShippingAddress) GetPostalCode() string {
+	if s == nil {
+		return ""
+	}
+	return s.PostalCode
+}
+
+func (s *ShippingAddress) GetCountryCode() string {
+	if s == nil {
+		return ""
+	}
+	return s.CountryCode
+}
+
+func (s *ShippingAddress) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *ShippingAddress) UnmarshalJSON(data []byte) error {
+	type unmarshaler ShippingAddress
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ShippingAddress(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ShippingAddress) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type StartVerificationRequest struct {
+	DeviceContext *DeviceContext `json:"device_context" url:"device_context"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *StartVerificationRequest) GetDeviceContext() *DeviceContext {
+	if s == nil {
+		return nil
+	}
+	return s.DeviceContext
+}
+
+func (s *StartVerificationRequest) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *StartVerificationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler StartVerificationRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = StartVerificationRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *StartVerificationRequest) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -7667,6 +9995,77 @@ func (t *TokenServiceProviderDetails) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+type TransactionStatus string
+
+const (
+	TransactionStatusApproved  TransactionStatus = "approved"
+	TransactionStatusDeclined  TransactionStatus = "declined"
+	TransactionStatusPending   TransactionStatus = "pending"
+	TransactionStatusError     TransactionStatus = "error"
+	TransactionStatusCancelled TransactionStatus = "cancelled"
+)
+
+func NewTransactionStatusFromString(s string) (TransactionStatus, error) {
+	switch s {
+	case "approved":
+		return TransactionStatusApproved, nil
+	case "declined":
+		return TransactionStatusDeclined, nil
+	case "pending":
+		return TransactionStatusPending, nil
+	case "error":
+		return TransactionStatusError, nil
+	case "cancelled":
+		return TransactionStatusCancelled, nil
+	}
+	var t TransactionStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TransactionStatus) Ptr() *TransactionStatus {
+	return &t
+}
+
+type TransactionType string
+
+const (
+	TransactionTypePurchase      TransactionType = "purchase"
+	TransactionTypeAuthorization TransactionType = "authorization"
+	TransactionTypeCapture       TransactionType = "capture"
+	TransactionTypeRefund        TransactionType = "refund"
+	TransactionTypeReversal      TransactionType = "reversal"
+	TransactionTypeVerification  TransactionType = "verification"
+	TransactionTypeChargeback    TransactionType = "chargeback"
+	TransactionTypeFraud         TransactionType = "fraud"
+)
+
+func NewTransactionTypeFromString(s string) (TransactionType, error) {
+	switch s {
+	case "purchase":
+		return TransactionTypePurchase, nil
+	case "authorization":
+		return TransactionTypeAuthorization, nil
+	case "capture":
+		return TransactionTypeCapture, nil
+	case "refund":
+		return TransactionTypeRefund, nil
+	case "reversal":
+		return TransactionTypeReversal, nil
+	case "verification":
+		return TransactionTypeVerification, nil
+	case "chargeback":
+		return TransactionTypeChargeback, nil
+	case "fraud":
+		return TransactionTypeFraud, nil
+	}
+	var t TransactionType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TransactionType) Ptr() *TransactionType {
+	return &t
+}
+
 type UpdateReactorFormulaRequest struct {
 	Type              string                            `json:"type" url:"type"`
 	Name              string                            `json:"name" url:"name"`
@@ -7954,4 +10353,454 @@ func (v *ValidationProblemDetails) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationResponse struct {
+	Status  *VerificationResponseStatus        `json:"status,omitempty" url:"status,omitempty"`
+	Methods []*VerificationResponseMethodsItem `json:"methods,omitempty" url:"methods,omitempty"`
+	// Visa passkey/FIDO context for device binding or authentication
+	PasskeyContext *VerificationResponsePasskeyContext `json:"passkey_context,omitempty" url:"passkey_context,omitempty"`
+	// Card network brand (present in Mastercard responses)
+	Brand *VerificationResponseBrand `json:"brand,omitempty" url:"brand,omitempty"`
+	// Mastercard authentication context
+	AuthContext map[string]interface{} `json:"auth_context,omitempty" url:"auth_context,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerificationResponse) GetStatus() *VerificationResponseStatus {
+	if v == nil {
+		return nil
+	}
+	return v.Status
+}
+
+func (v *VerificationResponse) GetMethods() []*VerificationResponseMethodsItem {
+	if v == nil {
+		return nil
+	}
+	return v.Methods
+}
+
+func (v *VerificationResponse) GetPasskeyContext() *VerificationResponsePasskeyContext {
+	if v == nil {
+		return nil
+	}
+	return v.PasskeyContext
+}
+
+func (v *VerificationResponse) GetBrand() *VerificationResponseBrand {
+	if v == nil {
+		return nil
+	}
+	return v.Brand
+}
+
+func (v *VerificationResponse) GetAuthContext() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.AuthContext
+}
+
+func (v *VerificationResponse) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationResponse) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// Card network brand (present in Mastercard responses)
+type VerificationResponseBrand string
+
+const (
+	VerificationResponseBrandVisa       VerificationResponseBrand = "visa"
+	VerificationResponseBrandMastercard VerificationResponseBrand = "mastercard"
+)
+
+func NewVerificationResponseBrandFromString(s string) (VerificationResponseBrand, error) {
+	switch s {
+	case "visa":
+		return VerificationResponseBrandVisa, nil
+	case "mastercard":
+		return VerificationResponseBrandMastercard, nil
+	}
+	var t VerificationResponseBrand
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationResponseBrand) Ptr() *VerificationResponseBrand {
+	return &v
+}
+
+type VerificationResponseMethodsItem struct {
+	ID    *string `json:"id,omitempty" url:"id,omitempty"`
+	Type  *string `json:"type,omitempty" url:"type,omitempty"`
+	Value *string `json:"value,omitempty" url:"value,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerificationResponseMethodsItem) GetID() *string {
+	if v == nil {
+		return nil
+	}
+	return v.ID
+}
+
+func (v *VerificationResponseMethodsItem) GetType() *string {
+	if v == nil {
+		return nil
+	}
+	return v.Type
+}
+
+func (v *VerificationResponseMethodsItem) GetValue() *string {
+	if v == nil {
+		return nil
+	}
+	return v.Value
+}
+
+func (v *VerificationResponseMethodsItem) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationResponseMethodsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationResponseMethodsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationResponseMethodsItem(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationResponseMethodsItem) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// Visa passkey/FIDO context for device binding or authentication
+type VerificationResponsePasskeyContext struct {
+	Endpoint        *string                                            `json:"endpoint,omitempty" url:"endpoint,omitempty"`
+	Identifier      *string                                            `json:"identifier,omitempty" url:"identifier,omitempty"`
+	Payload         *string                                            `json:"payload,omitempty" url:"payload,omitempty"`
+	Action          *VerificationResponsePasskeyContextAction          `json:"action,omitempty" url:"action,omitempty"`
+	PlatformType    *VerificationResponsePasskeyContextPlatformType    `json:"platform_type,omitempty" url:"platform_type,omitempty"`
+	AuthPreferences *VerificationResponsePasskeyContextAuthPreferences `json:"auth_preferences,omitempty" url:"auth_preferences,omitempty"`
+	DisplayContext  *VerificationResponsePasskeyContextDisplayContext  `json:"display_context,omitempty" url:"display_context,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerificationResponsePasskeyContext) GetEndpoint() *string {
+	if v == nil {
+		return nil
+	}
+	return v.Endpoint
+}
+
+func (v *VerificationResponsePasskeyContext) GetIdentifier() *string {
+	if v == nil {
+		return nil
+	}
+	return v.Identifier
+}
+
+func (v *VerificationResponsePasskeyContext) GetPayload() *string {
+	if v == nil {
+		return nil
+	}
+	return v.Payload
+}
+
+func (v *VerificationResponsePasskeyContext) GetAction() *VerificationResponsePasskeyContextAction {
+	if v == nil {
+		return nil
+	}
+	return v.Action
+}
+
+func (v *VerificationResponsePasskeyContext) GetPlatformType() *VerificationResponsePasskeyContextPlatformType {
+	if v == nil {
+		return nil
+	}
+	return v.PlatformType
+}
+
+func (v *VerificationResponsePasskeyContext) GetAuthPreferences() *VerificationResponsePasskeyContextAuthPreferences {
+	if v == nil {
+		return nil
+	}
+	return v.AuthPreferences
+}
+
+func (v *VerificationResponsePasskeyContext) GetDisplayContext() *VerificationResponsePasskeyContextDisplayContext {
+	if v == nil {
+		return nil
+	}
+	return v.DisplayContext
+}
+
+func (v *VerificationResponsePasskeyContext) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationResponsePasskeyContext) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationResponsePasskeyContext
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationResponsePasskeyContext(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationResponsePasskeyContext) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationResponsePasskeyContextAction string
+
+const (
+	VerificationResponsePasskeyContextActionRegister     VerificationResponsePasskeyContextAction = "REGISTER"
+	VerificationResponsePasskeyContextActionAuthenticate VerificationResponsePasskeyContextAction = "AUTHENTICATE"
+)
+
+func NewVerificationResponsePasskeyContextActionFromString(s string) (VerificationResponsePasskeyContextAction, error) {
+	switch s {
+	case "REGISTER":
+		return VerificationResponsePasskeyContextActionRegister, nil
+	case "AUTHENTICATE":
+		return VerificationResponsePasskeyContextActionAuthenticate, nil
+	}
+	var t VerificationResponsePasskeyContextAction
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationResponsePasskeyContextAction) Ptr() *VerificationResponsePasskeyContextAction {
+	return &v
+}
+
+type VerificationResponsePasskeyContextAuthPreferences struct {
+	ResponseMode *string `json:"response_mode,omitempty" url:"response_mode,omitempty"`
+	ResponseType *string `json:"response_type,omitempty" url:"response_type,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerificationResponsePasskeyContextAuthPreferences) GetResponseMode() *string {
+	if v == nil {
+		return nil
+	}
+	return v.ResponseMode
+}
+
+func (v *VerificationResponsePasskeyContextAuthPreferences) GetResponseType() *string {
+	if v == nil {
+		return nil
+	}
+	return v.ResponseType
+}
+
+func (v *VerificationResponsePasskeyContextAuthPreferences) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationResponsePasskeyContextAuthPreferences) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationResponsePasskeyContextAuthPreferences
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationResponsePasskeyContextAuthPreferences(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationResponsePasskeyContextAuthPreferences) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationResponsePasskeyContextDisplayContext struct {
+	CardLast4 *string `json:"card_last4,omitempty" url:"card_last4,omitempty"`
+	CardBrand *string `json:"card_brand,omitempty" url:"card_brand,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerificationResponsePasskeyContextDisplayContext) GetCardLast4() *string {
+	if v == nil {
+		return nil
+	}
+	return v.CardLast4
+}
+
+func (v *VerificationResponsePasskeyContextDisplayContext) GetCardBrand() *string {
+	if v == nil {
+		return nil
+	}
+	return v.CardBrand
+}
+
+func (v *VerificationResponsePasskeyContextDisplayContext) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationResponsePasskeyContextDisplayContext) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationResponsePasskeyContextDisplayContext
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationResponsePasskeyContextDisplayContext(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationResponsePasskeyContextDisplayContext) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationResponsePasskeyContextPlatformType string
+
+const (
+	VerificationResponsePasskeyContextPlatformTypeWeb    VerificationResponsePasskeyContextPlatformType = "WEB"
+	VerificationResponsePasskeyContextPlatformTypeMobile VerificationResponsePasskeyContextPlatformType = "MOBILE"
+	VerificationResponsePasskeyContextPlatformTypeNative VerificationResponsePasskeyContextPlatformType = "NATIVE"
+)
+
+func NewVerificationResponsePasskeyContextPlatformTypeFromString(s string) (VerificationResponsePasskeyContextPlatformType, error) {
+	switch s {
+	case "WEB":
+		return VerificationResponsePasskeyContextPlatformTypeWeb, nil
+	case "MOBILE":
+		return VerificationResponsePasskeyContextPlatformTypeMobile, nil
+	case "NATIVE":
+		return VerificationResponsePasskeyContextPlatformTypeNative, nil
+	}
+	var t VerificationResponsePasskeyContextPlatformType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationResponsePasskeyContextPlatformType) Ptr() *VerificationResponsePasskeyContextPlatformType {
+	return &v
+}
+
+type VerificationResponseStatus string
+
+const (
+	VerificationResponseStatusApproved        VerificationResponseStatus = "approved"
+	VerificationResponseStatusChallenge       VerificationResponseStatus = "challenge"
+	VerificationResponseStatusOtpSent         VerificationResponseStatus = "otp_sent"
+	VerificationResponseStatusDeviceBound     VerificationResponseStatus = "device_bound"
+	VerificationResponseStatusPasskeyRequired VerificationResponseStatus = "passkey_required"
+	VerificationResponseStatusVerified        VerificationResponseStatus = "verified"
+)
+
+func NewVerificationResponseStatusFromString(s string) (VerificationResponseStatus, error) {
+	switch s {
+	case "approved":
+		return VerificationResponseStatusApproved, nil
+	case "challenge":
+		return VerificationResponseStatusChallenge, nil
+	case "otp_sent":
+		return VerificationResponseStatusOtpSent, nil
+	case "device_bound":
+		return VerificationResponseStatusDeviceBound, nil
+	case "passkey_required":
+		return VerificationResponseStatusPasskeyRequired, nil
+	case "verified":
+		return VerificationResponseStatusVerified, nil
+	}
+	var t VerificationResponseStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationResponseStatus) Ptr() *VerificationResponseStatus {
+	return &v
 }
