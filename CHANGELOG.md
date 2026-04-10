@@ -1,3 +1,224 @@
+# [5.5.0](https://github.com/Basis-Theory/go-sdk/compare/v5.4.0...v5.5.0) (2026-04-08)
+
+
+### Features
+
+* Add Agentic ([#117](https://github.com/Basis-Theory/go-sdk/issues/117)) ([9dc14aa](https://github.com/Basis-Theory/go-sdk/commit/9dc14aa1d40ed9443c51408a8a95465a7390ea69))
+
+# [5.4.0](https://github.com/Basis-Theory/go-sdk/compare/v5.3.0...v5.4.0) (2026-03-31)
+
+
+### Features
+
+* Add metatdata to 3DS authenticate session ([1f25326](https://github.com/Basis-Theory/go-sdk/commit/1f253263172cf35ccdd61dbc78fd472f29f2a1e2))
+
+# [5.3.0](https://github.com/Basis-Theory/go-sdk/compare/v5.2.0...v5.3.0) (2026-02-24)
+
+
+### Features
+
+* Updating API contracts ([#108](https://github.com/Basis-Theory/go-sdk/issues/108)) ([5764fcd](https://github.com/Basis-Theory/go-sdk/commit/5764fcd9c7ce9c64c374b6a05ead316030511681))
+
+# [5.2.0](https://github.com/Basis-Theory/go-sdk/compare/v5.1.0...v5.2.0) (2026-02-04)
+
+
+### Features
+
+* Adding 3DS metadata attributes ([#105](https://github.com/Basis-Theory/go-sdk/issues/105)) ([98ad4ac](https://github.com/Basis-Theory/go-sdk/commit/98ad4ac3fa62539e8ac8016153c4faea1e8810eb))
+
+# [5.1.0](https://github.com/Basis-Theory/go-sdk/compare/v5.0.0...v5.1.0) (2026-01-27)
+
+
+### Features
+
+* add disable_detokenization to proxy configuration  ([85404e7](https://github.com/Basis-Theory/go-sdk/commit/85404e7411bcc7ecdd87e3901c41c96286959a70))
+
+# [5.0.0](https://github.com/Basis-Theory/go-sdk/compare/v4.2.0...v5.0.0) (2026-01-22)
+
+
+### Features
+
+* Updating Reactor Request objects ([08c420c](https://github.com/Basis-Theory/go-sdk/commit/08c420ce82aebb23554bbc115c0fb5990e0a09fa))
+
+
+### BREAKING CHANGES
+
+* This version removes the existing Reactors Request objects for Reactors and Reactors Async, allowing the use of dynamic objects
+
+# [4.2.0](https://github.com/Basis-Theory/go-sdk/compare/v4.1.0...v4.2.0) (2025-12-09)
+
+
+### Features
+
+* Change Reactor Runtime to object ([74360ad](https://github.com/Basis-Theory/go-sdk/commit/74360adbf23cfcd4890d17a9a08749a53a6c02ba))
+
+# [4.1.0](https://github.com/Basis-Theory/go-sdk/compare/v4.0.0...v4.1.0) (2025-12-02)
+
+
+### Features
+
+* supporting new environments ([c112499](https://github.com/Basis-Theory/go-sdk/commit/c1124990fa8a87fa2dd51ce1f02228bc17e6264b))
+
+# [4.0.0](https://github.com/Basis-Theory/go-sdk/compare/v3.2.0...v4.0.0) (2025-10-30)
+
+
+### Features
+
+* renaming keys endpoint properties, and removing get tokens v1  ([#90](https://github.com/Basis-Theory/go-sdk/issues/90)) ([a48f03a](https://github.com/Basis-Theory/go-sdk/commit/a48f03aa204ddf3dbbe2d331eb78604c5b4f92ca))
+
+
+### BREAKING CHANGES
+
+* The get tokens v1 endpoint was removed, and the properties of the keys endpoint were renamed
+
+# [3.2.0](https://github.com/Basis-Theory/go-sdk/compare/v3.1.0...v3.2.0) (2025-09-17)
+
+
+### Features
+
+* update module to /v3 ([#88](https://github.com/Basis-Theory/go-sdk/issues/88)) ([998a2e3](https://github.com/Basis-Theory/go-sdk/commit/998a2e364292a880911e672926c8854c47bd7b9e))
+
+# [3.1.0](https://github.com/Basis-Theory/go-sdk/compare/v3.0.0...v3.1.0) (2025-08-22)
+
+
+### Features
+
+* Add DELETE endpoint for ApplePay ([7da4ed1](https://github.com/Basis-Theory/go-sdk/commit/7da4ed1b8dd8055ad20a0a10ca24a1802d68f12b))
+
+# [3.0.0](https://github.com/Basis-Theory/go-sdk/compare/v2.3.0...v3.0.0) (2025-08-14)
+
+
+### Features
+
+* Add Google Pay endpoints ([062841e](https://github.com/Basis-Theory/go-sdk/commit/062841ece7801763211a69874dee782c9b916d7f))
+
+
+### BREAKING CHANGES
+
+* Deprecating old Google Pay and Apple Pay endpoints
+
+# [2.3.0](https://github.com/Basis-Theory/go-sdk/compare/v2.2.0...v2.3.0) (2025-07-29)
+
+
+### Features
+
+* Upgrade code generator and add LICENSE ([8ec6a0f](https://github.com/Basis-Theory/go-sdk/commit/8ec6a0fd11c37a27573227f2440bc718afae5c6f))
+
+# [2.2.0](https://github.com/Basis-Theory/go-sdk/compare/v2.1.0...v2.2.0) (2025-07-22)
+
+
+### Features
+
+* Add documents ([d81ef55](https://github.com/Basis-Theory/go-sdk/commit/d81ef55b35feb1d4f4d2590df19cc2974ac8e506))
+
+# [2.1.0](https://github.com/Basis-Theory/go-sdk/compare/v2.0.1...v2.1.0) (2025-06-04)
+
+
+### Features
+
+* Add Apple Pay unlink support ([bf2b023](https://github.com/Basis-Theory/go-sdk/commit/bf2b0237a21af1bd207e47791230c405af604110))
+
+## [2.0.1](https://github.com/Basis-Theory/go-sdk/compare/v2.0.0...v2.0.1) (2025-05-21)
+
+
+### Bug Fixes
+
+* Update module to /v2 ([#69](https://github.com/Basis-Theory/go-sdk/issues/69)) ([7ab831e](https://github.com/Basis-Theory/go-sdk/commit/7ab831e868673e5303b46e83b7cb82ce03ef584d))
+
+# [2.0.0](https://github.com/Basis-Theory/go-sdk/compare/v1.7.0...v2.0.0) (2025-05-20)
+
+
+### Features
+
+* Add Apple Pay Token support ([bedfbb7](https://github.com/Basis-Theory/go-sdk/commit/bedfbb78d8583aa30e6667ddfe82cc3a9df14f0a))
+
+
+### BREAKING CHANGES
+
+* The old methods for using Apple Pay and Token Intents have moved to the "connection" namespace.
+
+# [1.7.0](https://github.com/Basis-Theory/go-sdk/compare/v1.6.0...v1.7.0) (2025-05-20)
+
+
+### Features
+
+* Add client encryption keys ([#66](https://github.com/Basis-Theory/go-sdk/issues/66)) ([1e27f6d](https://github.com/Basis-Theory/go-sdk/commit/1e27f6d89f599c7ace36398b5a348dd55e5dc0c2))
+
+# [1.6.0](https://github.com/Basis-Theory/go-sdk/compare/v1.5.0...v1.6.0) (2025-05-07)
+
+
+### Features
+
+* add network tokens and 3ds co-badged cards props ([0a18382](https://github.com/Basis-Theory/go-sdk/commit/0a18382fa2ec38b9937d048f9d5451c3d8d79472))
+
+# [1.5.0](https://github.com/Basis-Theory/go-sdk/compare/v1.4.0...v1.5.0) (2025-05-05)
+
+
+### Features
+
+* adds account updater endpoints ([#60](https://github.com/Basis-Theory/go-sdk/issues/60)) ([1f95d37](https://github.com/Basis-Theory/go-sdk/commit/1f95d3777c697fa7133465c2a7dd76f941198ca0))
+
+# [1.4.0](https://github.com/Basis-Theory/go-sdk/compare/v1.3.0...v1.4.0) (2025-04-29)
+
+
+### Features
+
+* update GH action ([#59](https://github.com/Basis-Theory/go-sdk/issues/59)) ([7d43aed](https://github.com/Basis-Theory/go-sdk/commit/7d43aed605235f6d5d1e8e981fe25c252288f44f))
+
+# [1.3.0](https://github.com/Basis-Theory/go-sdk/compare/v1.2.0...v1.3.0) (2025-04-01)
+
+
+### Features
+
+* Add registerAll to Apple Pay Domains and network token create ([8eb26dc](https://github.com/Basis-Theory/go-sdk/commit/8eb26dcbe7a62c1caf8fd17f434b04899d50437f))
+
+# [1.2.0](https://github.com/Basis-Theory/go-sdk/compare/v1.1.0...v1.2.0) (2025-03-28)
+
+
+### Features
+
+* update threeds authentication props ([f349791](https://github.com/Basis-Theory/go-sdk/commit/f34979193effed81b6dd756da20f892d7634e3c4))
+
+# [1.1.0](https://github.com/Basis-Theory/go-sdk/compare/v1.0.0...v1.1.0) (2025-03-18)
+
+
+### Features
+
+* Apple Pay support ([39af25d](https://github.com/Basis-Theory/go-sdk/commit/39af25d375dd506924d152e3801151de526abf96))
+
+# [1.0.0](https://github.com/Basis-Theory/go-sdk/compare/v0.6.1...v1.0.0) (2025-03-06)
+
+
+### Features
+
+* adding get token intents ([98eebe5](https://github.com/Basis-Theory/go-sdk/commit/98eebe5feae723b24b1e38bc8872d90ee38de70e))
+
+
+### BREAKING CHANGES
+
+* Updated Token Usage response and removes expires_at from Applications
+
+## [0.6.1](https://github.com/Basis-Theory/go-sdk/compare/v0.6.0...v0.6.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* Add `network_token` to token intents ([80f332f](https://github.com/Basis-Theory/go-sdk/commit/80f332f4f1d40f7b432ada54c04b81faf2492f94))
+
+# [0.6.0](https://github.com/Basis-Theory/go-sdk/compare/v0.5.0...v0.6.0) (2025-01-30)
+
+
+### Features
+
+* New network_token card details object ([cc9ae9e](https://github.com/Basis-Theory/go-sdk/commit/cc9ae9eb334d94d9593c2174b3054d29c90aae36))
+
+# [0.5.0](https://github.com/Basis-Theory/go-sdk/compare/v0.4.2...v0.5.0) (2025-01-27)
+
+
+### Features
+
+* Add Google Pay ([2300de1](https://github.com/Basis-Theory/go-sdk/commit/2300de15d6dda2b918cd6780fd82310064e7e6b2))
+
 ## [0.4.2](https://github.com/Basis-Theory/go-sdk/compare/v0.4.1...v0.4.2) (2024-11-20)
 
 

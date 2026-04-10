@@ -4,17 +4,17 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	basistheory "github.com/Basis-Theory/go-sdk"
-	"github.com/google/uuid"
 	"net/http"
 	"net/url"
 	"os"
 	"testing"
 	"time"
-)
-import (
-	basistheoryclient "github.com/Basis-Theory/go-sdk/client"
-	"github.com/Basis-Theory/go-sdk/option"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
+	"github.com/google/uuid"
+
+	basistheoryclient "github.com/Basis-Theory/go-sdk/v5/client"
+	"github.com/Basis-Theory/go-sdk/v5/option"
 )
 
 func TestTenantSelf(t *testing.T) {
@@ -76,32 +76,6 @@ func TestIdempotencyHeader(t *testing.T) {
 	}
 }
 
-func TestListV1PaginationWithIteration(t *testing.T) {
-	client := NewPrivateClient()
-
-	pageSize := 3
-	page, err := client.Tokens.List(
-		context.TODO(),
-		&basistheory.TokensListRequest{
-			Page: IntPtr(1),
-			Size: IntPtr(pageSize),
-		},
-	)
-	FailIfError(t, "Unable to list tokens", err)
-
-	count := 0
-	iter := page.Iterator()
-	for iter.Next(context.TODO()) {
-		count++
-		if count > pageSize {
-			break
-		}
-	}
-	if count <= pageSize {
-		t.Errorf("Expected at least %d tokens. Got %d", pageSize, count)
-	}
-}
-
 func TestListV2PaginationWithIteration(t *testing.T) {
 	client := NewPrivateClient()
 
@@ -131,14 +105,14 @@ func TestListV2PaginationWithIteration(t *testing.T) {
 func TestWebhooks(t *testing.T) {
 	client := NewManagementClient()
 
-	url := "https://echo.basistheory.com/" + uuid.NewString()
+	url := "https://echo.flock-dev.com/" + uuid.NewString()
 	webhookId := CreateWebhook(t, client, url)
 
 	GetWebhookAssertUrl(t, client, webhookId, url)
 
 	time.Sleep(2 * time.Second) // Required to avoid error `The webhook subscription is undergoing another concurrent operation. Please wait a few seconds, then try again.`
 
-	updateUrl := "https://echo.basistheory.com/" + uuid.NewString()
+	updateUrl := "https://echo.flock-dev.com/" + uuid.NewString()
 	UpdateWebhook(t, client, webhookId, updateUrl)
 
 	GetWebhookAssertUrl(t, client, webhookId, updateUrl)
@@ -152,6 +126,54 @@ func TestWebhooks(t *testing.T) {
 		webhookId)
 	if err == nil {
 		t.Errorf("Expected error when trying to get a webhook that doesn't exist")
+	}
+	var notFoundError basistheory.NotFoundError
+	if errors.As(err, &notFoundError) {
+		t.Errorf("Expected error to be Not Found")
+	}
+}
+
+func TestClientEncryptionKeysLifecycle(t *testing.T) {
+	client := NewManagementClient()
+
+	key, err := client.Keys.Create(
+		context.TODO(),
+		&basistheory.ClientEncryptionKeyRequest{},
+	)
+	FailIfError(t, "Failed to create key", err)
+
+	if key.KeyID == nil {
+		t.Fatalf("Expected key ID to be defined")
+	}
+	if key.PublicKeyPem == nil {
+		t.Fatalf("Expected public key PEM to be defined")
+	}
+
+	retrievedKey, err := client.Keys.Get(
+		context.TODO(),
+		*key.KeyID,
+	)
+	FailIfError(t, "Failed to get key", err)
+
+	if retrievedKey.KeyID == nil || *retrievedKey.KeyID != *key.KeyID {
+		t.Fatalf("Expected retrieved key ID to match created key ID")
+	}
+	if retrievedKey.ExpiresAt == nil {
+		t.Fatalf("Expected expires at to be defined")
+	}
+
+	err = client.Keys.Delete(
+		context.TODO(),
+		*key.KeyID,
+	)
+	FailIfError(t, "Failed to delete key", err)
+
+	_, err = client.Keys.Get(
+		context.TODO(),
+		*key.KeyID,
+	)
+	if err == nil {
+		t.Fatalf("Expected error when trying to get a key that doesn't exist")
 	}
 	var notFoundError basistheory.NotFoundError
 	if errors.As(err, &notFoundError) {
@@ -353,8 +375,8 @@ func React(t *testing.T, client *basistheoryclient.Client, reactorId string) {
 	x, err := client.Reactors.React(
 		context.TODO(),
 		reactorId,
-		&basistheory.ReactRequest{
-			Args: args,
+		map[string]interface{}{
+			"args": args,
 		},
 	)
 	FailIfError(t, "Failed to react in Reactor", err)

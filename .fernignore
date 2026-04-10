@@ -4,6 +4,8 @@
 .github/workflows/release.yml
 .github/workflows/security-scan.yml
 
+test/integration/**/*_test.go
+test/integration/agentic_test.go
 test/integration/canary_test.go
 
 .gitignore
@@ -12,5 +14,4 @@ test/integration/canary_test.go
 
 CHANGELOG.md
 package.json
-README.md
 yarn.lock

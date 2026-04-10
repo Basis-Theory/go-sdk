@@ -1,10 +1,10 @@
 {
   "name": "go-sdk",
-  "version": "0.4.2",
+  "version": "5.5.0",
   "description": "Basis Theory Go SDK",
   "repository": "https://github.com/Basis-Theory/go-sdk",
   "author": "Basis Theory",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": true,
   "scripts": {
     "release": "semantic-release"
