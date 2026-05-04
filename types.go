@@ -114,6 +114,8 @@ type AccountUpdaterJob struct {
 	Requests *int `json:"requests,omitempty" url:"requests,omitempty"`
 	// Summary count breakdown by result code for all processed rows
 	Results map[string]int `json:"results,omitempty" url:"results,omitempty"`
+	// Pre-signed URL for downloading the job results CSV. Only present on completed jobs.
+	DownloadURL *string `json:"downloadUrl,omitempty" url:"downloadUrl,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -187,6 +189,13 @@ func (a *AccountUpdaterJob) GetResults() map[string]int {
 		return nil
 	}
 	return a.Results
+}
+
+func (a *AccountUpdaterJob) GetDownloadURL() *string {
+	if a == nil {
+		return nil
+	}
+	return a.DownloadURL
 }
 
 func (a *AccountUpdaterJob) GetExtraProperties() map[string]interface{} {
@@ -608,10 +617,21 @@ type AgenticCard struct {
 	Last4           *string           `json:"last4,omitempty" url:"last4,omitempty"`
 	ExpirationMonth *int              `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
 	ExpirationYear  *int              `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
-	Display         *CardDisplay      `json:"display,omitempty" url:"display,omitempty"`
+	// Card funding type (e.g. credit, debit, prepaid)
+	Funding *string `json:"funding,omitempty" url:"funding,omitempty"`
+	// Card issuer name
+	Issuer *string `json:"issuer,omitempty" url:"issuer,omitempty"`
+	// Card issuer country code
+	IssuerCountry *string `json:"issuer_country,omitempty" url:"issuer_country,omitempty"`
+	// Card segment (e.g. consumer, commercial)
+	Segment *string `json:"segment,omitempty" url:"segment,omitempty"`
+	// Card type
+	Type    *string      `json:"type,omitempty" url:"type,omitempty"`
+	Display *CardDisplay `json:"display,omitempty" url:"display,omitempty"`
 
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
 }
 
 func (a *AgenticCard) GetBrand() *AgenticCardBrand {
@@ -649,6 +669,41 @@ func (a *AgenticCard) GetExpirationYear() *int {
 	return a.ExpirationYear
 }
 
+func (a *AgenticCard) GetFunding() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Funding
+}
+
+func (a *AgenticCard) GetIssuer() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Issuer
+}
+
+func (a *AgenticCard) GetIssuerCountry() *string {
+	if a == nil {
+		return nil
+	}
+	return a.IssuerCountry
+}
+
+func (a *AgenticCard) GetSegment() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Segment
+}
+
+func (a *AgenticCard) GetType() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Type
+}
+
 func (a *AgenticCard) GetDisplay() *CardDisplay {
 	if a == nil {
 		return nil
@@ -657,23 +712,37 @@ func (a *AgenticCard) GetDisplay() *CardDisplay {
 }
 
 func (a *AgenticCard) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
+	return a.ExtraProperties
 }
 
 func (a *AgenticCard) UnmarshalJSON(data []byte) error {
-	type unmarshaler AgenticCard
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AgenticCard
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AgenticCard(value)
+	*a = AgenticCard(unmarshaler.embed)
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
 	}
-	a.extraProperties = extraProperties
+	a.ExtraProperties = extraProperties
 	a.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AgenticCard) MarshalJSON() ([]byte, error) {
+	type embed AgenticCard
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	return internal.MarshalJSONWithExtraProperties(marshaler, a.ExtraProperties)
 }
 
 func (a *AgenticCard) String() string {
@@ -2516,6 +2585,10 @@ type ConfirmationEntry struct {
 	TransactionType        TransactionType   `json:"transaction_type" url:"transaction_type"`
 	TransactionTimestamp   *time.Time        `json:"transaction_timestamp,omitempty" url:"transaction_timestamp,omitempty"`
 	MandatesCompleted      *bool             `json:"mandates_completed,omitempty" url:"mandates_completed,omitempty"`
+	// Transaction amount for Visa confirmation
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// ISO 4217 currency code (e.g. USD)
+	CurrencyCode *string `json:"currency_code,omitempty" url:"currency_code,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2554,6 +2627,20 @@ func (c *ConfirmationEntry) GetMandatesCompleted() *bool {
 		return nil
 	}
 	return c.MandatesCompleted
+}
+
+func (c *ConfirmationEntry) GetAmount() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Amount
+}
+
+func (c *ConfirmationEntry) GetCurrencyCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.CurrencyCode
 }
 
 func (c *ConfirmationEntry) GetExtraProperties() map[string]interface{} {
@@ -2681,7 +2768,7 @@ type CreateAccountUpdaterJobRequest struct {
 	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"deduplicate_tokens,omitempty"`
 	// Tenant merchant identifier
 	MerchantID *string `json:"merchant_id,omitempty" url:"merchant_id,omitempty"`
-	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns.
+	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
 	ResultVersion *CreateAccountUpdaterJobRequestResultVersion `json:"result_version,omitempty" url:"result_version,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -2741,12 +2828,13 @@ func (c *CreateAccountUpdaterJobRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns.
+// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
 type CreateAccountUpdaterJobRequestResultVersion string
 
 const (
 	CreateAccountUpdaterJobRequestResultVersionOne  CreateAccountUpdaterJobRequestResultVersion = "1"
 	CreateAccountUpdaterJobRequestResultVersionOne1 CreateAccountUpdaterJobRequestResultVersion = "1.1"
+	CreateAccountUpdaterJobRequestResultVersionOne2 CreateAccountUpdaterJobRequestResultVersion = "1.2"
 )
 
 func NewCreateAccountUpdaterJobRequestResultVersionFromString(s string) (CreateAccountUpdaterJobRequestResultVersion, error) {
@@ -2755,6 +2843,8 @@ func NewCreateAccountUpdaterJobRequestResultVersionFromString(s string) (CreateA
 		return CreateAccountUpdaterJobRequestResultVersionOne, nil
 	case "1.1":
 		return CreateAccountUpdaterJobRequestResultVersionOne1, nil
+	case "1.2":
+		return CreateAccountUpdaterJobRequestResultVersionOne2, nil
 	}
 	var t CreateAccountUpdaterJobRequestResultVersion
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -3934,7 +4024,9 @@ func (e *EncryptionJwk) String() string {
 }
 
 type Enrollment struct {
-	ID        *string             `json:"id,omitempty" url:"id,omitempty"`
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Basis Theory card token ID used for enrollment
+	TokenID   *string             `json:"token_id,omitempty" url:"token_id,omitempty"`
 	Provider  *EnrollmentProvider `json:"provider,omitempty" url:"provider,omitempty"`
 	Status    *EnrollmentStatus   `json:"status,omitempty" url:"status,omitempty"`
 	Card      *AgenticCard        `json:"card,omitempty" url:"card,omitempty"`
@@ -3950,6 +4042,13 @@ func (e *Enrollment) GetID() *string {
 		return nil
 	}
 	return e.ID
+}
+
+func (e *Enrollment) GetTokenID() *string {
+	if e == nil {
+		return nil
+	}
+	return e.TokenID
 }
 
 func (e *Enrollment) GetProvider() *EnrollmentProvider {

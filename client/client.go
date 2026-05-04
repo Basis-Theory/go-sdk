@@ -49,11 +49,11 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
+	Tenants              *tenantsclient.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
 	AccountUpdater       *accountupdaterclient.Client
 	Agentic              *agenticclient.Client
-	Tenants              *tenantsclient.Client
 	Threeds              *threedsclient.Client
 
 	baseURL string
@@ -83,11 +83,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
+		Tenants:              tenantsclient.NewClient(opts...),
 		TokenIntents:         tokenintents.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		AccountUpdater:       accountupdaterclient.NewClient(opts...),
 		Agentic:              agenticclient.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
 		Threeds:              threedsclient.NewClient(opts...),
 		baseURL:              options.BaseURL,
 		caller: internal.NewCaller(
