@@ -3,6 +3,8 @@
 package client
 
 import (
+	context "context"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
@@ -17,6 +19,7 @@ import (
 )
 
 type Client struct {
+	WithRawResponse *RawClient
 	SecurityContact *securitycontact.Client
 	Connections     *connections.Client
 	Invitations     *invitations.Client
@@ -41,6 +44,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Members:         members.NewClient(opts...),
 		Owner:           owner.NewClient(opts...),
 		Self:            self.NewClient(opts...),
+		WithRawResponse: NewRawClient(options),
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -50,4 +54,20 @@ func NewClient(opts ...option.RequestOption) *Client {
 		),
 		header: options.ToHeader(),
 	}
+}
+
+func (c *Client) OwnerTransfer(
+	ctx context.Context,
+	request *v5.TransferTenantOwnerRequest,
+	opts ...option.RequestOption,
+) (*v5.TenantMemberResponse, error) {
+	response, err := c.WithRawResponse.OwnerTransfer(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
 }
