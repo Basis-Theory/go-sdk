@@ -116,19 +116,22 @@ func (a *ApplePayMethodToken) String() string {
 }
 
 type ApplePayToken struct {
-	ID             *string         `json:"id,omitempty" url:"id,omitempty"`
-	Type           *string         `json:"type,omitempty" url:"type,omitempty"`
-	TenantID       *string         `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
-	Status         *string         `json:"status,omitempty" url:"status,omitempty"`
-	ExpiresAt      *time.Time      `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	CreatedBy      *string         `json:"created_by,omitempty" url:"created_by,omitempty"`
-	CreatedAt      *time.Time      `json:"created_at,omitempty" url:"created_at,omitempty"`
-	ModifiedBy     *string         `json:"modified_by,omitempty" url:"modified_by,omitempty"`
-	ModifiedAt     *time.Time      `json:"modified_at,omitempty" url:"modified_at,omitempty"`
-	Card           *CardDetails    `json:"card,omitempty" url:"card,omitempty"`
-	Data           interface{}     `json:"data,omitempty" url:"data,omitempty"`
-	Authentication *Authentication `json:"authentication,omitempty" url:"authentication,omitempty"`
-	Fingerprint    *string         `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	ID                           *string         `json:"id,omitempty" url:"id,omitempty"`
+	Type                         *string         `json:"type,omitempty" url:"type,omitempty"`
+	TenantID                     *string         `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Status                       *string         `json:"status,omitempty" url:"status,omitempty"`
+	ExpiresAt                    *time.Time      `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	CreatedBy                    *string         `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt                    *time.Time      `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy                   *string         `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt                   *time.Time      `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+	TransactionID                *string         `json:"transaction_id,omitempty" url:"transaction_id,omitempty"`
+	PaymentDataType              *string         `json:"payment_data_type,omitempty" url:"payment_data_type,omitempty"`
+	DeviceManufacturerIdentifier *string         `json:"device_manufacturer_identifier,omitempty" url:"device_manufacturer_identifier,omitempty"`
+	Card                         *CardDetails    `json:"card,omitempty" url:"card,omitempty"`
+	Data                         interface{}     `json:"data,omitempty" url:"data,omitempty"`
+	Authentication               *Authentication `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Fingerprint                  *string         `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -195,6 +198,27 @@ func (a *ApplePayToken) GetModifiedAt() *time.Time {
 		return nil
 	}
 	return a.ModifiedAt
+}
+
+func (a *ApplePayToken) GetTransactionID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.TransactionID
+}
+
+func (a *ApplePayToken) GetPaymentDataType() *string {
+	if a == nil {
+		return nil
+	}
+	return a.PaymentDataType
+}
+
+func (a *ApplePayToken) GetDeviceManufacturerIdentifier() *string {
+	if a == nil {
+		return nil
+	}
+	return a.DeviceManufacturerIdentifier
 }
 
 func (a *ApplePayToken) GetCard() *CardDetails {
