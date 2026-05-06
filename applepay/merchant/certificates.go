@@ -5,7 +5,7 @@ package merchant
 type ApplePayMerchantCertificatesRegisterRequest struct {
 	MerchantCertificateData             *string `json:"merchant_certificate_data,omitempty" url:"-"`
 	MerchantCertificatePassword         *string `json:"merchant_certificate_password,omitempty" url:"-"`
-	PaymentProcessorCertificateData     *string `json:"payment_processor_certificate_data,omitempty" url:"-"`
-	PaymentProcessorCertificatePassword *string `json:"payment_processor_certificate_password,omitempty" url:"-"`
+	PaymentProcessorCertificateData     string  `json:"payment_processor_certificate_data" url:"-"`
+	PaymentProcessorCertificatePassword string  `json:"payment_processor_certificate_password" url:"-"`
 	Domain                              *string `json:"domain,omitempty" url:"-"`
 }
