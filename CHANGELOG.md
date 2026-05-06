@@ -1,3 +1,10 @@
+# [5.6.0](https://github.com/Basis-Theory/go-sdk/compare/v5.5.0...v5.6.0) (2026-05-06)
+
+
+### Features
+
+* **SDK:** update accountUpdatedJob Schema ([#123](https://github.com/Basis-Theory/go-sdk/issues/123)) ([9069795](https://github.com/Basis-Theory/go-sdk/commit/90697955a8d589cacf453b65db9355ac0a460a78))
+
 # [5.5.0](https://github.com/Basis-Theory/go-sdk/compare/v5.4.0...v5.5.0) (2026-04-08)
 
 
