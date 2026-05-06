@@ -114,6 +114,8 @@ type AccountUpdaterJob struct {
 	Requests *int `json:"requests,omitempty" url:"requests,omitempty"`
 	// Summary count breakdown by result code for all processed rows
 	Results map[string]int `json:"results,omitempty" url:"results,omitempty"`
+	// Pre-signed URL for downloading the job results CSV. Only present on completed jobs.
+	DownloadURL *string `json:"downloadUrl,omitempty" url:"downloadUrl,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -187,6 +189,13 @@ func (a *AccountUpdaterJob) GetResults() map[string]int {
 		return nil
 	}
 	return a.Results
+}
+
+func (a *AccountUpdaterJob) GetDownloadURL() *string {
+	if a == nil {
+		return nil
+	}
+	return a.DownloadURL
 }
 
 func (a *AccountUpdaterJob) GetExtraProperties() map[string]interface{} {
@@ -608,10 +617,21 @@ type AgenticCard struct {
 	Last4           *string           `json:"last4,omitempty" url:"last4,omitempty"`
 	ExpirationMonth *int              `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
 	ExpirationYear  *int              `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
-	Display         *CardDisplay      `json:"display,omitempty" url:"display,omitempty"`
+	// Card funding type (e.g. credit, debit, prepaid)
+	Funding *string `json:"funding,omitempty" url:"funding,omitempty"`
+	// Card issuer information
+	Issuer *AgenticCardIssuer `json:"issuer,omitempty" url:"issuer,omitempty"`
+	// Card issuer country details
+	IssuerCountry *AgenticCardIssuerCountry `json:"issuer_country,omitempty" url:"issuer_country,omitempty"`
+	// Card segment (e.g. consumer, commercial)
+	Segment *string `json:"segment,omitempty" url:"segment,omitempty"`
+	// Card type
+	Type    *string      `json:"type,omitempty" url:"type,omitempty"`
+	Display *CardDisplay `json:"display,omitempty" url:"display,omitempty"`
 
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
 }
 
 func (a *AgenticCard) GetBrand() *AgenticCardBrand {
@@ -649,6 +669,41 @@ func (a *AgenticCard) GetExpirationYear() *int {
 	return a.ExpirationYear
 }
 
+func (a *AgenticCard) GetFunding() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Funding
+}
+
+func (a *AgenticCard) GetIssuer() *AgenticCardIssuer {
+	if a == nil {
+		return nil
+	}
+	return a.Issuer
+}
+
+func (a *AgenticCard) GetIssuerCountry() *AgenticCardIssuerCountry {
+	if a == nil {
+		return nil
+	}
+	return a.IssuerCountry
+}
+
+func (a *AgenticCard) GetSegment() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Segment
+}
+
+func (a *AgenticCard) GetType() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Type
+}
+
 func (a *AgenticCard) GetDisplay() *CardDisplay {
 	if a == nil {
 		return nil
@@ -657,23 +712,37 @@ func (a *AgenticCard) GetDisplay() *CardDisplay {
 }
 
 func (a *AgenticCard) GetExtraProperties() map[string]interface{} {
-	return a.extraProperties
+	return a.ExtraProperties
 }
 
 func (a *AgenticCard) UnmarshalJSON(data []byte) error {
-	type unmarshaler AgenticCard
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed AgenticCard
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*a = AgenticCard(value)
+	*a = AgenticCard(unmarshaler.embed)
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
 	}
-	a.extraProperties = extraProperties
+	a.ExtraProperties = extraProperties
 	a.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (a *AgenticCard) MarshalJSON() ([]byte, error) {
+	type embed AgenticCard
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	return internal.MarshalJSONWithExtraProperties(marshaler, a.ExtraProperties)
 }
 
 func (a *AgenticCard) String() string {
@@ -708,6 +777,129 @@ func NewAgenticCardBrandFromString(s string) (AgenticCardBrand, error) {
 
 func (a AgenticCardBrand) Ptr() *AgenticCardBrand {
 	return &a
+}
+
+// Card issuer information
+type AgenticCardIssuer struct {
+	// Issuer name
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// Issuer country code
+	Country *string `json:"country,omitempty" url:"country,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AgenticCardIssuer) GetName() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Name
+}
+
+func (a *AgenticCardIssuer) GetCountry() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Country
+}
+
+func (a *AgenticCardIssuer) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AgenticCardIssuer) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgenticCardIssuer
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AgenticCardIssuer(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AgenticCardIssuer) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Card issuer country details
+type AgenticCardIssuerCountry struct {
+	// ISO 3166-1 alpha-2 country code
+	Alpha2 *string `json:"alpha2,omitempty" url:"alpha2,omitempty"`
+	// Country name
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// ISO 3166-1 numeric country code
+	Numeric *string `json:"numeric,omitempty" url:"numeric,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AgenticCardIssuerCountry) GetAlpha2() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Alpha2
+}
+
+func (a *AgenticCardIssuerCountry) GetName() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Name
+}
+
+func (a *AgenticCardIssuerCountry) GetNumeric() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Numeric
+}
+
+func (a *AgenticCardIssuerCountry) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AgenticCardIssuerCountry) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgenticCardIssuerCountry
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AgenticCardIssuerCountry(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AgenticCardIssuerCountry) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AgenticMerchant struct {
@@ -769,6 +961,52 @@ func (a *AgenticMerchant) UnmarshalJSON(data []byte) error {
 }
 
 func (a *AgenticMerchant) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AmexConfig struct {
+	SeNumber *string `json:"se_number,omitempty" url:"se_number,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AmexConfig) GetSeNumber() *string {
+	if a == nil {
+		return nil
+	}
+	return a.SeNumber
+}
+
+func (a *AmexConfig) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AmexConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler AmexConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AmexConfig(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AmexConfig) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -2448,6 +2686,146 @@ func (c *CardIssuerCountry) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+type CardNetworkInfo struct {
+	Visa       *VisaConfig       `json:"visa,omitempty" url:"visa,omitempty"`
+	Mastercard *MastercardConfig `json:"mastercard,omitempty" url:"mastercard,omitempty"`
+	Amex       *AmexConfig       `json:"amex,omitempty" url:"amex,omitempty"`
+	Discover   *DiscoverConfig   `json:"discover,omitempty" url:"discover,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardNetworkInfo) GetVisa() *VisaConfig {
+	if c == nil {
+		return nil
+	}
+	return c.Visa
+}
+
+func (c *CardNetworkInfo) GetMastercard() *MastercardConfig {
+	if c == nil {
+		return nil
+	}
+	return c.Mastercard
+}
+
+func (c *CardNetworkInfo) GetAmex() *AmexConfig {
+	if c == nil {
+		return nil
+	}
+	return c.Amex
+}
+
+func (c *CardNetworkInfo) GetDiscover() *DiscoverConfig {
+	if c == nil {
+		return nil
+	}
+	return c.Discover
+}
+
+func (c *CardNetworkInfo) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardNetworkInfo) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardNetworkInfo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardNetworkInfo(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardNetworkInfo) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CardNetworkStatus struct {
+	Visa       *NetworkStatusDetail `json:"visa,omitempty" url:"visa,omitempty"`
+	Mastercard *NetworkStatusDetail `json:"mastercard,omitempty" url:"mastercard,omitempty"`
+	Amex       *NetworkStatusDetail `json:"amex,omitempty" url:"amex,omitempty"`
+	Discover   *NetworkStatusDetail `json:"discover,omitempty" url:"discover,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardNetworkStatus) GetVisa() *NetworkStatusDetail {
+	if c == nil {
+		return nil
+	}
+	return c.Visa
+}
+
+func (c *CardNetworkStatus) GetMastercard() *NetworkStatusDetail {
+	if c == nil {
+		return nil
+	}
+	return c.Mastercard
+}
+
+func (c *CardNetworkStatus) GetAmex() *NetworkStatusDetail {
+	if c == nil {
+		return nil
+	}
+	return c.Amex
+}
+
+func (c *CardNetworkStatus) GetDiscover() *NetworkStatusDetail {
+	if c == nil {
+		return nil
+	}
+	return c.Discover
+}
+
+func (c *CardNetworkStatus) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardNetworkStatus) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardNetworkStatus
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardNetworkStatus(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardNetworkStatus) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type Condition struct {
 	Attribute *string `json:"attribute,omitempty" url:"attribute,omitempty"`
 	Operator  *string `json:"operator,omitempty" url:"operator,omitempty"`
@@ -2516,6 +2894,10 @@ type ConfirmationEntry struct {
 	TransactionType        TransactionType   `json:"transaction_type" url:"transaction_type"`
 	TransactionTimestamp   *time.Time        `json:"transaction_timestamp,omitempty" url:"transaction_timestamp,omitempty"`
 	MandatesCompleted      *bool             `json:"mandates_completed,omitempty" url:"mandates_completed,omitempty"`
+	// Transaction amount for Visa confirmation
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// ISO 4217 currency code (e.g. USD)
+	CurrencyCode *string `json:"currency_code,omitempty" url:"currency_code,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2554,6 +2936,20 @@ func (c *ConfirmationEntry) GetMandatesCompleted() *bool {
 		return nil
 	}
 	return c.MandatesCompleted
+}
+
+func (c *ConfirmationEntry) GetAmount() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Amount
+}
+
+func (c *ConfirmationEntry) GetCurrencyCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.CurrencyCode
 }
 
 func (c *ConfirmationEntry) GetExtraProperties() map[string]interface{} {
@@ -2681,7 +3077,7 @@ type CreateAccountUpdaterJobRequest struct {
 	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"deduplicate_tokens,omitempty"`
 	// Tenant merchant identifier
 	MerchantID *string `json:"merchant_id,omitempty" url:"merchant_id,omitempty"`
-	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns.
+	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
 	ResultVersion *CreateAccountUpdaterJobRequestResultVersion `json:"result_version,omitempty" url:"result_version,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -2741,12 +3137,13 @@ func (c *CreateAccountUpdaterJobRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns.
+// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
 type CreateAccountUpdaterJobRequestResultVersion string
 
 const (
 	CreateAccountUpdaterJobRequestResultVersionOne  CreateAccountUpdaterJobRequestResultVersion = "1"
 	CreateAccountUpdaterJobRequestResultVersionOne1 CreateAccountUpdaterJobRequestResultVersion = "1.1"
+	CreateAccountUpdaterJobRequestResultVersionOne2 CreateAccountUpdaterJobRequestResultVersion = "1.2"
 )
 
 func NewCreateAccountUpdaterJobRequestResultVersionFromString(s string) (CreateAccountUpdaterJobRequestResultVersion, error) {
@@ -2755,6 +3152,8 @@ func NewCreateAccountUpdaterJobRequestResultVersionFromString(s string) (CreateA
 		return CreateAccountUpdaterJobRequestResultVersionOne, nil
 	case "1.1":
 		return CreateAccountUpdaterJobRequestResultVersionOne1, nil
+	case "1.2":
+		return CreateAccountUpdaterJobRequestResultVersionOne2, nil
 	}
 	var t CreateAccountUpdaterJobRequestResultVersion
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -3767,6 +4166,52 @@ func (d DeviceType) Ptr() *DeviceType {
 	return &d
 }
 
+type DiscoverConfig struct {
+	MerchantIDMid *string `json:"merchant_id_mid,omitempty" url:"merchant_id_mid,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DiscoverConfig) GetMerchantIDMid() *string {
+	if d == nil {
+		return nil
+	}
+	return d.MerchantIDMid
+}
+
+func (d *DiscoverConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DiscoverConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DiscoverConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DiscoverConfig(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DiscoverConfig) String() string {
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
 type DomainRegistrationResponse struct {
 	Domain *string `json:"domain,omitempty" url:"domain,omitempty"`
 	Status *string `json:"status,omitempty" url:"status,omitempty"`
@@ -3934,7 +4379,9 @@ func (e *EncryptionJwk) String() string {
 }
 
 type Enrollment struct {
-	ID        *string             `json:"id,omitempty" url:"id,omitempty"`
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Basis Theory card token ID used for enrollment
+	TokenID   *string             `json:"token_id,omitempty" url:"token_id,omitempty"`
 	Provider  *EnrollmentProvider `json:"provider,omitempty" url:"provider,omitempty"`
 	Status    *EnrollmentStatus   `json:"status,omitempty" url:"status,omitempty"`
 	Card      *AgenticCard        `json:"card,omitempty" url:"card,omitempty"`
@@ -3950,6 +4397,13 @@ func (e *Enrollment) GetID() *string {
 		return nil
 	}
 	return e.ID
+}
+
+func (e *Enrollment) GetTokenID() *string {
+	if e == nil {
+		return nil
+	}
+	return e.TokenID
 }
 
 func (e *Enrollment) GetProvider() *EnrollmentProvider {
@@ -5523,6 +5977,504 @@ func (i InstructionStatus) Ptr() *InstructionStatus {
 	return &i
 }
 
+type MastercardConfig struct {
+	MerchantIDMid *string `json:"merchant_id_mid,omitempty" url:"merchant_id_mid,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MastercardConfig) GetMerchantIDMid() *string {
+	if m == nil {
+		return nil
+	}
+	return m.MerchantIDMid
+}
+
+func (m *MastercardConfig) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MastercardConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler MastercardConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MastercardConfig(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MastercardConfig) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MerchantAddress struct {
+	Street1       *string `json:"street_1,omitempty" url:"street_1,omitempty"`
+	Street2       *string `json:"street_2,omitempty" url:"street_2,omitempty"`
+	City          *string `json:"city,omitempty" url:"city,omitempty"`
+	StateProvince *string `json:"state_province,omitempty" url:"state_province,omitempty"`
+	PostalCode    *string `json:"postal_code,omitempty" url:"postal_code,omitempty"`
+	Country       *string `json:"country,omitempty" url:"country,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MerchantAddress) GetStreet1() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Street1
+}
+
+func (m *MerchantAddress) GetStreet2() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Street2
+}
+
+func (m *MerchantAddress) GetCity() *string {
+	if m == nil {
+		return nil
+	}
+	return m.City
+}
+
+func (m *MerchantAddress) GetStateProvince() *string {
+	if m == nil {
+		return nil
+	}
+	return m.StateProvince
+}
+
+func (m *MerchantAddress) GetPostalCode() *string {
+	if m == nil {
+		return nil
+	}
+	return m.PostalCode
+}
+
+func (m *MerchantAddress) GetCountry() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Country
+}
+
+func (m *MerchantAddress) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MerchantAddress) UnmarshalJSON(data []byte) error {
+	type unmarshaler MerchantAddress
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MerchantAddress(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MerchantAddress) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MerchantContact struct {
+	Name        *string `json:"name,omitempty" url:"name,omitempty"`
+	Title       *string `json:"title,omitempty" url:"title,omitempty"`
+	PhoneNumber *string `json:"phone_number,omitempty" url:"phone_number,omitempty"`
+	Email       *string `json:"email,omitempty" url:"email,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MerchantContact) GetName() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Name
+}
+
+func (m *MerchantContact) GetTitle() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Title
+}
+
+func (m *MerchantContact) GetPhoneNumber() *string {
+	if m == nil {
+		return nil
+	}
+	return m.PhoneNumber
+}
+
+func (m *MerchantContact) GetEmail() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Email
+}
+
+func (m *MerchantContact) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MerchantContact) UnmarshalJSON(data []byte) error {
+	type unmarshaler MerchantContact
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MerchantContact(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MerchantContact) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MerchantDetails struct {
+	Merchant        *MerchantInfo    `json:"merchant,omitempty" url:"merchant,omitempty"`
+	CardNetworkInfo *CardNetworkInfo `json:"card_network_info,omitempty" url:"card_network_info,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MerchantDetails) GetMerchant() *MerchantInfo {
+	if m == nil {
+		return nil
+	}
+	return m.Merchant
+}
+
+func (m *MerchantDetails) GetCardNetworkInfo() *CardNetworkInfo {
+	if m == nil {
+		return nil
+	}
+	return m.CardNetworkInfo
+}
+
+func (m *MerchantDetails) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MerchantDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler MerchantDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MerchantDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MerchantDetails) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MerchantInfo struct {
+	FullLegalName       *string               `json:"full_legal_name,omitempty" url:"full_legal_name,omitempty"`
+	DoingBusinessAs     *string               `json:"doing_business_as,omitempty" url:"doing_business_as,omitempty"`
+	ParentCompanyName   *string               `json:"parent_company_name,omitempty" url:"parent_company_name,omitempty"`
+	WebsiteURL          *string               `json:"website_url,omitempty" url:"website_url,omitempty"`
+	CategoryCodeMcc     *string               `json:"category_code_mcc,omitempty" url:"category_code_mcc,omitempty"`
+	Descriptor          *string               `json:"descriptor,omitempty" url:"descriptor,omitempty"`
+	BusinessDescription *string               `json:"business_description,omitempty" url:"business_description,omitempty"`
+	Registration        *MerchantRegistration `json:"registration,omitempty" url:"registration,omitempty"`
+	Contact             *MerchantContact      `json:"contact,omitempty" url:"contact,omitempty"`
+	Address             *MerchantAddress      `json:"address,omitempty" url:"address,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MerchantInfo) GetFullLegalName() *string {
+	if m == nil {
+		return nil
+	}
+	return m.FullLegalName
+}
+
+func (m *MerchantInfo) GetDoingBusinessAs() *string {
+	if m == nil {
+		return nil
+	}
+	return m.DoingBusinessAs
+}
+
+func (m *MerchantInfo) GetParentCompanyName() *string {
+	if m == nil {
+		return nil
+	}
+	return m.ParentCompanyName
+}
+
+func (m *MerchantInfo) GetWebsiteURL() *string {
+	if m == nil {
+		return nil
+	}
+	return m.WebsiteURL
+}
+
+func (m *MerchantInfo) GetCategoryCodeMcc() *string {
+	if m == nil {
+		return nil
+	}
+	return m.CategoryCodeMcc
+}
+
+func (m *MerchantInfo) GetDescriptor() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Descriptor
+}
+
+func (m *MerchantInfo) GetBusinessDescription() *string {
+	if m == nil {
+		return nil
+	}
+	return m.BusinessDescription
+}
+
+func (m *MerchantInfo) GetRegistration() *MerchantRegistration {
+	if m == nil {
+		return nil
+	}
+	return m.Registration
+}
+
+func (m *MerchantInfo) GetContact() *MerchantContact {
+	if m == nil {
+		return nil
+	}
+	return m.Contact
+}
+
+func (m *MerchantInfo) GetAddress() *MerchantAddress {
+	if m == nil {
+		return nil
+	}
+	return m.Address
+}
+
+func (m *MerchantInfo) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MerchantInfo) UnmarshalJSON(data []byte) error {
+	type unmarshaler MerchantInfo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MerchantInfo(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MerchantInfo) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MerchantRegistration struct {
+	RegistrationType *string `json:"registration_type,omitempty" url:"registration_type,omitempty"`
+	RegistrationID   *string `json:"registration_id,omitempty" url:"registration_id,omitempty"`
+	VatID            *string `json:"vat_id,omitempty" url:"vat_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MerchantRegistration) GetRegistrationType() *string {
+	if m == nil {
+		return nil
+	}
+	return m.RegistrationType
+}
+
+func (m *MerchantRegistration) GetRegistrationID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.RegistrationID
+}
+
+func (m *MerchantRegistration) GetVatID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.VatID
+}
+
+func (m *MerchantRegistration) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MerchantRegistration) UnmarshalJSON(data []byte) error {
+	type unmarshaler MerchantRegistration
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MerchantRegistration(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MerchantRegistration) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MerchantServices struct {
+	AccountUpdater  *ServiceStatus `json:"account_updater,omitempty" url:"account_updater,omitempty"`
+	NetworkToken    *ServiceStatus `json:"network_token,omitempty" url:"network_token,omitempty"`
+	AgenticCommerce *ServiceStatus `json:"agentic_commerce,omitempty" url:"agentic_commerce,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MerchantServices) GetAccountUpdater() *ServiceStatus {
+	if m == nil {
+		return nil
+	}
+	return m.AccountUpdater
+}
+
+func (m *MerchantServices) GetNetworkToken() *ServiceStatus {
+	if m == nil {
+		return nil
+	}
+	return m.NetworkToken
+}
+
+func (m *MerchantServices) GetAgenticCommerce() *ServiceStatus {
+	if m == nil {
+		return nil
+	}
+	return m.AgenticCommerce
+}
+
+func (m *MerchantServices) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MerchantServices) UnmarshalJSON(data []byte) error {
+	type unmarshaler MerchantServices
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MerchantServices(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MerchantServices) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
 type MppChallenge struct {
 	ID               string   `json:"id" url:"id"`
 	Realm            string   `json:"realm" url:"realm"`
@@ -5814,6 +6766,76 @@ func NewMppSourceTypeFromString(s string) (MppSourceType, error) {
 
 func (m MppSourceType) Ptr() *MppSourceType {
 	return &m
+}
+
+type NetworkStatusDetail struct {
+	Status            *string `json:"status,omitempty" url:"status,omitempty"`
+	StatusReasonCode  *string `json:"status_reason_code,omitempty" url:"status_reason_code,omitempty"`
+	StatusReason      *string `json:"status_reason,omitempty" url:"status_reason,omitempty"`
+	StatusReasonLabel *string `json:"status_reason_label,omitempty" url:"status_reason_label,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NetworkStatusDetail) GetStatus() *string {
+	if n == nil {
+		return nil
+	}
+	return n.Status
+}
+
+func (n *NetworkStatusDetail) GetStatusReasonCode() *string {
+	if n == nil {
+		return nil
+	}
+	return n.StatusReasonCode
+}
+
+func (n *NetworkStatusDetail) GetStatusReason() *string {
+	if n == nil {
+		return nil
+	}
+	return n.StatusReason
+}
+
+func (n *NetworkStatusDetail) GetStatusReasonLabel() *string {
+	if n == nil {
+		return nil
+	}
+	return n.StatusReasonLabel
+}
+
+func (n *NetworkStatusDetail) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
+}
+
+func (n *NetworkStatusDetail) UnmarshalJSON(data []byte) error {
+	type unmarshaler NetworkStatusDetail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NetworkStatusDetail(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NetworkStatusDetail) String() string {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
 }
 
 type Pagination struct {
@@ -6424,6 +7446,68 @@ func (s *SecurityContactEmailResponse) UnmarshalJSON(data []byte) error {
 }
 
 func (s *SecurityContactEmailResponse) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type ServiceStatus struct {
+	Status            *string            `json:"status,omitempty" url:"status,omitempty"`
+	Providers         []string           `json:"providers,omitempty" url:"providers,omitempty"`
+	CardNetworkStatus *CardNetworkStatus `json:"card_network_status,omitempty" url:"card_network_status,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *ServiceStatus) GetStatus() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Status
+}
+
+func (s *ServiceStatus) GetProviders() []string {
+	if s == nil {
+		return nil
+	}
+	return s.Providers
+}
+
+func (s *ServiceStatus) GetCardNetworkStatus() *CardNetworkStatus {
+	if s == nil {
+		return nil
+	}
+	return s.CardNetworkStatus
+}
+
+func (s *ServiceStatus) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *ServiceStatus) UnmarshalJSON(data []byte) error {
+	type unmarshaler ServiceStatus
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ServiceStatus(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ServiceStatus) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -7178,6 +8262,246 @@ func (t *TenantMemberResponsePaginatedList) UnmarshalJSON(data []byte) error {
 }
 
 func (t *TenantMemberResponsePaginatedList) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TenantMerchant struct {
+	ID         *string           `json:"id,omitempty" url:"id,omitempty"`
+	TenantID   *string           `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Name       *string           `json:"name,omitempty" url:"name,omitempty"`
+	Details    *MerchantDetails  `json:"details,omitempty" url:"details,omitempty"`
+	Services   *MerchantServices `json:"services,omitempty" url:"services,omitempty"`
+	CreatedBy  *string           `json:"created_by,omitempty" url:"created_by,omitempty"`
+	CreatedAt  *time.Time        `json:"created_at,omitempty" url:"created_at,omitempty"`
+	ModifiedBy *string           `json:"modified_by,omitempty" url:"modified_by,omitempty"`
+	ModifiedAt *time.Time        `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TenantMerchant) GetID() *string {
+	if t == nil {
+		return nil
+	}
+	return t.ID
+}
+
+func (t *TenantMerchant) GetTenantID() *string {
+	if t == nil {
+		return nil
+	}
+	return t.TenantID
+}
+
+func (t *TenantMerchant) GetName() *string {
+	if t == nil {
+		return nil
+	}
+	return t.Name
+}
+
+func (t *TenantMerchant) GetDetails() *MerchantDetails {
+	if t == nil {
+		return nil
+	}
+	return t.Details
+}
+
+func (t *TenantMerchant) GetServices() *MerchantServices {
+	if t == nil {
+		return nil
+	}
+	return t.Services
+}
+
+func (t *TenantMerchant) GetCreatedBy() *string {
+	if t == nil {
+		return nil
+	}
+	return t.CreatedBy
+}
+
+func (t *TenantMerchant) GetCreatedAt() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.CreatedAt
+}
+
+func (t *TenantMerchant) GetModifiedBy() *string {
+	if t == nil {
+		return nil
+	}
+	return t.ModifiedBy
+}
+
+func (t *TenantMerchant) GetModifiedAt() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.ModifiedAt
+}
+
+func (t *TenantMerchant) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TenantMerchant) UnmarshalJSON(data []byte) error {
+	type embed TenantMerchant
+	var unmarshaler = struct {
+		embed
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = TenantMerchant(unmarshaler.embed)
+	t.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	t.ModifiedAt = unmarshaler.ModifiedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TenantMerchant) MarshalJSON() ([]byte, error) {
+	type embed TenantMerchant
+	var marshaler = struct {
+		embed
+		CreatedAt  *internal.DateTime `json:"created_at,omitempty"`
+		ModifiedAt *internal.DateTime `json:"modified_at,omitempty"`
+	}{
+		embed:      embed(*t),
+		CreatedAt:  internal.NewOptionalDateTime(t.CreatedAt),
+		ModifiedAt: internal.NewOptionalDateTime(t.ModifiedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *TenantMerchant) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TenantMerchantPaginatedList struct {
+	Pagination *Pagination       `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Data       []*TenantMerchant `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TenantMerchantPaginatedList) GetPagination() *Pagination {
+	if t == nil {
+		return nil
+	}
+	return t.Pagination
+}
+
+func (t *TenantMerchantPaginatedList) GetData() []*TenantMerchant {
+	if t == nil {
+		return nil
+	}
+	return t.Data
+}
+
+func (t *TenantMerchantPaginatedList) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TenantMerchantPaginatedList) UnmarshalJSON(data []byte) error {
+	type unmarshaler TenantMerchantPaginatedList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TenantMerchantPaginatedList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TenantMerchantPaginatedList) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type TenantMerchantRequest struct {
+	Name    string           `json:"name" url:"name"`
+	Details *MerchantDetails `json:"details" url:"details"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TenantMerchantRequest) GetName() string {
+	if t == nil {
+		return ""
+	}
+	return t.Name
+}
+
+func (t *TenantMerchantRequest) GetDetails() *MerchantDetails {
+	if t == nil {
+		return nil
+	}
+	return t.Details
+}
+
+func (t *TenantMerchantRequest) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TenantMerchantRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler TenantMerchantRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TenantMerchantRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TenantMerchantRequest) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -10803,4 +12127,58 @@ func NewVerificationResponseStatusFromString(s string) (VerificationResponseStat
 
 func (v VerificationResponseStatus) Ptr() *VerificationResponseStatus {
 	return &v
+}
+
+type VisaConfig struct {
+	AcquirerBin        *string `json:"acquirer_bin,omitempty" url:"acquirer_bin,omitempty"`
+	CardAcceptorIDCaid *string `json:"card_acceptor_id_caid,omitempty" url:"card_acceptor_id_caid,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VisaConfig) GetAcquirerBin() *string {
+	if v == nil {
+		return nil
+	}
+	return v.AcquirerBin
+}
+
+func (v *VisaConfig) GetCardAcceptorIDCaid() *string {
+	if v == nil {
+		return nil
+	}
+	return v.CardAcceptorIDCaid
+}
+
+func (v *VisaConfig) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VisaConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler VisaConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VisaConfig(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VisaConfig) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
