@@ -4,11 +4,11 @@ package members
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	tenants "github.com/Basis-Theory/go-sdk/v4/tenants"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) List(
 	ctx context.Context,
 	request *tenants.MembersListRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.TenantMemberResponsePaginatedList], error) {
+) (*core.Response[*v5.TenantMemberResponsePaginatedList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -56,17 +56,17 @@ func (r *RawClient) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.TenantMemberResponsePaginatedList
+	var response *v5.TenantMemberResponsePaginatedList
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -84,7 +84,7 @@ func (r *RawClient) List(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.TenantMemberResponsePaginatedList]{
+	return &core.Response[*v5.TenantMemberResponsePaginatedList]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -96,7 +96,7 @@ func (r *RawClient) Update(
 	memberID string,
 	request *tenants.UpdateTenantMemberRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v4.TenantMemberResponse], error) {
+) (*core.Response[*v5.TenantMemberResponse], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -114,22 +114,22 @@ func (r *RawClient) Update(
 	headers.Add("Content-Type", "application/json-patch+json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.TenantMemberResponse
+	var response *v5.TenantMemberResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -148,7 +148,7 @@ func (r *RawClient) Update(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.TenantMemberResponse]{
+	return &core.Response[*v5.TenantMemberResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -176,22 +176,22 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v4.UnprocessableEntityError{
+			return &v5.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},

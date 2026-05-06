@@ -3,30 +3,31 @@
 package client
 
 import (
-	accountupdaterclient "github.com/Basis-Theory/go-sdk/v4/accountupdater/client"
-	client "github.com/Basis-Theory/go-sdk/v4/applepay/client"
-	applicationkeys "github.com/Basis-Theory/go-sdk/v4/applicationkeys"
-	applications "github.com/Basis-Theory/go-sdk/v4/applications"
-	applicationtemplates "github.com/Basis-Theory/go-sdk/v4/applicationtemplates"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	documentsclient "github.com/Basis-Theory/go-sdk/v4/documents/client"
-	enrichments "github.com/Basis-Theory/go-sdk/v4/enrichments"
-	googlepayclient "github.com/Basis-Theory/go-sdk/v4/googlepay/client"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	keys "github.com/Basis-Theory/go-sdk/v4/keys"
-	logs "github.com/Basis-Theory/go-sdk/v4/logs"
-	networktokens "github.com/Basis-Theory/go-sdk/v4/networktokens"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	permissions "github.com/Basis-Theory/go-sdk/v4/permissions"
-	proxies "github.com/Basis-Theory/go-sdk/v4/proxies"
-	reactorsclient "github.com/Basis-Theory/go-sdk/v4/reactors/client"
-	roles "github.com/Basis-Theory/go-sdk/v4/roles"
-	sessions "github.com/Basis-Theory/go-sdk/v4/sessions"
-	tenantsclient "github.com/Basis-Theory/go-sdk/v4/tenants/client"
-	threedsclient "github.com/Basis-Theory/go-sdk/v4/threeds/client"
-	tokenintents "github.com/Basis-Theory/go-sdk/v4/tokenintents"
-	tokens "github.com/Basis-Theory/go-sdk/v4/tokens"
-	webhooksclient "github.com/Basis-Theory/go-sdk/v4/webhooks/client"
+	accountupdaterclient "github.com/Basis-Theory/go-sdk/v5/accountupdater/client"
+	agenticclient "github.com/Basis-Theory/go-sdk/v5/agentic/client"
+	client "github.com/Basis-Theory/go-sdk/v5/applepay/client"
+	applicationkeys "github.com/Basis-Theory/go-sdk/v5/applicationkeys"
+	applications "github.com/Basis-Theory/go-sdk/v5/applications"
+	applicationtemplates "github.com/Basis-Theory/go-sdk/v5/applicationtemplates"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	documentsclient "github.com/Basis-Theory/go-sdk/v5/documents/client"
+	enrichments "github.com/Basis-Theory/go-sdk/v5/enrichments"
+	googlepayclient "github.com/Basis-Theory/go-sdk/v5/googlepay/client"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	keys "github.com/Basis-Theory/go-sdk/v5/keys"
+	logs "github.com/Basis-Theory/go-sdk/v5/logs"
+	networktokens "github.com/Basis-Theory/go-sdk/v5/networktokens"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	permissions "github.com/Basis-Theory/go-sdk/v5/permissions"
+	proxies "github.com/Basis-Theory/go-sdk/v5/proxies"
+	reactorsclient "github.com/Basis-Theory/go-sdk/v5/reactors/client"
+	roles "github.com/Basis-Theory/go-sdk/v5/roles"
+	sessions "github.com/Basis-Theory/go-sdk/v5/sessions"
+	tenantsclient "github.com/Basis-Theory/go-sdk/v5/tenants/client"
+	threedsclient "github.com/Basis-Theory/go-sdk/v5/threeds/client"
+	tokenintents "github.com/Basis-Theory/go-sdk/v5/tokenintents"
+	tokens "github.com/Basis-Theory/go-sdk/v5/tokens"
+	webhooksclient "github.com/Basis-Theory/go-sdk/v5/webhooks/client"
 	http "net/http"
 	os "os"
 )
@@ -48,10 +49,11 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
+	Tenants              *tenantsclient.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
 	AccountUpdater       *accountupdaterclient.Client
-	Tenants              *tenantsclient.Client
+	Agentic              *agenticclient.Client
 	Threeds              *threedsclient.Client
 
 	baseURL string
@@ -81,10 +83,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
+		Tenants:              tenantsclient.NewClient(opts...),
 		TokenIntents:         tokenintents.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		AccountUpdater:       accountupdaterclient.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
+		Agentic:              agenticclient.NewClient(opts...),
 		Threeds:              threedsclient.NewClient(opts...),
 		baseURL:              options.BaseURL,
 		caller: internal.NewCaller(

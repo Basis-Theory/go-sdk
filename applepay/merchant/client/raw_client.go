@@ -4,11 +4,11 @@ package client
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	applepay "github.com/Basis-Theory/go-sdk/v4/applepay"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	applepay "github.com/Basis-Theory/go-sdk/v5/applepay"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.ApplePayMerchant], error) {
+) (*core.Response[*v5.ApplePayMerchant], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -52,22 +52,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.ApplePayMerchant
+	var response *v5.ApplePayMerchant
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -85,7 +85,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.ApplePayMerchant]{
+	return &core.Response[*v5.ApplePayMerchant]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -113,17 +113,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -155,7 +155,7 @@ func (r *RawClient) Create(
 	ctx context.Context,
 	request *applepay.ApplePayMerchantRegisterRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.ApplePayMerchant], error) {
+) (*core.Response[*v5.ApplePayMerchant], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -170,17 +170,17 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.ApplePayMerchant
+	var response *v5.ApplePayMerchant
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -199,7 +199,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.ApplePayMerchant]{
+	return &core.Response[*v5.ApplePayMerchant]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

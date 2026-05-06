@@ -3,24 +3,31 @@
 package client
 
 import (
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	connections "github.com/Basis-Theory/go-sdk/v4/tenants/connections"
-	invitations "github.com/Basis-Theory/go-sdk/v4/tenants/invitations"
-	members "github.com/Basis-Theory/go-sdk/v4/tenants/members"
-	owner "github.com/Basis-Theory/go-sdk/v4/tenants/owner"
-	self "github.com/Basis-Theory/go-sdk/v4/tenants/self"
+	context "context"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	connections "github.com/Basis-Theory/go-sdk/v5/tenants/connections"
+	invitations "github.com/Basis-Theory/go-sdk/v5/tenants/invitations"
+	members "github.com/Basis-Theory/go-sdk/v5/tenants/members"
+	merchants "github.com/Basis-Theory/go-sdk/v5/tenants/merchants"
+	owner "github.com/Basis-Theory/go-sdk/v5/tenants/owner"
+	securitycontact "github.com/Basis-Theory/go-sdk/v5/tenants/securitycontact"
+	self "github.com/Basis-Theory/go-sdk/v5/tenants/self"
 	http "net/http"
 	os "os"
 )
 
 type Client struct {
-	Connections *connections.Client
-	Invitations *invitations.Client
-	Members     *members.Client
-	Owner       *owner.Client
-	Self        *self.Client
+	WithRawResponse *RawClient
+	SecurityContact *securitycontact.Client
+	Connections     *connections.Client
+	Invitations     *invitations.Client
+	Members         *members.Client
+	Merchants       *merchants.Client
+	Owner           *owner.Client
+	Self            *self.Client
 
 	baseURL string
 	caller  *internal.Caller
@@ -33,12 +40,15 @@ func NewClient(opts ...option.RequestOption) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Connections: connections.NewClient(opts...),
-		Invitations: invitations.NewClient(opts...),
-		Members:     members.NewClient(opts...),
-		Owner:       owner.NewClient(opts...),
-		Self:        self.NewClient(opts...),
-		baseURL:     options.BaseURL,
+		SecurityContact: securitycontact.NewClient(opts...),
+		Connections:     connections.NewClient(opts...),
+		Invitations:     invitations.NewClient(opts...),
+		Members:         members.NewClient(opts...),
+		Merchants:       merchants.NewClient(opts...),
+		Owner:           owner.NewClient(opts...),
+		Self:            self.NewClient(opts...),
+		WithRawResponse: NewRawClient(options),
+		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
 				Client:      options.HTTPClient,
@@ -47,4 +57,20 @@ func NewClient(opts ...option.RequestOption) *Client {
 		),
 		header: options.ToHeader(),
 	}
+}
+
+func (c *Client) OwnerTransfer(
+	ctx context.Context,
+	request *v5.TransferTenantOwnerRequest,
+	opts ...option.RequestOption,
+) (*v5.TenantMemberResponse, error) {
+	response, err := c.WithRawResponse.OwnerTransfer(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
 }

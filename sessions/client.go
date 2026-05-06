@@ -4,10 +4,10 @@ package sessions
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -41,7 +41,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 func (c *Client) Create(
 	ctx context.Context,
 	opts ...option.IdempotentRequestOption,
-) (*v4.CreateSessionResponse, error) {
+) (*v5.CreateSessionResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		opts...,
@@ -54,7 +54,7 @@ func (c *Client) Create(
 
 func (c *Client) Authorize(
 	ctx context.Context,
-	request *v4.AuthorizeSessionRequest,
+	request *v5.AuthorizeSessionRequest,
 	opts ...option.IdempotentRequestOption,
 ) error {
 	_, err := c.WithRawResponse.Authorize(

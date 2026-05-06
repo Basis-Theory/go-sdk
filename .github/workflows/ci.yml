@@ -10,7 +10,7 @@ jobs:
     name: Build
     strategy:
       matrix:
-        go-version: [ '1.22', '1.23', '1.24', '1.25' ]
+        go-version: [ '1.25', '1.26' ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -30,3 +30,5 @@ jobs:
           BT_API_URL: https://api.flock-dev.com
           BT_MGT_API_KEY: ${{ secrets.BT_SDK_INT_TEST_MGT_API_KEY }}
           BT_PVT_API_KEY: ${{ secrets.BT_SDK_INT_TEST_PVT_API_KEY }}
+          BT_MGT_TEST_API_KEY: ${{ secrets.BT_SDK_INT_TEST_MGT_TEST_API_KEY }}
+          BT_PVT_TEST_API_KEY: ${{ secrets.BT_SDK_INT_TEST_PVT_TEST_API_KEY }}

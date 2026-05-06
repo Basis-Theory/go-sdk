@@ -4,11 +4,11 @@ package certificates
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	merchant "github.com/Basis-Theory/go-sdk/v4/applepay/merchant"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	merchant "github.com/Basis-Theory/go-sdk/v5/applepay/merchant"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -44,7 +44,7 @@ func (c *Client) Get(
 	merchantID string,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.ApplePayMerchantCertificates, error) {
+) (*v5.ApplePayMerchantCertificates, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		merchantID,
@@ -80,7 +80,7 @@ func (c *Client) Create(
 	merchantID string,
 	request *merchant.ApplePayMerchantCertificatesRegisterRequest,
 	opts ...option.RequestOption,
-) (*v4.ApplePayMerchantCertificates, error) {
+) (*v5.ApplePayMerchantCertificates, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		merchantID,

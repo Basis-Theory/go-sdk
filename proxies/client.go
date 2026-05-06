@@ -5,10 +5,10 @@ package proxies
 import (
 	context "context"
 	fmt "fmt"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -41,9 +41,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v4.ProxiesListRequest,
+	request *v5.ProxiesListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v4.Proxy], error) {
+) (*core.Page[*v5.Proxy], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,17 +61,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -101,10 +101,10 @@ func (c *Client) List(
 		next = *request.Page
 	}
 
-	readPageResponse := func(response *v4.ProxyPaginatedList) *internal.PageResponse[*int, *v4.Proxy] {
+	readPageResponse := func(response *v5.ProxyPaginatedList) *internal.PageResponse[*int, *v5.Proxy] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v4.Proxy]{
+		return &internal.PageResponse[*int, *v5.Proxy]{
 			Next:    &next,
 			Results: results,
 		}
@@ -119,9 +119,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v4.CreateProxyRequest,
+	request *v5.CreateProxyRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.Proxy, error) {
+) (*v5.Proxy, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -137,7 +137,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.Proxy, error) {
+) (*v5.Proxy, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -152,9 +152,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v4.UpdateProxyRequest,
+	request *v5.UpdateProxyRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.Proxy, error) {
+) (*v5.Proxy, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -186,7 +186,7 @@ func (c *Client) Delete(
 func (c *Client) Patch(
 	ctx context.Context,
 	id string,
-	request *v4.PatchProxyRequest,
+	request *v5.PatchProxyRequest,
 	opts ...option.IdempotentRequestOption,
 ) error {
 	_, err := c.WithRawResponse.Patch(

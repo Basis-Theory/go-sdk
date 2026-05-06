@@ -4,10 +4,10 @@ package tokenintents
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -42,7 +42,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.TokenIntent, error) {
+) (*v5.TokenIntent, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -72,9 +72,9 @@ func (c *Client) Delete(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v4.CreateTokenIntentRequest,
+	request *v5.CreateTokenIntentRequest,
 	opts ...option.RequestOption,
-) (*v4.CreateTokenIntentResponse, error) {
+) (*v5.CreateTokenIntentResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,

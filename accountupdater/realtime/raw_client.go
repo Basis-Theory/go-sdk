@@ -4,11 +4,11 @@ package realtime
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	accountupdater "github.com/Basis-Theory/go-sdk/v4/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	accountupdater "github.com/Basis-Theory/go-sdk/v5/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) Invoke(
 	ctx context.Context,
 	request *accountupdater.AccountUpdaterRealTimeRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.AccountUpdaterRealTimeResponse], error) {
+) (*core.Response[*v5.AccountUpdaterRealTimeResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -50,27 +50,27 @@ func (r *RawClient) Invoke(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		422: func(apiError *core.APIError) error {
-			return &v4.UnprocessableEntityError{
+			return &v5.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.AccountUpdaterRealTimeResponse
+	var response *v5.AccountUpdaterRealTimeResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -89,7 +89,7 @@ func (r *RawClient) Invoke(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.AccountUpdaterRealTimeResponse]{
+	return &core.Response[*v5.AccountUpdaterRealTimeResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

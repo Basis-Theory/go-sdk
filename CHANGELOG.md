@@ -1,3 +1,50 @@
+# [5.5.0](https://github.com/Basis-Theory/go-sdk/compare/v5.4.0...v5.5.0) (2026-04-08)
+
+
+### Features
+
+* Add Agentic ([#117](https://github.com/Basis-Theory/go-sdk/issues/117)) ([9dc14aa](https://github.com/Basis-Theory/go-sdk/commit/9dc14aa1d40ed9443c51408a8a95465a7390ea69))
+
+# [5.4.0](https://github.com/Basis-Theory/go-sdk/compare/v5.3.0...v5.4.0) (2026-03-31)
+
+
+### Features
+
+* Add metatdata to 3DS authenticate session ([1f25326](https://github.com/Basis-Theory/go-sdk/commit/1f253263172cf35ccdd61dbc78fd472f29f2a1e2))
+
+# [5.3.0](https://github.com/Basis-Theory/go-sdk/compare/v5.2.0...v5.3.0) (2026-02-24)
+
+
+### Features
+
+* Updating API contracts ([#108](https://github.com/Basis-Theory/go-sdk/issues/108)) ([5764fcd](https://github.com/Basis-Theory/go-sdk/commit/5764fcd9c7ce9c64c374b6a05ead316030511681))
+
+# [5.2.0](https://github.com/Basis-Theory/go-sdk/compare/v5.1.0...v5.2.0) (2026-02-04)
+
+
+### Features
+
+* Adding 3DS metadata attributes ([#105](https://github.com/Basis-Theory/go-sdk/issues/105)) ([98ad4ac](https://github.com/Basis-Theory/go-sdk/commit/98ad4ac3fa62539e8ac8016153c4faea1e8810eb))
+
+# [5.1.0](https://github.com/Basis-Theory/go-sdk/compare/v5.0.0...v5.1.0) (2026-01-27)
+
+
+### Features
+
+* add disable_detokenization to proxy configuration  ([85404e7](https://github.com/Basis-Theory/go-sdk/commit/85404e7411bcc7ecdd87e3901c41c96286959a70))
+
+# [5.0.0](https://github.com/Basis-Theory/go-sdk/compare/v4.2.0...v5.0.0) (2026-01-22)
+
+
+### Features
+
+* Updating Reactor Request objects ([08c420c](https://github.com/Basis-Theory/go-sdk/commit/08c420ce82aebb23554bbc115c0fb5990e0a09fa))
+
+
+### BREAKING CHANGES
+
+* This version removes the existing Reactors Request objects for Reactors and Reactors Async, allowing the use of dynamic objects
+
 # [4.2.0](https://github.com/Basis-Theory/go-sdk/compare/v4.1.0...v4.2.0) (2025-12-09)
 
 

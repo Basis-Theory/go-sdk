@@ -4,12 +4,12 @@ package client
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	googlepay "github.com/Basis-Theory/go-sdk/v4/googlepay"
-	certificates "github.com/Basis-Theory/go-sdk/v4/googlepay/merchant/certificates"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	googlepay "github.com/Basis-Theory/go-sdk/v5/googlepay"
+	certificates "github.com/Basis-Theory/go-sdk/v5/googlepay/merchant/certificates"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -46,7 +46,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.GooglePayMerchant, error) {
+) (*v5.GooglePayMerchant, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -78,7 +78,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *googlepay.GooglePayMerchantRegisterRequest,
 	opts ...option.RequestOption,
-) (*v4.GooglePayMerchant, error) {
+) (*v5.GooglePayMerchant, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,

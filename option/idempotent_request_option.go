@@ -3,7 +3,7 @@
 package option
 
 import (
-	core "github.com/Basis-Theory/go-sdk/v4/core"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
 )
 
 // IdempotentRequestOption adapts the behavior of an individual request.

@@ -4,11 +4,11 @@ package invitations
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	tenants "github.com/Basis-Theory/go-sdk/v4/tenants"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
 	http "net/http"
 )
 
@@ -35,7 +35,7 @@ func (r *RawClient) Create(
 	ctx context.Context,
 	request *tenants.CreateTenantInvitationRequest,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v4.TenantInvitationResponse], error) {
+) (*core.Response[*v5.TenantInvitationResponse], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -50,22 +50,22 @@ func (r *RawClient) Create(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.TenantInvitationResponse
+	var response *v5.TenantInvitationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -84,7 +84,7 @@ func (r *RawClient) Create(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.TenantInvitationResponse]{
+	return &core.Response[*v5.TenantInvitationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -95,7 +95,7 @@ func (r *RawClient) Resend(
 	ctx context.Context,
 	invitationID string,
 	opts ...option.IdempotentRequestOption,
-) (*core.Response[*v4.TenantInvitationResponse], error) {
+) (*core.Response[*v5.TenantInvitationResponse], error) {
 	options := core.NewIdempotentRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -112,22 +112,22 @@ func (r *RawClient) Resend(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v4.BadRequestError{
+			return &v5.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.TenantInvitationResponse
+	var response *v5.TenantInvitationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -145,7 +145,7 @@ func (r *RawClient) Resend(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.TenantInvitationResponse]{
+	return &core.Response[*v5.TenantInvitationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -156,7 +156,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	invitationID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v4.TenantInvitationResponse], error) {
+) (*core.Response[*v5.TenantInvitationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -173,22 +173,22 @@ func (r *RawClient) Get(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v4.TenantInvitationResponse
+	var response *v5.TenantInvitationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -206,7 +206,7 @@ func (r *RawClient) Get(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v4.TenantInvitationResponse]{
+	return &core.Response[*v5.TenantInvitationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -234,17 +234,17 @@ func (r *RawClient) Delete(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},

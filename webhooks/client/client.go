@@ -4,11 +4,11 @@ package client
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	events "github.com/Basis-Theory/go-sdk/v4/webhooks/events"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	events "github.com/Basis-Theory/go-sdk/v5/webhooks/events"
 	http "net/http"
 	os "os"
 )
@@ -61,7 +61,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.Webhook, error) {
+) (*v5.Webhook, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -77,9 +77,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v4.UpdateWebhookRequest,
+	request *v5.UpdateWebhookRequest,
 	opts ...option.RequestOption,
-) (*v4.Webhook, error) {
+) (*v5.Webhook, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -113,7 +113,7 @@ func (c *Client) Delete(
 func (c *Client) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v4.WebhookList, error) {
+) (*v5.WebhookList, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		opts...,
@@ -127,9 +127,9 @@ func (c *Client) List(
 // Create a new webhook
 func (c *Client) Create(
 	ctx context.Context,
-	request *v4.CreateWebhookRequest,
+	request *v5.CreateWebhookRequest,
 	opts ...option.RequestOption,
-) (*v4.Webhook, error) {
+) (*v5.Webhook, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,

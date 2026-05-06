@@ -4,10 +4,10 @@ package networktokens
 
 import (
 	context "context"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
 	os "os"
 )
@@ -40,9 +40,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v4.CreateNetworkTokenRequest,
+	request *v5.CreateNetworkTokenRequest,
 	opts ...option.RequestOption,
-) (*v4.NetworkToken, error) {
+) (*v5.NetworkToken, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -58,7 +58,7 @@ func (c *Client) Cryptogram(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.NetworkTokenCryptogram, error) {
+) (*v5.NetworkTokenCryptogram, error) {
 	response, err := c.WithRawResponse.Cryptogram(
 		ctx,
 		id,
@@ -74,7 +74,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.NetworkToken, error) {
+) (*v5.NetworkToken, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -106,7 +106,7 @@ func (c *Client) Suspend(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.NetworkToken, error) {
+) (*v5.NetworkToken, error) {
 	response, err := c.WithRawResponse.Suspend(
 		ctx,
 		id,
@@ -122,7 +122,7 @@ func (c *Client) Resume(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.NetworkToken, error) {
+) (*v5.NetworkToken, error) {
 	response, err := c.WithRawResponse.Resume(
 		ctx,
 		id,

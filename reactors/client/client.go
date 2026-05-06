@@ -5,11 +5,11 @@ package client
 import (
 	context "context"
 	fmt "fmt"
-	v4 "github.com/Basis-Theory/go-sdk/v4"
-	core "github.com/Basis-Theory/go-sdk/v4/core"
-	internal "github.com/Basis-Theory/go-sdk/v4/internal"
-	option "github.com/Basis-Theory/go-sdk/v4/option"
-	results "github.com/Basis-Theory/go-sdk/v4/reactors/results"
+	v5 "github.com/Basis-Theory/go-sdk/v5"
+	core "github.com/Basis-Theory/go-sdk/v5/core"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	option "github.com/Basis-Theory/go-sdk/v5/option"
+	results "github.com/Basis-Theory/go-sdk/v5/reactors/results"
 	http "net/http"
 	os "os"
 )
@@ -44,9 +44,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v4.ReactorsListRequest,
+	request *v5.ReactorsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v4.Reactor], error) {
+) (*core.Page[*v5.Reactor], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -64,17 +64,17 @@ func (c *Client) List(
 	)
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
-			return &v4.UnauthorizedError{
+			return &v5.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		403: func(apiError *core.APIError) error {
-			return &v4.ForbiddenError{
+			return &v5.ForbiddenError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v4.NotFoundError{
+			return &v5.NotFoundError{
 				APIError: apiError,
 			}
 		},
@@ -104,10 +104,10 @@ func (c *Client) List(
 		next = *request.Page
 	}
 
-	readPageResponse := func(response *v4.ReactorPaginatedList) *internal.PageResponse[*int, *v4.Reactor] {
+	readPageResponse := func(response *v5.ReactorPaginatedList) *internal.PageResponse[*int, *v5.Reactor] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v4.Reactor]{
+		return &internal.PageResponse[*int, *v5.Reactor]{
 			Next:    &next,
 			Results: results,
 		}
@@ -122,9 +122,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v4.CreateReactorRequest,
+	request *v5.CreateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.Reactor, error) {
+) (*v5.Reactor, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -140,7 +140,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v4.Reactor, error) {
+) (*v5.Reactor, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -155,9 +155,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v4.UpdateReactorRequest,
+	request *v5.UpdateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v4.Reactor, error) {
+) (*v5.Reactor, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -189,7 +189,7 @@ func (c *Client) Delete(
 func (c *Client) Patch(
 	ctx context.Context,
 	id string,
-	request *v4.PatchReactorRequest,
+	request *v5.PatchReactorRequest,
 	opts ...option.IdempotentRequestOption,
 ) error {
 	_, err := c.WithRawResponse.Patch(
@@ -207,9 +207,9 @@ func (c *Client) Patch(
 func (c *Client) React(
 	ctx context.Context,
 	id string,
-	request *v4.ReactRequest,
+	request any,
 	opts ...option.RequestOption,
-) (*v4.ReactResponse, error) {
+) (*v5.ReactResponse, error) {
 	response, err := c.WithRawResponse.React(
 		ctx,
 		id,
@@ -225,9 +225,9 @@ func (c *Client) React(
 func (c *Client) ReactAsync(
 	ctx context.Context,
 	id string,
-	request *v4.ReactRequestAsync,
+	request any,
 	opts ...option.RequestOption,
-) (*v4.AsyncReactResponse, error) {
+) (*v5.AsyncReactResponse, error) {
 	response, err := c.WithRawResponse.ReactAsync(
 		ctx,
 		id,

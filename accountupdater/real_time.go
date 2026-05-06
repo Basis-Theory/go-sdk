@@ -11,4 +11,6 @@ type AccountUpdaterRealTimeRequest struct {
 	ExpirationMonth *int `json:"expiration_month,omitempty" url:"-"`
 	// Whether deduplication should be enabled when creating the new token. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
 	DeduplicateToken *bool `json:"deduplicate_token,omitempty" url:"-"`
+	// Tenant merchant identifier
+	MerchantID *string `json:"merchant_id,omitempty" url:"-"`
 }
