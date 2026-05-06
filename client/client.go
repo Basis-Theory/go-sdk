@@ -4,6 +4,7 @@ package client
 
 import (
 	accountupdaterclient "github.com/Basis-Theory/go-sdk/v5/accountupdater/client"
+	agenticclient "github.com/Basis-Theory/go-sdk/v5/agentic/client"
 	client "github.com/Basis-Theory/go-sdk/v5/applepay/client"
 	applicationkeys "github.com/Basis-Theory/go-sdk/v5/applicationkeys"
 	applications "github.com/Basis-Theory/go-sdk/v5/applications"
@@ -48,10 +49,11 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
+	Tenants              *tenantsclient.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
 	AccountUpdater       *accountupdaterclient.Client
-	Tenants              *tenantsclient.Client
+	Agentic              *agenticclient.Client
 	Threeds              *threedsclient.Client
 
 	baseURL string
@@ -81,10 +83,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Reactors:             reactorsclient.NewClient(opts...),
 		Roles:                roles.NewClient(opts...),
 		Sessions:             sessions.NewClient(opts...),
+		Tenants:              tenantsclient.NewClient(opts...),
 		TokenIntents:         tokenintents.NewClient(opts...),
 		Webhooks:             webhooksclient.NewClient(opts...),
 		AccountUpdater:       accountupdaterclient.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
+		Agentic:              agenticclient.NewClient(opts...),
 		Threeds:              threedsclient.NewClient(opts...),
 		baseURL:              options.BaseURL,
 		caller: internal.NewCaller(

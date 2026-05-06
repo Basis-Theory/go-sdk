@@ -1,3 +1,10 @@
+# [5.5.0](https://github.com/Basis-Theory/go-sdk/compare/v5.4.0...v5.5.0) (2026-04-08)
+
+
+### Features
+
+* Add Agentic ([#117](https://github.com/Basis-Theory/go-sdk/issues/117)) ([9dc14aa](https://github.com/Basis-Theory/go-sdk/commit/9dc14aa1d40ed9443c51408a8a95465a7390ea69))
+
 # [5.4.0](https://github.com/Basis-Theory/go-sdk/compare/v5.3.0...v5.4.0) (2026-03-31)
 
 
