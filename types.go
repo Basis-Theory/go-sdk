@@ -629,9 +629,8 @@ type AgenticCard struct {
 	Type    *string      `json:"type,omitempty" url:"type,omitempty"`
 	Display *CardDisplay `json:"display,omitempty" url:"display,omitempty"`
 
-	ExtraProperties map[string]interface{} `json:"-" url:"-"`
-
-	rawJSON json.RawMessage
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
 }
 
 func (a *AgenticCard) GetBrand() *AgenticCardBrand {
@@ -712,37 +711,23 @@ func (a *AgenticCard) GetDisplay() *CardDisplay {
 }
 
 func (a *AgenticCard) GetExtraProperties() map[string]interface{} {
-	return a.ExtraProperties
+	return a.extraProperties
 }
 
 func (a *AgenticCard) UnmarshalJSON(data []byte) error {
-	type embed AgenticCard
-	var unmarshaler = struct {
-		embed
-	}{
-		embed: embed(*a),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+	type unmarshaler AgenticCard
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*a = AgenticCard(unmarshaler.embed)
+	*a = AgenticCard(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
 	}
-	a.ExtraProperties = extraProperties
+	a.extraProperties = extraProperties
 	a.rawJSON = json.RawMessage(data)
 	return nil
-}
-
-func (a *AgenticCard) MarshalJSON() ([]byte, error) {
-	type embed AgenticCard
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*a),
-	}
-	return internal.MarshalJSONWithExtraProperties(marshaler, a.ExtraProperties)
 }
 
 func (a *AgenticCard) String() string {
@@ -4290,12 +4275,16 @@ func (e *EncryptionJwk) String() string {
 type Enrollment struct {
 	ID *string `json:"id,omitempty" url:"id,omitempty"`
 	// Basis Theory card token ID used for enrollment
-	TokenID   *string             `json:"token_id,omitempty" url:"token_id,omitempty"`
-	Provider  *EnrollmentProvider `json:"provider,omitempty" url:"provider,omitempty"`
-	Status    *EnrollmentStatus   `json:"status,omitempty" url:"status,omitempty"`
-	Card      *AgenticCard        `json:"card,omitempty" url:"card,omitempty"`
-	AgentIDs  []string            `json:"agent_ids,omitempty" url:"agent_ids,omitempty"`
-	CreatedAt *time.Time          `json:"created_at,omitempty" url:"created_at,omitempty"`
+	TokenID  *string             `json:"token_id,omitempty" url:"token_id,omitempty"`
+	Provider *EnrollmentProvider `json:"provider,omitempty" url:"provider,omitempty"`
+	Status   *EnrollmentStatus   `json:"status,omitempty" url:"status,omitempty"`
+	Card     *AgenticCard        `json:"card,omitempty" url:"card,omitempty"`
+	AgentIDs []string            `json:"agent_ids,omitempty" url:"agent_ids,omitempty"`
+	// Display label shown to the cardholder during Mastercard managed-authentication challenges.
+	WalletName *string `json:"wallet_name,omitempty" url:"wallet_name,omitempty"`
+	// Enrollment type — `agentic` (default) for agent-driven payments, `autofill` for direct credential autofill.
+	Type      *EnrollmentType `json:"type,omitempty" url:"type,omitempty"`
+	CreatedAt *time.Time      `json:"created_at,omitempty" url:"created_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -4341,6 +4330,20 @@ func (e *Enrollment) GetAgentIDs() []string {
 		return nil
 	}
 	return e.AgentIDs
+}
+
+func (e *Enrollment) GetWalletName() *string {
+	if e == nil {
+		return nil
+	}
+	return e.WalletName
+}
+
+func (e *Enrollment) GetType() *EnrollmentType {
+	if e == nil {
+		return nil
+	}
+	return e.Type
 }
 
 func (e *Enrollment) GetCreatedAt() *time.Time {
@@ -4564,6 +4567,29 @@ func NewEnrollmentStatusFromString(s string) (EnrollmentStatus, error) {
 }
 
 func (e EnrollmentStatus) Ptr() *EnrollmentStatus {
+	return &e
+}
+
+// Enrollment type — `agentic` (default) for agent-driven payments, `autofill` for direct credential autofill.
+type EnrollmentType string
+
+const (
+	EnrollmentTypeAgentic  EnrollmentType = "agentic"
+	EnrollmentTypeAutofill EnrollmentType = "autofill"
+)
+
+func NewEnrollmentTypeFromString(s string) (EnrollmentType, error) {
+	switch s {
+	case "agentic":
+		return EnrollmentTypeAgentic, nil
+	case "autofill":
+		return EnrollmentTypeAutofill, nil
+	}
+	var t EnrollmentType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EnrollmentType) Ptr() *EnrollmentType {
 	return &e
 }
 
@@ -5624,11 +5650,15 @@ type Instruction struct {
 	ID           *string            `json:"id,omitempty" url:"id,omitempty"`
 	EnrollmentID *string            `json:"enrollment_id,omitempty" url:"enrollment_id,omitempty"`
 	Status       *InstructionStatus `json:"status,omitempty" url:"status,omitempty"`
-	Amount       *Amount            `json:"amount,omitempty" url:"amount,omitempty"`
-	Description  *string            `json:"description,omitempty" url:"description,omitempty"`
-	ExpiresAt    *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	Recurring    *Recurring         `json:"recurring,omitempty" url:"recurring,omitempty"`
-	CreatedAt    *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+	// Inherited from the parent enrollment. `agentic` instructions require cardholder
+	// verification before credentials can be retrieved; `autofill` instructions are
+	// auto-approved on creation and credentials can be retrieved immediately.
+	Type        *InstructionType `json:"type,omitempty" url:"type,omitempty"`
+	Amount      *Amount          `json:"amount,omitempty" url:"amount,omitempty"`
+	Description *string          `json:"description,omitempty" url:"description,omitempty"`
+	ExpiresAt   *time.Time       `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Recurring   *Recurring       `json:"recurring,omitempty" url:"recurring,omitempty"`
+	CreatedAt   *time.Time       `json:"created_at,omitempty" url:"created_at,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -5653,6 +5683,13 @@ func (i *Instruction) GetStatus() *InstructionStatus {
 		return nil
 	}
 	return i.Status
+}
+
+func (i *Instruction) GetType() *InstructionType {
+	if i == nil {
+		return nil
+	}
+	return i.Type
 }
 
 func (i *Instruction) GetAmount() *Amount {
@@ -5883,6 +5920,31 @@ func NewInstructionStatusFromString(s string) (InstructionStatus, error) {
 }
 
 func (i InstructionStatus) Ptr() *InstructionStatus {
+	return &i
+}
+
+// Inherited from the parent enrollment. `agentic` instructions require cardholder
+// verification before credentials can be retrieved; `autofill` instructions are
+// auto-approved on creation and credentials can be retrieved immediately.
+type InstructionType string
+
+const (
+	InstructionTypeAgentic  InstructionType = "agentic"
+	InstructionTypeAutofill InstructionType = "autofill"
+)
+
+func NewInstructionTypeFromString(s string) (InstructionType, error) {
+	switch s {
+	case "agentic":
+		return InstructionTypeAgentic, nil
+	case "autofill":
+		return InstructionTypeAutofill, nil
+	}
+	var t InstructionType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i InstructionType) Ptr() *InstructionType {
 	return &i
 }
 
@@ -11589,8 +11651,10 @@ func (v *ValidationProblemDetails) String() string {
 }
 
 type VerificationResponse struct {
-	Status  *VerificationResponseStatus        `json:"status,omitempty" url:"status,omitempty"`
-	Methods []*VerificationResponseMethodsItem `json:"methods,omitempty" url:"methods,omitempty"`
+	Status *VerificationResponseStatus `json:"status,omitempty" url:"status,omitempty"`
+	// Present when status is redirect_required (Mastercard Managed Authentication). The cardholder must be redirected to `redirect.uri` to complete authentication; once they return via the hosted callback the SDK can call `/verify/complete` (enrollment) or `/verify/passkey` (instruction) to finalise.
+	Redirect *VerificationResponseRedirect      `json:"redirect,omitempty" url:"redirect,omitempty"`
+	Methods  []*VerificationResponseMethodsItem `json:"methods,omitempty" url:"methods,omitempty"`
 	// Visa passkey/FIDO context for device binding or authentication
 	PasskeyContext *VerificationResponsePasskeyContext `json:"passkey_context,omitempty" url:"passkey_context,omitempty"`
 	// Card network brand (present in Mastercard responses)
@@ -11607,6 +11671,13 @@ func (v *VerificationResponse) GetStatus() *VerificationResponseStatus {
 		return nil
 	}
 	return v.Status
+}
+
+func (v *VerificationResponse) GetRedirect() *VerificationResponseRedirect {
+	if v == nil {
+		return nil
+	}
+	return v.Redirect
 }
 
 func (v *VerificationResponse) GetMethods() []*VerificationResponseMethodsItem {
@@ -12004,15 +12075,121 @@ func (v VerificationResponsePasskeyContextPlatformType) Ptr() *VerificationRespo
 	return &v
 }
 
+// Present when status is redirect_required (Mastercard Managed Authentication). The cardholder must be redirected to `redirect.uri` to complete authentication; once they return via the hosted callback the SDK can call `/verify/complete` (enrollment) or `/verify/passkey` (instruction) to finalise.
+type VerificationResponseRedirect struct {
+	// URL the cardholder must be redirected to.
+	URI     *string                              `json:"uri,omitempty" url:"uri,omitempty"`
+	URIType *VerificationResponseRedirectURIType `json:"uri_type,omitempty" url:"uri_type,omitempty"`
+	// When the authentication session expires (ISO 8601).
+	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerificationResponseRedirect) GetURI() *string {
+	if v == nil {
+		return nil
+	}
+	return v.URI
+}
+
+func (v *VerificationResponseRedirect) GetURIType() *VerificationResponseRedirectURIType {
+	if v == nil {
+		return nil
+	}
+	return v.URIType
+}
+
+func (v *VerificationResponseRedirect) GetExpiresAt() *time.Time {
+	if v == nil {
+		return nil
+	}
+	return v.ExpiresAt
+}
+
+func (v *VerificationResponseRedirect) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationResponseRedirect) UnmarshalJSON(data []byte) error {
+	type embed VerificationResponseRedirect
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*v),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*v = VerificationResponseRedirect(unmarshaler.embed)
+	v.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationResponseRedirect) MarshalJSON() ([]byte, error) {
+	type embed VerificationResponseRedirect
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*v),
+		ExpiresAt: internal.NewOptionalDateTime(v.ExpiresAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (v *VerificationResponseRedirect) String() string {
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationResponseRedirectURIType string
+
+const (
+	VerificationResponseRedirectURITypeWebURI VerificationResponseRedirectURIType = "WEB_URI"
+	VerificationResponseRedirectURITypeAppURI VerificationResponseRedirectURIType = "APP_URI"
+)
+
+func NewVerificationResponseRedirectURITypeFromString(s string) (VerificationResponseRedirectURIType, error) {
+	switch s {
+	case "WEB_URI":
+		return VerificationResponseRedirectURITypeWebURI, nil
+	case "APP_URI":
+		return VerificationResponseRedirectURITypeAppURI, nil
+	}
+	var t VerificationResponseRedirectURIType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationResponseRedirectURIType) Ptr() *VerificationResponseRedirectURIType {
+	return &v
+}
+
 type VerificationResponseStatus string
 
 const (
-	VerificationResponseStatusApproved        VerificationResponseStatus = "approved"
-	VerificationResponseStatusChallenge       VerificationResponseStatus = "challenge"
-	VerificationResponseStatusOtpSent         VerificationResponseStatus = "otp_sent"
-	VerificationResponseStatusDeviceBound     VerificationResponseStatus = "device_bound"
-	VerificationResponseStatusPasskeyRequired VerificationResponseStatus = "passkey_required"
-	VerificationResponseStatusVerified        VerificationResponseStatus = "verified"
+	VerificationResponseStatusApproved         VerificationResponseStatus = "approved"
+	VerificationResponseStatusChallenge        VerificationResponseStatus = "challenge"
+	VerificationResponseStatusOtpSent          VerificationResponseStatus = "otp_sent"
+	VerificationResponseStatusDeviceBound      VerificationResponseStatus = "device_bound"
+	VerificationResponseStatusPasskeyRequired  VerificationResponseStatus = "passkey_required"
+	VerificationResponseStatusRedirectRequired VerificationResponseStatus = "redirect_required"
+	VerificationResponseStatusVerified         VerificationResponseStatus = "verified"
 )
 
 func NewVerificationResponseStatusFromString(s string) (VerificationResponseStatus, error) {
@@ -12027,6 +12204,8 @@ func NewVerificationResponseStatusFromString(s string) (VerificationResponseStat
 		return VerificationResponseStatusDeviceBound, nil
 	case "passkey_required":
 		return VerificationResponseStatusPasskeyRequired, nil
+	case "redirect_required":
+		return VerificationResponseStatusRedirectRequired, nil
 	case "verified":
 		return VerificationResponseStatusVerified, nil
 	}

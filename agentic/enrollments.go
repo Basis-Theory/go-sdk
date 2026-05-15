@@ -3,6 +3,7 @@
 package agentic
 
 import (
+	fmt "fmt"
 	v5 "github.com/Basis-Theory/go-sdk/v5"
 )
 
@@ -13,10 +14,41 @@ type CreateEnrollmentRequest struct {
 	AgentID *string `json:"agent_id,omitempty" url:"-"`
 	// Multiple agent IDs (mutually exclusive with agent_id)
 	AgentIDs []string `json:"agent_ids,omitempty" url:"-"`
+	// Display label shown to the cardholder during Mastercard managed-authentication challenges. Defaults to "Agent Wallet" when not provided.
+	WalletName *string `json:"wallet_name,omitempty" url:"-"`
+	// Enrollment type. `agentic` (default) enrolls the card for agent-driven payments and requires verification.
+	// `autofill` enrolls the card for direct autofill credential retrieval, skips verification, and is currently
+	// available to test tenants only.
+	Type *CreateEnrollmentRequestType `json:"type,omitempty" url:"-"`
 }
 
 type EnrollmentsListRequest struct {
 	Limit *int `json:"-" url:"limit,omitempty"`
 	// Pagination cursor from a previous response
 	Cursor *string `json:"-" url:"cursor,omitempty"`
+}
+
+// Enrollment type. `agentic` (default) enrolls the card for agent-driven payments and requires verification.
+// `autofill` enrolls the card for direct autofill credential retrieval, skips verification, and is currently
+// available to test tenants only.
+type CreateEnrollmentRequestType string
+
+const (
+	CreateEnrollmentRequestTypeAgentic  CreateEnrollmentRequestType = "agentic"
+	CreateEnrollmentRequestTypeAutofill CreateEnrollmentRequestType = "autofill"
+)
+
+func NewCreateEnrollmentRequestTypeFromString(s string) (CreateEnrollmentRequestType, error) {
+	switch s {
+	case "agentic":
+		return CreateEnrollmentRequestTypeAgentic, nil
+	case "autofill":
+		return CreateEnrollmentRequestTypeAutofill, nil
+	}
+	var t CreateEnrollmentRequestType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CreateEnrollmentRequestType) Ptr() *CreateEnrollmentRequestType {
+	return &c
 }
