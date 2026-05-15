@@ -1,3 +1,10 @@
+# [5.8.0](https://github.com/Basis-Theory/go-sdk/compare/v5.7.0...v5.8.0) (2026-05-15)
+
+
+### Features
+
+* **SDK:** remove additionalProperties on AgenticCard ([1f35032](https://github.com/Basis-Theory/go-sdk/commit/1f35032baa887e7f2b1497ad3615a2ce1e580b88))
+
 # [5.7.0](https://github.com/Basis-Theory/go-sdk/compare/v5.6.0...v5.7.0) (2026-05-15)
 
 
