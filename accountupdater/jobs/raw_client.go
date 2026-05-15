@@ -154,6 +154,7 @@ func (r *RawClient) List(
 
 func (r *RawClient) Create(
 	ctx context.Context,
+	request *accountupdater.CreateAccountUpdaterJobRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[*v5.AccountUpdaterJob], error) {
 	options := core.NewRequestOptions(opts...)
@@ -167,6 +168,7 @@ func (r *RawClient) Create(
 		r.header.Clone(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		401: func(apiError *core.APIError) error {
 			return &v5.UnauthorizedError{
@@ -195,6 +197,7 @@ func (r *RawClient) Create(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
+			Request:         request,
 			Response:        &response,
 			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
