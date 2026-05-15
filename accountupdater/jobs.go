@@ -2,9 +2,48 @@
 
 package accountupdater
 
+import (
+	fmt "fmt"
+)
+
+type CreateAccountUpdaterJobRequest struct {
+	// Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
+	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"-"`
+	// Tenant merchant identifier
+	MerchantID *string `json:"merchant_id,omitempty" url:"-"`
+	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
+	ResultVersion *CreateAccountUpdaterJobRequestResultVersion `json:"result_version,omitempty" url:"-"`
+}
+
 type JobsListRequest struct {
 	// The maximum number of jobs to return
 	Size *int `json:"-" url:"size,omitempty"`
 	// Cursor for pagination
 	Start *string `json:"-" url:"start,omitempty"`
+}
+
+// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
+type CreateAccountUpdaterJobRequestResultVersion string
+
+const (
+	CreateAccountUpdaterJobRequestResultVersionOne  CreateAccountUpdaterJobRequestResultVersion = "1"
+	CreateAccountUpdaterJobRequestResultVersionOne1 CreateAccountUpdaterJobRequestResultVersion = "1.1"
+	CreateAccountUpdaterJobRequestResultVersionOne2 CreateAccountUpdaterJobRequestResultVersion = "1.2"
+)
+
+func NewCreateAccountUpdaterJobRequestResultVersionFromString(s string) (CreateAccountUpdaterJobRequestResultVersion, error) {
+	switch s {
+	case "1":
+		return CreateAccountUpdaterJobRequestResultVersionOne, nil
+	case "1.1":
+		return CreateAccountUpdaterJobRequestResultVersionOne1, nil
+	case "1.2":
+		return CreateAccountUpdaterJobRequestResultVersionOne2, nil
+	}
+	var t CreateAccountUpdaterJobRequestResultVersion
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CreateAccountUpdaterJobRequestResultVersion) Ptr() *CreateAccountUpdaterJobRequestResultVersion {
+	return &c
 }
