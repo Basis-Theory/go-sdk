@@ -76,10 +76,12 @@ func (c *Client) List(
 // Returns the created account updater batch job
 func (c *Client) Create(
 	ctx context.Context,
+	request *accountupdater.CreateAccountUpdaterJobRequest,
 	opts ...option.RequestOption,
 ) (*v5.AccountUpdaterJob, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
+		request,
 		opts...,
 	)
 	if err != nil {
