@@ -132,6 +132,7 @@ type ApplePayToken struct {
 	Data                         interface{}     `json:"data,omitempty" url:"data,omitempty"`
 	Authentication               *Authentication `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Fingerprint                  *string         `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	IngestSource                 *string         `json:"ingest_source,omitempty" url:"ingest_source,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -247,6 +248,13 @@ func (a *ApplePayToken) GetFingerprint() *string {
 		return nil
 	}
 	return a.Fingerprint
+}
+
+func (a *ApplePayToken) GetIngestSource() *string {
+	if a == nil {
+		return nil
+	}
+	return a.IngestSource
 }
 
 func (a *ApplePayToken) GetExtraProperties() map[string]interface{} {

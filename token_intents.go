@@ -10,8 +10,9 @@ import (
 )
 
 type CreateTokenIntentRequest struct {
-	Type string      `json:"type" url:"-"`
-	Data interface{} `json:"data,omitempty" url:"-"`
+	Type      string      `json:"type" url:"-"`
+	Data      interface{} `json:"data,omitempty" url:"-"`
+	Encrypted *string     `json:"encrypted,omitempty" url:"-"`
 }
 
 type TokenIntent struct {

@@ -183,6 +183,11 @@ func (r *RawClient) Create(
 				APIError: apiError,
 			}
 		},
+		422: func(apiError *core.APIError) error {
+			return &v5.UnprocessableEntityError{
+				APIError: apiError,
+			}
+		},
 	}
 	var response *v5.CreateTokenIntentResponse
 	raw, err := r.caller.Call(

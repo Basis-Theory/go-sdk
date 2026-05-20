@@ -10,11 +10,13 @@ import (
 )
 
 type CreateNetworkTokenRequest struct {
-	Data           *Card           `json:"data,omitempty" url:"-"`
-	TokenID        *string         `json:"token_id,omitempty" url:"-"`
-	TokenIntentID  *string         `json:"token_intent_id,omitempty" url:"-"`
-	CardholderInfo *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
-	MerchantID     *string         `json:"merchant_id,omitempty" url:"-"`
+	Data            *Card           `json:"data,omitempty" url:"-"`
+	TokenID         *string         `json:"token_id,omitempty" url:"-"`
+	TokenIntentID   *string         `json:"token_intent_id,omitempty" url:"-"`
+	ExpirationMonth *int            `json:"expiration_month,omitempty" url:"-"`
+	ExpirationYear  *int            `json:"expiration_year,omitempty" url:"-"`
+	CardholderInfo  *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
+	MerchantID      *string         `json:"merchant_id,omitempty" url:"-"`
 }
 
 type Address struct {
