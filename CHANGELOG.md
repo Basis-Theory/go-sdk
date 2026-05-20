@@ -1,3 +1,10 @@
+# [5.9.0](https://github.com/Basis-Theory/go-sdk/compare/v5.8.0...v5.9.0) (2026-05-20)
+
+
+### Features
+
+* update Vault API spec ([e33b149](https://github.com/Basis-Theory/go-sdk/commit/e33b1490208427aa691c3a79f773af08e1b864fe))
+
 # [5.8.0](https://github.com/Basis-Theory/go-sdk/compare/v5.7.0...v5.8.0) (2026-05-15)
 
 
