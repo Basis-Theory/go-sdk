@@ -153,6 +153,8 @@ type GooglePayToken struct {
 	Authentication *TokenAuthentication         `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Details        *TokenServiceProviderDetails `json:"details,omitempty" url:"details,omitempty"`
 	Fingerprint    *string                      `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
+	Type           *string                      `json:"type,omitempty" url:"type,omitempty"`
+	IngestSource   *string                      `json:"ingest_source,omitempty" url:"ingest_source,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -247,6 +249,20 @@ func (g *GooglePayToken) GetFingerprint() *string {
 		return nil
 	}
 	return g.Fingerprint
+}
+
+func (g *GooglePayToken) GetType() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Type
+}
+
+func (g *GooglePayToken) GetIngestSource() *string {
+	if g == nil {
+		return nil
+	}
+	return g.IngestSource
 }
 
 func (g *GooglePayToken) GetExtraProperties() map[string]interface{} {
