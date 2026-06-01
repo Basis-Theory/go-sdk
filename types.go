@@ -2375,6 +2375,138 @@ func (b *BinDetailsProduct) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
+type CardArt struct {
+	BackgroundColor *string       `json:"background_color,omitempty" url:"background_color,omitempty"`
+	Logo            *CardArtImage `json:"logo,omitempty" url:"logo,omitempty"`
+	CardImage       *CardArtImage `json:"card_image,omitempty" url:"card_image,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardArt) GetBackgroundColor() *string {
+	if c == nil {
+		return nil
+	}
+	return c.BackgroundColor
+}
+
+func (c *CardArt) GetLogo() *CardArtImage {
+	if c == nil {
+		return nil
+	}
+	return c.Logo
+}
+
+func (c *CardArt) GetCardImage() *CardArtImage {
+	if c == nil {
+		return nil
+	}
+	return c.CardImage
+}
+
+func (c *CardArt) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardArt) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardArt
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardArt(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardArt) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CardArtImage struct {
+	URL         *string `json:"url,omitempty" url:"url,omitempty"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
+	Height      *int    `json:"height,omitempty" url:"height,omitempty"`
+	Width       *int    `json:"width,omitempty" url:"width,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardArtImage) GetURL() *string {
+	if c == nil {
+		return nil
+	}
+	return c.URL
+}
+
+func (c *CardArtImage) GetDescription() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Description
+}
+
+func (c *CardArtImage) GetHeight() *int {
+	if c == nil {
+		return nil
+	}
+	return c.Height
+}
+
+func (c *CardArtImage) GetWidth() *int {
+	if c == nil {
+		return nil
+	}
+	return c.Width
+}
+
+func (c *CardArtImage) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardArtImage) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardArtImage
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardArtImage(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardArtImage) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type CardDetails struct {
 	Bin             *string                  `json:"bin,omitempty" url:"bin,omitempty"`
 	Last4           *string                  `json:"last4,omitempty" url:"last4,omitempty"`
@@ -2386,6 +2518,7 @@ type CardDetails struct {
 	Issuer          *CardIssuer              `json:"issuer,omitempty" url:"issuer,omitempty"`
 	IssuerCountry   *CardIssuerCountry       `json:"issuer_country,omitempty" url:"issuer_country,omitempty"`
 	Segment         *string                  `json:"segment,omitempty" url:"segment,omitempty"`
+	Product         *CardProduct             `json:"product,omitempty" url:"product,omitempty"`
 	Additional      []*AdditionalCardDetails `json:"additional,omitempty" url:"additional,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -2460,6 +2593,13 @@ func (c *CardDetails) GetSegment() *string {
 		return nil
 	}
 	return c.Segment
+}
+
+func (c *CardDetails) GetProduct() *CardProduct {
+	if c == nil {
+		return nil
+	}
+	return c.Product
 }
 
 func (c *CardDetails) GetAdditional() []*AdditionalCardDetails {
@@ -2800,6 +2940,52 @@ func (c *CardNetworkStatus) UnmarshalJSON(data []byte) error {
 }
 
 func (c *CardNetworkStatus) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CardProduct struct {
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardProduct) GetCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Code
+}
+
+func (c *CardProduct) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardProduct) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardProduct
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardProduct(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardProduct) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -6798,6 +6984,52 @@ func (n *NetworkStatusDetail) UnmarshalJSON(data []byte) error {
 }
 
 func (n *NetworkStatusDetail) String() string {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+type NetworkTokenAccount struct {
+	CardArt *CardArt `json:"card_art,omitempty" url:"card_art,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NetworkTokenAccount) GetCardArt() *CardArt {
+	if n == nil {
+		return nil
+	}
+	return n.CardArt
+}
+
+func (n *NetworkTokenAccount) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
+}
+
+func (n *NetworkTokenAccount) UnmarshalJSON(data []byte) error {
+	type unmarshaler NetworkTokenAccount
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NetworkTokenAccount(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NetworkTokenAccount) String() string {
 	if len(n.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
