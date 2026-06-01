@@ -1,3 +1,10 @@
+# [5.10.0](https://github.com/Basis-Theory/go-sdk/compare/v5.9.0...v5.10.0) (2026-06-01)
+
+
+### Features
+
+* Add network token account endpoint ([b0f1203](https://github.com/Basis-Theory/go-sdk/commit/b0f12031b280521b68b632b0655536ddff9e01c3))
+
 # [5.9.0](https://github.com/Basis-Theory/go-sdk/compare/v5.8.0...v5.9.0) (2026-05-20)
 
 
