@@ -46,18 +46,14 @@ func TestTokenCrud(t *testing.T) {
 	// Create Application
 	applicationId := CreateApplication(t, manageClient)
 
-	// Create / Delete Proxy
-	proxyId := CreateProxy(t, manageClient, applicationId)
+	// Create Proxy
 	// Missing ability to call proxies from SDK
 	// The definition is missing from the Basis Theory OpenApi specs
-	DeleteProxy(t, manageClient, proxyId)
+	CreateProxy(t, manageClient, applicationId)
 
 	// Reactors
 	reactorId := CreateReactor(t, manageClient, applicationId)
 	React(t, client, reactorId)
-	DeleteReactor(t, manageClient, reactorId)
-
-	DeleteApplication(t, manageClient, applicationId)
 
 	// Delete Token
 	DeleteToken(t, client, tokenId)
@@ -200,6 +196,9 @@ func CreateProxy(t *testing.T, manageClient *basistheoryclient.Client, applicati
 	)
 	FailIfError(t, "Failed to create proxy", err)
 	proxyId := *response.ID
+	t.Cleanup(func() {
+		CleanupProxy(t, manageClient, proxyId)
+	})
 	return proxyId
 }
 
@@ -266,6 +265,9 @@ func CreateToken(t *testing.T, client *basistheoryclient.Client, cardNumber stri
 	)
 	FailIfError(t, "Failed to create token", err)
 	tokenId := *tokenCreatedResponse.ID
+	t.Cleanup(func() {
+		CleanupToken(t, client, tokenId)
+	})
 	return tokenId
 }
 
@@ -291,6 +293,14 @@ func DeleteToken(t *testing.T, client *basistheoryclient.Client, tokenId string)
 		tokenId,
 	)
 	FailIfError(t, "Failed to delete token", err)
+}
+
+// CleanupToken deletes a token without failing the test, so that a teardown
+// failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupToken(t *testing.T, client *basistheoryclient.Client, tokenId string) {
+	if err := client.Tokens.Delete(context.TODO(), tokenId); err != nil {
+		t.Logf("Failed to clean up token %s: %v", tokenId, err)
+	}
 }
 
 func EnsureTokenDeleted(t *testing.T, client *basistheoryclient.Client, tokenId string) {
@@ -333,6 +343,9 @@ func CreateApplication(t *testing.T, manageClient *basistheoryclient.Client) str
 	)
 	FailIfError(t, "Failed to create application", err)
 	applicationId := *x.ID
+	t.Cleanup(func() {
+		CleanupApplication(t, manageClient, applicationId)
+	})
 	return applicationId
 }
 
@@ -344,12 +357,28 @@ func DeleteApplication(t *testing.T, manageClient *basistheoryclient.Client, app
 	FailIfError(t, "Failed to delete application", e)
 }
 
+// CleanupApplication deletes an application without failing the test, so that a
+// teardown failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupApplication(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) {
+	if err := manageClient.Applications.Delete(context.TODO(), applicationId); err != nil {
+		t.Logf("Failed to clean up application %s: %v", applicationId, err)
+	}
+}
+
 func DeleteProxy(t *testing.T, manageClient *basistheoryclient.Client, proxyId string) {
 	err := manageClient.Proxies.Delete(
 		context.TODO(),
 		proxyId,
 	)
 	FailIfError(t, "Failed to delete proxy", err)
+}
+
+// CleanupProxy deletes a proxy without failing the test, so that a teardown
+// failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupProxy(t *testing.T, manageClient *basistheoryclient.Client, proxyId string) {
+	if err := manageClient.Proxies.Delete(context.TODO(), proxyId); err != nil {
+		t.Logf("Failed to clean up proxy %s: %v", proxyId, err)
+	}
 }
 
 func CreateReactor(t *testing.T, manageClient *basistheoryclient.Client, applicationId string) string {
@@ -364,7 +393,11 @@ func CreateReactor(t *testing.T, manageClient *basistheoryclient.Client, applica
 			Configuration: nil,
 		})
 	FailIfError(t, "Failed to create reactor", err2)
-	return *x.ID
+	reactorId := *x.ID
+	t.Cleanup(func() {
+		CleanupReactor(t, manageClient, reactorId)
+	})
+	return reactorId
 }
 
 func React(t *testing.T, client *basistheoryclient.Client, reactorId string) {
@@ -397,6 +430,14 @@ func DeleteReactor(t *testing.T, manageClient *basistheoryclient.Client, reactor
 	FailIfError(t, "Failed to delete reactor", e)
 }
 
+// CleanupReactor deletes a reactor without failing the test, so that a teardown
+// failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupReactor(t *testing.T, manageClient *basistheoryclient.Client, reactorId string) {
+	if err := manageClient.Reactors.Delete(context.TODO(), reactorId); err != nil {
+		t.Logf("Failed to clean up reactor %s: %v", reactorId, err)
+	}
+}
+
 func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) string {
 	response, err := client.Webhooks.Create(
 		context.TODO(),
@@ -406,7 +447,11 @@ func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) s
 			Events: []string{"token.created"},
 		})
 	FailIfError(t, "Could not create webhook", err)
-	return response.ID
+	webhookId := response.ID
+	t.Cleanup(func() {
+		CleanupWebhook(t, client, webhookId)
+	})
+	return webhookId
 }
 
 func UpdateWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string, updateUrl string) {
@@ -426,6 +471,14 @@ func DeleteWebhook(t *testing.T, client *basistheoryclient.Client, webhookId str
 		context.TODO(),
 		webhookId)
 	FailIfError(t, "Unable to delete webhook", err)
+}
+
+// CleanupWebhook deletes a webhook without failing the test, so that a teardown
+// failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string) {
+	if err := client.Webhooks.Delete(context.TODO(), webhookId); err != nil {
+		t.Logf("Failed to clean up webhook %s: %v", webhookId, err)
+	}
 }
 
 func GetWebhookAssertUrl(t *testing.T, client *basistheoryclient.Client, webhookId string, url string) {
