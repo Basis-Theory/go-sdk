@@ -16,7 +16,7 @@ import (
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	keys "github.com/Basis-Theory/go-sdk/v5/keys"
 	logs "github.com/Basis-Theory/go-sdk/v5/logs"
-	networktokens "github.com/Basis-Theory/go-sdk/v5/networktokens"
+	networktokensclient "github.com/Basis-Theory/go-sdk/v5/networktokens/client"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
 	permissions "github.com/Basis-Theory/go-sdk/v5/permissions"
 	proxies "github.com/Basis-Theory/go-sdk/v5/proxies"
@@ -43,7 +43,7 @@ type Client struct {
 	Enrichments          *enrichments.Client
 	Keys                 *keys.Client
 	Logs                 *logs.Client
-	NetworkTokens        *networktokens.Client
+	NetworkTokens        *networktokensclient.Client
 	Permissions          *permissions.Client
 	Proxies              *proxies.Client
 	Reactors             *reactorsclient.Client
@@ -77,7 +77,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Enrichments:          enrichments.NewClient(opts...),
 		Keys:                 keys.NewClient(opts...),
 		Logs:                 logs.NewClient(opts...),
-		NetworkTokens:        networktokens.NewClient(opts...),
+		NetworkTokens:        networktokensclient.NewClient(opts...),
 		Permissions:          permissions.NewClient(opts...),
 		Proxies:              proxies.NewClient(opts...),
 		Reactors:             reactorsclient.NewClient(opts...),
