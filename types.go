@@ -2386,6 +2386,7 @@ type CardDetails struct {
 	Issuer          *CardIssuer              `json:"issuer,omitempty" url:"issuer,omitempty"`
 	IssuerCountry   *CardIssuerCountry       `json:"issuer_country,omitempty" url:"issuer_country,omitempty"`
 	Segment         *string                  `json:"segment,omitempty" url:"segment,omitempty"`
+	Product         *CardProduct             `json:"product,omitempty" url:"product,omitempty"`
 	Additional      []*AdditionalCardDetails `json:"additional,omitempty" url:"additional,omitempty"`
 
 	extraProperties map[string]interface{}
@@ -2460,6 +2461,13 @@ func (c *CardDetails) GetSegment() *string {
 		return nil
 	}
 	return c.Segment
+}
+
+func (c *CardDetails) GetProduct() *CardProduct {
+	if c == nil {
+		return nil
+	}
+	return c.Product
 }
 
 func (c *CardDetails) GetAdditional() []*AdditionalCardDetails {
@@ -2800,6 +2808,52 @@ func (c *CardNetworkStatus) UnmarshalJSON(data []byte) error {
 }
 
 func (c *CardNetworkStatus) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CardProduct struct {
+	Code *string `json:"code,omitempty" url:"code,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CardProduct) GetCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Code
+}
+
+func (c *CardProduct) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *CardProduct) UnmarshalJSON(data []byte) error {
+	type unmarshaler CardProduct
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CardProduct(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CardProduct) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
