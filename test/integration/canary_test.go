@@ -265,6 +265,9 @@ func CreateToken(t *testing.T, client *basistheoryclient.Client, cardNumber stri
 	)
 	FailIfError(t, "Failed to create token", err)
 	tokenId := *tokenCreatedResponse.ID
+	t.Cleanup(func() {
+		CleanupToken(t, client, tokenId)
+	})
 	return tokenId
 }
 
@@ -290,6 +293,14 @@ func DeleteToken(t *testing.T, client *basistheoryclient.Client, tokenId string)
 		tokenId,
 	)
 	FailIfError(t, "Failed to delete token", err)
+}
+
+// CleanupToken deletes a token without failing the test, so that a teardown
+// failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupToken(t *testing.T, client *basistheoryclient.Client, tokenId string) {
+	if err := client.Tokens.Delete(context.TODO(), tokenId); err != nil {
+		t.Logf("Failed to clean up token %s: %v", tokenId, err)
+	}
 }
 
 func EnsureTokenDeleted(t *testing.T, client *basistheoryclient.Client, tokenId string) {
@@ -436,7 +447,11 @@ func CreateWebhook(t *testing.T, client *basistheoryclient.Client, url string) s
 			Events: []string{"token.created"},
 		})
 	FailIfError(t, "Could not create webhook", err)
-	return response.ID
+	webhookId := response.ID
+	t.Cleanup(func() {
+		CleanupWebhook(t, client, webhookId)
+	})
+	return webhookId
 }
 
 func UpdateWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string, updateUrl string) {
@@ -456,6 +471,14 @@ func DeleteWebhook(t *testing.T, client *basistheoryclient.Client, webhookId str
 		context.TODO(),
 		webhookId)
 	FailIfError(t, "Unable to delete webhook", err)
+}
+
+// CleanupWebhook deletes a webhook without failing the test, so that a teardown
+// failure neither masks the original failure nor leaves the resource orphaned.
+func CleanupWebhook(t *testing.T, client *basistheoryclient.Client, webhookId string) {
+	if err := client.Webhooks.Delete(context.TODO(), webhookId); err != nil {
+		t.Logf("Failed to clean up webhook %s: %v", webhookId, err)
+	}
 }
 
 func GetWebhookAssertUrl(t *testing.T, client *basistheoryclient.Client, webhookId string, url string) {
