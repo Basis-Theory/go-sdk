@@ -4,37 +4,38 @@ package tokens
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	http "net/http"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -74,7 +75,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.Token, error) {
+) (*basistheory.Token, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -105,9 +106,9 @@ func (c *Client) Delete(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v5.UpdateTokenRequest,
+	request *basistheory.UpdateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v5.Token, error) {
+) (*basistheory.Token, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -122,9 +123,9 @@ func (c *Client) Update(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v5.CreateTokenRequest,
+	request *basistheory.CreateTokenRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v5.Token, error) {
+) (*basistheory.Token, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -138,9 +139,9 @@ func (c *Client) Create(
 
 func (c *Client) ListV2(
 	ctx context.Context,
-	request *v5.TokensListV2Request,
+	request *basistheory.TokensListV2Request,
 	opts ...option.RequestOption,
-) (*core.Page[*v5.Token], error) {
+) (*core.Page[*string, *basistheory.Token, *basistheory.TokenCursorPaginatedList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -153,22 +154,10 @@ func (c *Client) ListV2(
 		return nil, err
 	}
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-	}
-	prepareCall := func(pageRequest *internal.PageRequest[*string]) *internal.CallParams {
+	prepareCall := func(pageRequest *core.PageRequest[*string]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
 			queryParams.Set("start", *pageRequest.Cursor)
 		}
@@ -181,24 +170,26 @@ func (c *Client) ListV2(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		}
 	}
-	readPageResponse := func(response *v5.TokenCursorPaginatedList) *internal.PageResponse[*string, *v5.Token] {
+	readPageResponse := func(response *basistheory.TokenCursorPaginatedList) *core.PageResponse[*string, *basistheory.Token, *basistheory.TokenCursorPaginatedList] {
 		var zeroValue *string
 		var next *string
 		if response.Pagination != nil {
 			next = response.Pagination.Next
 		}
 		results := response.GetData()
-		return &internal.PageResponse[*string, *v5.Token]{
-			Next:    next,
-			Results: results,
-			Done:    next == zeroValue,
+		return &core.PageResponse[*string, *basistheory.Token, *basistheory.TokenCursorPaginatedList]{
+			Results:  results,
+			Response: response,
+			Next:     next,
+			Done:     next == zeroValue,
 		}
 	}
 	pager := internal.NewCursorPager(
@@ -211,9 +202,9 @@ func (c *Client) ListV2(
 
 func (c *Client) SearchV2(
 	ctx context.Context,
-	request *v5.SearchTokensRequestV2,
+	request *basistheory.SearchTokensRequestV2,
 	opts ...option.IdempotentRequestOption,
-) (*v5.TokenCursorPaginatedList, error) {
+) (*basistheory.TokenCursorPaginatedList, error) {
 	response, err := c.WithRawResponse.SearchV2(
 		ctx,
 		request,

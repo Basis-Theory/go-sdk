@@ -4,7 +4,9 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
@@ -15,8 +17,6 @@ import (
 	owner "github.com/Basis-Theory/go-sdk/v5/tenants/owner"
 	securitycontact "github.com/Basis-Theory/go-sdk/v5/tenants/securitycontact"
 	self "github.com/Basis-Theory/go-sdk/v5/tenants/self"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
@@ -29,41 +29,41 @@ type Client struct {
 	Owner           *owner.Client
 	Self            *self.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		SecurityContact: securitycontact.NewClient(opts...),
-		Connections:     connections.NewClient(opts...),
-		Invitations:     invitations.NewClient(opts...),
-		Members:         members.NewClient(opts...),
-		Merchants:       merchants.NewClient(opts...),
-		Owner:           owner.NewClient(opts...),
-		Self:            self.NewClient(opts...),
+		SecurityContact: securitycontact.NewClient(options),
+		Connections:     connections.NewClient(options),
+		Invitations:     invitations.NewClient(options),
+		Members:         members.NewClient(options),
+		Merchants:       merchants.NewClient(options),
+		Owner:           owner.NewClient(options),
+		Self:            self.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (c *Client) OwnerTransfer(
 	ctx context.Context,
-	request *v5.TransferTenantOwnerRequest,
+	request *basistheory.TransferTenantOwnerRequest,
 	opts ...option.RequestOption,
-) (*v5.TenantMemberResponse, error) {
+) (*basistheory.TenantMemberResponse, error) {
 	response, err := c.WithRawResponse.OwnerTransfer(
 		ctx,
 		request,

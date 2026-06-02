@@ -3,10 +3,63 @@
 package tenants
 
 import (
+	json "encoding/json"
 	v5 "github.com/Basis-Theory/go-sdk/v5"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	createTenantConnectionRequestFieldStrategy = big.NewInt(1 << 0)
+	createTenantConnectionRequestFieldOptions  = big.NewInt(1 << 1)
 )
 
 type CreateTenantConnectionRequest struct {
 	Strategy string                      `json:"strategy" url:"-"`
-	Options  *v5.TenantConnectionOptions `json:"options,omitempty" url:"-"`
+	Options  *v5.TenantConnectionOptions `json:"options" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (c *CreateTenantConnectionRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetStrategy sets the Strategy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTenantConnectionRequest) SetStrategy(strategy string) {
+	c.Strategy = strategy
+	c.require(createTenantConnectionRequestFieldStrategy)
+}
+
+// SetOptions sets the Options field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTenantConnectionRequest) SetOptions(options *v5.TenantConnectionOptions) {
+	c.Options = options
+	c.require(createTenantConnectionRequestFieldOptions)
+}
+
+func (c *CreateTenantConnectionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateTenantConnectionRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateTenantConnectionRequest(body)
+	return nil
+}
+
+func (c *CreateTenantConnectionRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateTenantConnectionRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

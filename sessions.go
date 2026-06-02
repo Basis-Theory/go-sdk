@@ -6,7 +6,15 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	authorizeSessionRequestFieldNonce       = big.NewInt(1 << 0)
+	authorizeSessionRequestFieldExpiresAt   = big.NewInt(1 << 1)
+	authorizeSessionRequestFieldPermissions = big.NewInt(1 << 2)
+	authorizeSessionRequestFieldRules       = big.NewInt(1 << 3)
 )
 
 type AuthorizeSessionRequest struct {
@@ -14,12 +22,80 @@ type AuthorizeSessionRequest struct {
 	ExpiresAt   *string       `json:"expires_at,omitempty" url:"-"`
 	Permissions []string      `json:"permissions,omitempty" url:"-"`
 	Rules       []*AccessRule `json:"rules,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (a *AuthorizeSessionRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetNonce sets the Nonce field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AuthorizeSessionRequest) SetNonce(nonce string) {
+	a.Nonce = nonce
+	a.require(authorizeSessionRequestFieldNonce)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AuthorizeSessionRequest) SetExpiresAt(expiresAt *string) {
+	a.ExpiresAt = expiresAt
+	a.require(authorizeSessionRequestFieldExpiresAt)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AuthorizeSessionRequest) SetPermissions(permissions []string) {
+	a.Permissions = permissions
+	a.require(authorizeSessionRequestFieldPermissions)
+}
+
+// SetRules sets the Rules field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AuthorizeSessionRequest) SetRules(rules []*AccessRule) {
+	a.Rules = rules
+	a.require(authorizeSessionRequestFieldRules)
+}
+
+func (a *AuthorizeSessionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthorizeSessionRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = AuthorizeSessionRequest(body)
+	return nil
+}
+
+func (a *AuthorizeSessionRequest) MarshalJSON() ([]byte, error) {
+	type embed AuthorizeSessionRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	createSessionResponseFieldSessionKey = big.NewInt(1 << 0)
+	createSessionResponseFieldNonce      = big.NewInt(1 << 1)
+	createSessionResponseFieldExpiresAt  = big.NewInt(1 << 2)
+)
 
 type CreateSessionResponse struct {
 	SessionKey *string    `json:"session_key,omitempty" url:"session_key,omitempty"`
 	Nonce      *string    `json:"nonce,omitempty" url:"nonce,omitempty"`
 	ExpiresAt  *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -47,7 +123,38 @@ func (c *CreateSessionResponse) GetExpiresAt() *time.Time {
 }
 
 func (c *CreateSessionResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *CreateSessionResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetSessionKey sets the SessionKey field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateSessionResponse) SetSessionKey(sessionKey *string) {
+	c.SessionKey = sessionKey
+	c.require(createSessionResponseFieldSessionKey)
+}
+
+// SetNonce sets the Nonce field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateSessionResponse) SetNonce(nonce *string) {
+	c.Nonce = nonce
+	c.require(createSessionResponseFieldNonce)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateSessionResponse) SetExpiresAt(expiresAt *time.Time) {
+	c.ExpiresAt = expiresAt
+	c.require(createSessionResponseFieldExpiresAt)
 }
 
 func (c *CreateSessionResponse) UnmarshalJSON(data []byte) error {
@@ -81,10 +188,14 @@ func (c *CreateSessionResponse) MarshalJSON() ([]byte, error) {
 		embed:     embed(*c),
 		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (c *CreateSessionResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value

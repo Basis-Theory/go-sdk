@@ -6,6 +6,15 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	createApplicationRequestFieldName        = big.NewInt(1 << 0)
+	createApplicationRequestFieldType        = big.NewInt(1 << 1)
+	createApplicationRequestFieldPermissions = big.NewInt(1 << 2)
+	createApplicationRequestFieldRules       = big.NewInt(1 << 3)
+	createApplicationRequestFieldCreateKey   = big.NewInt(1 << 4)
 )
 
 type CreateApplicationRequest struct {
@@ -14,7 +23,81 @@ type CreateApplicationRequest struct {
 	Permissions []string      `json:"permissions,omitempty" url:"-"`
 	Rules       []*AccessRule `json:"rules,omitempty" url:"-"`
 	CreateKey   *bool         `json:"create_key,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateApplicationRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateApplicationRequest) SetName(name string) {
+	c.Name = name
+	c.require(createApplicationRequestFieldName)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateApplicationRequest) SetType(type_ string) {
+	c.Type = type_
+	c.require(createApplicationRequestFieldType)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateApplicationRequest) SetPermissions(permissions []string) {
+	c.Permissions = permissions
+	c.require(createApplicationRequestFieldPermissions)
+}
+
+// SetRules sets the Rules field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateApplicationRequest) SetRules(rules []*AccessRule) {
+	c.Rules = rules
+	c.require(createApplicationRequestFieldRules)
+}
+
+// SetCreateKey sets the CreateKey field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateApplicationRequest) SetCreateKey(createKey *bool) {
+	c.CreateKey = createKey
+	c.require(createApplicationRequestFieldCreateKey)
+}
+
+func (c *CreateApplicationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateApplicationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateApplicationRequest(body)
+	return nil
+}
+
+func (c *CreateApplicationRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateApplicationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	applicationsListRequestFieldID    = big.NewInt(1 << 0)
+	applicationsListRequestFieldType  = big.NewInt(1 << 1)
+	applicationsListRequestFieldPage  = big.NewInt(1 << 2)
+	applicationsListRequestFieldStart = big.NewInt(1 << 3)
+	applicationsListRequestFieldSize  = big.NewInt(1 << 4)
+)
 
 type ApplicationsListRequest struct {
 	ID    []*string `json:"-" url:"id,omitempty"`
@@ -22,11 +105,64 @@ type ApplicationsListRequest struct {
 	Page  *int      `json:"-" url:"page,omitempty"`
 	Start *string   `json:"-" url:"start,omitempty"`
 	Size  *int      `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (a *ApplicationsListRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationsListRequest) SetID(id []*string) {
+	a.ID = id
+	a.require(applicationsListRequestFieldID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationsListRequest) SetType(type_ []*string) {
+	a.Type = type_
+	a.require(applicationsListRequestFieldType)
+}
+
+// SetPage sets the Page field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationsListRequest) SetPage(page *int) {
+	a.Page = page
+	a.require(applicationsListRequestFieldPage)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationsListRequest) SetStart(start *string) {
+	a.Start = start
+	a.require(applicationsListRequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationsListRequest) SetSize(size *int) {
+	a.Size = size
+	a.require(applicationsListRequestFieldSize)
+}
+
+var (
+	applicationPaginatedListFieldPagination = big.NewInt(1 << 0)
+	applicationPaginatedListFieldData       = big.NewInt(1 << 1)
+)
 
 type ApplicationPaginatedList struct {
 	Pagination *Pagination    `json:"pagination,omitempty" url:"pagination,omitempty"`
 	Data       []*Application `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -47,7 +183,31 @@ func (a *ApplicationPaginatedList) GetData() []*Application {
 }
 
 func (a *ApplicationPaginatedList) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
+}
+
+func (a *ApplicationPaginatedList) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationPaginatedList) SetPagination(pagination *Pagination) {
+	a.Pagination = pagination
+	a.require(applicationPaginatedListFieldPagination)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationPaginatedList) SetData(data []*Application) {
+	a.Data = data
+	a.require(applicationPaginatedListFieldData)
 }
 
 func (a *ApplicationPaginatedList) UnmarshalJSON(data []byte) error {
@@ -66,7 +226,21 @@ func (a *ApplicationPaginatedList) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (a *ApplicationPaginatedList) MarshalJSON() ([]byte, error) {
+	type embed ApplicationPaginatedList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (a *ApplicationPaginatedList) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -78,8 +252,66 @@ func (a *ApplicationPaginatedList) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+var (
+	updateApplicationRequestFieldName        = big.NewInt(1 << 0)
+	updateApplicationRequestFieldPermissions = big.NewInt(1 << 1)
+	updateApplicationRequestFieldRules       = big.NewInt(1 << 2)
+)
+
 type UpdateApplicationRequest struct {
 	Name        string        `json:"name" url:"-"`
 	Permissions []string      `json:"permissions,omitempty" url:"-"`
 	Rules       []*AccessRule `json:"rules,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateApplicationRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateApplicationRequest) SetName(name string) {
+	u.Name = name
+	u.require(updateApplicationRequestFieldName)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateApplicationRequest) SetPermissions(permissions []string) {
+	u.Permissions = permissions
+	u.require(updateApplicationRequestFieldPermissions)
+}
+
+// SetRules sets the Rules field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateApplicationRequest) SetRules(rules []*AccessRule) {
+	u.Rules = rules
+	u.require(updateApplicationRequestFieldRules)
+}
+
+func (u *UpdateApplicationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateApplicationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateApplicationRequest(body)
+	return nil
+}
+
+func (u *UpdateApplicationRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateApplicationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

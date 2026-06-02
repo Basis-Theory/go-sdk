@@ -4,37 +4,39 @@ package securitycontact
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	http "net/http"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
 	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
-	http "net/http"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (r *RawClient) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.SecurityContactEmailResponse], error) {
+) (*core.Response[*basistheory.SecurityContactEmailResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -43,27 +45,10 @@ func (r *RawClient) Get(
 	)
 	endpointURL := baseURL + "/tenants/self/security-contact"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		503: func(apiError *core.APIError) error {
-			return &v5.ServiceUnavailableError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.SecurityContactEmailResponse
+	var response *basistheory.SecurityContactEmailResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -71,17 +56,18 @@ func (r *RawClient) Get(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(tenants.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.SecurityContactEmailResponse]{
+	return &core.Response[*basistheory.SecurityContactEmailResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -92,7 +78,7 @@ func (r *RawClient) Update(
 	ctx context.Context,
 	request *tenants.SecurityContactEmailRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.SecurityContactEmailResponse], error) {
+) (*core.Response[*basistheory.SecurityContactEmailResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -101,33 +87,11 @@ func (r *RawClient) Update(
 	)
 	endpointURL := baseURL + "/tenants/self/security-contact"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.SecurityContactEmailResponse
+	var response *basistheory.SecurityContactEmailResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -135,18 +99,19 @@ func (r *RawClient) Update(
 			Method:          http.MethodPut,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(tenants.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.SecurityContactEmailResponse]{
+	return &core.Response[*basistheory.SecurityContactEmailResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

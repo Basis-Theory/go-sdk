@@ -2,7 +2,63 @@
 
 package merchant
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	googlePayMerchantCertificatesRegisterRequestFieldMerchantCertificateData     = big.NewInt(1 << 0)
+	googlePayMerchantCertificatesRegisterRequestFieldMerchantCertificatePassword = big.NewInt(1 << 1)
+)
+
 type GooglePayMerchantCertificatesRegisterRequest struct {
 	MerchantCertificateData     *string `json:"merchant_certificate_data,omitempty" url:"-"`
 	MerchantCertificatePassword *string `json:"merchant_certificate_password,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GooglePayMerchantCertificatesRegisterRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetMerchantCertificateData sets the MerchantCertificateData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMerchantCertificatesRegisterRequest) SetMerchantCertificateData(merchantCertificateData *string) {
+	g.MerchantCertificateData = merchantCertificateData
+	g.require(googlePayMerchantCertificatesRegisterRequestFieldMerchantCertificateData)
+}
+
+// SetMerchantCertificatePassword sets the MerchantCertificatePassword field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMerchantCertificatesRegisterRequest) SetMerchantCertificatePassword(merchantCertificatePassword *string) {
+	g.MerchantCertificatePassword = merchantCertificatePassword
+	g.require(googlePayMerchantCertificatesRegisterRequestFieldMerchantCertificatePassword)
+}
+
+func (g *GooglePayMerchantCertificatesRegisterRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayMerchantCertificatesRegisterRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*g = GooglePayMerchantCertificatesRegisterRequest(body)
+	return nil
+}
+
+func (g *GooglePayMerchantCertificatesRegisterRequest) MarshalJSON() ([]byte, error) {
+	type embed GooglePayMerchantCertificatesRegisterRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

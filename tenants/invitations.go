@@ -3,17 +3,115 @@
 package tenants
 
 import (
+	json "encoding/json"
 	v5 "github.com/Basis-Theory/go-sdk/v5"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	createTenantInvitationRequestFieldEmail = big.NewInt(1 << 0)
+	createTenantInvitationRequestFieldRole  = big.NewInt(1 << 1)
 )
 
 type CreateTenantInvitationRequest struct {
 	Email string  `json:"email" url:"-"`
 	Role  *string `json:"role,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateTenantInvitationRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetEmail sets the Email field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTenantInvitationRequest) SetEmail(email string) {
+	c.Email = email
+	c.require(createTenantInvitationRequestFieldEmail)
+}
+
+// SetRole sets the Role field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTenantInvitationRequest) SetRole(role *string) {
+	c.Role = role
+	c.require(createTenantInvitationRequestFieldRole)
+}
+
+func (c *CreateTenantInvitationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateTenantInvitationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateTenantInvitationRequest(body)
+	return nil
+}
+
+func (c *CreateTenantInvitationRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateTenantInvitationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	invitationsListRequestFieldStatus = big.NewInt(1 << 0)
+	invitationsListRequestFieldPage   = big.NewInt(1 << 1)
+	invitationsListRequestFieldStart  = big.NewInt(1 << 2)
+	invitationsListRequestFieldSize   = big.NewInt(1 << 3)
+)
 
 type InvitationsListRequest struct {
 	Status *v5.TenantInvitationStatus `json:"-" url:"status,omitempty"`
 	Page   *int                       `json:"-" url:"page,omitempty"`
 	Start  *string                    `json:"-" url:"start,omitempty"`
 	Size   *int                       `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (i *InvitationsListRequest) require(field *big.Int) {
+	if i.explicitFields == nil {
+		i.explicitFields = big.NewInt(0)
+	}
+	i.explicitFields.Or(i.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InvitationsListRequest) SetStatus(status *v5.TenantInvitationStatus) {
+	i.Status = status
+	i.require(invitationsListRequestFieldStatus)
+}
+
+// SetPage sets the Page field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InvitationsListRequest) SetPage(page *int) {
+	i.Page = page
+	i.require(invitationsListRequestFieldPage)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InvitationsListRequest) SetStart(start *string) {
+	i.Start = start
+	i.require(invitationsListRequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InvitationsListRequest) SetSize(size *int) {
+	i.Size = size
+	i.require(invitationsListRequestFieldSize)
 }

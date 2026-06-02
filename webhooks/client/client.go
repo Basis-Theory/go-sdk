@@ -4,40 +4,40 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
 	events "github.com/Basis-Theory/go-sdk/v5/webhooks/events"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 	Events          *events.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Events:          events.NewClient(opts...),
+		Events:          events.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -61,7 +61,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.Webhook, error) {
+) (*basistheory.Webhook, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -77,9 +77,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v5.UpdateWebhookRequest,
+	request *basistheory.UpdateWebhookRequest,
 	opts ...option.RequestOption,
-) (*v5.Webhook, error) {
+) (*basistheory.Webhook, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -113,7 +113,7 @@ func (c *Client) Delete(
 func (c *Client) List(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v5.WebhookList, error) {
+) (*basistheory.WebhookList, error) {
 	response, err := c.WithRawResponse.List(
 		ctx,
 		opts...,
@@ -127,9 +127,9 @@ func (c *Client) List(
 // Create a new webhook
 func (c *Client) Create(
 	ctx context.Context,
-	request *v5.CreateWebhookRequest,
+	request *basistheory.CreateWebhookRequest,
 	opts ...option.RequestOption,
-) (*v5.Webhook, error) {
+) (*basistheory.Webhook, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,

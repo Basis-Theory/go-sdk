@@ -6,14 +6,88 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
 	time "time"
 )
 
+var (
+	createTokenIntentRequestFieldType      = big.NewInt(1 << 0)
+	createTokenIntentRequestFieldData      = big.NewInt(1 << 1)
+	createTokenIntentRequestFieldEncrypted = big.NewInt(1 << 2)
+)
+
 type CreateTokenIntentRequest struct {
-	Type      string      `json:"type" url:"-"`
-	Data      interface{} `json:"data,omitempty" url:"-"`
-	Encrypted *string     `json:"encrypted,omitempty" url:"-"`
+	Type      string  `json:"type" url:"-"`
+	Data      any     `json:"data,omitempty" url:"-"`
+	Encrypted *string `json:"encrypted,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateTokenIntentRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenIntentRequest) SetType(type_ string) {
+	c.Type = type_
+	c.require(createTokenIntentRequestFieldType)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenIntentRequest) SetData(data any) {
+	c.Data = data
+	c.require(createTokenIntentRequestFieldData)
+}
+
+// SetEncrypted sets the Encrypted field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenIntentRequest) SetEncrypted(encrypted *string) {
+	c.Encrypted = encrypted
+	c.require(createTokenIntentRequestFieldEncrypted)
+}
+
+func (c *CreateTokenIntentRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateTokenIntentRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateTokenIntentRequest(body)
+	return nil
+}
+
+func (c *CreateTokenIntentRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateTokenIntentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	tokenIntentFieldID             = big.NewInt(1 << 0)
+	tokenIntentFieldType           = big.NewInt(1 << 1)
+	tokenIntentFieldTenantID       = big.NewInt(1 << 2)
+	tokenIntentFieldFingerprint    = big.NewInt(1 << 3)
+	tokenIntentFieldCreatedBy      = big.NewInt(1 << 4)
+	tokenIntentFieldCreatedAt      = big.NewInt(1 << 5)
+	tokenIntentFieldExpiresAt      = big.NewInt(1 << 6)
+	tokenIntentFieldCard           = big.NewInt(1 << 7)
+	tokenIntentFieldBank           = big.NewInt(1 << 8)
+	tokenIntentFieldNetworkToken   = big.NewInt(1 << 9)
+	tokenIntentFieldAuthentication = big.NewInt(1 << 10)
+	tokenIntentFieldExtras         = big.NewInt(1 << 11)
+)
 
 type TokenIntent struct {
 	ID             *string            `json:"id,omitempty" url:"id,omitempty"`
@@ -26,8 +100,11 @@ type TokenIntent struct {
 	Card           *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
 	Bank           *BankDetails       `json:"bank,omitempty" url:"bank,omitempty"`
 	NetworkToken   *CardDetails       `json:"network_token,omitempty" url:"network_token,omitempty"`
-	Authentication interface{}        `json:"authentication,omitempty" url:"authentication,omitempty"`
+	Authentication any                `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Extras         *TokenIntentExtras `json:"_extras,omitempty" url:"_extras,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -103,7 +180,7 @@ func (t *TokenIntent) GetNetworkToken() *CardDetails {
 	return t.NetworkToken
 }
 
-func (t *TokenIntent) GetAuthentication() interface{} {
+func (t *TokenIntent) GetAuthentication() any {
 	if t == nil {
 		return nil
 	}
@@ -118,7 +195,101 @@ func (t *TokenIntent) GetExtras() *TokenIntentExtras {
 }
 
 func (t *TokenIntent) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
+}
+
+func (t *TokenIntent) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetID(id *string) {
+	t.ID = id
+	t.require(tokenIntentFieldID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetType(type_ *string) {
+	t.Type = type_
+	t.require(tokenIntentFieldType)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetTenantID(tenantID *string) {
+	t.TenantID = tenantID
+	t.require(tokenIntentFieldTenantID)
+}
+
+// SetFingerprint sets the Fingerprint field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetFingerprint(fingerprint *string) {
+	t.Fingerprint = fingerprint
+	t.require(tokenIntentFieldFingerprint)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetCreatedBy(createdBy *string) {
+	t.CreatedBy = createdBy
+	t.require(tokenIntentFieldCreatedBy)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetCreatedAt(createdAt *time.Time) {
+	t.CreatedAt = createdAt
+	t.require(tokenIntentFieldCreatedAt)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetExpiresAt(expiresAt *time.Time) {
+	t.ExpiresAt = expiresAt
+	t.require(tokenIntentFieldExpiresAt)
+}
+
+// SetCard sets the Card field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetCard(card *CardDetails) {
+	t.Card = card
+	t.require(tokenIntentFieldCard)
+}
+
+// SetBank sets the Bank field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetBank(bank *BankDetails) {
+	t.Bank = bank
+	t.require(tokenIntentFieldBank)
+}
+
+// SetNetworkToken sets the NetworkToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetNetworkToken(networkToken *CardDetails) {
+	t.NetworkToken = networkToken
+	t.require(tokenIntentFieldNetworkToken)
+}
+
+// SetAuthentication sets the Authentication field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetAuthentication(authentication any) {
+	t.Authentication = authentication
+	t.require(tokenIntentFieldAuthentication)
+}
+
+// SetExtras sets the Extras field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetExtras(extras *TokenIntentExtras) {
+	t.Extras = extras
+	t.require(tokenIntentFieldExtras)
 }
 
 func (t *TokenIntent) UnmarshalJSON(data []byte) error {
@@ -156,10 +327,14 @@ func (t *TokenIntent) MarshalJSON() ([]byte, error) {
 		CreatedAt: internal.NewOptionalDateTime(t.CreatedAt),
 		ExpiresAt: internal.NewOptionalDateTime(t.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (t *TokenIntent) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value

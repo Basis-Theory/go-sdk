@@ -3,6 +3,8 @@
 package client
 
 import (
+	os "os"
+
 	accountupdaterclient "github.com/Basis-Theory/go-sdk/v5/accountupdater/client"
 	agenticclient "github.com/Basis-Theory/go-sdk/v5/agentic/client"
 	client "github.com/Basis-Theory/go-sdk/v5/applepay/client"
@@ -28,8 +30,6 @@ import (
 	tokenintents "github.com/Basis-Theory/go-sdk/v5/tokenintents"
 	tokens "github.com/Basis-Theory/go-sdk/v5/tokens"
 	webhooksclient "github.com/Basis-Theory/go-sdk/v5/webhooks/client"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
@@ -56,9 +56,9 @@ type Client struct {
 	Agentic              *agenticclient.Client
 	Threeds              *threedsclient.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
@@ -67,35 +67,36 @@ func NewClient(opts ...option.RequestOption) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Applications:         applications.NewClient(opts...),
-		ApplicationKeys:      applicationkeys.NewClient(opts...),
-		ApplicationTemplates: applicationtemplates.NewClient(opts...),
-		ApplePay:             client.NewClient(opts...),
-		GooglePay:            googlepayclient.NewClient(opts...),
-		Documents:            documentsclient.NewClient(opts...),
-		Tokens:               tokens.NewClient(opts...),
-		Enrichments:          enrichments.NewClient(opts...),
-		Keys:                 keys.NewClient(opts...),
-		Logs:                 logs.NewClient(opts...),
-		NetworkTokens:        networktokensclient.NewClient(opts...),
-		Permissions:          permissions.NewClient(opts...),
-		Proxies:              proxies.NewClient(opts...),
-		Reactors:             reactorsclient.NewClient(opts...),
-		Roles:                roles.NewClient(opts...),
-		Sessions:             sessions.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
-		TokenIntents:         tokenintents.NewClient(opts...),
-		Webhooks:             webhooksclient.NewClient(opts...),
-		AccountUpdater:       accountupdaterclient.NewClient(opts...),
-		Agentic:              agenticclient.NewClient(opts...),
-		Threeds:              threedsclient.NewClient(opts...),
+		Applications:         applications.NewClient(options),
+		ApplicationKeys:      applicationkeys.NewClient(options),
+		ApplicationTemplates: applicationtemplates.NewClient(options),
+		ApplePay:             client.NewClient(options),
+		GooglePay:            googlepayclient.NewClient(options),
+		Documents:            documentsclient.NewClient(options),
+		Tokens:               tokens.NewClient(options),
+		Enrichments:          enrichments.NewClient(options),
+		Keys:                 keys.NewClient(options),
+		Logs:                 logs.NewClient(options),
+		NetworkTokens:        networktokensclient.NewClient(options),
+		Permissions:          permissions.NewClient(options),
+		Proxies:              proxies.NewClient(options),
+		Reactors:             reactorsclient.NewClient(options),
+		Roles:                roles.NewClient(options),
+		Sessions:             sessions.NewClient(options),
+		Tenants:              tenantsclient.NewClient(options),
+		TokenIntents:         tokenintents.NewClient(options),
+		Webhooks:             webhooksclient.NewClient(options),
+		AccountUpdater:       accountupdaterclient.NewClient(options),
+		Agentic:              agenticclient.NewClient(options),
+		Threeds:              threedsclient.NewClient(options),
+		options:              options,
 		baseURL:              options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }

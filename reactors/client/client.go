@@ -5,48 +5,50 @@ package client
 import (
 	context "context"
 	fmt "fmt"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	http "net/http"
+	os "os"
+	strconv "strconv"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
 	results "github.com/Basis-Theory/go-sdk/v5/reactors/results"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 	Results         *results.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Results:         results.NewClient(opts...),
+		Results:         results.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (c *Client) List(
 	ctx context.Context,
-	request *v5.ReactorsListRequest,
+	request *basistheory.ReactorsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v5.Reactor], error) {
+) (*core.Page[*int, *basistheory.Reactor, *basistheory.ReactorPaginatedList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -59,29 +61,12 @@ func (c *Client) List(
 		return nil, err
 	}
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	prepareCall := func(pageRequest *internal.PageRequest[*int]) *internal.CallParams {
+	prepareCall := func(pageRequest *core.PageRequest[*int]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
-			queryParams.Set("page", fmt.Sprintf("%v", pageRequest.Cursor))
+			queryParams.Set("page", fmt.Sprintf("%v", *pageRequest.Cursor))
 		}
 		nextURL := endpointURL
 		if len(queryParams) > 0 {
@@ -92,24 +77,29 @@ func (c *Client) List(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		}
 	}
 	next := 1
-	if request.Page != nil {
-		next = *request.Page
+	if queryParams.Has("page") {
+		var err error
+		if next, err = strconv.Atoi(queryParams.Get("page")); err != nil {
+			return nil, err
+		}
 	}
 
-	readPageResponse := func(response *v5.ReactorPaginatedList) *internal.PageResponse[*int, *v5.Reactor] {
+	readPageResponse := func(response *basistheory.ReactorPaginatedList) *core.PageResponse[*int, *basistheory.Reactor, *basistheory.ReactorPaginatedList] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v5.Reactor]{
-			Next:    &next,
-			Results: results,
+		return &core.PageResponse[*int, *basistheory.Reactor, *basistheory.ReactorPaginatedList]{
+			Results:  results,
+			Response: response,
+			Next:     &next,
 		}
 	}
 	pager := internal.NewOffsetPager(
@@ -122,9 +112,9 @@ func (c *Client) List(
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v5.CreateReactorRequest,
+	request *basistheory.CreateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v5.Reactor, error) {
+) (*basistheory.Reactor, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -140,7 +130,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.Reactor, error) {
+) (*basistheory.Reactor, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -155,9 +145,9 @@ func (c *Client) Get(
 func (c *Client) Update(
 	ctx context.Context,
 	id string,
-	request *v5.UpdateReactorRequest,
+	request *basistheory.UpdateReactorRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v5.Reactor, error) {
+) (*basistheory.Reactor, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		id,
@@ -189,7 +179,7 @@ func (c *Client) Delete(
 func (c *Client) Patch(
 	ctx context.Context,
 	id string,
-	request *v5.PatchReactorRequest,
+	request *basistheory.PatchReactorRequest,
 	opts ...option.IdempotentRequestOption,
 ) error {
 	_, err := c.WithRawResponse.Patch(
@@ -209,7 +199,7 @@ func (c *Client) React(
 	id string,
 	request any,
 	opts ...option.RequestOption,
-) (*v5.ReactResponse, error) {
+) (*basistheory.ReactResponse, error) {
 	response, err := c.WithRawResponse.React(
 		ctx,
 		id,
@@ -227,7 +217,7 @@ func (c *Client) ReactAsync(
 	id string,
 	request any,
 	opts ...option.RequestOption,
-) (*v5.AsyncReactResponse, error) {
+) (*basistheory.AsyncReactResponse, error) {
 	response, err := c.WithRawResponse.ReactAsync(
 		ctx,
 		id,

@@ -2,10 +2,90 @@
 
 package merchant
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	applePayMerchantCertificatesRegisterRequestFieldMerchantCertificateData             = big.NewInt(1 << 0)
+	applePayMerchantCertificatesRegisterRequestFieldMerchantCertificatePassword         = big.NewInt(1 << 1)
+	applePayMerchantCertificatesRegisterRequestFieldPaymentProcessorCertificateData     = big.NewInt(1 << 2)
+	applePayMerchantCertificatesRegisterRequestFieldPaymentProcessorCertificatePassword = big.NewInt(1 << 3)
+	applePayMerchantCertificatesRegisterRequestFieldDomain                              = big.NewInt(1 << 4)
+)
+
 type ApplePayMerchantCertificatesRegisterRequest struct {
 	MerchantCertificateData             *string `json:"merchant_certificate_data,omitempty" url:"-"`
 	MerchantCertificatePassword         *string `json:"merchant_certificate_password,omitempty" url:"-"`
 	PaymentProcessorCertificateData     string  `json:"payment_processor_certificate_data" url:"-"`
 	PaymentProcessorCertificatePassword string  `json:"payment_processor_certificate_password" url:"-"`
 	Domain                              *string `json:"domain,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *ApplePayMerchantCertificatesRegisterRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetMerchantCertificateData sets the MerchantCertificateData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayMerchantCertificatesRegisterRequest) SetMerchantCertificateData(merchantCertificateData *string) {
+	a.MerchantCertificateData = merchantCertificateData
+	a.require(applePayMerchantCertificatesRegisterRequestFieldMerchantCertificateData)
+}
+
+// SetMerchantCertificatePassword sets the MerchantCertificatePassword field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayMerchantCertificatesRegisterRequest) SetMerchantCertificatePassword(merchantCertificatePassword *string) {
+	a.MerchantCertificatePassword = merchantCertificatePassword
+	a.require(applePayMerchantCertificatesRegisterRequestFieldMerchantCertificatePassword)
+}
+
+// SetPaymentProcessorCertificateData sets the PaymentProcessorCertificateData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayMerchantCertificatesRegisterRequest) SetPaymentProcessorCertificateData(paymentProcessorCertificateData string) {
+	a.PaymentProcessorCertificateData = paymentProcessorCertificateData
+	a.require(applePayMerchantCertificatesRegisterRequestFieldPaymentProcessorCertificateData)
+}
+
+// SetPaymentProcessorCertificatePassword sets the PaymentProcessorCertificatePassword field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayMerchantCertificatesRegisterRequest) SetPaymentProcessorCertificatePassword(paymentProcessorCertificatePassword string) {
+	a.PaymentProcessorCertificatePassword = paymentProcessorCertificatePassword
+	a.require(applePayMerchantCertificatesRegisterRequestFieldPaymentProcessorCertificatePassword)
+}
+
+// SetDomain sets the Domain field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayMerchantCertificatesRegisterRequest) SetDomain(domain *string) {
+	a.Domain = domain
+	a.require(applePayMerchantCertificatesRegisterRequestFieldDomain)
+}
+
+func (a *ApplePayMerchantCertificatesRegisterRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayMerchantCertificatesRegisterRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = ApplePayMerchantCertificatesRegisterRequest(body)
+	return nil
+}
+
+func (a *ApplePayMerchantCertificatesRegisterRequest) MarshalJSON() ([]byte, error) {
+	type embed ApplePayMerchantCertificatesRegisterRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

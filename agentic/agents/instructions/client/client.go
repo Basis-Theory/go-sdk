@@ -4,15 +4,16 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	http "net/http"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	agents "github.com/Basis-Theory/go-sdk/v5/agentic/agents"
 	credentials "github.com/Basis-Theory/go-sdk/v5/agentic/agents/instructions/credentials"
 	verify "github.com/Basis-Theory/go-sdk/v5/agentic/agents/instructions/verify"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
@@ -20,28 +21,28 @@ type Client struct {
 	Credentials     *credentials.Client
 	Verify          *verify.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Credentials:     credentials.NewClient(opts...),
-		Verify:          verify.NewClient(opts...),
+		Credentials:     credentials.NewClient(options),
+		Verify:          verify.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -51,7 +52,7 @@ func (c *Client) List(
 	agentID string,
 	request *agents.InstructionsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v5.Instruction], error) {
+) (*core.Page[*string, *basistheory.Instruction, *basistheory.InstructionList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -67,32 +68,10 @@ func (c *Client) List(
 		return nil, err
 	}
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	prepareCall := func(pageRequest *internal.PageRequest[*string]) *internal.CallParams {
+	prepareCall := func(pageRequest *core.PageRequest[*string]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
 			queryParams.Set("cursor", *pageRequest.Cursor)
 		}
@@ -105,24 +84,26 @@ func (c *Client) List(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		}
 	}
-	readPageResponse := func(response *v5.InstructionList) *internal.PageResponse[*string, *v5.Instruction] {
+	readPageResponse := func(response *basistheory.InstructionList) *core.PageResponse[*string, *basistheory.Instruction, *basistheory.InstructionList] {
 		var zeroValue *string
 		var next *string
 		if response.Pagination != nil {
 			next = response.Pagination.NextCursor
 		}
 		results := response.GetData()
-		return &internal.PageResponse[*string, *v5.Instruction]{
-			Next:    next,
-			Results: results,
-			Done:    next == zeroValue,
+		return &core.PageResponse[*string, *basistheory.Instruction, *basistheory.InstructionList]{
+			Results:  results,
+			Response: response,
+			Next:     next,
+			Done:     next == zeroValue,
 		}
 	}
 	pager := internal.NewCursorPager(
@@ -139,7 +120,7 @@ func (c *Client) Create(
 	agentID string,
 	request *agents.CreateInstructionRequest,
 	opts ...option.RequestOption,
-) (*v5.Instruction, error) {
+) (*basistheory.Instruction, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		agentID,
@@ -157,7 +138,7 @@ func (c *Client) Get(
 	agentID string,
 	instructionID string,
 	opts ...option.RequestOption,
-) (*v5.Instruction, error) {
+) (*basistheory.Instruction, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		agentID,
@@ -194,7 +175,7 @@ func (c *Client) Update(
 	instructionID string,
 	request *agents.UpdateInstructionRequest,
 	opts ...option.RequestOption,
-) (*v5.Instruction, error) {
+) (*basistheory.Instruction, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		agentID,

@@ -4,38 +4,38 @@ package domain
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	applepay "github.com/Basis-Theory/go-sdk/v5/applepay"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -58,7 +58,7 @@ func (c *Client) Deregister(
 func (c *Client) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*v5.ApplePayDomainRegistrationResponse, error) {
+) (*basistheory.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		opts...,
@@ -73,7 +73,7 @@ func (c *Client) Register(
 	ctx context.Context,
 	request *applepay.ApplePayDomainRegistrationRequest,
 	opts ...option.RequestOption,
-) (*v5.ApplePayDomainRegistrationResponse, error) {
+) (*basistheory.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.Register(
 		ctx,
 		request,
@@ -89,7 +89,7 @@ func (c *Client) RegisterAll(
 	ctx context.Context,
 	request *applepay.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
-) (*v5.ApplePayDomainRegistrationResponse, error) {
+) (*basistheory.ApplePayDomainRegistrationResponse, error) {
 	response, err := c.WithRawResponse.RegisterAll(
 		ctx,
 		request,

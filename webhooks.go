@@ -6,7 +6,15 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	createWebhookRequestFieldName        = big.NewInt(1 << 0)
+	createWebhookRequestFieldURL         = big.NewInt(1 << 1)
+	createWebhookRequestFieldNotifyEmail = big.NewInt(1 << 2)
+	createWebhookRequestFieldEvents      = big.NewInt(1 << 3)
 )
 
 type CreateWebhookRequest struct {
@@ -17,8 +25,81 @@ type CreateWebhookRequest struct {
 	// The email address to use for management notification events. Ie: webhook disabled
 	NotifyEmail *string `json:"notify_email,omitempty" url:"-"`
 	// An array of event types that the webhook will listen for
-	Events []string `json:"events,omitempty" url:"-"`
+	Events []string `json:"events" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateWebhookRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateWebhookRequest) SetName(name string) {
+	c.Name = name
+	c.require(createWebhookRequestFieldName)
+}
+
+// SetURL sets the URL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateWebhookRequest) SetURL(url string) {
+	c.URL = url
+	c.require(createWebhookRequestFieldURL)
+}
+
+// SetNotifyEmail sets the NotifyEmail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateWebhookRequest) SetNotifyEmail(notifyEmail *string) {
+	c.NotifyEmail = notifyEmail
+	c.require(createWebhookRequestFieldNotifyEmail)
+}
+
+// SetEvents sets the Events field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateWebhookRequest) SetEvents(events []string) {
+	c.Events = events
+	c.require(createWebhookRequestFieldEvents)
+}
+
+func (c *CreateWebhookRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateWebhookRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateWebhookRequest(body)
+	return nil
+}
+
+func (c *CreateWebhookRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateWebhookRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	webhookFieldID          = big.NewInt(1 << 0)
+	webhookFieldTenantID    = big.NewInt(1 << 1)
+	webhookFieldStatus      = big.NewInt(1 << 2)
+	webhookFieldName        = big.NewInt(1 << 3)
+	webhookFieldURL         = big.NewInt(1 << 4)
+	webhookFieldNotifyEmail = big.NewInt(1 << 5)
+	webhookFieldEvents      = big.NewInt(1 << 6)
+	webhookFieldCreatedBy   = big.NewInt(1 << 7)
+	webhookFieldCreatedAt   = big.NewInt(1 << 8)
+	webhookFieldModifiedBy  = big.NewInt(1 << 9)
+	webhookFieldModifiedAt  = big.NewInt(1 << 10)
+)
 
 type Webhook struct {
 	ID       string        `json:"id" url:"id"`
@@ -33,6 +114,9 @@ type Webhook struct {
 	CreatedAt   time.Time  `json:"created_at" url:"created_at"`
 	ModifiedBy  *string    `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt  *time.Time `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -116,7 +200,94 @@ func (w *Webhook) GetModifiedAt() *time.Time {
 }
 
 func (w *Webhook) GetExtraProperties() map[string]interface{} {
+	if w == nil {
+		return nil
+	}
 	return w.extraProperties
+}
+
+func (w *Webhook) require(field *big.Int) {
+	if w.explicitFields == nil {
+		w.explicitFields = big.NewInt(0)
+	}
+	w.explicitFields.Or(w.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetID(id string) {
+	w.ID = id
+	w.require(webhookFieldID)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetTenantID(tenantID string) {
+	w.TenantID = tenantID
+	w.require(webhookFieldTenantID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetStatus(status WebhookStatus) {
+	w.Status = status
+	w.require(webhookFieldStatus)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetName(name string) {
+	w.Name = name
+	w.require(webhookFieldName)
+}
+
+// SetURL sets the URL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetURL(url string) {
+	w.URL = url
+	w.require(webhookFieldURL)
+}
+
+// SetNotifyEmail sets the NotifyEmail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetNotifyEmail(notifyEmail *string) {
+	w.NotifyEmail = notifyEmail
+	w.require(webhookFieldNotifyEmail)
+}
+
+// SetEvents sets the Events field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetEvents(events []string) {
+	w.Events = events
+	w.require(webhookFieldEvents)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetCreatedBy(createdBy string) {
+	w.CreatedBy = createdBy
+	w.require(webhookFieldCreatedBy)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetCreatedAt(createdAt time.Time) {
+	w.CreatedAt = createdAt
+	w.require(webhookFieldCreatedAt)
+}
+
+// SetModifiedBy sets the ModifiedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetModifiedBy(modifiedBy *string) {
+	w.ModifiedBy = modifiedBy
+	w.require(webhookFieldModifiedBy)
+}
+
+// SetModifiedAt sets the ModifiedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *Webhook) SetModifiedAt(modifiedAt *time.Time) {
+	w.ModifiedAt = modifiedAt
+	w.require(webhookFieldModifiedAt)
 }
 
 func (w *Webhook) UnmarshalJSON(data []byte) error {
@@ -154,10 +325,14 @@ func (w *Webhook) MarshalJSON() ([]byte, error) {
 		CreatedAt:  internal.NewDateTime(w.CreatedAt),
 		ModifiedAt: internal.NewOptionalDateTime(w.ModifiedAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, w.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (w *Webhook) String() string {
+	if w == nil {
+		return "<nil>"
+	}
 	if len(w.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
@@ -169,9 +344,17 @@ func (w *Webhook) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
+var (
+	webhookListFieldPagination = big.NewInt(1 << 0)
+	webhookListFieldData       = big.NewInt(1 << 1)
+)
+
 type WebhookList struct {
 	Pagination *WebhookListPagination `json:"pagination" url:"pagination"`
 	Data       []*Webhook             `json:"data" url:"data"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -192,7 +375,31 @@ func (w *WebhookList) GetData() []*Webhook {
 }
 
 func (w *WebhookList) GetExtraProperties() map[string]interface{} {
+	if w == nil {
+		return nil
+	}
 	return w.extraProperties
+}
+
+func (w *WebhookList) require(field *big.Int) {
+	if w.explicitFields == nil {
+		w.explicitFields = big.NewInt(0)
+	}
+	w.explicitFields.Or(w.explicitFields, field)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookList) SetPagination(pagination *WebhookListPagination) {
+	w.Pagination = pagination
+	w.require(webhookListFieldPagination)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookList) SetData(data []*Webhook) {
+	w.Data = data
+	w.require(webhookListFieldData)
 }
 
 func (w *WebhookList) UnmarshalJSON(data []byte) error {
@@ -211,7 +418,21 @@ func (w *WebhookList) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (w *WebhookList) MarshalJSON() ([]byte, error) {
+	type embed WebhookList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*w),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, w.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (w *WebhookList) String() string {
+	if w == nil {
+		return "<nil>"
+	}
 	if len(w.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
@@ -223,9 +444,17 @@ func (w *WebhookList) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
+var (
+	webhookListPaginationFieldPageSize = big.NewInt(1 << 0)
+	webhookListPaginationFieldNext     = big.NewInt(1 << 1)
+)
+
 type WebhookListPagination struct {
 	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
 	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -246,7 +475,31 @@ func (w *WebhookListPagination) GetNext() *string {
 }
 
 func (w *WebhookListPagination) GetExtraProperties() map[string]interface{} {
+	if w == nil {
+		return nil
+	}
 	return w.extraProperties
+}
+
+func (w *WebhookListPagination) require(field *big.Int) {
+	if w.explicitFields == nil {
+		w.explicitFields = big.NewInt(0)
+	}
+	w.explicitFields.Or(w.explicitFields, field)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookListPagination) SetPageSize(pageSize *int) {
+	w.PageSize = pageSize
+	w.require(webhookListPaginationFieldPageSize)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookListPagination) SetNext(next *string) {
+	w.Next = next
+	w.require(webhookListPaginationFieldNext)
 }
 
 func (w *WebhookListPagination) UnmarshalJSON(data []byte) error {
@@ -265,7 +518,21 @@ func (w *WebhookListPagination) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (w *WebhookListPagination) MarshalJSON() ([]byte, error) {
+	type embed WebhookListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*w),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, w.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (w *WebhookListPagination) String() string {
+	if w == nil {
+		return "<nil>"
+	}
 	if len(w.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
 			return value
@@ -299,6 +566,13 @@ func (w WebhookStatus) Ptr() *WebhookStatus {
 	return &w
 }
 
+var (
+	updateWebhookRequestFieldName        = big.NewInt(1 << 0)
+	updateWebhookRequestFieldURL         = big.NewInt(1 << 1)
+	updateWebhookRequestFieldNotifyEmail = big.NewInt(1 << 2)
+	updateWebhookRequestFieldEvents      = big.NewInt(1 << 3)
+)
+
 type UpdateWebhookRequest struct {
 	// The name of the webhook
 	Name string `json:"name" url:"-"`
@@ -307,5 +581,64 @@ type UpdateWebhookRequest struct {
 	// The email address to use for management notification events. Ie: webhook disabled
 	NotifyEmail *string `json:"notify_email,omitempty" url:"-"`
 	// An array of event types that the webhook will listen for
-	Events []string `json:"events,omitempty" url:"-"`
+	Events []string `json:"events" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateWebhookRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateWebhookRequest) SetName(name string) {
+	u.Name = name
+	u.require(updateWebhookRequestFieldName)
+}
+
+// SetURL sets the URL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateWebhookRequest) SetURL(url string) {
+	u.URL = url
+	u.require(updateWebhookRequestFieldURL)
+}
+
+// SetNotifyEmail sets the NotifyEmail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateWebhookRequest) SetNotifyEmail(notifyEmail *string) {
+	u.NotifyEmail = notifyEmail
+	u.require(updateWebhookRequestFieldNotifyEmail)
+}
+
+// SetEvents sets the Events field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateWebhookRequest) SetEvents(events []string) {
+	u.Events = events
+	u.require(updateWebhookRequestFieldEvents)
+}
+
+func (u *UpdateWebhookRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateWebhookRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateWebhookRequest(body)
+	return nil
+}
+
+func (u *UpdateWebhookRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateWebhookRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
