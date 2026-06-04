@@ -4,19 +4,89 @@ package agents
 
 import (
 	json "encoding/json"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	v6 "github.com/Basis-Theory/go-sdk/v6"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
 	time "time"
 )
 
+var (
+	createInstructionRequestFieldEnrollmentID    = big.NewInt(1 << 0)
+	createInstructionRequestFieldAmount          = big.NewInt(1 << 1)
+	createInstructionRequestFieldDescription     = big.NewInt(1 << 2)
+	createInstructionRequestFieldExpiresAt       = big.NewInt(1 << 3)
+	createInstructionRequestFieldAssuranceData   = big.NewInt(1 << 4)
+	createInstructionRequestFieldRecurring       = big.NewInt(1 << 5)
+	createInstructionRequestFieldInstanceDetails = big.NewInt(1 << 6)
+)
+
 type CreateInstructionRequest struct {
-	EnrollmentID    string                 `json:"enrollment_id" url:"-"`
-	Amount          *v5.Amount             `json:"amount,omitempty" url:"-"`
-	Description     string                 `json:"description" url:"-"`
-	ExpiresAt       time.Time              `json:"expires_at" url:"-"`
-	AssuranceData   map[string]interface{} `json:"assurance_data,omitempty" url:"-"`
-	Recurring       *v5.Recurring          `json:"recurring,omitempty" url:"-"`
-	InstanceDetails *v5.InstanceDetails    `json:"instance_details,omitempty" url:"-"`
+	EnrollmentID    string              `json:"enrollment_id" url:"-"`
+	Amount          *v6.Amount          `json:"amount" url:"-"`
+	Description     string              `json:"description" url:"-"`
+	ExpiresAt       time.Time           `json:"expires_at" url:"-"`
+	AssuranceData   map[string]any      `json:"assurance_data,omitempty" url:"-"`
+	Recurring       *v6.Recurring       `json:"recurring,omitempty" url:"-"`
+	InstanceDetails *v6.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (c *CreateInstructionRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetEnrollmentID sets the EnrollmentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetEnrollmentID(enrollmentID string) {
+	c.EnrollmentID = enrollmentID
+	c.require(createInstructionRequestFieldEnrollmentID)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetAmount(amount *v6.Amount) {
+	c.Amount = amount
+	c.require(createInstructionRequestFieldAmount)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetDescription(description string) {
+	c.Description = description
+	c.require(createInstructionRequestFieldDescription)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetExpiresAt(expiresAt time.Time) {
+	c.ExpiresAt = expiresAt
+	c.require(createInstructionRequestFieldExpiresAt)
+}
+
+// SetAssuranceData sets the AssuranceData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetAssuranceData(assuranceData map[string]any) {
+	c.AssuranceData = assuranceData
+	c.require(createInstructionRequestFieldAssuranceData)
+}
+
+// SetRecurring sets the Recurring field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetRecurring(recurring *v6.Recurring) {
+	c.Recurring = recurring
+	c.require(createInstructionRequestFieldRecurring)
+}
+
+// SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetInstanceDetails(instanceDetails *v6.InstanceDetails) {
+	c.InstanceDetails = instanceDetails
+	c.require(createInstructionRequestFieldInstanceDetails)
 }
 
 func (c *CreateInstructionRequest) UnmarshalJSON(data []byte) error {
@@ -38,8 +108,15 @@ func (c *CreateInstructionRequest) MarshalJSON() ([]byte, error) {
 		embed:     embed(*c),
 		ExpiresAt: internal.NewDateTime(c.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
+
+var (
+	instructionsListRequestFieldEnrollmentID = big.NewInt(1 << 0)
+	instructionsListRequestFieldLimit        = big.NewInt(1 << 1)
+	instructionsListRequestFieldCursor       = big.NewInt(1 << 2)
+)
 
 type InstructionsListRequest struct {
 	// Filter instructions by enrollment ID
@@ -47,12 +124,80 @@ type InstructionsListRequest struct {
 	Limit        *int    `json:"-" url:"limit,omitempty"`
 	// Pagination cursor from a previous response
 	Cursor *string `json:"-" url:"cursor,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
 
+func (i *InstructionsListRequest) require(field *big.Int) {
+	if i.explicitFields == nil {
+		i.explicitFields = big.NewInt(0)
+	}
+	i.explicitFields.Or(i.explicitFields, field)
+}
+
+// SetEnrollmentID sets the EnrollmentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InstructionsListRequest) SetEnrollmentID(enrollmentID *string) {
+	i.EnrollmentID = enrollmentID
+	i.require(instructionsListRequestFieldEnrollmentID)
+}
+
+// SetLimit sets the Limit field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InstructionsListRequest) SetLimit(limit *int) {
+	i.Limit = limit
+	i.require(instructionsListRequestFieldLimit)
+}
+
+// SetCursor sets the Cursor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *InstructionsListRequest) SetCursor(cursor *string) {
+	i.Cursor = cursor
+	i.require(instructionsListRequestFieldCursor)
+}
+
+var (
+	updateInstructionRequestFieldAmount      = big.NewInt(1 << 0)
+	updateInstructionRequestFieldDescription = big.NewInt(1 << 1)
+	updateInstructionRequestFieldExpiresAt   = big.NewInt(1 << 2)
+)
+
 type UpdateInstructionRequest struct {
-	Amount      *v5.Amount `json:"amount,omitempty" url:"-"`
+	Amount      *v6.Amount `json:"amount,omitempty" url:"-"`
 	Description *string    `json:"description,omitempty" url:"-"`
 	ExpiresAt   *time.Time `json:"expires_at,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateInstructionRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateInstructionRequest) SetAmount(amount *v6.Amount) {
+	u.Amount = amount
+	u.require(updateInstructionRequestFieldAmount)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateInstructionRequest) SetDescription(description *string) {
+	u.Description = description
+	u.require(updateInstructionRequestFieldDescription)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateInstructionRequest) SetExpiresAt(expiresAt *time.Time) {
+	u.ExpiresAt = expiresAt
+	u.require(updateInstructionRequestFieldExpiresAt)
 }
 
 func (u *UpdateInstructionRequest) UnmarshalJSON(data []byte) error {
@@ -74,5 +219,6 @@ func (u *UpdateInstructionRequest) MarshalJSON() ([]byte, error) {
 		embed:     embed(*u),
 		ExpiresAt: internal.NewOptionalDateTime(u.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

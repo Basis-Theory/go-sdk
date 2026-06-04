@@ -3,13 +3,90 @@
 package instructions
 
 import (
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	json "encoding/json"
+	v6 "github.com/Basis-Theory/go-sdk/v6"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	getCredentialsRequestFieldProducts        = big.NewInt(1 << 0)
+	getCredentialsRequestFieldMerchant        = big.NewInt(1 << 1)
+	getCredentialsRequestFieldAmount          = big.NewInt(1 << 2)
+	getCredentialsRequestFieldDeliveryMethod  = big.NewInt(1 << 3)
+	getCredentialsRequestFieldShippingAddress = big.NewInt(1 << 4)
 )
 
 type GetCredentialsRequest struct {
-	Products        []*v5.Product       `json:"products,omitempty" url:"-"`
-	Merchant        *v5.AgenticMerchant `json:"merchant,omitempty" url:"-"`
-	Amount          *v5.Amount          `json:"amount,omitempty" url:"-"`
-	DeliveryMethod  *v5.DeliveryMethod  `json:"delivery_method,omitempty" url:"-"`
-	ShippingAddress *v5.ShippingAddress `json:"shipping_address,omitempty" url:"-"`
+	Products        []*v6.Product       `json:"products,omitempty" url:"-"`
+	Merchant        *v6.AgenticMerchant `json:"merchant" url:"-"`
+	Amount          *v6.Amount          `json:"amount,omitempty" url:"-"`
+	DeliveryMethod  *v6.DeliveryMethod  `json:"delivery_method,omitempty" url:"-"`
+	ShippingAddress *v6.ShippingAddress `json:"shipping_address,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetCredentialsRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetProducts sets the Products field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetCredentialsRequest) SetProducts(products []*v6.Product) {
+	g.Products = products
+	g.require(getCredentialsRequestFieldProducts)
+}
+
+// SetMerchant sets the Merchant field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetCredentialsRequest) SetMerchant(merchant *v6.AgenticMerchant) {
+	g.Merchant = merchant
+	g.require(getCredentialsRequestFieldMerchant)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetCredentialsRequest) SetAmount(amount *v6.Amount) {
+	g.Amount = amount
+	g.require(getCredentialsRequestFieldAmount)
+}
+
+// SetDeliveryMethod sets the DeliveryMethod field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetCredentialsRequest) SetDeliveryMethod(deliveryMethod *v6.DeliveryMethod) {
+	g.DeliveryMethod = deliveryMethod
+	g.require(getCredentialsRequestFieldDeliveryMethod)
+}
+
+// SetShippingAddress sets the ShippingAddress field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetCredentialsRequest) SetShippingAddress(shippingAddress *v6.ShippingAddress) {
+	g.ShippingAddress = shippingAddress
+	g.require(getCredentialsRequestFieldShippingAddress)
+}
+
+func (g *GetCredentialsRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler GetCredentialsRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*g = GetCredentialsRequest(body)
+	return nil
+}
+
+func (g *GetCredentialsRequest) MarshalJSON() ([]byte, error) {
+	type embed GetCredentialsRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

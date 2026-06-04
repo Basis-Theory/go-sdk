@@ -4,37 +4,39 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (r *RawClient) Upload(
 	ctx context.Context,
-	request *v5.DocumentsUploadRequest,
+	request *basistheory.DocumentsUploadRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.Document], error) {
+) (*core.Response[*basistheory.Document], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -43,29 +45,14 @@ func (r *RawClient) Upload(
 	)
 	endpointURL := baseURL + "/documents"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-	}
 	writer := internal.NewMultipartWriter()
-	if err := writer.WriteFile("document", request.Document); err != nil {
-		return nil, err
+	if request.Document != nil {
+		if err := writer.WriteFile("document", request.Document); err != nil {
+			return nil, err
+		}
 	}
 	if request.Request != nil {
 		if err := writer.WriteJSON("request", request.Request, internal.WithDefaultContentType("application/json")); err != nil {
@@ -77,7 +64,7 @@ func (r *RawClient) Upload(
 	}
 	headers.Set("Content-Type", writer.ContentType())
 
-	var response *v5.Document
+	var response *basistheory.Document
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -85,18 +72,19 @@ func (r *RawClient) Upload(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         writer.Buffer(),
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.Document]{
+	return &core.Response[*basistheory.Document]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -107,7 +95,7 @@ func (r *RawClient) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.Document], error) {
+) (*core.Response[*basistheory.Document], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -119,27 +107,10 @@ func (r *RawClient) Get(
 		id,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.Document
+	var response *basistheory.Document
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -147,17 +118,18 @@ func (r *RawClient) Get(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.Document]{
+	return &core.Response[*basistheory.Document]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -180,21 +152,9 @@ func (r *RawClient) Delete(
 		id,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-	}
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -202,10 +162,11 @@ func (r *RawClient) Delete(
 			Method:          http.MethodDelete,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		},
 	)
 	if err != nil {

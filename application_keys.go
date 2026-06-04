@@ -2,7 +2,40 @@
 
 package basistheory
 
+import (
+	big "math/big"
+)
+
+var (
+	applicationKeysListRequestFieldKeyID = big.NewInt(1 << 0)
+	applicationKeysListRequestFieldType  = big.NewInt(1 << 1)
+)
+
 type ApplicationKeysListRequest struct {
-	ID   []*string `json:"-" url:"id,omitempty"`
-	Type []*string `json:"-" url:"type,omitempty"`
+	KeyID []*string `json:"-" url:"id,omitempty"`
+	Type  []*string `json:"-" url:"type,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *ApplicationKeysListRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetKeyID sets the KeyID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationKeysListRequest) SetKeyID(keyID []*string) {
+	a.KeyID = keyID
+	a.require(applicationKeysListRequestFieldKeyID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationKeysListRequest) SetType(type_ []*string) {
+	a.Type = type_
+	a.require(applicationKeysListRequestFieldType)
 }

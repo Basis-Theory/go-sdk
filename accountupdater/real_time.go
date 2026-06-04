@@ -2,6 +2,20 @@
 
 package accountupdater
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	accountUpdaterRealTimeRequestFieldTokenID          = big.NewInt(1 << 0)
+	accountUpdaterRealTimeRequestFieldExpirationYear   = big.NewInt(1 << 1)
+	accountUpdaterRealTimeRequestFieldExpirationMonth  = big.NewInt(1 << 2)
+	accountUpdaterRealTimeRequestFieldDeduplicateToken = big.NewInt(1 << 3)
+	accountUpdaterRealTimeRequestFieldMerchantID       = big.NewInt(1 << 4)
+)
+
 type AccountUpdaterRealTimeRequest struct {
 	// Card Token identifier
 	TokenID string `json:"token_id" url:"-"`
@@ -13,4 +27,70 @@ type AccountUpdaterRealTimeRequest struct {
 	DeduplicateToken *bool `json:"deduplicate_token,omitempty" url:"-"`
 	// Tenant merchant identifier
 	MerchantID *string `json:"merchant_id,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *AccountUpdaterRealTimeRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetTokenID sets the TokenID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetTokenID(tokenID string) {
+	a.TokenID = tokenID
+	a.require(accountUpdaterRealTimeRequestFieldTokenID)
+}
+
+// SetExpirationYear sets the ExpirationYear field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetExpirationYear(expirationYear *int) {
+	a.ExpirationYear = expirationYear
+	a.require(accountUpdaterRealTimeRequestFieldExpirationYear)
+}
+
+// SetExpirationMonth sets the ExpirationMonth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetExpirationMonth(expirationMonth *int) {
+	a.ExpirationMonth = expirationMonth
+	a.require(accountUpdaterRealTimeRequestFieldExpirationMonth)
+}
+
+// SetDeduplicateToken sets the DeduplicateToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetDeduplicateToken(deduplicateToken *bool) {
+	a.DeduplicateToken = deduplicateToken
+	a.require(accountUpdaterRealTimeRequestFieldDeduplicateToken)
+}
+
+// SetMerchantID sets the MerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetMerchantID(merchantID *string) {
+	a.MerchantID = merchantID
+	a.require(accountUpdaterRealTimeRequestFieldMerchantID)
+}
+
+func (a *AccountUpdaterRealTimeRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler AccountUpdaterRealTimeRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = AccountUpdaterRealTimeRequest(body)
+	return nil
+}
+
+func (a *AccountUpdaterRealTimeRequest) MarshalJSON() ([]byte, error) {
+	type embed AccountUpdaterRealTimeRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

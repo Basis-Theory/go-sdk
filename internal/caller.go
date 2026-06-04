@@ -12,13 +12,14 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Basis-Theory/go-sdk/v5/core"
+	"github.com/Basis-Theory/go-sdk/v6/core"
 )
 
 const (
 	// contentType specifies the JSON Content-Type header value.
-	contentType       = "application/json"
-	contentTypeHeader = "Content-Type"
+	contentType               = "application/json"
+	contentTypeHeader         = "Content-Type"
+	contentTypeFormURLEncoded = "application/x-www-form-urlencoded"
 )
 
 // Caller calls APIs and deserializes their response, if any.
@@ -29,8 +30,9 @@ type Caller struct {
 
 // CallerParams represents the parameters used to constrcut a new *Caller.
 type CallerParams struct {
-	Client      core.HTTPClient
-	MaxAttempts uint
+	Client         core.HTTPClient
+	MaxAttempts    uint
+	DisableRetries bool
 }
 
 // NewCaller returns a new *Caller backed by the given parameters.
@@ -39,13 +41,9 @@ func NewCaller(params *CallerParams) *Caller {
 	if params.Client != nil {
 		httpClient = params.Client
 	}
-	var retryOptions []RetryOption
-	if params.MaxAttempts > 0 {
-		retryOptions = append(retryOptions, WithMaxAttempts(params.MaxAttempts))
-	}
 	return &Caller{
 		client:  httpClient,
-		retrier: NewRetrier(retryOptions...),
+		retrier: NewRetrier(buildRetryOptions(params.MaxAttempts, params.DisableRetries)...),
 	}
 }
 
@@ -54,6 +52,7 @@ type CallParams struct {
 	URL                string
 	Method             string
 	MaxAttempts        uint
+	DisableRetries     bool
 	Headers            http.Header
 	BodyProperties     map[string]interface{}
 	QueryParameters    url.Values
@@ -96,23 +95,18 @@ func (c *Caller) Call(ctx context.Context, params *CallParams) (*CallResponse, e
 		client = params.Client
 	}
 
-	var retryOptions []RetryOption
-	if params.MaxAttempts > 0 {
-		retryOptions = append(retryOptions, WithMaxAttempts(params.MaxAttempts))
-	}
-
 	resp, err := c.retrier.Run(
 		client.Do,
 		req,
 		params.ErrorDecoder,
-		retryOptions...,
+		buildRetryOptions(params.MaxAttempts, params.DisableRetries)...,
 	)
 	if err != nil {
 		return nil, err
 	}
 
 	// Close the response body after we're done.
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Check if the call was cancelled before we return the error
 	// associated with the call and/or unmarshal the response data.
@@ -180,7 +174,14 @@ func newRequest(
 	request interface{},
 	bodyProperties map[string]interface{},
 ) (*http.Request, error) {
-	requestBody, err := newRequestBody(request, bodyProperties)
+	// Determine the content type from headers, defaulting to JSON.
+	reqContentType := contentType
+	if endpointHeaders != nil {
+		if ct := endpointHeaders.Get(contentTypeHeader); ct != "" {
+			reqContentType = ct
+		}
+	}
+	requestBody, err := newRequestBody(request, bodyProperties, reqContentType)
 	if err != nil {
 		return nil, err
 	}
@@ -188,8 +189,7 @@ func newRequest(
 	if err != nil {
 		return nil, err
 	}
-	req = req.WithContext(ctx)
-	req.Header.Set(contentTypeHeader, contentType)
+	req.Header.Set(contentTypeHeader, reqContentType)
 	for name, values := range endpointHeaders {
 		req.Header[name] = values
 	}
@@ -197,10 +197,13 @@ func newRequest(
 }
 
 // newRequestBody returns a new io.Reader that represents the HTTP request body.
-func newRequestBody(request interface{}, bodyProperties map[string]interface{}) (io.Reader, error) {
+func newRequestBody(request interface{}, bodyProperties map[string]interface{}, reqContentType string) (io.Reader, error) {
 	if isNil(request) {
 		if len(bodyProperties) == 0 {
 			return nil, nil
+		}
+		if reqContentType == contentTypeFormURLEncoded {
+			return newFormURLEncodedBody(bodyProperties), nil
 		}
 		requestBytes, err := json.Marshal(bodyProperties)
 		if err != nil {
@@ -211,11 +214,53 @@ func newRequestBody(request interface{}, bodyProperties map[string]interface{}) 
 	if body, ok := request.(io.Reader); ok {
 		return body, nil
 	}
+	// Handle form URL encoded content type.
+	if reqContentType == contentTypeFormURLEncoded {
+		return newFormURLEncodedRequestBody(request, bodyProperties)
+	}
 	requestBytes, err := MarshalJSONWithExtraProperties(request, bodyProperties)
 	if err != nil {
 		return nil, err
 	}
 	return bytes.NewReader(requestBytes), nil
+}
+
+// newFormURLEncodedBody returns a new io.Reader that represents a form URL encoded body
+// from the given body properties map.
+func newFormURLEncodedBody(bodyProperties map[string]interface{}) io.Reader {
+	values := url.Values{}
+	for key, val := range bodyProperties {
+		values.Set(key, fmt.Sprintf("%v", val))
+	}
+	return strings.NewReader(values.Encode())
+}
+
+// newFormURLEncodedRequestBody returns a new io.Reader that represents a form URL encoded body
+// from the given request struct and body properties.
+func newFormURLEncodedRequestBody(request interface{}, bodyProperties map[string]interface{}) (io.Reader, error) {
+	values := url.Values{}
+	// Marshal the request to JSON first to respect any custom MarshalJSON methods,
+	// then unmarshal into a map to extract the field values.
+	jsonBytes, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+	var jsonMap map[string]interface{}
+	if err := json.Unmarshal(jsonBytes, &jsonMap); err != nil {
+		return nil, err
+	}
+	// Convert the JSON map to form URL encoded values.
+	for key, val := range jsonMap {
+		if val == nil {
+			continue
+		}
+		values.Set(key, fmt.Sprintf("%v", val))
+	}
+	// Add any extra body properties.
+	for key, val := range bodyProperties {
+		values.Set(key, fmt.Sprintf("%v", val))
+	}
+	return strings.NewReader(values.Encode()), nil
 }
 
 // decodeError decodes the error from the given HTTP response. Note that
@@ -246,5 +291,14 @@ func decodeError(response *http.Response, errorDecoder ErrorDecoder) error {
 // isNil is used to determine if the request value is equal to nil (i.e. an interface
 // value that holds a nil concrete value is itself non-nil).
 func isNil(value interface{}) bool {
-	return value == nil || reflect.ValueOf(value).IsNil()
+	if value == nil {
+		return true
+	}
+	v := reflect.ValueOf(value)
+	switch v.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
+		return v.IsNil()
+	default:
+		return false
+	}
 }

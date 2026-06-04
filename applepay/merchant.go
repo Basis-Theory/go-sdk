@@ -2,6 +2,54 @@
 
 package applepay
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	applePayMerchantRegisterRequestFieldMerchantIdentifier = big.NewInt(1 << 0)
+)
+
 type ApplePayMerchantRegisterRequest struct {
 	MerchantIdentifier *string `json:"merchant_identifier,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *ApplePayMerchantRegisterRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetMerchantIdentifier sets the MerchantIdentifier field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayMerchantRegisterRequest) SetMerchantIdentifier(merchantIdentifier *string) {
+	a.MerchantIdentifier = merchantIdentifier
+	a.require(applePayMerchantRegisterRequestFieldMerchantIdentifier)
+}
+
+func (a *ApplePayMerchantRegisterRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayMerchantRegisterRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = ApplePayMerchantRegisterRequest(body)
+	return nil
+}
+
+func (a *ApplePayMerchantRegisterRequest) MarshalJSON() ([]byte, error) {
+	type embed ApplePayMerchantRegisterRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

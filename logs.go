@@ -5,8 +5,19 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	logsListRequestFieldEntityType = big.NewInt(1 << 0)
+	logsListRequestFieldEntityID   = big.NewInt(1 << 1)
+	logsListRequestFieldStartDate  = big.NewInt(1 << 2)
+	logsListRequestFieldEndDate    = big.NewInt(1 << 3)
+	logsListRequestFieldPage       = big.NewInt(1 << 4)
+	logsListRequestFieldStart      = big.NewInt(1 << 5)
+	logsListRequestFieldSize       = big.NewInt(1 << 6)
 )
 
 type LogsListRequest struct {
@@ -17,7 +28,78 @@ type LogsListRequest struct {
 	Page       *int       `json:"-" url:"page,omitempty"`
 	Start      *string    `json:"-" url:"start,omitempty"`
 	Size       *int       `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (l *LogsListRequest) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetEntityType sets the EntityType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetEntityType(entityType *string) {
+	l.EntityType = entityType
+	l.require(logsListRequestFieldEntityType)
+}
+
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetEntityID(entityID *string) {
+	l.EntityID = entityID
+	l.require(logsListRequestFieldEntityID)
+}
+
+// SetStartDate sets the StartDate field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetStartDate(startDate *time.Time) {
+	l.StartDate = startDate
+	l.require(logsListRequestFieldStartDate)
+}
+
+// SetEndDate sets the EndDate field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetEndDate(endDate *time.Time) {
+	l.EndDate = endDate
+	l.require(logsListRequestFieldEndDate)
+}
+
+// SetPage sets the Page field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetPage(page *int) {
+	l.Page = page
+	l.require(logsListRequestFieldPage)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetStart(start *string) {
+	l.Start = start
+	l.require(logsListRequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogsListRequest) SetSize(size *int) {
+	l.Size = size
+	l.require(logsListRequestFieldSize)
+}
+
+var (
+	logFieldID         = big.NewInt(1 << 0)
+	logFieldTenantID   = big.NewInt(1 << 1)
+	logFieldActorID    = big.NewInt(1 << 2)
+	logFieldActorType  = big.NewInt(1 << 3)
+	logFieldEntityType = big.NewInt(1 << 4)
+	logFieldEntityID   = big.NewInt(1 << 5)
+	logFieldOperation  = big.NewInt(1 << 6)
+	logFieldMessage    = big.NewInt(1 << 7)
+	logFieldCreatedAt  = big.NewInt(1 << 8)
+)
 
 type Log struct {
 	ID         *string    `json:"id,omitempty" url:"id,omitempty"`
@@ -29,6 +111,9 @@ type Log struct {
 	Operation  *string    `json:"operation,omitempty" url:"operation,omitempty"`
 	Message    *string    `json:"message,omitempty" url:"message,omitempty"`
 	CreatedAt  *time.Time `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -98,7 +183,80 @@ func (l *Log) GetCreatedAt() *time.Time {
 }
 
 func (l *Log) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
+}
+
+func (l *Log) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetID(id *string) {
+	l.ID = id
+	l.require(logFieldID)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetTenantID(tenantID *string) {
+	l.TenantID = tenantID
+	l.require(logFieldTenantID)
+}
+
+// SetActorID sets the ActorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetActorID(actorID *string) {
+	l.ActorID = actorID
+	l.require(logFieldActorID)
+}
+
+// SetActorType sets the ActorType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetActorType(actorType *string) {
+	l.ActorType = actorType
+	l.require(logFieldActorType)
+}
+
+// SetEntityType sets the EntityType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetEntityType(entityType *string) {
+	l.EntityType = entityType
+	l.require(logFieldEntityType)
+}
+
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetEntityID(entityID *string) {
+	l.EntityID = entityID
+	l.require(logFieldEntityID)
+}
+
+// SetOperation sets the Operation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetOperation(operation *string) {
+	l.Operation = operation
+	l.require(logFieldOperation)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetMessage(message *string) {
+	l.Message = message
+	l.require(logFieldMessage)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *Log) SetCreatedAt(createdAt *time.Time) {
+	l.CreatedAt = createdAt
+	l.require(logFieldCreatedAt)
 }
 
 func (l *Log) UnmarshalJSON(data []byte) error {
@@ -132,10 +290,14 @@ func (l *Log) MarshalJSON() ([]byte, error) {
 		embed:     embed(*l),
 		CreatedAt: internal.NewOptionalDateTime(l.CreatedAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (l *Log) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -147,9 +309,17 @@ func (l *Log) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
+var (
+	logEntityTypeFieldDisplayName = big.NewInt(1 << 0)
+	logEntityTypeFieldValue       = big.NewInt(1 << 1)
+)
+
 type LogEntityType struct {
 	DisplayName *string `json:"display_name,omitempty" url:"display_name,omitempty"`
 	Value       *string `json:"value,omitempty" url:"value,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -170,7 +340,31 @@ func (l *LogEntityType) GetValue() *string {
 }
 
 func (l *LogEntityType) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
+}
+
+func (l *LogEntityType) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetDisplayName sets the DisplayName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogEntityType) SetDisplayName(displayName *string) {
+	l.DisplayName = displayName
+	l.require(logEntityTypeFieldDisplayName)
+}
+
+// SetValue sets the Value field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogEntityType) SetValue(value *string) {
+	l.Value = value
+	l.require(logEntityTypeFieldValue)
 }
 
 func (l *LogEntityType) UnmarshalJSON(data []byte) error {
@@ -189,7 +383,21 @@ func (l *LogEntityType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (l *LogEntityType) MarshalJSON() ([]byte, error) {
+	type embed LogEntityType
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*l),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (l *LogEntityType) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -201,9 +409,17 @@ func (l *LogEntityType) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
+var (
+	logPaginatedListFieldPagination = big.NewInt(1 << 0)
+	logPaginatedListFieldData       = big.NewInt(1 << 1)
+)
+
 type LogPaginatedList struct {
 	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
 	Data       []*Log      `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -224,7 +440,31 @@ func (l *LogPaginatedList) GetData() []*Log {
 }
 
 func (l *LogPaginatedList) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
+}
+
+func (l *LogPaginatedList) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogPaginatedList) SetPagination(pagination *Pagination) {
+	l.Pagination = pagination
+	l.require(logPaginatedListFieldPagination)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LogPaginatedList) SetData(data []*Log) {
+	l.Data = data
+	l.require(logPaginatedListFieldData)
 }
 
 func (l *LogPaginatedList) UnmarshalJSON(data []byte) error {
@@ -243,7 +483,21 @@ func (l *LogPaginatedList) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (l *LogPaginatedList) MarshalJSON() ([]byte, error) {
+	type embed LogPaginatedList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*l),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (l *LogPaginatedList) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value

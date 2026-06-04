@@ -2,9 +2,73 @@
 
 package instructions
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	submitPasskeyRequestFieldAssuranceData    = big.NewInt(1 << 0)
+	submitPasskeyRequestFieldSrcCorrelationID = big.NewInt(1 << 1)
+	submitPasskeyRequestFieldFlowID           = big.NewInt(1 << 2)
+)
+
 type SubmitPasskeyRequest struct {
 	// Visa format (identifier, dfp_session_id, fido_assertion_data) or Mastercard format (flexible object)
-	AssuranceData    map[string]interface{} `json:"assurance_data,omitempty" url:"-"`
-	SrcCorrelationID *string                `json:"src_correlation_id,omitempty" url:"-"`
-	FlowID           *string                `json:"flow_id,omitempty" url:"-"`
+	AssuranceData    map[string]any `json:"assurance_data" url:"-"`
+	SrcCorrelationID *string        `json:"src_correlation_id,omitempty" url:"-"`
+	FlowID           *string        `json:"flow_id,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (s *SubmitPasskeyRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetAssuranceData sets the AssuranceData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SubmitPasskeyRequest) SetAssuranceData(assuranceData map[string]any) {
+	s.AssuranceData = assuranceData
+	s.require(submitPasskeyRequestFieldAssuranceData)
+}
+
+// SetSrcCorrelationID sets the SrcCorrelationID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SubmitPasskeyRequest) SetSrcCorrelationID(srcCorrelationID *string) {
+	s.SrcCorrelationID = srcCorrelationID
+	s.require(submitPasskeyRequestFieldSrcCorrelationID)
+}
+
+// SetFlowID sets the FlowID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SubmitPasskeyRequest) SetFlowID(flowID *string) {
+	s.FlowID = flowID
+	s.require(submitPasskeyRequestFieldFlowID)
+}
+
+func (s *SubmitPasskeyRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler SubmitPasskeyRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*s = SubmitPasskeyRequest(body)
+	return nil
+}
+
+func (s *SubmitPasskeyRequest) MarshalJSON() ([]byte, error) {
+	type embed SubmitPasskeyRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

@@ -3,36 +3,35 @@
 package client
 
 import (
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	sessions "github.com/Basis-Theory/go-sdk/v5/threeds/sessions"
-	http "net/http"
 	os "os"
+
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	sessions "github.com/Basis-Theory/go-sdk/v6/threeds/sessions"
 )
 
 type Client struct {
 	Sessions *sessions.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Sessions: sessions.NewClient(opts...),
+		Sessions: sessions.NewClient(options),
+		options:  options,
 		baseURL:  options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
