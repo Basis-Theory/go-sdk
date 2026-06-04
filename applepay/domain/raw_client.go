@@ -4,30 +4,32 @@ package domain
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	http "net/http"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	applepay "github.com/Basis-Theory/go-sdk/v5/applepay"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -44,22 +46,10 @@ func (r *RawClient) Deregister(
 	)
 	endpointURL := baseURL + "/apple-pay/domain-deregistration"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-	}
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -67,11 +57,12 @@ func (r *RawClient) Deregister(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(applepay.ErrorCodes),
 		},
 	)
 	if err != nil {
@@ -87,7 +78,7 @@ func (r *RawClient) Deregister(
 func (r *RawClient) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.ApplePayDomainRegistrationResponse], error) {
+) (*core.Response[*basistheory.ApplePayDomainRegistrationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -96,17 +87,10 @@ func (r *RawClient) Get(
 	)
 	endpointURL := baseURL + "/apple-pay/domain-registration"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.ApplePayDomainRegistrationResponse
+	var response *basistheory.ApplePayDomainRegistrationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -114,17 +98,18 @@ func (r *RawClient) Get(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(applepay.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.ApplePayDomainRegistrationResponse]{
+	return &core.Response[*basistheory.ApplePayDomainRegistrationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -135,7 +120,7 @@ func (r *RawClient) Register(
 	ctx context.Context,
 	request *applepay.ApplePayDomainRegistrationRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.ApplePayDomainRegistrationResponse], error) {
+) (*core.Response[*basistheory.ApplePayDomainRegistrationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -144,38 +129,11 @@ func (r *RawClient) Register(
 	)
 	endpointURL := baseURL + "/apple-pay/domain-registration"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		503: func(apiError *core.APIError) error {
-			return &v5.ServiceUnavailableError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.ApplePayDomainRegistrationResponse
+	var response *basistheory.ApplePayDomainRegistrationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -183,18 +141,19 @@ func (r *RawClient) Register(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(applepay.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.ApplePayDomainRegistrationResponse]{
+	return &core.Response[*basistheory.ApplePayDomainRegistrationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -205,7 +164,7 @@ func (r *RawClient) RegisterAll(
 	ctx context.Context,
 	request *applepay.ApplePayDomainRegistrationListRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.ApplePayDomainRegistrationResponse], error) {
+) (*core.Response[*basistheory.ApplePayDomainRegistrationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -214,38 +173,11 @@ func (r *RawClient) RegisterAll(
 	)
 	endpointURL := baseURL + "/apple-pay/domain-registration"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		503: func(apiError *core.APIError) error {
-			return &v5.ServiceUnavailableError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.ApplePayDomainRegistrationResponse
+	var response *basistheory.ApplePayDomainRegistrationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -253,18 +185,19 @@ func (r *RawClient) RegisterAll(
 			Method:          http.MethodPut,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(applepay.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.ApplePayDomainRegistrationResponse]{
+	return &core.Response[*basistheory.ApplePayDomainRegistrationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

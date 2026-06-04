@@ -4,38 +4,38 @@ package sessions
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
 	threeds "github.com/Basis-Theory/go-sdk/v5/threeds"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -43,7 +43,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *threeds.CreateThreeDsSessionRequest,
 	opts ...option.RequestOption,
-) (*v5.CreateThreeDsSessionResponse, error) {
+) (*basistheory.CreateThreeDsSessionResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -58,9 +58,9 @@ func (c *Client) Create(
 func (c *Client) Authenticate(
 	ctx context.Context,
 	sessionID string,
-	request *v5.AuthenticateThreeDsSessionRequest,
+	request *basistheory.AuthenticateThreeDsSessionRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v5.ThreeDsAuthentication, error) {
+) (*basistheory.ThreeDsAuthentication, error) {
 	response, err := c.WithRawResponse.Authenticate(
 		ctx,
 		sessionID,
@@ -77,7 +77,7 @@ func (c *Client) GetChallengeResult(
 	ctx context.Context,
 	sessionID string,
 	opts ...option.RequestOption,
-) (*v5.ThreeDsAuthentication, error) {
+) (*basistheory.ThreeDsAuthentication, error) {
 	response, err := c.WithRawResponse.GetChallengeResult(
 		ctx,
 		sessionID,
@@ -93,7 +93,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.ThreeDsSession, error) {
+) (*basistheory.ThreeDsSession, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

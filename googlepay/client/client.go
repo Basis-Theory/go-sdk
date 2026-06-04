@@ -4,48 +4,48 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	client "github.com/Basis-Theory/go-sdk/v5/googlepay/merchant/client"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 	Merchant        *client.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Merchant:        client.NewClient(opts...),
+		Merchant:        client.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v5.GooglePayCreateRequest,
+	request *basistheory.GooglePayCreateRequest,
 	opts ...option.RequestOption,
-) (*v5.GooglePayCreateResponse, error) {
+) (*basistheory.GooglePayCreateResponse, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -61,7 +61,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.GooglePayToken, error) {
+) (*basistheory.GooglePayToken, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,

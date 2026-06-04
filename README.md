@@ -7,6 +7,7 @@ The BasisTheory Go library provides convenient access to the BasisTheory APIs fr
 ## Table of Contents
 
 - [Requirements](#requirements)
+- [Reference](#reference)
 - [Usage](#usage)
 - [Optional Parameters](#optional-parameters)
 - [Automatic Pagination](#automatic-pagination)
@@ -21,6 +22,7 @@ The BasisTheory Go library provides convenient access to the BasisTheory APIs fr
   - [Response Headers](#response-headers)
   - [Retries](#retries)
   - [Timeouts](#timeouts)
+  - [Explicit Null](#explicit-null)
 
 ## Requirements
 
@@ -34,6 +36,10 @@ Run the following command to use the basistheory Go library in your module:
 go get github.com/basis-theory/go-sdk
 ```
 
+## Reference
+
+A full reference for this library is available [here](https://github.com/Basis-Theory/go-sdk/blob/HEAD/./reference.md).
+
 ## Usage
 
 Instantiate and use the client with the following:
@@ -42,9 +48,10 @@ Instantiate and use the client with the following:
 package example
 
 import (
+    context "context"
+
     client "github.com/Basis-Theory/go-sdk/v5/client"
     option "github.com/Basis-Theory/go-sdk/v5/option"
-    context "context"
 )
 
 func do() {
@@ -247,7 +254,8 @@ client := client.NewClient(
 ### Response Headers
 
 You can access the raw HTTP response data by using the `WithRawResponse` field on the client. This is useful
-when you need to examine the response headers received from the API call.
+when you need to examine the response headers received from the API call. (When the endpoint is paginated,
+the raw HTTP response data will be included automatically in the Page response object.)
 
 ```go
 response, err := client.Tenants.Self.WithRawResponse.Get(...)
@@ -255,6 +263,7 @@ if err != nil {
     return err
 }
 fmt.Printf("Got response headers: %v", response.Header)
+fmt.Printf("Got status code: %d", response.StatusCode)
 ```
 
 ### Retries
@@ -263,11 +272,22 @@ The SDK is instrumented with automatic retries with exponential backoff. A reque
 as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
 retry limit (default: 2).
 
-A request is deemed retryable when any of the following HTTP status codes is returned:
+Which status codes are retried depends on the `retryStatusCodes` generator configuration:
 
+**`legacy`** (current default): retries on
 - [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
 - [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
+- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (All server errors, including 500)
+
+**`recommended`**: retries on
+- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
+- [502](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) (Bad Gateway)
+- [503](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) (Service Unavailable)
+- [504](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) (Gateway Timeout)
+
+If the `Retry-After` header is present in the response, the SDK will prioritize respecting its value exactly
+over the default exponential backoff.
 
 Use the `option.WithMaxAttempts` option to configure this behavior for the entire client or an individual request:
 
@@ -292,3 +312,26 @@ defer cancel()
 
 response, err := client.Tenants.Self.Get(ctx, ...)
 ```
+
+### Explicit Null
+
+If you want to send the explicit `null` JSON value through an optional parameter, you can use the setters\
+that come with every object. Calling a setter method for a property will flip a bit in the `explicitFields`
+bitfield for that setter's object; during serialization, any property with a flipped bit will have its
+omittable status stripped, so zero or `nil` values will be sent explicitly rather than omitted altogether:
+
+```go
+type ExampleRequest struct {
+    // An optional string parameter.
+    Name *string `json:"name,omitempty" url:"-"`
+
+    // Private bitmask of fields set to an explicit value and therefore not to be omitted
+    explicitFields *big.Int `json:"-" url:"-"`
+}
+
+request := &ExampleRequest{}
+request.SetName(nil)
+
+response, err := client.Tenants.Self.Get(ctx, request, ...)
+```
+

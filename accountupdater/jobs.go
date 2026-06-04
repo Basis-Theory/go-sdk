@@ -3,7 +3,16 @@
 package accountupdater
 
 import (
+	json "encoding/json"
 	fmt "fmt"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	createAccountUpdaterJobRequestFieldDeduplicateTokens = big.NewInt(1 << 0)
+	createAccountUpdaterJobRequestFieldMerchantID        = big.NewInt(1 << 1)
+	createAccountUpdaterJobRequestFieldResultVersion     = big.NewInt(1 << 2)
 )
 
 type CreateAccountUpdaterJobRequest struct {
@@ -13,13 +22,94 @@ type CreateAccountUpdaterJobRequest struct {
 	MerchantID *string `json:"merchant_id,omitempty" url:"-"`
 	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
 	ResultVersion *CreateAccountUpdaterJobRequestResultVersion `json:"result_version,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateAccountUpdaterJobRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetDeduplicateTokens sets the DeduplicateTokens field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAccountUpdaterJobRequest) SetDeduplicateTokens(deduplicateTokens *bool) {
+	c.DeduplicateTokens = deduplicateTokens
+	c.require(createAccountUpdaterJobRequestFieldDeduplicateTokens)
+}
+
+// SetMerchantID sets the MerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAccountUpdaterJobRequest) SetMerchantID(merchantID *string) {
+	c.MerchantID = merchantID
+	c.require(createAccountUpdaterJobRequestFieldMerchantID)
+}
+
+// SetResultVersion sets the ResultVersion field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAccountUpdaterJobRequest) SetResultVersion(resultVersion *CreateAccountUpdaterJobRequestResultVersion) {
+	c.ResultVersion = resultVersion
+	c.require(createAccountUpdaterJobRequestFieldResultVersion)
+}
+
+func (c *CreateAccountUpdaterJobRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateAccountUpdaterJobRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateAccountUpdaterJobRequest(body)
+	return nil
+}
+
+func (c *CreateAccountUpdaterJobRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateAccountUpdaterJobRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	jobsListRequestFieldSize  = big.NewInt(1 << 0)
+	jobsListRequestFieldStart = big.NewInt(1 << 1)
+)
 
 type JobsListRequest struct {
 	// The maximum number of jobs to return
 	Size *int `json:"-" url:"size,omitempty"`
 	// Cursor for pagination
 	Start *string `json:"-" url:"start,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (j *JobsListRequest) require(field *big.Int) {
+	if j.explicitFields == nil {
+		j.explicitFields = big.NewInt(0)
+	}
+	j.explicitFields.Or(j.explicitFields, field)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (j *JobsListRequest) SetSize(size *int) {
+	j.Size = size
+	j.require(jobsListRequestFieldSize)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (j *JobsListRequest) SetStart(start *string) {
+	j.Start = start
+	j.require(jobsListRequestFieldStart)
 }
 
 // Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.

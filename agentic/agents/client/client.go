@@ -4,41 +4,41 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	agentic "github.com/Basis-Theory/go-sdk/v5/agentic"
 	client "github.com/Basis-Theory/go-sdk/v5/agentic/agents/instructions/client"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 	Instructions    *client.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Instructions:    client.NewClient(opts...),
+		Instructions:    client.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -46,7 +46,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *agentic.CreateAgentRequest,
 	opts ...option.RequestOption,
-) (*v5.Agent, error) {
+) (*basistheory.Agent, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -62,7 +62,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	agentID string,
 	opts ...option.RequestOption,
-) (*v5.Agent, error) {
+) (*basistheory.Agent, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		agentID,
@@ -95,7 +95,7 @@ func (c *Client) Update(
 	agentID string,
 	request *agentic.UpdateAgentRequest,
 	opts ...option.RequestOption,
-) (*v5.Agent, error) {
+) (*basistheory.Agent, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		agentID,

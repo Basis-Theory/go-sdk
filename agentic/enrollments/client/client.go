@@ -4,41 +4,42 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	http "net/http"
+	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v5"
 	agentic "github.com/Basis-Theory/go-sdk/v5/agentic"
 	verify "github.com/Basis-Theory/go-sdk/v5/agentic/enrollments/verify"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 	Verify          *verify.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Verify:          verify.NewClient(opts...),
+		Verify:          verify.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -47,7 +48,7 @@ func (c *Client) List(
 	ctx context.Context,
 	request *agentic.EnrollmentsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v5.Enrollment], error) {
+) (*core.Page[*string, *basistheory.Enrollment, *basistheory.EnrollmentList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -60,27 +61,10 @@ func (c *Client) List(
 		return nil, err
 	}
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	prepareCall := func(pageRequest *internal.PageRequest[*string]) *internal.CallParams {
+	prepareCall := func(pageRequest *core.PageRequest[*string]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
 			queryParams.Set("cursor", *pageRequest.Cursor)
 		}
@@ -93,24 +77,26 @@ func (c *Client) List(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		}
 	}
-	readPageResponse := func(response *v5.EnrollmentList) *internal.PageResponse[*string, *v5.Enrollment] {
+	readPageResponse := func(response *basistheory.EnrollmentList) *core.PageResponse[*string, *basistheory.Enrollment, *basistheory.EnrollmentList] {
 		var zeroValue *string
 		var next *string
 		if response.Pagination != nil {
 			next = response.Pagination.NextCursor
 		}
 		results := response.GetData()
-		return &internal.PageResponse[*string, *v5.Enrollment]{
-			Next:    next,
-			Results: results,
-			Done:    next == zeroValue,
+		return &core.PageResponse[*string, *basistheory.Enrollment, *basistheory.EnrollmentList]{
+			Results:  results,
+			Response: response,
+			Next:     next,
+			Done:     next == zeroValue,
 		}
 	}
 	pager := internal.NewCursorPager(
@@ -126,7 +112,7 @@ func (c *Client) Create(
 	ctx context.Context,
 	request *agentic.CreateEnrollmentRequest,
 	opts ...option.RequestOption,
-) (*v5.Enrollment, error) {
+) (*basistheory.Enrollment, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -142,7 +128,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	enrollmentID string,
 	opts ...option.RequestOption,
-) (*v5.Enrollment, error) {
+) (*basistheory.Enrollment, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		enrollmentID,
@@ -176,7 +162,7 @@ func (c *Client) Retry(
 	ctx context.Context,
 	enrollmentID string,
 	opts ...option.RequestOption,
-) (*v5.Enrollment, error) {
+) (*basistheory.Enrollment, error) {
 	response, err := c.WithRawResponse.Retry(
 		ctx,
 		enrollmentID,

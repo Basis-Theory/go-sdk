@@ -7,11 +7,19 @@ import (
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
 	io "io"
+	big "math/big"
 	time "time"
+)
+
+var (
+	createDocumentRequestFieldMetadata = big.NewInt(1 << 0)
 )
 
 type CreateDocumentRequest struct {
 	Metadata map[string]*string `json:"metadata,omitempty" url:"metadata,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -25,7 +33,24 @@ func (c *CreateDocumentRequest) GetMetadata() map[string]*string {
 }
 
 func (c *CreateDocumentRequest) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *CreateDocumentRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateDocumentRequest) SetMetadata(metadata map[string]*string) {
+	c.Metadata = metadata
+	c.require(createDocumentRequestFieldMetadata)
 }
 
 func (c *CreateDocumentRequest) UnmarshalJSON(data []byte) error {
@@ -44,7 +69,21 @@ func (c *CreateDocumentRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *CreateDocumentRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateDocumentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *CreateDocumentRequest) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -56,6 +95,15 @@ func (c *CreateDocumentRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	documentFieldID          = big.NewInt(1 << 0)
+	documentFieldTenantID    = big.NewInt(1 << 1)
+	documentFieldMetadata    = big.NewInt(1 << 2)
+	documentFieldContentType = big.NewInt(1 << 3)
+	documentFieldCreatedBy   = big.NewInt(1 << 4)
+	documentFieldCreatedAt   = big.NewInt(1 << 5)
+)
+
 type Document struct {
 	ID          *string            `json:"id,omitempty" url:"id,omitempty"`
 	TenantID    *string            `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
@@ -63,6 +111,9 @@ type Document struct {
 	ContentType *string            `json:"content_type,omitempty" url:"content_type,omitempty"`
 	CreatedBy   *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt   *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -111,7 +162,59 @@ func (d *Document) GetCreatedAt() *time.Time {
 }
 
 func (d *Document) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
 	return d.extraProperties
+}
+
+func (d *Document) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *Document) SetID(id *string) {
+	d.ID = id
+	d.require(documentFieldID)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *Document) SetTenantID(tenantID *string) {
+	d.TenantID = tenantID
+	d.require(documentFieldTenantID)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *Document) SetMetadata(metadata map[string]*string) {
+	d.Metadata = metadata
+	d.require(documentFieldMetadata)
+}
+
+// SetContentType sets the ContentType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *Document) SetContentType(contentType *string) {
+	d.ContentType = contentType
+	d.require(documentFieldContentType)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *Document) SetCreatedBy(createdBy *string) {
+	d.CreatedBy = createdBy
+	d.require(documentFieldCreatedBy)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *Document) SetCreatedAt(createdAt *time.Time) {
+	d.CreatedAt = createdAt
+	d.require(documentFieldCreatedAt)
 }
 
 func (d *Document) UnmarshalJSON(data []byte) error {
@@ -145,10 +248,14 @@ func (d *Document) MarshalJSON() ([]byte, error) {
 		embed:     embed(*d),
 		CreatedAt: internal.NewOptionalDateTime(d.CreatedAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, d.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (d *Document) String() string {
+	if d == nil {
+		return "<nil>"
+	}
 	if len(d.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
 			return value
@@ -163,4 +270,14 @@ func (d *Document) String() string {
 type DocumentsUploadRequest struct {
 	Document io.Reader              `json:"-" url:"-"`
 	Request  *CreateDocumentRequest `json:"request,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (d *DocumentsUploadRequest) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
 }

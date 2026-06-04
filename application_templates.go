@@ -6,6 +6,18 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	applicationTemplateFieldID              = big.NewInt(1 << 0)
+	applicationTemplateFieldName            = big.NewInt(1 << 1)
+	applicationTemplateFieldDescription     = big.NewInt(1 << 2)
+	applicationTemplateFieldApplicationType = big.NewInt(1 << 3)
+	applicationTemplateFieldTemplateType    = big.NewInt(1 << 4)
+	applicationTemplateFieldIsStarter       = big.NewInt(1 << 5)
+	applicationTemplateFieldRules           = big.NewInt(1 << 6)
+	applicationTemplateFieldPermissions     = big.NewInt(1 << 7)
 )
 
 type ApplicationTemplate struct {
@@ -17,6 +29,9 @@ type ApplicationTemplate struct {
 	IsStarter       *bool         `json:"is_starter,omitempty" url:"is_starter,omitempty"`
 	Rules           []*AccessRule `json:"rules,omitempty" url:"rules,omitempty"`
 	Permissions     []string      `json:"permissions,omitempty" url:"permissions,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -79,7 +94,73 @@ func (a *ApplicationTemplate) GetPermissions() []string {
 }
 
 func (a *ApplicationTemplate) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
+}
+
+func (a *ApplicationTemplate) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetID(id *string) {
+	a.ID = id
+	a.require(applicationTemplateFieldID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetName(name *string) {
+	a.Name = name
+	a.require(applicationTemplateFieldName)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetDescription(description *string) {
+	a.Description = description
+	a.require(applicationTemplateFieldDescription)
+}
+
+// SetApplicationType sets the ApplicationType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetApplicationType(applicationType *string) {
+	a.ApplicationType = applicationType
+	a.require(applicationTemplateFieldApplicationType)
+}
+
+// SetTemplateType sets the TemplateType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetTemplateType(templateType *string) {
+	a.TemplateType = templateType
+	a.require(applicationTemplateFieldTemplateType)
+}
+
+// SetIsStarter sets the IsStarter field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetIsStarter(isStarter *bool) {
+	a.IsStarter = isStarter
+	a.require(applicationTemplateFieldIsStarter)
+}
+
+// SetRules sets the Rules field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetRules(rules []*AccessRule) {
+	a.Rules = rules
+	a.require(applicationTemplateFieldRules)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplicationTemplate) SetPermissions(permissions []string) {
+	a.Permissions = permissions
+	a.require(applicationTemplateFieldPermissions)
 }
 
 func (a *ApplicationTemplate) UnmarshalJSON(data []byte) error {
@@ -98,7 +179,21 @@ func (a *ApplicationTemplate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (a *ApplicationTemplate) MarshalJSON() ([]byte, error) {
+	type embed ApplicationTemplate
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (a *ApplicationTemplate) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value

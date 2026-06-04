@@ -3,39 +3,38 @@
 package client
 
 import (
+	os "os"
+
 	jobs "github.com/Basis-Theory/go-sdk/v5/accountupdater/jobs"
 	realtime "github.com/Basis-Theory/go-sdk/v5/accountupdater/realtime"
 	core "github.com/Basis-Theory/go-sdk/v5/core"
 	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
-	os "os"
 )
 
 type Client struct {
 	Jobs     *jobs.Client
 	RealTime *realtime.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Jobs:     jobs.NewClient(opts...),
-		RealTime: realtime.NewClient(opts...),
+		Jobs:     jobs.NewClient(options),
+		RealTime: realtime.NewClient(options),
+		options:  options,
 		baseURL:  options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }

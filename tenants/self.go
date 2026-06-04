@@ -2,7 +2,63 @@
 
 package tenants
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	updateTenantRequestFieldName     = big.NewInt(1 << 0)
+	updateTenantRequestFieldSettings = big.NewInt(1 << 1)
+)
+
 type UpdateTenantRequest struct {
 	Name     string             `json:"name" url:"-"`
 	Settings map[string]*string `json:"settings,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateTenantRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTenantRequest) SetName(name string) {
+	u.Name = name
+	u.require(updateTenantRequestFieldName)
+}
+
+// SetSettings sets the Settings field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTenantRequest) SetSettings(settings map[string]*string) {
+	u.Settings = settings
+	u.require(updateTenantRequestFieldSettings)
+}
+
+func (u *UpdateTenantRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateTenantRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateTenantRequest(body)
+	return nil
+}
+
+func (u *UpdateTenantRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateTenantRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

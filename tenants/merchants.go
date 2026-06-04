@@ -3,18 +3,124 @@
 package tenants
 
 import (
+	json "encoding/json"
 	v5 "github.com/Basis-Theory/go-sdk/v5"
+	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	big "math/big"
+)
+
+var (
+	merchantsListRequestFieldPage  = big.NewInt(1 << 0)
+	merchantsListRequestFieldStart = big.NewInt(1 << 1)
+	merchantsListRequestFieldSize  = big.NewInt(1 << 2)
 )
 
 type MerchantsListRequest struct {
 	Page  *int    `json:"-" url:"page,omitempty"`
 	Start *string `json:"-" url:"start,omitempty"`
 	Size  *int    `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (m *MerchantsListRequest) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetPage sets the Page field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MerchantsListRequest) SetPage(page *int) {
+	m.Page = page
+	m.require(merchantsListRequestFieldPage)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MerchantsListRequest) SetStart(start *string) {
+	m.Start = start
+	m.require(merchantsListRequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MerchantsListRequest) SetSize(size *int) {
+	m.Size = size
+	m.require(merchantsListRequestFieldSize)
+}
+
+var (
+	serviceOnboardingRequestFieldAccountUpdater  = big.NewInt(1 << 0)
+	serviceOnboardingRequestFieldNetworkToken    = big.NewInt(1 << 1)
+	serviceOnboardingRequestFieldAgenticCommerce = big.NewInt(1 << 2)
+	serviceOnboardingRequestFieldCardNetworkInfo = big.NewInt(1 << 3)
+)
 
 type ServiceOnboardingRequest struct {
 	AccountUpdater  []string            `json:"account_updater,omitempty" url:"-"`
 	NetworkToken    []string            `json:"network_token,omitempty" url:"-"`
 	AgenticCommerce []string            `json:"agentic_commerce,omitempty" url:"-"`
 	CardNetworkInfo *v5.CardNetworkInfo `json:"card_network_info,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (s *ServiceOnboardingRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetAccountUpdater sets the AccountUpdater field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ServiceOnboardingRequest) SetAccountUpdater(accountUpdater []string) {
+	s.AccountUpdater = accountUpdater
+	s.require(serviceOnboardingRequestFieldAccountUpdater)
+}
+
+// SetNetworkToken sets the NetworkToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ServiceOnboardingRequest) SetNetworkToken(networkToken []string) {
+	s.NetworkToken = networkToken
+	s.require(serviceOnboardingRequestFieldNetworkToken)
+}
+
+// SetAgenticCommerce sets the AgenticCommerce field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ServiceOnboardingRequest) SetAgenticCommerce(agenticCommerce []string) {
+	s.AgenticCommerce = agenticCommerce
+	s.require(serviceOnboardingRequestFieldAgenticCommerce)
+}
+
+// SetCardNetworkInfo sets the CardNetworkInfo field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ServiceOnboardingRequest) SetCardNetworkInfo(cardNetworkInfo *v5.CardNetworkInfo) {
+	s.CardNetworkInfo = cardNetworkInfo
+	s.require(serviceOnboardingRequestFieldCardNetworkInfo)
+}
+
+func (s *ServiceOnboardingRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ServiceOnboardingRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*s = ServiceOnboardingRequest(body)
+	return nil
+}
+
+func (s *ServiceOnboardingRequest) MarshalJSON() ([]byte, error) {
+	type embed ServiceOnboardingRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
