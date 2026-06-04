@@ -2,9 +2,81 @@
 
 package applepay
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	applePaySessionRequestFieldValidationURL          = big.NewInt(1 << 0)
+	applePaySessionRequestFieldDisplayName            = big.NewInt(1 << 1)
+	applePaySessionRequestFieldDomain                 = big.NewInt(1 << 2)
+	applePaySessionRequestFieldMerchantRegistrationID = big.NewInt(1 << 3)
+)
+
 type ApplePaySessionRequest struct {
 	ValidationURL          *string `json:"validation_url,omitempty" url:"-"`
 	DisplayName            *string `json:"display_name,omitempty" url:"-"`
 	Domain                 *string `json:"domain,omitempty" url:"-"`
 	MerchantRegistrationID *string `json:"merchant_registration_id,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *ApplePaySessionRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetValidationURL sets the ValidationURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePaySessionRequest) SetValidationURL(validationURL *string) {
+	a.ValidationURL = validationURL
+	a.require(applePaySessionRequestFieldValidationURL)
+}
+
+// SetDisplayName sets the DisplayName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePaySessionRequest) SetDisplayName(displayName *string) {
+	a.DisplayName = displayName
+	a.require(applePaySessionRequestFieldDisplayName)
+}
+
+// SetDomain sets the Domain field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePaySessionRequest) SetDomain(domain *string) {
+	a.Domain = domain
+	a.require(applePaySessionRequestFieldDomain)
+}
+
+// SetMerchantRegistrationID sets the MerchantRegistrationID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePaySessionRequest) SetMerchantRegistrationID(merchantRegistrationID *string) {
+	a.MerchantRegistrationID = merchantRegistrationID
+	a.require(applePaySessionRequestFieldMerchantRegistrationID)
+}
+
+func (a *ApplePaySessionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePaySessionRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = ApplePaySessionRequest(body)
+	return nil
+}
+
+func (a *ApplePaySessionRequest) MarshalJSON() ([]byte, error) {
+	type embed ApplePaySessionRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

@@ -2,14 +2,146 @@
 
 package applepay
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	applePayDomainDeregistrationRequestFieldDomain = big.NewInt(1 << 0)
+)
+
 type ApplePayDomainDeregistrationRequest struct {
 	Domain string `json:"domain" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (a *ApplePayDomainDeregistrationRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetDomain sets the Domain field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDomainDeregistrationRequest) SetDomain(domain string) {
+	a.Domain = domain
+	a.require(applePayDomainDeregistrationRequestFieldDomain)
+}
+
+func (a *ApplePayDomainDeregistrationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayDomainDeregistrationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = ApplePayDomainDeregistrationRequest(body)
+	return nil
+}
+
+func (a *ApplePayDomainDeregistrationRequest) MarshalJSON() ([]byte, error) {
+	type embed ApplePayDomainDeregistrationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	applePayDomainRegistrationRequestFieldDomain = big.NewInt(1 << 0)
+)
 
 type ApplePayDomainRegistrationRequest struct {
 	Domain string `json:"domain" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (a *ApplePayDomainRegistrationRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetDomain sets the Domain field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDomainRegistrationRequest) SetDomain(domain string) {
+	a.Domain = domain
+	a.require(applePayDomainRegistrationRequestFieldDomain)
+}
+
+func (a *ApplePayDomainRegistrationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayDomainRegistrationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = ApplePayDomainRegistrationRequest(body)
+	return nil
+}
+
+func (a *ApplePayDomainRegistrationRequest) MarshalJSON() ([]byte, error) {
+	type embed ApplePayDomainRegistrationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	applePayDomainRegistrationListRequestFieldDomains = big.NewInt(1 << 0)
+)
 
 type ApplePayDomainRegistrationListRequest struct {
 	Domains []string `json:"domains,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *ApplePayDomainRegistrationListRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetDomains sets the Domains field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDomainRegistrationListRequest) SetDomains(domains []string) {
+	a.Domains = domains
+	a.require(applePayDomainRegistrationListRequestFieldDomains)
+}
+
+func (a *ApplePayDomainRegistrationListRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayDomainRegistrationListRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = ApplePayDomainRegistrationListRequest(body)
+	return nil
+}
+
+func (a *ApplePayDomainRegistrationListRequest) MarshalJSON() ([]byte, error) {
+	type embed ApplePayDomainRegistrationListRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

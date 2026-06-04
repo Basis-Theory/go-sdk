@@ -4,39 +4,41 @@ package verify
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	enrollments "github.com/Basis-Theory/go-sdk/v5/agentic/enrollments"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	enrollments "github.com/Basis-Theory/go-sdk/v6/agentic/enrollments"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (r *RawClient) Start(
 	ctx context.Context,
 	enrollmentID string,
-	request *v5.StartVerificationRequest,
+	request *basistheory.StartVerificationRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.VerificationResponse], error) {
+) (*core.Response[*basistheory.VerificationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -48,47 +50,10 @@ func (r *RawClient) Start(
 		enrollmentID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		409: func(apiError *core.APIError) error {
-			return &v5.ConflictError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.VerificationResponse
+	var response *basistheory.VerificationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -96,18 +61,19 @@ func (r *RawClient) Start(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(enrollments.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.VerificationResponse]{
+	return &core.Response[*basistheory.VerificationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -119,7 +85,7 @@ func (r *RawClient) Method(
 	enrollmentID string,
 	request *enrollments.SelectMethodRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.VerificationResponse], error) {
+) (*core.Response[*basistheory.VerificationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -131,43 +97,11 @@ func (r *RawClient) Method(
 		enrollmentID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.VerificationResponse
+	var response *basistheory.VerificationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -175,18 +109,19 @@ func (r *RawClient) Method(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(enrollments.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.VerificationResponse]{
+	return &core.Response[*basistheory.VerificationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -198,7 +133,7 @@ func (r *RawClient) Otp(
 	enrollmentID string,
 	request *enrollments.SubmitOtpRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.VerificationResponse], error) {
+) (*core.Response[*basistheory.VerificationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -210,43 +145,11 @@ func (r *RawClient) Otp(
 		enrollmentID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.VerificationResponse
+	var response *basistheory.VerificationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -254,18 +157,19 @@ func (r *RawClient) Otp(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(enrollments.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.VerificationResponse]{
+	return &core.Response[*basistheory.VerificationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -277,7 +181,7 @@ func (r *RawClient) Complete(
 	enrollmentID string,
 	request *enrollments.CompleteVerificationRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.VerificationResponse], error) {
+) (*core.Response[*basistheory.VerificationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -289,43 +193,11 @@ func (r *RawClient) Complete(
 		enrollmentID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.VerificationResponse
+	var response *basistheory.VerificationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -333,18 +205,19 @@ func (r *RawClient) Complete(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(enrollments.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.VerificationResponse]{
+	return &core.Response[*basistheory.VerificationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

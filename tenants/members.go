@@ -2,13 +2,106 @@
 
 package tenants
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	membersListRequestFieldUserID = big.NewInt(1 << 0)
+	membersListRequestFieldPage   = big.NewInt(1 << 1)
+	membersListRequestFieldStart  = big.NewInt(1 << 2)
+	membersListRequestFieldSize   = big.NewInt(1 << 3)
+)
+
 type MembersListRequest struct {
 	UserID []*string `json:"-" url:"user_id,omitempty"`
 	Page   *int      `json:"-" url:"page,omitempty"`
 	Start  *string   `json:"-" url:"start,omitempty"`
 	Size   *int      `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (m *MembersListRequest) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetUserID sets the UserID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MembersListRequest) SetUserID(userID []*string) {
+	m.UserID = userID
+	m.require(membersListRequestFieldUserID)
+}
+
+// SetPage sets the Page field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MembersListRequest) SetPage(page *int) {
+	m.Page = page
+	m.require(membersListRequestFieldPage)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MembersListRequest) SetStart(start *string) {
+	m.Start = start
+	m.require(membersListRequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MembersListRequest) SetSize(size *int) {
+	m.Size = size
+	m.require(membersListRequestFieldSize)
+}
+
+var (
+	updateTenantMemberRequestFieldRole = big.NewInt(1 << 0)
+)
 
 type UpdateTenantMemberRequest struct {
 	Role string `json:"role" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateTenantMemberRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetRole sets the Role field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTenantMemberRequest) SetRole(role string) {
+	u.Role = role
+	u.require(updateTenantMemberRequestFieldRole)
+}
+
+func (u *UpdateTenantMemberRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateTenantMemberRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateTenantMemberRequest(body)
+	return nil
+}
+
+func (u *UpdateTenantMemberRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateTenantMemberRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

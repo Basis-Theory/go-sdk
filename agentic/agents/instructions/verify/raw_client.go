@@ -4,30 +4,32 @@ package verify
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	instructions "github.com/Basis-Theory/go-sdk/v5/agentic/agents/instructions"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
 	http "net/http"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	instructions "github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -35,9 +37,9 @@ func (r *RawClient) Start(
 	ctx context.Context,
 	agentID string,
 	instructionID string,
-	request *v5.StartVerificationRequest,
+	request *basistheory.StartVerificationRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.VerificationResponse], error) {
+) (*core.Response[*basistheory.VerificationResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -50,42 +52,10 @@ func (r *RawClient) Start(
 		instructionID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.VerificationResponse
+	var response *basistheory.VerificationResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -93,18 +63,19 @@ func (r *RawClient) Start(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(instructions.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.VerificationResponse]{
+	return &core.Response[*basistheory.VerificationResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -117,7 +88,7 @@ func (r *RawClient) Passkey(
 	instructionID string,
 	request *instructions.SubmitPasskeyRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v5.Instruction], error) {
+) (*core.Response[*basistheory.Instruction], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -130,43 +101,11 @@ func (r *RawClient) Passkey(
 		instructionID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v5.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		403: func(apiError *core.APIError) error {
-			return &v5.ForbiddenError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		422: func(apiError *core.APIError) error {
-			return &v5.UnprocessableEntityError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v5.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v5.Instruction
+	var response *basistheory.Instruction
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -174,18 +113,19 @@ func (r *RawClient) Passkey(
 			Method:          http.MethodPost,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(instructions.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v5.Instruction]{
+	return &core.Response[*basistheory.Instruction]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

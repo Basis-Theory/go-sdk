@@ -5,8 +5,24 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	createProxyRequestFieldName                  = big.NewInt(1 << 0)
+	createProxyRequestFieldDestinationURL        = big.NewInt(1 << 1)
+	createProxyRequestFieldRequestReactorID      = big.NewInt(1 << 2)
+	createProxyRequestFieldResponseReactorID     = big.NewInt(1 << 3)
+	createProxyRequestFieldRequestTransform      = big.NewInt(1 << 4)
+	createProxyRequestFieldResponseTransform     = big.NewInt(1 << 5)
+	createProxyRequestFieldRequestTransforms     = big.NewInt(1 << 6)
+	createProxyRequestFieldResponseTransforms    = big.NewInt(1 << 7)
+	createProxyRequestFieldApplication           = big.NewInt(1 << 8)
+	createProxyRequestFieldConfiguration         = big.NewInt(1 << 9)
+	createProxyRequestFieldRequireAuth           = big.NewInt(1 << 10)
+	createProxyRequestFieldDisableDetokenization = big.NewInt(1 << 11)
 )
 
 type CreateProxyRequest struct {
@@ -22,7 +38,130 @@ type CreateProxyRequest struct {
 	Configuration         map[string]*string `json:"configuration,omitempty" url:"-"`
 	RequireAuth           *bool              `json:"require_auth,omitempty" url:"-"`
 	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateProxyRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetName(name string) {
+	c.Name = name
+	c.require(createProxyRequestFieldName)
+}
+
+// SetDestinationURL sets the DestinationURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetDestinationURL(destinationURL string) {
+	c.DestinationURL = destinationURL
+	c.require(createProxyRequestFieldDestinationURL)
+}
+
+// SetRequestReactorID sets the RequestReactorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetRequestReactorID(requestReactorID *string) {
+	c.RequestReactorID = requestReactorID
+	c.require(createProxyRequestFieldRequestReactorID)
+}
+
+// SetResponseReactorID sets the ResponseReactorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetResponseReactorID(responseReactorID *string) {
+	c.ResponseReactorID = responseReactorID
+	c.require(createProxyRequestFieldResponseReactorID)
+}
+
+// SetRequestTransform sets the RequestTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetRequestTransform(requestTransform *ProxyTransform) {
+	c.RequestTransform = requestTransform
+	c.require(createProxyRequestFieldRequestTransform)
+}
+
+// SetResponseTransform sets the ResponseTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetResponseTransform(responseTransform *ProxyTransform) {
+	c.ResponseTransform = responseTransform
+	c.require(createProxyRequestFieldResponseTransform)
+}
+
+// SetRequestTransforms sets the RequestTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetRequestTransforms(requestTransforms []*ProxyTransform) {
+	c.RequestTransforms = requestTransforms
+	c.require(createProxyRequestFieldRequestTransforms)
+}
+
+// SetResponseTransforms sets the ResponseTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetResponseTransforms(responseTransforms []*ProxyTransform) {
+	c.ResponseTransforms = responseTransforms
+	c.require(createProxyRequestFieldResponseTransforms)
+}
+
+// SetApplication sets the Application field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetApplication(application *Application) {
+	c.Application = application
+	c.require(createProxyRequestFieldApplication)
+}
+
+// SetConfiguration sets the Configuration field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetConfiguration(configuration map[string]*string) {
+	c.Configuration = configuration
+	c.require(createProxyRequestFieldConfiguration)
+}
+
+// SetRequireAuth sets the RequireAuth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetRequireAuth(requireAuth *bool) {
+	c.RequireAuth = requireAuth
+	c.require(createProxyRequestFieldRequireAuth)
+}
+
+// SetDisableDetokenization sets the DisableDetokenization field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateProxyRequest) SetDisableDetokenization(disableDetokenization *bool) {
+	c.DisableDetokenization = disableDetokenization
+	c.require(createProxyRequestFieldDisableDetokenization)
+}
+
+func (c *CreateProxyRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateProxyRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateProxyRequest(body)
+	return nil
+}
+
+func (c *CreateProxyRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateProxyRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	proxiesListRequestFieldID    = big.NewInt(1 << 0)
+	proxiesListRequestFieldName  = big.NewInt(1 << 1)
+	proxiesListRequestFieldPage  = big.NewInt(1 << 2)
+	proxiesListRequestFieldStart = big.NewInt(1 << 3)
+	proxiesListRequestFieldSize  = big.NewInt(1 << 4)
+)
 
 type ProxiesListRequest struct {
 	ID    []*string `json:"-" url:"id,omitempty"`
@@ -30,7 +169,65 @@ type ProxiesListRequest struct {
 	Page  *int      `json:"-" url:"page,omitempty"`
 	Start *string   `json:"-" url:"start,omitempty"`
 	Size  *int      `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (p *ProxiesListRequest) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxiesListRequest) SetID(id []*string) {
+	p.ID = id
+	p.require(proxiesListRequestFieldID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxiesListRequest) SetName(name *string) {
+	p.Name = name
+	p.require(proxiesListRequestFieldName)
+}
+
+// SetPage sets the Page field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxiesListRequest) SetPage(page *int) {
+	p.Page = page
+	p.require(proxiesListRequestFieldPage)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxiesListRequest) SetStart(start *string) {
+	p.Start = start
+	p.require(proxiesListRequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxiesListRequest) SetSize(size *int) {
+	p.Size = size
+	p.require(proxiesListRequestFieldSize)
+}
+
+var (
+	patchProxyRequestFieldName                  = big.NewInt(1 << 0)
+	patchProxyRequestFieldDestinationURL        = big.NewInt(1 << 1)
+	patchProxyRequestFieldRequestTransform      = big.NewInt(1 << 2)
+	patchProxyRequestFieldResponseTransform     = big.NewInt(1 << 3)
+	patchProxyRequestFieldRequestTransforms     = big.NewInt(1 << 4)
+	patchProxyRequestFieldResponseTransforms    = big.NewInt(1 << 5)
+	patchProxyRequestFieldApplication           = big.NewInt(1 << 6)
+	patchProxyRequestFieldConfiguration         = big.NewInt(1 << 7)
+	patchProxyRequestFieldRequireAuth           = big.NewInt(1 << 8)
+	patchProxyRequestFieldDisableDetokenization = big.NewInt(1 << 9)
+)
 
 type PatchProxyRequest struct {
 	Name                  *string            `json:"name,omitempty" url:"-"`
@@ -43,7 +240,116 @@ type PatchProxyRequest struct {
 	Configuration         map[string]*string `json:"configuration,omitempty" url:"-"`
 	RequireAuth           *bool              `json:"require_auth,omitempty" url:"-"`
 	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (p *PatchProxyRequest) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetName(name *string) {
+	p.Name = name
+	p.require(patchProxyRequestFieldName)
+}
+
+// SetDestinationURL sets the DestinationURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetDestinationURL(destinationURL *string) {
+	p.DestinationURL = destinationURL
+	p.require(patchProxyRequestFieldDestinationURL)
+}
+
+// SetRequestTransform sets the RequestTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetRequestTransform(requestTransform *ProxyTransform) {
+	p.RequestTransform = requestTransform
+	p.require(patchProxyRequestFieldRequestTransform)
+}
+
+// SetResponseTransform sets the ResponseTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetResponseTransform(responseTransform *ProxyTransform) {
+	p.ResponseTransform = responseTransform
+	p.require(patchProxyRequestFieldResponseTransform)
+}
+
+// SetRequestTransforms sets the RequestTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetRequestTransforms(requestTransforms []*ProxyTransform) {
+	p.RequestTransforms = requestTransforms
+	p.require(patchProxyRequestFieldRequestTransforms)
+}
+
+// SetResponseTransforms sets the ResponseTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetResponseTransforms(responseTransforms []*ProxyTransform) {
+	p.ResponseTransforms = responseTransforms
+	p.require(patchProxyRequestFieldResponseTransforms)
+}
+
+// SetApplication sets the Application field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetApplication(application *Application) {
+	p.Application = application
+	p.require(patchProxyRequestFieldApplication)
+}
+
+// SetConfiguration sets the Configuration field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetConfiguration(configuration map[string]*string) {
+	p.Configuration = configuration
+	p.require(patchProxyRequestFieldConfiguration)
+}
+
+// SetRequireAuth sets the RequireAuth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetRequireAuth(requireAuth *bool) {
+	p.RequireAuth = requireAuth
+	p.require(patchProxyRequestFieldRequireAuth)
+}
+
+// SetDisableDetokenization sets the DisableDetokenization field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PatchProxyRequest) SetDisableDetokenization(disableDetokenization *bool) {
+	p.DisableDetokenization = disableDetokenization
+	p.require(patchProxyRequestFieldDisableDetokenization)
+}
+
+func (p *PatchProxyRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler PatchProxyRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*p = PatchProxyRequest(body)
+	return nil
+}
+
+func (p *PatchProxyRequest) MarshalJSON() ([]byte, error) {
+	type embed PatchProxyRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	pendingProxyFieldDestinationURL     = big.NewInt(1 << 0)
+	pendingProxyFieldConfiguration      = big.NewInt(1 << 1)
+	pendingProxyFieldRequireAuth        = big.NewInt(1 << 2)
+	pendingProxyFieldRequestTransforms  = big.NewInt(1 << 3)
+	pendingProxyFieldResponseTransforms = big.NewInt(1 << 4)
+)
 
 type PendingProxy struct {
 	DestinationURL     *string            `json:"destination_url,omitempty" url:"destination_url,omitempty"`
@@ -51,6 +357,9 @@ type PendingProxy struct {
 	RequireAuth        *bool              `json:"require_auth,omitempty" url:"require_auth,omitempty"`
 	RequestTransforms  []*ProxyTransform  `json:"request_transforms,omitempty" url:"request_transforms,omitempty"`
 	ResponseTransforms []*ProxyTransform  `json:"response_transforms,omitempty" url:"response_transforms,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -92,7 +401,52 @@ func (p *PendingProxy) GetResponseTransforms() []*ProxyTransform {
 }
 
 func (p *PendingProxy) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
+}
+
+func (p *PendingProxy) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetDestinationURL sets the DestinationURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PendingProxy) SetDestinationURL(destinationURL *string) {
+	p.DestinationURL = destinationURL
+	p.require(pendingProxyFieldDestinationURL)
+}
+
+// SetConfiguration sets the Configuration field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PendingProxy) SetConfiguration(configuration map[string]*string) {
+	p.Configuration = configuration
+	p.require(pendingProxyFieldConfiguration)
+}
+
+// SetRequireAuth sets the RequireAuth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PendingProxy) SetRequireAuth(requireAuth *bool) {
+	p.RequireAuth = requireAuth
+	p.require(pendingProxyFieldRequireAuth)
+}
+
+// SetRequestTransforms sets the RequestTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PendingProxy) SetRequestTransforms(requestTransforms []*ProxyTransform) {
+	p.RequestTransforms = requestTransforms
+	p.require(pendingProxyFieldRequestTransforms)
+}
+
+// SetResponseTransforms sets the ResponseTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PendingProxy) SetResponseTransforms(responseTransforms []*ProxyTransform) {
+	p.ResponseTransforms = responseTransforms
+	p.require(pendingProxyFieldResponseTransforms)
 }
 
 func (p *PendingProxy) UnmarshalJSON(data []byte) error {
@@ -111,7 +465,21 @@ func (p *PendingProxy) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *PendingProxy) MarshalJSON() ([]byte, error) {
+	type embed PendingProxy
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (p *PendingProxy) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -122,6 +490,33 @@ func (p *PendingProxy) String() string {
 	}
 	return fmt.Sprintf("%#v", p)
 }
+
+var (
+	proxyFieldID                    = big.NewInt(1 << 0)
+	proxyFieldKey                   = big.NewInt(1 << 1)
+	proxyFieldTenantID              = big.NewInt(1 << 2)
+	proxyFieldName                  = big.NewInt(1 << 3)
+	proxyFieldDestinationURL        = big.NewInt(1 << 4)
+	proxyFieldState                 = big.NewInt(1 << 5)
+	proxyFieldRequestReactorID      = big.NewInt(1 << 6)
+	proxyFieldResponseReactorID     = big.NewInt(1 << 7)
+	proxyFieldRequireAuth           = big.NewInt(1 << 8)
+	proxyFieldRequestTransform      = big.NewInt(1 << 9)
+	proxyFieldResponseTransform     = big.NewInt(1 << 10)
+	proxyFieldRequestTransforms     = big.NewInt(1 << 11)
+	proxyFieldResponseTransforms    = big.NewInt(1 << 12)
+	proxyFieldApplicationID         = big.NewInt(1 << 13)
+	proxyFieldConfiguration         = big.NewInt(1 << 14)
+	proxyFieldProxyHost             = big.NewInt(1 << 15)
+	proxyFieldTimeout               = big.NewInt(1 << 16)
+	proxyFieldDisableDetokenization = big.NewInt(1 << 17)
+	proxyFieldClientCertificate     = big.NewInt(1 << 18)
+	proxyFieldRequested             = big.NewInt(1 << 19)
+	proxyFieldCreatedBy             = big.NewInt(1 << 20)
+	proxyFieldCreatedAt             = big.NewInt(1 << 21)
+	proxyFieldModifiedBy            = big.NewInt(1 << 22)
+	proxyFieldModifiedAt            = big.NewInt(1 << 23)
+)
 
 type Proxy struct {
 	ID                    *string            `json:"id,omitempty" url:"id,omitempty"`
@@ -148,6 +543,9 @@ type Proxy struct {
 	CreatedAt             *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ModifiedBy            *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt            *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -322,7 +720,185 @@ func (p *Proxy) GetModifiedAt() *time.Time {
 }
 
 func (p *Proxy) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
+}
+
+func (p *Proxy) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetID(id *string) {
+	p.ID = id
+	p.require(proxyFieldID)
+}
+
+// SetKey sets the Key field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetKey(key *string) {
+	p.Key = key
+	p.require(proxyFieldKey)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetTenantID(tenantID *string) {
+	p.TenantID = tenantID
+	p.require(proxyFieldTenantID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetName(name *string) {
+	p.Name = name
+	p.require(proxyFieldName)
+}
+
+// SetDestinationURL sets the DestinationURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetDestinationURL(destinationURL *string) {
+	p.DestinationURL = destinationURL
+	p.require(proxyFieldDestinationURL)
+}
+
+// SetState sets the State field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetState(state *string) {
+	p.State = state
+	p.require(proxyFieldState)
+}
+
+// SetRequestReactorID sets the RequestReactorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetRequestReactorID(requestReactorID *string) {
+	p.RequestReactorID = requestReactorID
+	p.require(proxyFieldRequestReactorID)
+}
+
+// SetResponseReactorID sets the ResponseReactorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetResponseReactorID(responseReactorID *string) {
+	p.ResponseReactorID = responseReactorID
+	p.require(proxyFieldResponseReactorID)
+}
+
+// SetRequireAuth sets the RequireAuth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetRequireAuth(requireAuth *bool) {
+	p.RequireAuth = requireAuth
+	p.require(proxyFieldRequireAuth)
+}
+
+// SetRequestTransform sets the RequestTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetRequestTransform(requestTransform *ProxyTransform) {
+	p.RequestTransform = requestTransform
+	p.require(proxyFieldRequestTransform)
+}
+
+// SetResponseTransform sets the ResponseTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetResponseTransform(responseTransform *ProxyTransform) {
+	p.ResponseTransform = responseTransform
+	p.require(proxyFieldResponseTransform)
+}
+
+// SetRequestTransforms sets the RequestTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetRequestTransforms(requestTransforms []*ProxyTransform) {
+	p.RequestTransforms = requestTransforms
+	p.require(proxyFieldRequestTransforms)
+}
+
+// SetResponseTransforms sets the ResponseTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetResponseTransforms(responseTransforms []*ProxyTransform) {
+	p.ResponseTransforms = responseTransforms
+	p.require(proxyFieldResponseTransforms)
+}
+
+// SetApplicationID sets the ApplicationID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetApplicationID(applicationID *string) {
+	p.ApplicationID = applicationID
+	p.require(proxyFieldApplicationID)
+}
+
+// SetConfiguration sets the Configuration field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetConfiguration(configuration map[string]*string) {
+	p.Configuration = configuration
+	p.require(proxyFieldConfiguration)
+}
+
+// SetProxyHost sets the ProxyHost field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetProxyHost(proxyHost *string) {
+	p.ProxyHost = proxyHost
+	p.require(proxyFieldProxyHost)
+}
+
+// SetTimeout sets the Timeout field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetTimeout(timeout *int) {
+	p.Timeout = timeout
+	p.require(proxyFieldTimeout)
+}
+
+// SetDisableDetokenization sets the DisableDetokenization field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetDisableDetokenization(disableDetokenization *bool) {
+	p.DisableDetokenization = disableDetokenization
+	p.require(proxyFieldDisableDetokenization)
+}
+
+// SetClientCertificate sets the ClientCertificate field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetClientCertificate(clientCertificate *string) {
+	p.ClientCertificate = clientCertificate
+	p.require(proxyFieldClientCertificate)
+}
+
+// SetRequested sets the Requested field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetRequested(requested *RequestedProxy) {
+	p.Requested = requested
+	p.require(proxyFieldRequested)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetCreatedBy(createdBy *string) {
+	p.CreatedBy = createdBy
+	p.require(proxyFieldCreatedBy)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetCreatedAt(createdAt *time.Time) {
+	p.CreatedAt = createdAt
+	p.require(proxyFieldCreatedAt)
+}
+
+// SetModifiedBy sets the ModifiedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetModifiedBy(modifiedBy *string) {
+	p.ModifiedBy = modifiedBy
+	p.require(proxyFieldModifiedBy)
+}
+
+// SetModifiedAt sets the ModifiedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Proxy) SetModifiedAt(modifiedAt *time.Time) {
+	p.ModifiedAt = modifiedAt
+	p.require(proxyFieldModifiedAt)
 }
 
 func (p *Proxy) UnmarshalJSON(data []byte) error {
@@ -360,10 +936,14 @@ func (p *Proxy) MarshalJSON() ([]byte, error) {
 		CreatedAt:  internal.NewOptionalDateTime(p.CreatedAt),
 		ModifiedAt: internal.NewOptionalDateTime(p.ModifiedAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (p *Proxy) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -375,9 +955,17 @@ func (p *Proxy) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
+var (
+	proxyPaginatedListFieldPagination = big.NewInt(1 << 0)
+	proxyPaginatedListFieldData       = big.NewInt(1 << 1)
+)
+
 type ProxyPaginatedList struct {
 	Pagination *Pagination `json:"pagination,omitempty" url:"pagination,omitempty"`
 	Data       []*Proxy    `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -398,7 +986,31 @@ func (p *ProxyPaginatedList) GetData() []*Proxy {
 }
 
 func (p *ProxyPaginatedList) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
+}
+
+func (p *ProxyPaginatedList) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyPaginatedList) SetPagination(pagination *Pagination) {
+	p.Pagination = pagination
+	p.require(proxyPaginatedListFieldPagination)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyPaginatedList) SetData(data []*Proxy) {
+	p.Data = data
+	p.require(proxyPaginatedListFieldData)
 }
 
 func (p *ProxyPaginatedList) UnmarshalJSON(data []byte) error {
@@ -417,7 +1029,21 @@ func (p *ProxyPaginatedList) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *ProxyPaginatedList) MarshalJSON() ([]byte, error) {
+	type embed ProxyPaginatedList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (p *ProxyPaginatedList) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -429,6 +1055,15 @@ func (p *ProxyPaginatedList) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
+var (
+	proxyTransformFieldType        = big.NewInt(1 << 0)
+	proxyTransformFieldCode        = big.NewInt(1 << 1)
+	proxyTransformFieldMatcher     = big.NewInt(1 << 2)
+	proxyTransformFieldExpression  = big.NewInt(1 << 3)
+	proxyTransformFieldReplacement = big.NewInt(1 << 4)
+	proxyTransformFieldOptions     = big.NewInt(1 << 5)
+)
+
 type ProxyTransform struct {
 	Type        *string                `json:"type,omitempty" url:"type,omitempty"`
 	Code        *string                `json:"code,omitempty" url:"code,omitempty"`
@@ -436,6 +1071,9 @@ type ProxyTransform struct {
 	Expression  *string                `json:"expression,omitempty" url:"expression,omitempty"`
 	Replacement *string                `json:"replacement,omitempty" url:"replacement,omitempty"`
 	Options     *ProxyTransformOptions `json:"options,omitempty" url:"options,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -484,7 +1122,59 @@ func (p *ProxyTransform) GetOptions() *ProxyTransformOptions {
 }
 
 func (p *ProxyTransform) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
+}
+
+func (p *ProxyTransform) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransform) SetType(type_ *string) {
+	p.Type = type_
+	p.require(proxyTransformFieldType)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransform) SetCode(code *string) {
+	p.Code = code
+	p.require(proxyTransformFieldCode)
+}
+
+// SetMatcher sets the Matcher field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransform) SetMatcher(matcher *string) {
+	p.Matcher = matcher
+	p.require(proxyTransformFieldMatcher)
+}
+
+// SetExpression sets the Expression field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransform) SetExpression(expression *string) {
+	p.Expression = expression
+	p.require(proxyTransformFieldExpression)
+}
+
+// SetReplacement sets the Replacement field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransform) SetReplacement(replacement *string) {
+	p.Replacement = replacement
+	p.require(proxyTransformFieldReplacement)
+}
+
+// SetOptions sets the Options field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransform) SetOptions(options *ProxyTransformOptions) {
+	p.Options = options
+	p.require(proxyTransformFieldOptions)
 }
 
 func (p *ProxyTransform) UnmarshalJSON(data []byte) error {
@@ -503,7 +1193,21 @@ func (p *ProxyTransform) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *ProxyTransform) MarshalJSON() ([]byte, error) {
+	type embed ProxyTransform
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (p *ProxyTransform) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -515,12 +1219,23 @@ func (p *ProxyTransform) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
+var (
+	proxyTransformOptionsFieldToken      = big.NewInt(1 << 0)
+	proxyTransformOptionsFieldIdentifier = big.NewInt(1 << 1)
+	proxyTransformOptionsFieldValue      = big.NewInt(1 << 2)
+	proxyTransformOptionsFieldLocation   = big.NewInt(1 << 3)
+	proxyTransformOptionsFieldRuntime    = big.NewInt(1 << 4)
+)
+
 type ProxyTransformOptions struct {
 	Token      *CreateTokenRequest `json:"token,omitempty" url:"token,omitempty"`
 	Identifier *string             `json:"identifier,omitempty" url:"identifier,omitempty"`
 	Value      *string             `json:"value,omitempty" url:"value,omitempty"`
 	Location   *string             `json:"location,omitempty" url:"location,omitempty"`
 	Runtime    *Runtime            `json:"runtime,omitempty" url:"runtime,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -562,7 +1277,52 @@ func (p *ProxyTransformOptions) GetRuntime() *Runtime {
 }
 
 func (p *ProxyTransformOptions) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
+}
+
+func (p *ProxyTransformOptions) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetToken sets the Token field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransformOptions) SetToken(token *CreateTokenRequest) {
+	p.Token = token
+	p.require(proxyTransformOptionsFieldToken)
+}
+
+// SetIdentifier sets the Identifier field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransformOptions) SetIdentifier(identifier *string) {
+	p.Identifier = identifier
+	p.require(proxyTransformOptionsFieldIdentifier)
+}
+
+// SetValue sets the Value field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransformOptions) SetValue(value *string) {
+	p.Value = value
+	p.require(proxyTransformOptionsFieldValue)
+}
+
+// SetLocation sets the Location field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransformOptions) SetLocation(location *string) {
+	p.Location = location
+	p.require(proxyTransformOptionsFieldLocation)
+}
+
+// SetRuntime sets the Runtime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *ProxyTransformOptions) SetRuntime(runtime *Runtime) {
+	p.Runtime = runtime
+	p.require(proxyTransformOptionsFieldRuntime)
 }
 
 func (p *ProxyTransformOptions) UnmarshalJSON(data []byte) error {
@@ -581,7 +1341,21 @@ func (p *ProxyTransformOptions) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *ProxyTransformOptions) MarshalJSON() ([]byte, error) {
+	type embed ProxyTransformOptions
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (p *ProxyTransformOptions) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -593,11 +1367,21 @@ func (p *ProxyTransformOptions) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
+var (
+	requestedProxyFieldProxy        = big.NewInt(1 << 0)
+	requestedProxyFieldErrorCode    = big.NewInt(1 << 1)
+	requestedProxyFieldErrorMessage = big.NewInt(1 << 2)
+	requestedProxyFieldErrorDetails = big.NewInt(1 << 3)
+)
+
 type RequestedProxy struct {
-	Proxy        *PendingProxy          `json:"proxy,omitempty" url:"proxy,omitempty"`
-	ErrorCode    *string                `json:"error_code,omitempty" url:"error_code,omitempty"`
-	ErrorMessage *string                `json:"error_message,omitempty" url:"error_message,omitempty"`
-	ErrorDetails map[string]interface{} `json:"error_details,omitempty" url:"error_details,omitempty"`
+	Proxy        *PendingProxy  `json:"proxy,omitempty" url:"proxy,omitempty"`
+	ErrorCode    *string        `json:"error_code,omitempty" url:"error_code,omitempty"`
+	ErrorMessage *string        `json:"error_message,omitempty" url:"error_message,omitempty"`
+	ErrorDetails map[string]any `json:"error_details,omitempty" url:"error_details,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -624,7 +1408,7 @@ func (r *RequestedProxy) GetErrorMessage() *string {
 	return r.ErrorMessage
 }
 
-func (r *RequestedProxy) GetErrorDetails() map[string]interface{} {
+func (r *RequestedProxy) GetErrorDetails() map[string]any {
 	if r == nil {
 		return nil
 	}
@@ -632,7 +1416,45 @@ func (r *RequestedProxy) GetErrorDetails() map[string]interface{} {
 }
 
 func (r *RequestedProxy) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
+}
+
+func (r *RequestedProxy) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetProxy sets the Proxy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RequestedProxy) SetProxy(proxy *PendingProxy) {
+	r.Proxy = proxy
+	r.require(requestedProxyFieldProxy)
+}
+
+// SetErrorCode sets the ErrorCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RequestedProxy) SetErrorCode(errorCode *string) {
+	r.ErrorCode = errorCode
+	r.require(requestedProxyFieldErrorCode)
+}
+
+// SetErrorMessage sets the ErrorMessage field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RequestedProxy) SetErrorMessage(errorMessage *string) {
+	r.ErrorMessage = errorMessage
+	r.require(requestedProxyFieldErrorMessage)
+}
+
+// SetErrorDetails sets the ErrorDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RequestedProxy) SetErrorDetails(errorDetails map[string]any) {
+	r.ErrorDetails = errorDetails
+	r.require(requestedProxyFieldErrorDetails)
 }
 
 func (r *RequestedProxy) UnmarshalJSON(data []byte) error {
@@ -651,7 +1473,21 @@ func (r *RequestedProxy) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (r *RequestedProxy) MarshalJSON() ([]byte, error) {
+	type embed RequestedProxy
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (r *RequestedProxy) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -662,6 +1498,21 @@ func (r *RequestedProxy) String() string {
 	}
 	return fmt.Sprintf("%#v", r)
 }
+
+var (
+	updateProxyRequestFieldName                  = big.NewInt(1 << 0)
+	updateProxyRequestFieldDestinationURL        = big.NewInt(1 << 1)
+	updateProxyRequestFieldRequestReactorID      = big.NewInt(1 << 2)
+	updateProxyRequestFieldResponseReactorID     = big.NewInt(1 << 3)
+	updateProxyRequestFieldRequestTransform      = big.NewInt(1 << 4)
+	updateProxyRequestFieldResponseTransform     = big.NewInt(1 << 5)
+	updateProxyRequestFieldRequestTransforms     = big.NewInt(1 << 6)
+	updateProxyRequestFieldResponseTransforms    = big.NewInt(1 << 7)
+	updateProxyRequestFieldApplication           = big.NewInt(1 << 8)
+	updateProxyRequestFieldConfiguration         = big.NewInt(1 << 9)
+	updateProxyRequestFieldRequireAuth           = big.NewInt(1 << 10)
+	updateProxyRequestFieldDisableDetokenization = big.NewInt(1 << 11)
+)
 
 type UpdateProxyRequest struct {
 	Name                  string             `json:"name" url:"-"`
@@ -676,4 +1527,119 @@ type UpdateProxyRequest struct {
 	Configuration         map[string]*string `json:"configuration,omitempty" url:"-"`
 	RequireAuth           *bool              `json:"require_auth,omitempty" url:"-"`
 	DisableDetokenization *bool              `json:"disable_detokenization,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateProxyRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetName(name string) {
+	u.Name = name
+	u.require(updateProxyRequestFieldName)
+}
+
+// SetDestinationURL sets the DestinationURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetDestinationURL(destinationURL string) {
+	u.DestinationURL = destinationURL
+	u.require(updateProxyRequestFieldDestinationURL)
+}
+
+// SetRequestReactorID sets the RequestReactorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetRequestReactorID(requestReactorID *string) {
+	u.RequestReactorID = requestReactorID
+	u.require(updateProxyRequestFieldRequestReactorID)
+}
+
+// SetResponseReactorID sets the ResponseReactorID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetResponseReactorID(responseReactorID *string) {
+	u.ResponseReactorID = responseReactorID
+	u.require(updateProxyRequestFieldResponseReactorID)
+}
+
+// SetRequestTransform sets the RequestTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetRequestTransform(requestTransform *ProxyTransform) {
+	u.RequestTransform = requestTransform
+	u.require(updateProxyRequestFieldRequestTransform)
+}
+
+// SetResponseTransform sets the ResponseTransform field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetResponseTransform(responseTransform *ProxyTransform) {
+	u.ResponseTransform = responseTransform
+	u.require(updateProxyRequestFieldResponseTransform)
+}
+
+// SetRequestTransforms sets the RequestTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetRequestTransforms(requestTransforms []*ProxyTransform) {
+	u.RequestTransforms = requestTransforms
+	u.require(updateProxyRequestFieldRequestTransforms)
+}
+
+// SetResponseTransforms sets the ResponseTransforms field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetResponseTransforms(responseTransforms []*ProxyTransform) {
+	u.ResponseTransforms = responseTransforms
+	u.require(updateProxyRequestFieldResponseTransforms)
+}
+
+// SetApplication sets the Application field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetApplication(application *Application) {
+	u.Application = application
+	u.require(updateProxyRequestFieldApplication)
+}
+
+// SetConfiguration sets the Configuration field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetConfiguration(configuration map[string]*string) {
+	u.Configuration = configuration
+	u.require(updateProxyRequestFieldConfiguration)
+}
+
+// SetRequireAuth sets the RequireAuth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetRequireAuth(requireAuth *bool) {
+	u.RequireAuth = requireAuth
+	u.require(updateProxyRequestFieldRequireAuth)
+}
+
+// SetDisableDetokenization sets the DisableDetokenization field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateProxyRequest) SetDisableDetokenization(disableDetokenization *bool) {
+	u.DisableDetokenization = disableDetokenization
+	u.require(updateProxyRequestFieldDisableDetokenization)
+}
+
+func (u *UpdateProxyRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateProxyRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateProxyRequest(body)
+	return nil
+}
+
+func (u *UpdateProxyRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateProxyRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

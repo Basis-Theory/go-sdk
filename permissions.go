@@ -5,17 +5,48 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	permissionsListRequestFieldApplicationType = big.NewInt(1 << 0)
 )
 
 type PermissionsListRequest struct {
 	ApplicationType *string `json:"-" url:"application_type,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (p *PermissionsListRequest) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetApplicationType sets the ApplicationType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PermissionsListRequest) SetApplicationType(applicationType *string) {
+	p.ApplicationType = applicationType
+	p.require(permissionsListRequestFieldApplicationType)
+}
+
+var (
+	permissionFieldType             = big.NewInt(1 << 0)
+	permissionFieldDescription      = big.NewInt(1 << 1)
+	permissionFieldApplicationTypes = big.NewInt(1 << 2)
+)
 
 type Permission struct {
 	Type             *string  `json:"type,omitempty" url:"type,omitempty"`
 	Description      *string  `json:"description,omitempty" url:"description,omitempty"`
 	ApplicationTypes []string `json:"application_types,omitempty" url:"application_types,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -43,7 +74,38 @@ func (p *Permission) GetApplicationTypes() []string {
 }
 
 func (p *Permission) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
+}
+
+func (p *Permission) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Permission) SetType(type_ *string) {
+	p.Type = type_
+	p.require(permissionFieldType)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Permission) SetDescription(description *string) {
+	p.Description = description
+	p.require(permissionFieldDescription)
+}
+
+// SetApplicationTypes sets the ApplicationTypes field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Permission) SetApplicationTypes(applicationTypes []string) {
+	p.ApplicationTypes = applicationTypes
+	p.require(permissionFieldApplicationTypes)
 }
 
 func (p *Permission) UnmarshalJSON(data []byte) error {
@@ -62,7 +124,21 @@ func (p *Permission) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *Permission) MarshalJSON() ([]byte, error) {
+	type embed Permission
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (p *Permission) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
