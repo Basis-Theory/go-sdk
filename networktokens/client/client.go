@@ -4,48 +4,48 @@ package client
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	account "github.com/Basis-Theory/go-sdk/v5/networktokens/account"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
 	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	account "github.com/Basis-Theory/go-sdk/v6/networktokens/account"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 	Account         *account.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Account:         account.NewClient(opts...),
+		Account:         account.NewClient(options),
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (c *Client) Create(
 	ctx context.Context,
-	request *v5.CreateNetworkTokenRequest,
+	request *basistheory.CreateNetworkTokenRequest,
 	opts ...option.RequestOption,
-) (*v5.NetworkToken, error) {
+) (*basistheory.NetworkToken, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		request,
@@ -61,7 +61,7 @@ func (c *Client) Cryptogram(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.NetworkTokenCryptogram, error) {
+) (*basistheory.NetworkTokenCryptogram, error) {
 	response, err := c.WithRawResponse.Cryptogram(
 		ctx,
 		id,
@@ -77,7 +77,7 @@ func (c *Client) Get(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.NetworkToken, error) {
+) (*basistheory.NetworkToken, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		id,
@@ -109,7 +109,7 @@ func (c *Client) Suspend(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.NetworkToken, error) {
+) (*basistheory.NetworkToken, error) {
 	response, err := c.WithRawResponse.Suspend(
 		ctx,
 		id,
@@ -125,7 +125,7 @@ func (c *Client) Resume(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*v5.NetworkToken, error) {
+) (*basistheory.NetworkToken, error) {
 	response, err := c.WithRawResponse.Resume(
 		ctx,
 		id,

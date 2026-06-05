@@ -5,8 +5,19 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	createNetworkTokenRequestFieldData            = big.NewInt(1 << 0)
+	createNetworkTokenRequestFieldTokenID         = big.NewInt(1 << 1)
+	createNetworkTokenRequestFieldTokenIntentID   = big.NewInt(1 << 2)
+	createNetworkTokenRequestFieldExpirationMonth = big.NewInt(1 << 3)
+	createNetworkTokenRequestFieldExpirationYear  = big.NewInt(1 << 4)
+	createNetworkTokenRequestFieldCardholderInfo  = big.NewInt(1 << 5)
+	createNetworkTokenRequestFieldMerchantID      = big.NewInt(1 << 6)
 )
 
 type CreateNetworkTokenRequest struct {
@@ -17,7 +28,97 @@ type CreateNetworkTokenRequest struct {
 	ExpirationYear  *int            `json:"expiration_year,omitempty" url:"-"`
 	CardholderInfo  *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
 	MerchantID      *string         `json:"merchant_id,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateNetworkTokenRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetData(data *Card) {
+	c.Data = data
+	c.require(createNetworkTokenRequestFieldData)
+}
+
+// SetTokenID sets the TokenID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetTokenID(tokenID *string) {
+	c.TokenID = tokenID
+	c.require(createNetworkTokenRequestFieldTokenID)
+}
+
+// SetTokenIntentID sets the TokenIntentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetTokenIntentID(tokenIntentID *string) {
+	c.TokenIntentID = tokenIntentID
+	c.require(createNetworkTokenRequestFieldTokenIntentID)
+}
+
+// SetExpirationMonth sets the ExpirationMonth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetExpirationMonth(expirationMonth *int) {
+	c.ExpirationMonth = expirationMonth
+	c.require(createNetworkTokenRequestFieldExpirationMonth)
+}
+
+// SetExpirationYear sets the ExpirationYear field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetExpirationYear(expirationYear *int) {
+	c.ExpirationYear = expirationYear
+	c.require(createNetworkTokenRequestFieldExpirationYear)
+}
+
+// SetCardholderInfo sets the CardholderInfo field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetCardholderInfo(cardholderInfo *CardholderInfo) {
+	c.CardholderInfo = cardholderInfo
+	c.require(createNetworkTokenRequestFieldCardholderInfo)
+}
+
+// SetMerchantID sets the MerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetMerchantID(merchantID *string) {
+	c.MerchantID = merchantID
+	c.require(createNetworkTokenRequestFieldMerchantID)
+}
+
+func (c *CreateNetworkTokenRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateNetworkTokenRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateNetworkTokenRequest(body)
+	return nil
+}
+
+func (c *CreateNetworkTokenRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateNetworkTokenRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	addressFieldLine1       = big.NewInt(1 << 0)
+	addressFieldLine2       = big.NewInt(1 << 1)
+	addressFieldLine3       = big.NewInt(1 << 2)
+	addressFieldPostalCode  = big.NewInt(1 << 3)
+	addressFieldCity        = big.NewInt(1 << 4)
+	addressFieldStateCode   = big.NewInt(1 << 5)
+	addressFieldCountryCode = big.NewInt(1 << 6)
+)
 
 type Address struct {
 	Line1       *string `json:"line1,omitempty" url:"line1,omitempty"`
@@ -27,6 +128,9 @@ type Address struct {
 	City        *string `json:"city,omitempty" url:"city,omitempty"`
 	StateCode   *string `json:"state_code,omitempty" url:"state_code,omitempty"`
 	CountryCode *string `json:"country_code,omitempty" url:"country_code,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -82,7 +186,66 @@ func (a *Address) GetCountryCode() *string {
 }
 
 func (a *Address) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
+}
+
+func (a *Address) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetLine1 sets the Line1 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetLine1(line1 *string) {
+	a.Line1 = line1
+	a.require(addressFieldLine1)
+}
+
+// SetLine2 sets the Line2 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetLine2(line2 *string) {
+	a.Line2 = line2
+	a.require(addressFieldLine2)
+}
+
+// SetLine3 sets the Line3 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetLine3(line3 *string) {
+	a.Line3 = line3
+	a.require(addressFieldLine3)
+}
+
+// SetPostalCode sets the PostalCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetPostalCode(postalCode *string) {
+	a.PostalCode = postalCode
+	a.require(addressFieldPostalCode)
+}
+
+// SetCity sets the City field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetCity(city *string) {
+	a.City = city
+	a.require(addressFieldCity)
+}
+
+// SetStateCode sets the StateCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetStateCode(stateCode *string) {
+	a.StateCode = stateCode
+	a.require(addressFieldStateCode)
+}
+
+// SetCountryCode sets the CountryCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Address) SetCountryCode(countryCode *string) {
+	a.CountryCode = countryCode
+	a.require(addressFieldCountryCode)
 }
 
 func (a *Address) UnmarshalJSON(data []byte) error {
@@ -101,7 +264,21 @@ func (a *Address) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (a *Address) MarshalJSON() ([]byte, error) {
+	type embed Address
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (a *Address) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -113,11 +290,21 @@ func (a *Address) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+var (
+	cardFieldNumber          = big.NewInt(1 << 0)
+	cardFieldExpirationMonth = big.NewInt(1 << 1)
+	cardFieldExpirationYear  = big.NewInt(1 << 2)
+	cardFieldCvc             = big.NewInt(1 << 3)
+)
+
 type Card struct {
 	Number          *string `json:"number,omitempty" url:"number,omitempty"`
 	ExpirationMonth *int    `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
 	ExpirationYear  *int    `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
 	Cvc             *string `json:"cvc,omitempty" url:"cvc,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -152,7 +339,45 @@ func (c *Card) GetCvc() *string {
 }
 
 func (c *Card) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *Card) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetNumber sets the Number field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Card) SetNumber(number *string) {
+	c.Number = number
+	c.require(cardFieldNumber)
+}
+
+// SetExpirationMonth sets the ExpirationMonth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Card) SetExpirationMonth(expirationMonth *int) {
+	c.ExpirationMonth = expirationMonth
+	c.require(cardFieldExpirationMonth)
+}
+
+// SetExpirationYear sets the ExpirationYear field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Card) SetExpirationYear(expirationYear *int) {
+	c.ExpirationYear = expirationYear
+	c.require(cardFieldExpirationYear)
+}
+
+// SetCvc sets the Cvc field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Card) SetCvc(cvc *string) {
+	c.Cvc = cvc
+	c.require(cardFieldCvc)
 }
 
 func (c *Card) UnmarshalJSON(data []byte) error {
@@ -171,7 +396,21 @@ func (c *Card) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *Card) MarshalJSON() ([]byte, error) {
+	type embed Card
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *Card) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -183,9 +422,17 @@ func (c *Card) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	cardholderInfoFieldName    = big.NewInt(1 << 0)
+	cardholderInfoFieldAddress = big.NewInt(1 << 1)
+)
+
 type CardholderInfo struct {
 	Name    *string  `json:"name,omitempty" url:"name,omitempty"`
 	Address *Address `json:"address,omitempty" url:"address,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -206,7 +453,31 @@ func (c *CardholderInfo) GetAddress() *Address {
 }
 
 func (c *CardholderInfo) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *CardholderInfo) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CardholderInfo) SetName(name *string) {
+	c.Name = name
+	c.require(cardholderInfoFieldName)
+}
+
+// SetAddress sets the Address field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CardholderInfo) SetAddress(address *Address) {
+	c.Address = address
+	c.require(cardholderInfoFieldAddress)
 }
 
 func (c *CardholderInfo) UnmarshalJSON(data []byte) error {
@@ -225,7 +496,21 @@ func (c *CardholderInfo) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *CardholderInfo) MarshalJSON() ([]byte, error) {
+	type embed CardholderInfo
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *CardholderInfo) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -236,6 +521,23 @@ func (c *CardholderInfo) String() string {
 	}
 	return fmt.Sprintf("%#v", c)
 }
+
+var (
+	networkTokenFieldID            = big.NewInt(1 << 0)
+	networkTokenFieldTenantID      = big.NewInt(1 << 1)
+	networkTokenFieldData          = big.NewInt(1 << 2)
+	networkTokenFieldCard          = big.NewInt(1 << 3)
+	networkTokenFieldNetworkToken  = big.NewInt(1 << 4)
+	networkTokenFieldPar           = big.NewInt(1 << 5)
+	networkTokenFieldStatus        = big.NewInt(1 << 6)
+	networkTokenFieldCreatedBy     = big.NewInt(1 << 7)
+	networkTokenFieldCreatedAt     = big.NewInt(1 << 8)
+	networkTokenFieldModifiedBy    = big.NewInt(1 << 9)
+	networkTokenFieldModifiedAt    = big.NewInt(1 << 10)
+	networkTokenFieldTokenID       = big.NewInt(1 << 11)
+	networkTokenFieldTokenIntentID = big.NewInt(1 << 12)
+	networkTokenFieldExtras        = big.NewInt(1 << 13)
+)
 
 type NetworkToken struct {
 	ID            *string             `json:"id,omitempty" url:"id,omitempty"`
@@ -252,6 +554,9 @@ type NetworkToken struct {
 	TokenID       *string             `json:"token_id,omitempty" url:"token_id,omitempty"`
 	TokenIntentID *string             `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
 	Extras        *NetworkTokenExtras `json:"_extras,omitempty" url:"_extras,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -356,7 +661,115 @@ func (n *NetworkToken) GetExtras() *NetworkTokenExtras {
 }
 
 func (n *NetworkToken) GetExtraProperties() map[string]interface{} {
+	if n == nil {
+		return nil
+	}
 	return n.extraProperties
+}
+
+func (n *NetworkToken) require(field *big.Int) {
+	if n.explicitFields == nil {
+		n.explicitFields = big.NewInt(0)
+	}
+	n.explicitFields.Or(n.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetID(id *string) {
+	n.ID = id
+	n.require(networkTokenFieldID)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetTenantID(tenantID *string) {
+	n.TenantID = tenantID
+	n.require(networkTokenFieldTenantID)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetData(data *Card) {
+	n.Data = data
+	n.require(networkTokenFieldData)
+}
+
+// SetCard sets the Card field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetCard(card *CardDetails) {
+	n.Card = card
+	n.require(networkTokenFieldCard)
+}
+
+// SetNetworkToken sets the NetworkToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetNetworkToken(networkToken *CardDetails) {
+	n.NetworkToken = networkToken
+	n.require(networkTokenFieldNetworkToken)
+}
+
+// SetPar sets the Par field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetPar(par *string) {
+	n.Par = par
+	n.require(networkTokenFieldPar)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetStatus(status *string) {
+	n.Status = status
+	n.require(networkTokenFieldStatus)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetCreatedBy(createdBy *string) {
+	n.CreatedBy = createdBy
+	n.require(networkTokenFieldCreatedBy)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetCreatedAt(createdAt *time.Time) {
+	n.CreatedAt = createdAt
+	n.require(networkTokenFieldCreatedAt)
+}
+
+// SetModifiedBy sets the ModifiedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetModifiedBy(modifiedBy *string) {
+	n.ModifiedBy = modifiedBy
+	n.require(networkTokenFieldModifiedBy)
+}
+
+// SetModifiedAt sets the ModifiedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetModifiedAt(modifiedAt *time.Time) {
+	n.ModifiedAt = modifiedAt
+	n.require(networkTokenFieldModifiedAt)
+}
+
+// SetTokenID sets the TokenID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetTokenID(tokenID *string) {
+	n.TokenID = tokenID
+	n.require(networkTokenFieldTokenID)
+}
+
+// SetTokenIntentID sets the TokenIntentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetTokenIntentID(tokenIntentID *string) {
+	n.TokenIntentID = tokenIntentID
+	n.require(networkTokenFieldTokenIntentID)
+}
+
+// SetExtras sets the Extras field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkToken) SetExtras(extras *NetworkTokenExtras) {
+	n.Extras = extras
+	n.require(networkTokenFieldExtras)
 }
 
 func (n *NetworkToken) UnmarshalJSON(data []byte) error {
@@ -394,10 +807,14 @@ func (n *NetworkToken) MarshalJSON() ([]byte, error) {
 		CreatedAt:  internal.NewOptionalDateTime(n.CreatedAt),
 		ModifiedAt: internal.NewOptionalDateTime(n.ModifiedAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, n.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (n *NetworkToken) String() string {
+	if n == nil {
+		return "<nil>"
+	}
 	if len(n.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
@@ -409,9 +826,17 @@ func (n *NetworkToken) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
+var (
+	networkTokenCryptogramFieldCryptogram = big.NewInt(1 << 0)
+	networkTokenCryptogramFieldEci        = big.NewInt(1 << 1)
+)
+
 type NetworkTokenCryptogram struct {
 	Cryptogram *string `json:"cryptogram,omitempty" url:"cryptogram,omitempty"`
 	Eci        *string `json:"eci,omitempty" url:"eci,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -432,7 +857,31 @@ func (n *NetworkTokenCryptogram) GetEci() *string {
 }
 
 func (n *NetworkTokenCryptogram) GetExtraProperties() map[string]interface{} {
+	if n == nil {
+		return nil
+	}
 	return n.extraProperties
+}
+
+func (n *NetworkTokenCryptogram) require(field *big.Int) {
+	if n.explicitFields == nil {
+		n.explicitFields = big.NewInt(0)
+	}
+	n.explicitFields.Or(n.explicitFields, field)
+}
+
+// SetCryptogram sets the Cryptogram field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkTokenCryptogram) SetCryptogram(cryptogram *string) {
+	n.Cryptogram = cryptogram
+	n.require(networkTokenCryptogramFieldCryptogram)
+}
+
+// SetEci sets the Eci field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkTokenCryptogram) SetEci(eci *string) {
+	n.Eci = eci
+	n.require(networkTokenCryptogramFieldEci)
 }
 
 func (n *NetworkTokenCryptogram) UnmarshalJSON(data []byte) error {
@@ -451,7 +900,21 @@ func (n *NetworkTokenCryptogram) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (n *NetworkTokenCryptogram) MarshalJSON() ([]byte, error) {
+	type embed NetworkTokenCryptogram
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*n),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, n.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (n *NetworkTokenCryptogram) String() string {
+	if n == nil {
+		return "<nil>"
+	}
 	if len(n.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
@@ -463,8 +926,15 @@ func (n *NetworkTokenCryptogram) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
+var (
+	networkTokenExtrasFieldDeduplicated = big.NewInt(1 << 0)
+)
+
 type NetworkTokenExtras struct {
 	Deduplicated *bool `json:"deduplicated,omitempty" url:"deduplicated,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -478,7 +948,24 @@ func (n *NetworkTokenExtras) GetDeduplicated() *bool {
 }
 
 func (n *NetworkTokenExtras) GetExtraProperties() map[string]interface{} {
+	if n == nil {
+		return nil
+	}
 	return n.extraProperties
+}
+
+func (n *NetworkTokenExtras) require(field *big.Int) {
+	if n.explicitFields == nil {
+		n.explicitFields = big.NewInt(0)
+	}
+	n.explicitFields.Or(n.explicitFields, field)
+}
+
+// SetDeduplicated sets the Deduplicated field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkTokenExtras) SetDeduplicated(deduplicated *bool) {
+	n.Deduplicated = deduplicated
+	n.require(networkTokenExtrasFieldDeduplicated)
 }
 
 func (n *NetworkTokenExtras) UnmarshalJSON(data []byte) error {
@@ -497,7 +984,21 @@ func (n *NetworkTokenExtras) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (n *NetworkTokenExtras) MarshalJSON() ([]byte, error) {
+	type embed NetworkTokenExtras
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*n),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, n.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (n *NetworkTokenExtras) String() string {
+	if n == nil {
+		return "<nil>"
+	}
 	if len(n.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value

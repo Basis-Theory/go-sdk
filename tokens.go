@@ -5,7 +5,17 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	tokensListV2RequestFieldType        = big.NewInt(1 << 0)
+	tokensListV2RequestFieldContainer   = big.NewInt(1 << 1)
+	tokensListV2RequestFieldFingerprint = big.NewInt(1 << 2)
+	tokensListV2RequestFieldMetadata    = big.NewInt(1 << 3)
+	tokensListV2RequestFieldStart       = big.NewInt(1 << 4)
+	tokensListV2RequestFieldSize        = big.NewInt(1 << 5)
 )
 
 type TokensListV2Request struct {
@@ -15,17 +25,135 @@ type TokensListV2Request struct {
 	Metadata    map[string]*string `json:"-" url:"metadata,omitempty"`
 	Start       *string            `json:"-" url:"start,omitempty"`
 	Size        *int               `json:"-" url:"size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (t *TokensListV2Request) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokensListV2Request) SetType(type_ *string) {
+	t.Type = type_
+	t.require(tokensListV2RequestFieldType)
+}
+
+// SetContainer sets the Container field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokensListV2Request) SetContainer(container *string) {
+	t.Container = container
+	t.require(tokensListV2RequestFieldContainer)
+}
+
+// SetFingerprint sets the Fingerprint field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokensListV2Request) SetFingerprint(fingerprint *string) {
+	t.Fingerprint = fingerprint
+	t.require(tokensListV2RequestFieldFingerprint)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokensListV2Request) SetMetadata(metadata map[string]*string) {
+	t.Metadata = metadata
+	t.require(tokensListV2RequestFieldMetadata)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokensListV2Request) SetStart(start *string) {
+	t.Start = start
+	t.require(tokensListV2RequestFieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokensListV2Request) SetSize(size *int) {
+	t.Size = size
+	t.require(tokensListV2RequestFieldSize)
+}
+
+var (
+	searchTokensRequestV2FieldQuery = big.NewInt(1 << 0)
+	searchTokensRequestV2FieldStart = big.NewInt(1 << 1)
+	searchTokensRequestV2FieldSize  = big.NewInt(1 << 2)
+)
 
 type SearchTokensRequestV2 struct {
 	Query *string `json:"query,omitempty" url:"-"`
 	Start *string `json:"start,omitempty" url:"-"`
 	Size  *int    `json:"size,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (s *SearchTokensRequestV2) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetQuery sets the Query field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SearchTokensRequestV2) SetQuery(query *string) {
+	s.Query = query
+	s.require(searchTokensRequestV2FieldQuery)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SearchTokensRequestV2) SetStart(start *string) {
+	s.Start = start
+	s.require(searchTokensRequestV2FieldStart)
+}
+
+// SetSize sets the Size field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SearchTokensRequestV2) SetSize(size *int) {
+	s.Size = size
+	s.require(searchTokensRequestV2FieldSize)
+}
+
+func (s *SearchTokensRequestV2) UnmarshalJSON(data []byte) error {
+	type unmarshaler SearchTokensRequestV2
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*s = SearchTokensRequestV2(body)
+	return nil
+}
+
+func (s *SearchTokensRequestV2) MarshalJSON() ([]byte, error) {
+	type embed SearchTokensRequestV2
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	cursorPaginationFieldPageSize = big.NewInt(1 << 0)
+	cursorPaginationFieldNext     = big.NewInt(1 << 1)
+)
 
 type CursorPagination struct {
 	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
 	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -46,7 +174,31 @@ func (c *CursorPagination) GetNext() *string {
 }
 
 func (c *CursorPagination) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *CursorPagination) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CursorPagination) SetPageSize(pageSize *int) {
+	c.PageSize = pageSize
+	c.require(cursorPaginationFieldPageSize)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CursorPagination) SetNext(next *string) {
+	c.Next = next
+	c.require(cursorPaginationFieldNext)
 }
 
 func (c *CursorPagination) UnmarshalJSON(data []byte) error {
@@ -65,7 +217,21 @@ func (c *CursorPagination) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *CursorPagination) MarshalJSON() ([]byte, error) {
+	type embed CursorPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *CursorPagination) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -77,9 +243,17 @@ func (c *CursorPagination) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	tokenCursorPaginatedListFieldPagination = big.NewInt(1 << 0)
+	tokenCursorPaginatedListFieldData       = big.NewInt(1 << 1)
+)
+
 type TokenCursorPaginatedList struct {
 	Pagination *CursorPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
 	Data       []*Token          `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -100,7 +274,31 @@ func (t *TokenCursorPaginatedList) GetData() []*Token {
 }
 
 func (t *TokenCursorPaginatedList) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
+}
+
+func (t *TokenCursorPaginatedList) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenCursorPaginatedList) SetPagination(pagination *CursorPagination) {
+	t.Pagination = pagination
+	t.require(tokenCursorPaginatedListFieldPagination)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenCursorPaginatedList) SetData(data []*Token) {
+	t.Data = data
+	t.require(tokenCursorPaginatedListFieldData)
 }
 
 func (t *TokenCursorPaginatedList) UnmarshalJSON(data []byte) error {
@@ -119,7 +317,21 @@ func (t *TokenCursorPaginatedList) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (t *TokenCursorPaginatedList) MarshalJSON() ([]byte, error) {
+	type embed TokenCursorPaginatedList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (t *TokenCursorPaginatedList) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -131,9 +343,17 @@ func (t *TokenCursorPaginatedList) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+var (
+	updatePrivacyFieldImpactLevel       = big.NewInt(1 << 0)
+	updatePrivacyFieldRestrictionPolicy = big.NewInt(1 << 1)
+)
+
 type UpdatePrivacy struct {
 	ImpactLevel       *string `json:"impact_level,omitempty" url:"impact_level,omitempty"`
 	RestrictionPolicy *string `json:"restriction_policy,omitempty" url:"restriction_policy,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -154,7 +374,31 @@ func (u *UpdatePrivacy) GetRestrictionPolicy() *string {
 }
 
 func (u *UpdatePrivacy) GetExtraProperties() map[string]interface{} {
+	if u == nil {
+		return nil
+	}
 	return u.extraProperties
+}
+
+func (u *UpdatePrivacy) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetImpactLevel sets the ImpactLevel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdatePrivacy) SetImpactLevel(impactLevel *string) {
+	u.ImpactLevel = impactLevel
+	u.require(updatePrivacyFieldImpactLevel)
+}
+
+// SetRestrictionPolicy sets the RestrictionPolicy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdatePrivacy) SetRestrictionPolicy(restrictionPolicy *string) {
+	u.RestrictionPolicy = restrictionPolicy
+	u.require(updatePrivacyFieldRestrictionPolicy)
 }
 
 func (u *UpdatePrivacy) UnmarshalJSON(data []byte) error {
@@ -173,7 +417,21 @@ func (u *UpdatePrivacy) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (u *UpdatePrivacy) MarshalJSON() ([]byte, error) {
+	type embed UpdatePrivacy
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (u *UpdatePrivacy) String() string {
+	if u == nil {
+		return "<nil>"
+	}
 	if len(u.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
@@ -185,14 +443,120 @@ func (u *UpdatePrivacy) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+var (
+	updateTokenRequestFieldData                  = big.NewInt(1 << 0)
+	updateTokenRequestFieldPrivacy               = big.NewInt(1 << 1)
+	updateTokenRequestFieldMetadata              = big.NewInt(1 << 2)
+	updateTokenRequestFieldSearchIndexes         = big.NewInt(1 << 3)
+	updateTokenRequestFieldFingerprintExpression = big.NewInt(1 << 4)
+	updateTokenRequestFieldMask                  = big.NewInt(1 << 5)
+	updateTokenRequestFieldExpiresAt             = big.NewInt(1 << 6)
+	updateTokenRequestFieldDeduplicateToken      = big.NewInt(1 << 7)
+	updateTokenRequestFieldContainers            = big.NewInt(1 << 8)
+)
+
 type UpdateTokenRequest struct {
-	Data                  interface{}        `json:"data,omitempty" url:"-"`
+	Data                  any                `json:"data,omitempty" url:"-"`
 	Privacy               *UpdatePrivacy     `json:"privacy,omitempty" url:"-"`
 	Metadata              map[string]*string `json:"metadata,omitempty" url:"-"`
 	SearchIndexes         []string           `json:"search_indexes,omitempty" url:"-"`
 	FingerprintExpression *string            `json:"fingerprint_expression,omitempty" url:"-"`
-	Mask                  interface{}        `json:"mask,omitempty" url:"-"`
+	Mask                  any                `json:"mask,omitempty" url:"-"`
 	ExpiresAt             *string            `json:"expires_at,omitempty" url:"-"`
 	DeduplicateToken      *bool              `json:"deduplicate_token,omitempty" url:"-"`
 	Containers            []string           `json:"containers,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateTokenRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetData(data any) {
+	u.Data = data
+	u.require(updateTokenRequestFieldData)
+}
+
+// SetPrivacy sets the Privacy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetPrivacy(privacy *UpdatePrivacy) {
+	u.Privacy = privacy
+	u.require(updateTokenRequestFieldPrivacy)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetMetadata(metadata map[string]*string) {
+	u.Metadata = metadata
+	u.require(updateTokenRequestFieldMetadata)
+}
+
+// SetSearchIndexes sets the SearchIndexes field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetSearchIndexes(searchIndexes []string) {
+	u.SearchIndexes = searchIndexes
+	u.require(updateTokenRequestFieldSearchIndexes)
+}
+
+// SetFingerprintExpression sets the FingerprintExpression field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetFingerprintExpression(fingerprintExpression *string) {
+	u.FingerprintExpression = fingerprintExpression
+	u.require(updateTokenRequestFieldFingerprintExpression)
+}
+
+// SetMask sets the Mask field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetMask(mask any) {
+	u.Mask = mask
+	u.require(updateTokenRequestFieldMask)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetExpiresAt(expiresAt *string) {
+	u.ExpiresAt = expiresAt
+	u.require(updateTokenRequestFieldExpiresAt)
+}
+
+// SetDeduplicateToken sets the DeduplicateToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetDeduplicateToken(deduplicateToken *bool) {
+	u.DeduplicateToken = deduplicateToken
+	u.require(updateTokenRequestFieldDeduplicateToken)
+}
+
+// SetContainers sets the Containers field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateTokenRequest) SetContainers(containers []string) {
+	u.Containers = containers
+	u.require(updateTokenRequestFieldContainers)
+}
+
+func (u *UpdateTokenRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateTokenRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateTokenRequest(body)
+	return nil
+}
+
+func (u *UpdateTokenRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateTokenRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

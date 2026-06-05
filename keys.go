@@ -5,12 +5,34 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	clientEncryptionKeyRequestFieldExpiresAt = big.NewInt(1 << 0)
 )
 
 type ClientEncryptionKeyRequest struct {
 	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (c *ClientEncryptionKeyRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ClientEncryptionKeyRequest) SetExpiresAt(expiresAt *time.Time) {
+	c.ExpiresAt = expiresAt
+	c.require(clientEncryptionKeyRequestFieldExpiresAt)
 }
 
 func (c *ClientEncryptionKeyRequest) UnmarshalJSON(data []byte) error {
@@ -32,12 +54,21 @@ func (c *ClientEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
 		embed:     embed(*c),
 		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
+
+var (
+	clientEncryptionKeyMetadataResponseFieldKeyID     = big.NewInt(1 << 0)
+	clientEncryptionKeyMetadataResponseFieldExpiresAt = big.NewInt(1 << 1)
+)
 
 type ClientEncryptionKeyMetadataResponse struct {
 	KeyID     *string    `json:"key_id,omitempty" url:"key_id,omitempty"`
 	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -58,7 +89,31 @@ func (c *ClientEncryptionKeyMetadataResponse) GetExpiresAt() *time.Time {
 }
 
 func (c *ClientEncryptionKeyMetadataResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *ClientEncryptionKeyMetadataResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetKeyID sets the KeyID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ClientEncryptionKeyMetadataResponse) SetKeyID(keyID *string) {
+	c.KeyID = keyID
+	c.require(clientEncryptionKeyMetadataResponseFieldKeyID)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ClientEncryptionKeyMetadataResponse) SetExpiresAt(expiresAt *time.Time) {
+	c.ExpiresAt = expiresAt
+	c.require(clientEncryptionKeyMetadataResponseFieldExpiresAt)
 }
 
 func (c *ClientEncryptionKeyMetadataResponse) UnmarshalJSON(data []byte) error {
@@ -92,10 +147,14 @@ func (c *ClientEncryptionKeyMetadataResponse) MarshalJSON() ([]byte, error) {
 		embed:     embed(*c),
 		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (c *ClientEncryptionKeyMetadataResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -107,10 +166,19 @@ func (c *ClientEncryptionKeyMetadataResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	clientEncryptionKeyResponseFieldKeyID        = big.NewInt(1 << 0)
+	clientEncryptionKeyResponseFieldPublicKeyPem = big.NewInt(1 << 1)
+	clientEncryptionKeyResponseFieldExpiresAt    = big.NewInt(1 << 2)
+)
+
 type ClientEncryptionKeyResponse struct {
 	KeyID        *string    `json:"key_id,omitempty" url:"key_id,omitempty"`
 	PublicKeyPem *string    `json:"public_key_pem,omitempty" url:"public_key_pem,omitempty"`
 	ExpiresAt    *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -138,7 +206,38 @@ func (c *ClientEncryptionKeyResponse) GetExpiresAt() *time.Time {
 }
 
 func (c *ClientEncryptionKeyResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
+}
+
+func (c *ClientEncryptionKeyResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetKeyID sets the KeyID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ClientEncryptionKeyResponse) SetKeyID(keyID *string) {
+	c.KeyID = keyID
+	c.require(clientEncryptionKeyResponseFieldKeyID)
+}
+
+// SetPublicKeyPem sets the PublicKeyPem field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ClientEncryptionKeyResponse) SetPublicKeyPem(publicKeyPem *string) {
+	c.PublicKeyPem = publicKeyPem
+	c.require(clientEncryptionKeyResponseFieldPublicKeyPem)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ClientEncryptionKeyResponse) SetExpiresAt(expiresAt *time.Time) {
+	c.ExpiresAt = expiresAt
+	c.require(clientEncryptionKeyResponseFieldExpiresAt)
 }
 
 func (c *ClientEncryptionKeyResponse) UnmarshalJSON(data []byte) error {
@@ -172,10 +271,14 @@ func (c *ClientEncryptionKeyResponse) MarshalJSON() ([]byte, error) {
 		embed:     embed(*c),
 		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (c *ClientEncryptionKeyResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value

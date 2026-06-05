@@ -5,19 +5,86 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	googlePayCreateRequestFieldExpiresAt              = big.NewInt(1 << 0)
+	googlePayCreateRequestFieldGooglePaymentData      = big.NewInt(1 << 1)
+	googlePayCreateRequestFieldMerchantRegistrationID = big.NewInt(1 << 2)
 )
 
 type GooglePayCreateRequest struct {
 	ExpiresAt              *string               `json:"expires_at,omitempty" url:"-"`
 	GooglePaymentData      *GooglePayMethodToken `json:"google_payment_data,omitempty" url:"-"`
 	MerchantRegistrationID *string               `json:"merchant_registration_id,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (g *GooglePayCreateRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayCreateRequest) SetExpiresAt(expiresAt *string) {
+	g.ExpiresAt = expiresAt
+	g.require(googlePayCreateRequestFieldExpiresAt)
+}
+
+// SetGooglePaymentData sets the GooglePaymentData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayCreateRequest) SetGooglePaymentData(googlePaymentData *GooglePayMethodToken) {
+	g.GooglePaymentData = googlePaymentData
+	g.require(googlePayCreateRequestFieldGooglePaymentData)
+}
+
+// SetMerchantRegistrationID sets the MerchantRegistrationID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayCreateRequest) SetMerchantRegistrationID(merchantRegistrationID *string) {
+	g.MerchantRegistrationID = merchantRegistrationID
+	g.require(googlePayCreateRequestFieldMerchantRegistrationID)
+}
+
+func (g *GooglePayCreateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayCreateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*g = GooglePayCreateRequest(body)
+	return nil
+}
+
+func (g *GooglePayCreateRequest) MarshalJSON() ([]byte, error) {
+	type embed GooglePayCreateRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	googlePayCreateResponseFieldGooglePay   = big.NewInt(1 << 0)
+	googlePayCreateResponseFieldTokenIntent = big.NewInt(1 << 1)
+)
 
 type GooglePayCreateResponse struct {
 	GooglePay   *GooglePayToken            `json:"google_pay,omitempty" url:"google_pay,omitempty"`
 	TokenIntent *CreateTokenIntentResponse `json:"token_intent,omitempty" url:"token_intent,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -38,7 +105,31 @@ func (g *GooglePayCreateResponse) GetTokenIntent() *CreateTokenIntentResponse {
 }
 
 func (g *GooglePayCreateResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
+}
+
+func (g *GooglePayCreateResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetGooglePay sets the GooglePay field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayCreateResponse) SetGooglePay(googlePay *GooglePayToken) {
+	g.GooglePay = googlePay
+	g.require(googlePayCreateResponseFieldGooglePay)
+}
+
+// SetTokenIntent sets the TokenIntent field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayCreateResponse) SetTokenIntent(tokenIntent *CreateTokenIntentResponse) {
+	g.TokenIntent = tokenIntent
+	g.require(googlePayCreateResponseFieldTokenIntent)
 }
 
 func (g *GooglePayCreateResponse) UnmarshalJSON(data []byte) error {
@@ -57,7 +148,21 @@ func (g *GooglePayCreateResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (g *GooglePayCreateResponse) MarshalJSON() ([]byte, error) {
+	type embed GooglePayCreateResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (g *GooglePayCreateResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -69,11 +174,21 @@ func (g *GooglePayCreateResponse) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+var (
+	googlePayMethodTokenFieldProtocolVersion        = big.NewInt(1 << 0)
+	googlePayMethodTokenFieldSignature              = big.NewInt(1 << 1)
+	googlePayMethodTokenFieldIntermediateSigningKey = big.NewInt(1 << 2)
+	googlePayMethodTokenFieldSignedMessage          = big.NewInt(1 << 3)
+)
+
 type GooglePayMethodToken struct {
 	ProtocolVersion        *string                 `json:"protocolVersion,omitempty" url:"protocolVersion,omitempty"`
 	Signature              *string                 `json:"signature,omitempty" url:"signature,omitempty"`
 	IntermediateSigningKey *IntermediateSigningKey `json:"intermediateSigningKey,omitempty" url:"intermediateSigningKey,omitempty"`
 	SignedMessage          *string                 `json:"signedMessage,omitempty" url:"signedMessage,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -108,7 +223,45 @@ func (g *GooglePayMethodToken) GetSignedMessage() *string {
 }
 
 func (g *GooglePayMethodToken) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
+}
+
+func (g *GooglePayMethodToken) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetProtocolVersion sets the ProtocolVersion field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMethodToken) SetProtocolVersion(protocolVersion *string) {
+	g.ProtocolVersion = protocolVersion
+	g.require(googlePayMethodTokenFieldProtocolVersion)
+}
+
+// SetSignature sets the Signature field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMethodToken) SetSignature(signature *string) {
+	g.Signature = signature
+	g.require(googlePayMethodTokenFieldSignature)
+}
+
+// SetIntermediateSigningKey sets the IntermediateSigningKey field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMethodToken) SetIntermediateSigningKey(intermediateSigningKey *IntermediateSigningKey) {
+	g.IntermediateSigningKey = intermediateSigningKey
+	g.require(googlePayMethodTokenFieldIntermediateSigningKey)
+}
+
+// SetSignedMessage sets the SignedMessage field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMethodToken) SetSignedMessage(signedMessage *string) {
+	g.SignedMessage = signedMessage
+	g.require(googlePayMethodTokenFieldSignedMessage)
 }
 
 func (g *GooglePayMethodToken) UnmarshalJSON(data []byte) error {
@@ -127,7 +280,21 @@ func (g *GooglePayMethodToken) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (g *GooglePayMethodToken) MarshalJSON() ([]byte, error) {
+	type embed GooglePayMethodToken
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (g *GooglePayMethodToken) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -139,6 +306,24 @@ func (g *GooglePayMethodToken) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+var (
+	googlePayTokenFieldID             = big.NewInt(1 << 0)
+	googlePayTokenFieldTenantID       = big.NewInt(1 << 1)
+	googlePayTokenFieldStatus         = big.NewInt(1 << 2)
+	googlePayTokenFieldExpiresAt      = big.NewInt(1 << 3)
+	googlePayTokenFieldCreatedBy      = big.NewInt(1 << 4)
+	googlePayTokenFieldCreatedAt      = big.NewInt(1 << 5)
+	googlePayTokenFieldModifiedBy     = big.NewInt(1 << 6)
+	googlePayTokenFieldModifiedAt     = big.NewInt(1 << 7)
+	googlePayTokenFieldCard           = big.NewInt(1 << 8)
+	googlePayTokenFieldData           = big.NewInt(1 << 9)
+	googlePayTokenFieldAuthentication = big.NewInt(1 << 10)
+	googlePayTokenFieldDetails        = big.NewInt(1 << 11)
+	googlePayTokenFieldFingerprint    = big.NewInt(1 << 12)
+	googlePayTokenFieldType           = big.NewInt(1 << 13)
+	googlePayTokenFieldIngestSource   = big.NewInt(1 << 14)
+)
+
 type GooglePayToken struct {
 	ID             *string                      `json:"id,omitempty" url:"id,omitempty"`
 	TenantID       *string                      `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
@@ -149,12 +334,15 @@ type GooglePayToken struct {
 	ModifiedBy     *string                      `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt     *time.Time                   `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Card           *CardDetails                 `json:"card,omitempty" url:"card,omitempty"`
-	Data           interface{}                  `json:"data,omitempty" url:"data,omitempty"`
+	Data           any                          `json:"data,omitempty" url:"data,omitempty"`
 	Authentication *TokenAuthentication         `json:"authentication,omitempty" url:"authentication,omitempty"`
 	Details        *TokenServiceProviderDetails `json:"details,omitempty" url:"details,omitempty"`
 	Fingerprint    *string                      `json:"fingerprint,omitempty" url:"fingerprint,omitempty"`
 	Type           *string                      `json:"type,omitempty" url:"type,omitempty"`
 	IngestSource   *string                      `json:"ingest_source,omitempty" url:"ingest_source,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -223,7 +411,7 @@ func (g *GooglePayToken) GetCard() *CardDetails {
 	return g.Card
 }
 
-func (g *GooglePayToken) GetData() interface{} {
+func (g *GooglePayToken) GetData() any {
 	if g == nil {
 		return nil
 	}
@@ -266,7 +454,122 @@ func (g *GooglePayToken) GetIngestSource() *string {
 }
 
 func (g *GooglePayToken) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
+}
+
+func (g *GooglePayToken) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetID(id *string) {
+	g.ID = id
+	g.require(googlePayTokenFieldID)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetTenantID(tenantID *string) {
+	g.TenantID = tenantID
+	g.require(googlePayTokenFieldTenantID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetStatus(status *string) {
+	g.Status = status
+	g.require(googlePayTokenFieldStatus)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetExpiresAt(expiresAt *time.Time) {
+	g.ExpiresAt = expiresAt
+	g.require(googlePayTokenFieldExpiresAt)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetCreatedBy(createdBy *string) {
+	g.CreatedBy = createdBy
+	g.require(googlePayTokenFieldCreatedBy)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetCreatedAt(createdAt *time.Time) {
+	g.CreatedAt = createdAt
+	g.require(googlePayTokenFieldCreatedAt)
+}
+
+// SetModifiedBy sets the ModifiedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetModifiedBy(modifiedBy *string) {
+	g.ModifiedBy = modifiedBy
+	g.require(googlePayTokenFieldModifiedBy)
+}
+
+// SetModifiedAt sets the ModifiedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetModifiedAt(modifiedAt *time.Time) {
+	g.ModifiedAt = modifiedAt
+	g.require(googlePayTokenFieldModifiedAt)
+}
+
+// SetCard sets the Card field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetCard(card *CardDetails) {
+	g.Card = card
+	g.require(googlePayTokenFieldCard)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetData(data any) {
+	g.Data = data
+	g.require(googlePayTokenFieldData)
+}
+
+// SetAuthentication sets the Authentication field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetAuthentication(authentication *TokenAuthentication) {
+	g.Authentication = authentication
+	g.require(googlePayTokenFieldAuthentication)
+}
+
+// SetDetails sets the Details field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetDetails(details *TokenServiceProviderDetails) {
+	g.Details = details
+	g.require(googlePayTokenFieldDetails)
+}
+
+// SetFingerprint sets the Fingerprint field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetFingerprint(fingerprint *string) {
+	g.Fingerprint = fingerprint
+	g.require(googlePayTokenFieldFingerprint)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetType(type_ *string) {
+	g.Type = type_
+	g.require(googlePayTokenFieldType)
+}
+
+// SetIngestSource sets the IngestSource field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayToken) SetIngestSource(ingestSource *string) {
+	g.IngestSource = ingestSource
+	g.require(googlePayTokenFieldIngestSource)
 }
 
 func (g *GooglePayToken) UnmarshalJSON(data []byte) error {
@@ -308,10 +611,14 @@ func (g *GooglePayToken) MarshalJSON() ([]byte, error) {
 		CreatedAt:  internal.NewOptionalDateTime(g.CreatedAt),
 		ModifiedAt: internal.NewOptionalDateTime(g.ModifiedAt),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (g *GooglePayToken) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -323,9 +630,17 @@ func (g *GooglePayToken) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+var (
+	intermediateSigningKeyFieldSignedKey  = big.NewInt(1 << 0)
+	intermediateSigningKeyFieldSignatures = big.NewInt(1 << 1)
+)
+
 type IntermediateSigningKey struct {
 	SignedKey  *string  `json:"signedKey,omitempty" url:"signedKey,omitempty"`
 	Signatures []string `json:"signatures,omitempty" url:"signatures,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -346,7 +661,31 @@ func (i *IntermediateSigningKey) GetSignatures() []string {
 }
 
 func (i *IntermediateSigningKey) GetExtraProperties() map[string]interface{} {
+	if i == nil {
+		return nil
+	}
 	return i.extraProperties
+}
+
+func (i *IntermediateSigningKey) require(field *big.Int) {
+	if i.explicitFields == nil {
+		i.explicitFields = big.NewInt(0)
+	}
+	i.explicitFields.Or(i.explicitFields, field)
+}
+
+// SetSignedKey sets the SignedKey field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *IntermediateSigningKey) SetSignedKey(signedKey *string) {
+	i.SignedKey = signedKey
+	i.require(intermediateSigningKeyFieldSignedKey)
+}
+
+// SetSignatures sets the Signatures field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *IntermediateSigningKey) SetSignatures(signatures []string) {
+	i.Signatures = signatures
+	i.require(intermediateSigningKeyFieldSignatures)
 }
 
 func (i *IntermediateSigningKey) UnmarshalJSON(data []byte) error {
@@ -365,7 +704,21 @@ func (i *IntermediateSigningKey) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (i *IntermediateSigningKey) MarshalJSON() ([]byte, error) {
+	type embed IntermediateSigningKey
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*i),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, i.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (i *IntermediateSigningKey) String() string {
+	if i == nil {
+		return "<nil>"
+	}
 	if len(i.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
 			return value
@@ -377,9 +730,17 @@ func (i *IntermediateSigningKey) String() string {
 	return fmt.Sprintf("%#v", i)
 }
 
+var (
+	tokenAuthenticationFieldThreedsCryptogram = big.NewInt(1 << 0)
+	tokenAuthenticationFieldEciIndicator      = big.NewInt(1 << 1)
+)
+
 type TokenAuthentication struct {
 	ThreedsCryptogram *string `json:"threeds_cryptogram,omitempty" url:"threeds_cryptogram,omitempty"`
 	EciIndicator      *string `json:"eci_indicator,omitempty" url:"eci_indicator,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -400,7 +761,31 @@ func (t *TokenAuthentication) GetEciIndicator() *string {
 }
 
 func (t *TokenAuthentication) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
+}
+
+func (t *TokenAuthentication) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetThreedsCryptogram sets the ThreedsCryptogram field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenAuthentication) SetThreedsCryptogram(threedsCryptogram *string) {
+	t.ThreedsCryptogram = threedsCryptogram
+	t.require(tokenAuthenticationFieldThreedsCryptogram)
+}
+
+// SetEciIndicator sets the EciIndicator field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenAuthentication) SetEciIndicator(eciIndicator *string) {
+	t.EciIndicator = eciIndicator
+	t.require(tokenAuthenticationFieldEciIndicator)
 }
 
 func (t *TokenAuthentication) UnmarshalJSON(data []byte) error {
@@ -419,7 +804,21 @@ func (t *TokenAuthentication) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (t *TokenAuthentication) MarshalJSON() ([]byte, error) {
+	type embed TokenAuthentication
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (t *TokenAuthentication) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value

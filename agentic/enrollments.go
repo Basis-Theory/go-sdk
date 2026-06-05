@@ -3,13 +3,25 @@
 package agentic
 
 import (
+	json "encoding/json"
 	fmt "fmt"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	v6 "github.com/Basis-Theory/go-sdk/v6"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	createEnrollmentRequestFieldTokenID    = big.NewInt(1 << 0)
+	createEnrollmentRequestFieldConsumer   = big.NewInt(1 << 1)
+	createEnrollmentRequestFieldAgentID    = big.NewInt(1 << 2)
+	createEnrollmentRequestFieldAgentIDs   = big.NewInt(1 << 3)
+	createEnrollmentRequestFieldWalletName = big.NewInt(1 << 4)
+	createEnrollmentRequestFieldType       = big.NewInt(1 << 5)
 )
 
 type CreateEnrollmentRequest struct {
 	TokenID  string       `json:"token_id" url:"-"`
-	Consumer *v5.Consumer `json:"consumer,omitempty" url:"-"`
+	Consumer *v6.Consumer `json:"consumer" url:"-"`
 	// Single agent ID (mutually exclusive with agent_ids)
 	AgentID *string `json:"agent_id,omitempty" url:"-"`
 	// Multiple agent IDs (mutually exclusive with agent_id)
@@ -20,12 +32,114 @@ type CreateEnrollmentRequest struct {
 	// `autofill` enrolls the card for direct autofill credential retrieval, skips verification, and is currently
 	// available to test tenants only.
 	Type *CreateEnrollmentRequestType `json:"type,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateEnrollmentRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetTokenID sets the TokenID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetTokenID(tokenID string) {
+	c.TokenID = tokenID
+	c.require(createEnrollmentRequestFieldTokenID)
+}
+
+// SetConsumer sets the Consumer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetConsumer(consumer *v6.Consumer) {
+	c.Consumer = consumer
+	c.require(createEnrollmentRequestFieldConsumer)
+}
+
+// SetAgentID sets the AgentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetAgentID(agentID *string) {
+	c.AgentID = agentID
+	c.require(createEnrollmentRequestFieldAgentID)
+}
+
+// SetAgentIDs sets the AgentIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetAgentIDs(agentIDs []string) {
+	c.AgentIDs = agentIDs
+	c.require(createEnrollmentRequestFieldAgentIDs)
+}
+
+// SetWalletName sets the WalletName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetWalletName(walletName *string) {
+	c.WalletName = walletName
+	c.require(createEnrollmentRequestFieldWalletName)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetType(type_ *CreateEnrollmentRequestType) {
+	c.Type = type_
+	c.require(createEnrollmentRequestFieldType)
+}
+
+func (c *CreateEnrollmentRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateEnrollmentRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateEnrollmentRequest(body)
+	return nil
+}
+
+func (c *CreateEnrollmentRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateEnrollmentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	enrollmentsListRequestFieldLimit  = big.NewInt(1 << 0)
+	enrollmentsListRequestFieldCursor = big.NewInt(1 << 1)
+)
 
 type EnrollmentsListRequest struct {
 	Limit *int `json:"-" url:"limit,omitempty"`
 	// Pagination cursor from a previous response
 	Cursor *string `json:"-" url:"cursor,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (e *EnrollmentsListRequest) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetLimit sets the Limit field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EnrollmentsListRequest) SetLimit(limit *int) {
+	e.Limit = limit
+	e.require(enrollmentsListRequestFieldLimit)
+}
+
+// SetCursor sets the Cursor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EnrollmentsListRequest) SetCursor(cursor *string) {
+	e.Cursor = cursor
+	e.require(enrollmentsListRequestFieldCursor)
 }
 
 // Enrollment type. `agentic` (default) enrolls the card for agent-driven payments and requires verification.

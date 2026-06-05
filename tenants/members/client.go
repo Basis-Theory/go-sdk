@@ -4,38 +4,41 @@ package members
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
+	fmt "fmt"
 	http "net/http"
 	os "os"
+	strconv "strconv"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
+	tenants "github.com/Basis-Theory/go-sdk/v6/tenants"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -43,16 +46,66 @@ func (c *Client) List(
 	ctx context.Context,
 	request *tenants.MembersListRequest,
 	opts ...option.RequestOption,
-) (*v5.TenantMemberResponsePaginatedList, error) {
-	response, err := c.WithRawResponse.List(
-		ctx,
-		request,
-		opts...,
+) (*core.Page[*int, *basistheory.TenantMemberResponse, *basistheory.TenantMemberResponsePaginatedList], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://api.basistheory.com",
 	)
+	endpointURL := baseURL + "/tenants/self/members"
+	queryParams, err := internal.QueryValues(request)
 	if err != nil {
 		return nil, err
 	}
-	return response.Body, nil
+	headers := internal.MergeHeaders(
+		c.options.ToHeader(),
+		options.ToHeader(),
+	)
+	prepareCall := func(pageRequest *core.PageRequest[*int]) *internal.CallParams {
+		if pageRequest.Cursor != nil {
+			queryParams.Set("page", fmt.Sprintf("%v", *pageRequest.Cursor))
+		}
+		nextURL := endpointURL
+		if len(queryParams) > 0 {
+			nextURL += "?" + queryParams.Encode()
+		}
+		return &internal.CallParams{
+			URL:             nextURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        pageRequest.Response,
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
+		}
+	}
+	next := 1
+	if queryParams.Has("page") {
+		var err error
+		if next, err = strconv.Atoi(queryParams.Get("page")); err != nil {
+			return nil, err
+		}
+	}
+
+	readPageResponse := func(response *basistheory.TenantMemberResponsePaginatedList) *core.PageResponse[*int, *basistheory.TenantMemberResponse, *basistheory.TenantMemberResponsePaginatedList] {
+		next += 1
+		results := response.GetData()
+		return &core.PageResponse[*int, *basistheory.TenantMemberResponse, *basistheory.TenantMemberResponsePaginatedList]{
+			Results:  results,
+			Response: response,
+			Next:     &next,
+		}
+	}
+	pager := internal.NewOffsetPager(
+		c.caller,
+		prepareCall,
+		readPageResponse,
+	)
+	return pager.GetPage(ctx, &next)
 }
 
 func (c *Client) Update(
@@ -60,7 +113,7 @@ func (c *Client) Update(
 	memberID string,
 	request *tenants.UpdateTenantMemberRequest,
 	opts ...option.IdempotentRequestOption,
-) (*v5.TenantMemberResponse, error) {
+) (*basistheory.TenantMemberResponse, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		memberID,

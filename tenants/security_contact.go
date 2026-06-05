@@ -2,6 +2,54 @@
 
 package tenants
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	securityContactEmailRequestFieldEmail = big.NewInt(1 << 0)
+)
+
 type SecurityContactEmailRequest struct {
 	Email string `json:"email" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (s *SecurityContactEmailRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetEmail sets the Email field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SecurityContactEmailRequest) SetEmail(email string) {
+	s.Email = email
+	s.require(securityContactEmailRequestFieldEmail)
+}
+
+func (s *SecurityContactEmailRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler SecurityContactEmailRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*s = SecurityContactEmailRequest(body)
+	return nil
+}
+
+func (s *SecurityContactEmailRequest) MarshalJSON() ([]byte, error) {
+	type embed SecurityContactEmailRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

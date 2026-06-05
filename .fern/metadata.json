@@ -1,0 +1,15 @@
+{
+  "cliVersion": "5.43.0",
+  "generatorName": "fernapi/fern-go-sdk",
+  "generatorVersion": "1.43.0",
+  "generatorConfig": {
+    "packageName": "basistheory",
+    "union": "v1"
+  },
+  "originGitCommit": "653a1ac274c3a576a2273f9bff9371eb0d555ad2",
+  "originGitCommitIsDirty": false,
+  "invokedBy": "ci",
+  "requestedVersion": "6.0.0",
+  "ciProvider": "github",
+  "sdkVersion": "v6.0.0"
+}

@@ -4,7 +4,7 @@ package basistheory
 
 import (
 	json "encoding/json"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
 )
 
 // Bad Request
@@ -106,11 +106,11 @@ func (i *InternalServerError) Unwrap() error {
 // Not Found
 type NotFoundError struct {
 	*core.APIError
-	Body interface{}
+	Body any
 }
 
 func (n *NotFoundError) UnmarshalJSON(data []byte) error {
-	var body interface{}
+	var body any
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
