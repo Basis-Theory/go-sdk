@@ -1,3 +1,15 @@
+# [6.0.0](https://github.com/Basis-Theory/go-sdk/compare/v5.10.0...v6.0.0) (2026-06-05)
+
+
+* feat!: major updates (#137) ([3d14504](https://github.com/Basis-Theory/go-sdk/commit/3d14504051252827019665a4db6d47a753e84824)), closes [#137](https://github.com/Basis-Theory/go-sdk/issues/137)
+
+
+### BREAKING CHANGES
+
+* re-trigger release for the breaking changes introduced in #137. The original commit c1d011d used a malformed header ("feat!" without a colon) and a "BREAKING CHANGES" (plural) footer, neither of which the Angular preset recognizes, so semantic-release skipped the major bump.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
 # [5.10.0](https://github.com/Basis-Theory/go-sdk/compare/v5.9.0...v5.10.0) (2026-06-01)
 
 
