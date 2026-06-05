@@ -2,6 +2,54 @@
 
 package googlepay
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	googlePayMerchantRegisterRequestFieldMerchantIdentifier = big.NewInt(1 << 0)
+)
+
 type GooglePayMerchantRegisterRequest struct {
 	MerchantIdentifier *string `json:"merchant_identifier,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GooglePayMerchantRegisterRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetMerchantIdentifier sets the MerchantIdentifier field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayMerchantRegisterRequest) SetMerchantIdentifier(merchantIdentifier *string) {
+	g.MerchantIdentifier = merchantIdentifier
+	g.require(googlePayMerchantRegisterRequestFieldMerchantIdentifier)
+}
+
+func (g *GooglePayMerchantRegisterRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayMerchantRegisterRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*g = GooglePayMerchantRegisterRequest(body)
+	return nil
+}
+
+func (g *GooglePayMerchantRegisterRequest) MarshalJSON() ([]byte, error) {
+	type embed GooglePayMerchantRegisterRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

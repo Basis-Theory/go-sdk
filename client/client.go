@@ -3,33 +3,33 @@
 package client
 
 import (
-	accountupdaterclient "github.com/Basis-Theory/go-sdk/v5/accountupdater/client"
-	agenticclient "github.com/Basis-Theory/go-sdk/v5/agentic/client"
-	client "github.com/Basis-Theory/go-sdk/v5/applepay/client"
-	applicationkeys "github.com/Basis-Theory/go-sdk/v5/applicationkeys"
-	applications "github.com/Basis-Theory/go-sdk/v5/applications"
-	applicationtemplates "github.com/Basis-Theory/go-sdk/v5/applicationtemplates"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	documentsclient "github.com/Basis-Theory/go-sdk/v5/documents/client"
-	enrichments "github.com/Basis-Theory/go-sdk/v5/enrichments"
-	googlepayclient "github.com/Basis-Theory/go-sdk/v5/googlepay/client"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	keys "github.com/Basis-Theory/go-sdk/v5/keys"
-	logs "github.com/Basis-Theory/go-sdk/v5/logs"
-	networktokensclient "github.com/Basis-Theory/go-sdk/v5/networktokens/client"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	permissions "github.com/Basis-Theory/go-sdk/v5/permissions"
-	proxies "github.com/Basis-Theory/go-sdk/v5/proxies"
-	reactorsclient "github.com/Basis-Theory/go-sdk/v5/reactors/client"
-	roles "github.com/Basis-Theory/go-sdk/v5/roles"
-	sessions "github.com/Basis-Theory/go-sdk/v5/sessions"
-	tenantsclient "github.com/Basis-Theory/go-sdk/v5/tenants/client"
-	threedsclient "github.com/Basis-Theory/go-sdk/v5/threeds/client"
-	tokenintents "github.com/Basis-Theory/go-sdk/v5/tokenintents"
-	tokens "github.com/Basis-Theory/go-sdk/v5/tokens"
-	webhooksclient "github.com/Basis-Theory/go-sdk/v5/webhooks/client"
-	http "net/http"
 	os "os"
+
+	accountupdaterclient "github.com/Basis-Theory/go-sdk/v6/accountupdater/client"
+	agenticclient "github.com/Basis-Theory/go-sdk/v6/agentic/client"
+	client "github.com/Basis-Theory/go-sdk/v6/applepay/client"
+	applicationkeys "github.com/Basis-Theory/go-sdk/v6/applicationkeys"
+	applications "github.com/Basis-Theory/go-sdk/v6/applications"
+	applicationtemplates "github.com/Basis-Theory/go-sdk/v6/applicationtemplates"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	documentsclient "github.com/Basis-Theory/go-sdk/v6/documents/client"
+	enrichments "github.com/Basis-Theory/go-sdk/v6/enrichments"
+	googlepayclient "github.com/Basis-Theory/go-sdk/v6/googlepay/client"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	keys "github.com/Basis-Theory/go-sdk/v6/keys"
+	logs "github.com/Basis-Theory/go-sdk/v6/logs"
+	networktokensclient "github.com/Basis-Theory/go-sdk/v6/networktokens/client"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
+	permissions "github.com/Basis-Theory/go-sdk/v6/permissions"
+	proxies "github.com/Basis-Theory/go-sdk/v6/proxies"
+	reactorsclient "github.com/Basis-Theory/go-sdk/v6/reactors/client"
+	roles "github.com/Basis-Theory/go-sdk/v6/roles"
+	sessions "github.com/Basis-Theory/go-sdk/v6/sessions"
+	tenantsclient "github.com/Basis-Theory/go-sdk/v6/tenants/client"
+	threedsclient "github.com/Basis-Theory/go-sdk/v6/threeds/client"
+	tokenintents "github.com/Basis-Theory/go-sdk/v6/tokenintents"
+	tokens "github.com/Basis-Theory/go-sdk/v6/tokens"
+	webhooksclient "github.com/Basis-Theory/go-sdk/v6/webhooks/client"
 )
 
 type Client struct {
@@ -49,16 +49,16 @@ type Client struct {
 	Reactors             *reactorsclient.Client
 	Roles                *roles.Client
 	Sessions             *sessions.Client
-	Tenants              *tenantsclient.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
 	AccountUpdater       *accountupdaterclient.Client
 	Agentic              *agenticclient.Client
+	Tenants              *tenantsclient.Client
 	Threeds              *threedsclient.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
@@ -67,35 +67,36 @@ func NewClient(opts ...option.RequestOption) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Applications:         applications.NewClient(opts...),
-		ApplicationKeys:      applicationkeys.NewClient(opts...),
-		ApplicationTemplates: applicationtemplates.NewClient(opts...),
-		ApplePay:             client.NewClient(opts...),
-		GooglePay:            googlepayclient.NewClient(opts...),
-		Documents:            documentsclient.NewClient(opts...),
-		Tokens:               tokens.NewClient(opts...),
-		Enrichments:          enrichments.NewClient(opts...),
-		Keys:                 keys.NewClient(opts...),
-		Logs:                 logs.NewClient(opts...),
-		NetworkTokens:        networktokensclient.NewClient(opts...),
-		Permissions:          permissions.NewClient(opts...),
-		Proxies:              proxies.NewClient(opts...),
-		Reactors:             reactorsclient.NewClient(opts...),
-		Roles:                roles.NewClient(opts...),
-		Sessions:             sessions.NewClient(opts...),
-		Tenants:              tenantsclient.NewClient(opts...),
-		TokenIntents:         tokenintents.NewClient(opts...),
-		Webhooks:             webhooksclient.NewClient(opts...),
-		AccountUpdater:       accountupdaterclient.NewClient(opts...),
-		Agentic:              agenticclient.NewClient(opts...),
-		Threeds:              threedsclient.NewClient(opts...),
+		Applications:         applications.NewClient(options),
+		ApplicationKeys:      applicationkeys.NewClient(options),
+		ApplicationTemplates: applicationtemplates.NewClient(options),
+		ApplePay:             client.NewClient(options),
+		GooglePay:            googlepayclient.NewClient(options),
+		Documents:            documentsclient.NewClient(options),
+		Tokens:               tokens.NewClient(options),
+		Enrichments:          enrichments.NewClient(options),
+		Keys:                 keys.NewClient(options),
+		Logs:                 logs.NewClient(options),
+		NetworkTokens:        networktokensclient.NewClient(options),
+		Permissions:          permissions.NewClient(options),
+		Proxies:              proxies.NewClient(options),
+		Reactors:             reactorsclient.NewClient(options),
+		Roles:                roles.NewClient(options),
+		Sessions:             sessions.NewClient(options),
+		TokenIntents:         tokenintents.NewClient(options),
+		Webhooks:             webhooksclient.NewClient(options),
+		AccountUpdater:       accountupdaterclient.NewClient(options),
+		Agentic:              agenticclient.NewClient(options),
+		Tenants:              tenantsclient.NewClient(options),
+		Threeds:              threedsclient.NewClient(options),
+		options:              options,
 		baseURL:              options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }

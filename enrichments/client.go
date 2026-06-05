@@ -4,45 +4,45 @@ package enrichments
 
 import (
 	context "context"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	http "net/http"
 	os "os"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (c *Client) BankAccountVerify(
 	ctx context.Context,
-	request *v5.BankVerificationRequest,
+	request *basistheory.BankVerificationRequest,
 	opts ...option.RequestOption,
-) (*v5.BankVerificationResponse, error) {
+) (*basistheory.BankVerificationResponse, error) {
 	response, err := c.WithRawResponse.BankAccountVerify(
 		ctx,
 		request,
@@ -54,12 +54,12 @@ func (c *Client) BankAccountVerify(
 	return response.Body, nil
 }
 
-func (c *Client) Getcarddetails(
+func (c *Client) CardDetails(
 	ctx context.Context,
-	request *v5.EnrichmentsGetCardDetailsRequest,
+	request *basistheory.EnrichmentsCardDetailsRequest,
 	opts ...option.RequestOption,
-) (*v5.CardDetailsResponse, error) {
-	response, err := c.WithRawResponse.Getcarddetails(
+) (*basistheory.CardDetailsResponse, error) {
+	response, err := c.WithRawResponse.CardDetails(
 		ctx,
 		request,
 		opts...,

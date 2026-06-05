@@ -5,38 +5,40 @@ package merchants
 import (
 	context "context"
 	fmt "fmt"
-	v5 "github.com/Basis-Theory/go-sdk/v5"
-	core "github.com/Basis-Theory/go-sdk/v5/core"
-	internal "github.com/Basis-Theory/go-sdk/v5/internal"
-	option "github.com/Basis-Theory/go-sdk/v5/option"
-	tenants "github.com/Basis-Theory/go-sdk/v5/tenants"
 	http "net/http"
 	os "os"
+	strconv "strconv"
+
+	basistheory "github.com/Basis-Theory/go-sdk/v6"
+	core "github.com/Basis-Theory/go-sdk/v6/core"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	option "github.com/Basis-Theory/go-sdk/v6/option"
+	tenants "github.com/Basis-Theory/go-sdk/v6/tenants"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	if options.APIKey == "" {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
-				Client:      options.HTTPClient,
-				MaxAttempts: options.MaxAttempts,
+				Client:         options.HTTPClient,
+				MaxAttempts:    options.MaxAttempts,
+				DisableRetries: options.DisableRetries,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -45,7 +47,7 @@ func (c *Client) List(
 	tenantID string,
 	request *tenants.MerchantsListRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v5.TenantMerchant], error) {
+) (*core.Page[*int, *basistheory.TenantMerchant, *basistheory.TenantMerchantPaginatedList], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -61,24 +63,12 @@ func (c *Client) List(
 		return nil, err
 	}
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		401: func(apiError *core.APIError) error {
-			return &v5.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v5.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	prepareCall := func(pageRequest *internal.PageRequest[*int]) *internal.CallParams {
+	prepareCall := func(pageRequest *core.PageRequest[*int]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
-			queryParams.Set("page", fmt.Sprintf("%v", pageRequest.Cursor))
+			queryParams.Set("page", fmt.Sprintf("%v", *pageRequest.Cursor))
 		}
 		nextURL := endpointURL
 		if len(queryParams) > 0 {
@@ -89,24 +79,29 @@ func (c *Client) List(
 			Method:          http.MethodGet,
 			Headers:         headers,
 			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(basistheory.ErrorCodes),
 		}
 	}
 	next := 1
-	if request.Page != nil {
-		next = *request.Page
+	if queryParams.Has("page") {
+		var err error
+		if next, err = strconv.Atoi(queryParams.Get("page")); err != nil {
+			return nil, err
+		}
 	}
 
-	readPageResponse := func(response *v5.TenantMerchantPaginatedList) *internal.PageResponse[*int, *v5.TenantMerchant] {
+	readPageResponse := func(response *basistheory.TenantMerchantPaginatedList) *core.PageResponse[*int, *basistheory.TenantMerchant, *basistheory.TenantMerchantPaginatedList] {
 		next += 1
 		results := response.GetData()
-		return &internal.PageResponse[*int, *v5.TenantMerchant]{
-			Next:    &next,
-			Results: results,
+		return &core.PageResponse[*int, *basistheory.TenantMerchant, *basistheory.TenantMerchantPaginatedList]{
+			Results:  results,
+			Response: response,
+			Next:     &next,
 		}
 	}
 	pager := internal.NewOffsetPager(
@@ -120,9 +115,9 @@ func (c *Client) List(
 func (c *Client) Create(
 	ctx context.Context,
 	tenantID string,
-	request *v5.TenantMerchantRequest,
+	request *basistheory.TenantMerchantRequest,
 	opts ...option.RequestOption,
-) (*v5.TenantMerchant, error) {
+) (*basistheory.TenantMerchant, error) {
 	response, err := c.WithRawResponse.Create(
 		ctx,
 		tenantID,
@@ -140,7 +135,7 @@ func (c *Client) Get(
 	tenantID string,
 	merchantID string,
 	opts ...option.RequestOption,
-) (*v5.TenantMerchant, error) {
+) (*basistheory.TenantMerchant, error) {
 	response, err := c.WithRawResponse.Get(
 		ctx,
 		tenantID,
@@ -158,7 +153,7 @@ func (c *Client) Delete(
 	tenantID string,
 	merchantID string,
 	opts ...option.RequestOption,
-) (*v5.TenantMerchant, error) {
+) (*basistheory.TenantMerchant, error) {
 	response, err := c.WithRawResponse.Delete(
 		ctx,
 		tenantID,
@@ -175,9 +170,9 @@ func (c *Client) Update(
 	ctx context.Context,
 	tenantID string,
 	merchantID string,
-	request *v5.TenantMerchantRequest,
+	request *basistheory.TenantMerchantRequest,
 	opts ...option.RequestOption,
-) (*v5.TenantMerchant, error) {
+) (*basistheory.TenantMerchant, error) {
 	response, err := c.WithRawResponse.Update(
 		ctx,
 		tenantID,
@@ -197,7 +192,7 @@ func (c *Client) RequestOnboarding(
 	merchantID string,
 	request *tenants.ServiceOnboardingRequest,
 	opts ...option.RequestOption,
-) (*v5.TenantMerchant, error) {
+) (*basistheory.TenantMerchant, error) {
 	response, err := c.WithRawResponse.RequestOnboarding(
 		ctx,
 		tenantID,

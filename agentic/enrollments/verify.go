@@ -2,15 +2,155 @@
 
 package enrollments
 
+import (
+	json "encoding/json"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	completeVerificationRequestFieldAssuranceData    = big.NewInt(1 << 0)
+	completeVerificationRequestFieldSrcCorrelationID = big.NewInt(1 << 1)
+)
+
 type CompleteVerificationRequest struct {
-	AssuranceData    map[string]interface{} `json:"assurance_data,omitempty" url:"-"`
-	SrcCorrelationID *string                `json:"src_correlation_id,omitempty" url:"-"`
+	AssuranceData    map[string]any `json:"assurance_data,omitempty" url:"-"`
+	SrcCorrelationID *string        `json:"src_correlation_id,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CompleteVerificationRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetAssuranceData sets the AssuranceData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompleteVerificationRequest) SetAssuranceData(assuranceData map[string]any) {
+	c.AssuranceData = assuranceData
+	c.require(completeVerificationRequestFieldAssuranceData)
+}
+
+// SetSrcCorrelationID sets the SrcCorrelationID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompleteVerificationRequest) SetSrcCorrelationID(srcCorrelationID *string) {
+	c.SrcCorrelationID = srcCorrelationID
+	c.require(completeVerificationRequestFieldSrcCorrelationID)
+}
+
+func (c *CompleteVerificationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CompleteVerificationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CompleteVerificationRequest(body)
+	return nil
+}
+
+func (c *CompleteVerificationRequest) MarshalJSON() ([]byte, error) {
+	type embed CompleteVerificationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	selectMethodRequestFieldMethodID = big.NewInt(1 << 0)
+)
 
 type SelectMethodRequest struct {
 	MethodID string `json:"method_id" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (s *SelectMethodRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetMethodID sets the MethodID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SelectMethodRequest) SetMethodID(methodID string) {
+	s.MethodID = methodID
+	s.require(selectMethodRequestFieldMethodID)
+}
+
+func (s *SelectMethodRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler SelectMethodRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*s = SelectMethodRequest(body)
+	return nil
+}
+
+func (s *SelectMethodRequest) MarshalJSON() ([]byte, error) {
+	type embed SelectMethodRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	submitOtpRequestFieldOtpCode = big.NewInt(1 << 0)
+)
 
 type SubmitOtpRequest struct {
 	OtpCode string `json:"otp_code" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (s *SubmitOtpRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetOtpCode sets the OtpCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SubmitOtpRequest) SetOtpCode(otpCode string) {
+	s.OtpCode = otpCode
+	s.require(submitOtpRequestFieldOtpCode)
+}
+
+func (s *SubmitOtpRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler SubmitOtpRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*s = SubmitOtpRequest(body)
+	return nil
+}
+
+func (s *SubmitOtpRequest) MarshalJSON() ([]byte, error) {
+	type embed SubmitOtpRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

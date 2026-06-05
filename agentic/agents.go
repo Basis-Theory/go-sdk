@@ -3,17 +3,136 @@
 package agentic
 
 import (
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	json "encoding/json"
+	v6 "github.com/Basis-Theory/go-sdk/v6"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	createAgentRequestFieldName            = big.NewInt(1 << 0)
+	createAgentRequestFieldEnrollmentIDs   = big.NewInt(1 << 1)
+	createAgentRequestFieldInstanceDetails = big.NewInt(1 << 2)
 )
 
 type CreateAgentRequest struct {
 	Name            string              `json:"name" url:"-"`
 	EnrollmentIDs   []string            `json:"enrollment_ids,omitempty" url:"-"`
-	InstanceDetails *v5.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	InstanceDetails *v6.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (c *CreateAgentRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAgentRequest) SetName(name string) {
+	c.Name = name
+	c.require(createAgentRequestFieldName)
+}
+
+// SetEnrollmentIDs sets the EnrollmentIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAgentRequest) SetEnrollmentIDs(enrollmentIDs []string) {
+	c.EnrollmentIDs = enrollmentIDs
+	c.require(createAgentRequestFieldEnrollmentIDs)
+}
+
+// SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAgentRequest) SetInstanceDetails(instanceDetails *v6.InstanceDetails) {
+	c.InstanceDetails = instanceDetails
+	c.require(createAgentRequestFieldInstanceDetails)
+}
+
+func (c *CreateAgentRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateAgentRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateAgentRequest(body)
+	return nil
+}
+
+func (c *CreateAgentRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateAgentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
+	updateAgentRequestFieldName            = big.NewInt(1 << 0)
+	updateAgentRequestFieldEnrollmentIDs   = big.NewInt(1 << 1)
+	updateAgentRequestFieldInstanceDetails = big.NewInt(1 << 2)
+)
 
 type UpdateAgentRequest struct {
 	Name            *string             `json:"name,omitempty" url:"-"`
 	EnrollmentIDs   []string            `json:"enrollment_ids,omitempty" url:"-"`
-	InstanceDetails *v5.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	InstanceDetails *v6.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (u *UpdateAgentRequest) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateAgentRequest) SetName(name *string) {
+	u.Name = name
+	u.require(updateAgentRequestFieldName)
+}
+
+// SetEnrollmentIDs sets the EnrollmentIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateAgentRequest) SetEnrollmentIDs(enrollmentIDs []string) {
+	u.EnrollmentIDs = enrollmentIDs
+	u.require(updateAgentRequestFieldEnrollmentIDs)
+}
+
+// SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UpdateAgentRequest) SetInstanceDetails(instanceDetails *v6.InstanceDetails) {
+	u.InstanceDetails = instanceDetails
+	u.require(updateAgentRequestFieldInstanceDetails)
+}
+
+func (u *UpdateAgentRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler UpdateAgentRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*u = UpdateAgentRequest(body)
+	return nil
+}
+
+func (u *UpdateAgentRequest) MarshalJSON() ([]byte, error) {
+	type embed UpdateAgentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }

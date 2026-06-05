@@ -3,7 +3,23 @@
 package threeds
 
 import (
-	v5 "github.com/Basis-Theory/go-sdk/v5"
+	json "encoding/json"
+	v6 "github.com/Basis-Theory/go-sdk/v6"
+	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	big "math/big"
+)
+
+var (
+	createThreeDsSessionRequestFieldPan                   = big.NewInt(1 << 0)
+	createThreeDsSessionRequestFieldTokenID               = big.NewInt(1 << 1)
+	createThreeDsSessionRequestFieldTokenIntentID         = big.NewInt(1 << 2)
+	createThreeDsSessionRequestFieldType                  = big.NewInt(1 << 3)
+	createThreeDsSessionRequestFieldDevice                = big.NewInt(1 << 4)
+	createThreeDsSessionRequestFieldWebChallengeMode      = big.NewInt(1 << 5)
+	createThreeDsSessionRequestFieldDeviceInfo            = big.NewInt(1 << 6)
+	createThreeDsSessionRequestFieldAuthenticationRequest = big.NewInt(1 << 7)
+	createThreeDsSessionRequestFieldCallbackURLs          = big.NewInt(1 << 8)
+	createThreeDsSessionRequestFieldMetadata              = big.NewInt(1 << 9)
 )
 
 type CreateThreeDsSessionRequest struct {
@@ -13,8 +29,109 @@ type CreateThreeDsSessionRequest struct {
 	Type                  *string                               `json:"type,omitempty" url:"-"`
 	Device                *string                               `json:"device,omitempty" url:"-"`
 	WebChallengeMode      *string                               `json:"web_challenge_mode,omitempty" url:"-"`
-	DeviceInfo            *v5.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
-	AuthenticationRequest *v5.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
-	CallbackURLs          *v5.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
+	DeviceInfo            *v6.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
+	AuthenticationRequest *v6.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
+	CallbackURLs          *v6.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
 	Metadata              map[string]*string                    `json:"metadata,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (c *CreateThreeDsSessionRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetPan sets the Pan field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetPan(pan *string) {
+	c.Pan = pan
+	c.require(createThreeDsSessionRequestFieldPan)
+}
+
+// SetTokenID sets the TokenID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetTokenID(tokenID *string) {
+	c.TokenID = tokenID
+	c.require(createThreeDsSessionRequestFieldTokenID)
+}
+
+// SetTokenIntentID sets the TokenIntentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetTokenIntentID(tokenIntentID *string) {
+	c.TokenIntentID = tokenIntentID
+	c.require(createThreeDsSessionRequestFieldTokenIntentID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetType(type_ *string) {
+	c.Type = type_
+	c.require(createThreeDsSessionRequestFieldType)
+}
+
+// SetDevice sets the Device field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetDevice(device *string) {
+	c.Device = device
+	c.require(createThreeDsSessionRequestFieldDevice)
+}
+
+// SetWebChallengeMode sets the WebChallengeMode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetWebChallengeMode(webChallengeMode *string) {
+	c.WebChallengeMode = webChallengeMode
+	c.require(createThreeDsSessionRequestFieldWebChallengeMode)
+}
+
+// SetDeviceInfo sets the DeviceInfo field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetDeviceInfo(deviceInfo *v6.ThreeDsDeviceInfo) {
+	c.DeviceInfo = deviceInfo
+	c.require(createThreeDsSessionRequestFieldDeviceInfo)
+}
+
+// SetAuthenticationRequest sets the AuthenticationRequest field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetAuthenticationRequest(authenticationRequest *v6.AuthenticateThreeDsSessionRequest) {
+	c.AuthenticationRequest = authenticationRequest
+	c.require(createThreeDsSessionRequestFieldAuthenticationRequest)
+}
+
+// SetCallbackURLs sets the CallbackURLs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetCallbackURLs(callbackURLs *v6.ThreeDsCallbackURLs) {
+	c.CallbackURLs = callbackURLs
+	c.require(createThreeDsSessionRequestFieldCallbackURLs)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateThreeDsSessionRequest) SetMetadata(metadata map[string]*string) {
+	c.Metadata = metadata
+	c.require(createThreeDsSessionRequestFieldMetadata)
+}
+
+func (c *CreateThreeDsSessionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateThreeDsSessionRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CreateThreeDsSessionRequest(body)
+	return nil
+}
+
+func (c *CreateThreeDsSessionRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateThreeDsSessionRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
