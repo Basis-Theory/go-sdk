@@ -5,9 +5,9 @@ package client
 import (
 	os "os"
 
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	sessions "github.com/Basis-Theory/go-sdk/v6/threeds/sessions"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	sessions "github.com/Basis-Theory/go-sdk/v7/threeds/sessions"
 )
 
 type Client struct {

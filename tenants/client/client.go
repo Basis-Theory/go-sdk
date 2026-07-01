@@ -5,15 +5,15 @@ package client
 import (
 	os "os"
 
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	connections "github.com/Basis-Theory/go-sdk/v6/tenants/connections"
-	invitations "github.com/Basis-Theory/go-sdk/v6/tenants/invitations"
-	members "github.com/Basis-Theory/go-sdk/v6/tenants/members"
-	merchants "github.com/Basis-Theory/go-sdk/v6/tenants/merchants"
-	owner "github.com/Basis-Theory/go-sdk/v6/tenants/owner"
-	securitycontact "github.com/Basis-Theory/go-sdk/v6/tenants/securitycontact"
-	self "github.com/Basis-Theory/go-sdk/v6/tenants/self"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	connections "github.com/Basis-Theory/go-sdk/v7/tenants/connections"
+	invitations "github.com/Basis-Theory/go-sdk/v7/tenants/invitations"
+	members "github.com/Basis-Theory/go-sdk/v7/tenants/members"
+	merchants "github.com/Basis-Theory/go-sdk/v7/tenants/merchants"
+	owner "github.com/Basis-Theory/go-sdk/v7/tenants/owner"
+	securitycontact "github.com/Basis-Theory/go-sdk/v7/tenants/securitycontact"
+	self "github.com/Basis-Theory/go-sdk/v7/tenants/self"
 )
 
 type Client struct {

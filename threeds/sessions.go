@@ -4,8 +4,8 @@ package threeds
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -29,9 +29,9 @@ type CreateThreeDsSessionRequest struct {
 	Type                  *string                               `json:"type,omitempty" url:"-"`
 	Device                *string                               `json:"device,omitempty" url:"-"`
 	WebChallengeMode      *string                               `json:"web_challenge_mode,omitempty" url:"-"`
-	DeviceInfo            *v6.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
-	AuthenticationRequest *v6.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
-	CallbackURLs          *v6.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
+	DeviceInfo            *v7.ThreeDsDeviceInfo                 `json:"device_info,omitempty" url:"-"`
+	AuthenticationRequest *v7.AuthenticateThreeDsSessionRequest `json:"authentication_request,omitempty" url:"-"`
+	CallbackURLs          *v7.ThreeDsCallbackURLs               `json:"callback_urls,omitempty" url:"-"`
 	Metadata              map[string]*string                    `json:"metadata,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -89,21 +89,21 @@ func (c *CreateThreeDsSessionRequest) SetWebChallengeMode(webChallengeMode *stri
 
 // SetDeviceInfo sets the DeviceInfo field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateThreeDsSessionRequest) SetDeviceInfo(deviceInfo *v6.ThreeDsDeviceInfo) {
+func (c *CreateThreeDsSessionRequest) SetDeviceInfo(deviceInfo *v7.ThreeDsDeviceInfo) {
 	c.DeviceInfo = deviceInfo
 	c.require(createThreeDsSessionRequestFieldDeviceInfo)
 }
 
 // SetAuthenticationRequest sets the AuthenticationRequest field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateThreeDsSessionRequest) SetAuthenticationRequest(authenticationRequest *v6.AuthenticateThreeDsSessionRequest) {
+func (c *CreateThreeDsSessionRequest) SetAuthenticationRequest(authenticationRequest *v7.AuthenticateThreeDsSessionRequest) {
 	c.AuthenticationRequest = authenticationRequest
 	c.require(createThreeDsSessionRequestFieldAuthenticationRequest)
 }
 
 // SetCallbackURLs sets the CallbackURLs field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateThreeDsSessionRequest) SetCallbackURLs(callbackURLs *v6.ThreeDsCallbackURLs) {
+func (c *CreateThreeDsSessionRequest) SetCallbackURLs(callbackURLs *v7.ThreeDsCallbackURLs) {
 	c.CallbackURLs = callbackURLs
 	c.require(createThreeDsSessionRequestFieldCallbackURLs)
 }

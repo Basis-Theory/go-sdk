@@ -6,11 +6,11 @@ import (
 	context "context"
 	os "os"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
-	events "github.com/Basis-Theory/go-sdk/v6/webhooks/events"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
+	events "github.com/Basis-Theory/go-sdk/v7/webhooks/events"
 )
 
 type Client struct {

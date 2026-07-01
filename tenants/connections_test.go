@@ -4,7 +4,7 @@ package tenants
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -21,7 +21,7 @@ func TestSettersCreateTenantConnectionRequest(t *testing.T) {
 
 	t.Run("SetOptions", func(t *testing.T) {
 		obj := &CreateTenantConnectionRequest{}
-		var fernTestValueOptions *v6.TenantConnectionOptions
+		var fernTestValueOptions *v7.TenantConnectionOptions
 		obj.SetOptions(fernTestValueOptions)
 		assert.Equal(t, fernTestValueOptions, obj.Options)
 		assert.NotNil(t, obj.explicitFields)
@@ -65,7 +65,7 @@ func TestSettersMarkExplicitCreateTenantConnectionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateTenantConnectionRequest{}
-		var fernTestValueOptions *v6.TenantConnectionOptions
+		var fernTestValueOptions *v7.TenantConnectionOptions
 
 		// Act
 		obj.SetOptions(fernTestValueOptions)

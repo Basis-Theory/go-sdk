@@ -3004,7 +3004,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"pagination\": {\n    \"next_cursor\": \"next_cursor\",\n    \"has_more\": true\n  },\n  \"data\": [\n    {\n      \"id\": \"ins_abc123\",\n      \"enrollment_id\": \"enrollment_id\",\n      \"status\": \"active\",\n      \"type\": \"agentic\",\n      \"amount\": {\n        \"value\": \"100.00\"\n      },\n      \"description\": \"description\",\n      \"expires_at\": \"2024-01-15T09:30:00Z\",\n      \"recurring\": {\n        \"frequency\": \"weekly\"\n      },\n      \"created_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ]\n}",
+        "body": "{\n  \"pagination\": {\n    \"next_cursor\": \"next_cursor\",\n    \"has_more\": true\n  },\n  \"data\": [\n    {\n      \"id\": \"ins_abc123\",\n      \"enrollment_id\": \"enrollment_id\",\n      \"status\": \"active\",\n      \"type\": \"agentic\",\n      \"credential_type\": \"card\",\n      \"amount\": {\n        \"value\": \"100.00\"\n      },\n      \"description\": \"description\",\n      \"expires_at\": \"2024-01-15T09:30:00Z\",\n      \"recurring\": {\n        \"frequency\": \"weekly\"\n      },\n      \"created_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ]\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -3040,7 +3040,7 @@
       },
       "response": {
         "status": 201,
-        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"credential_type\": \"card\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -3079,7 +3079,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"credential_type\": \"card\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -3157,7 +3157,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"credential_type\": \"card\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -3196,7 +3196,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"card\": {\n    \"number\": \"number\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"cvc\": \"cvc\"\n  },\n  \"expires_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "body": "{\n  \"card\": {\n    \"number\": \"number\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"cvc\": \"cvc\"\n  },\n  \"spt\": {\n    \"id\": \"spt_1RgaZcFPC5QUO6ZCDVZuVA8q\"\n  },\n  \"mpp\": {\n    \"credential\": \"credential\"\n  },\n  \"expires_at\": \"2024-01-15T09:30:00Z\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -3274,7 +3274,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "body": "{\n  \"id\": \"ins_abc123\",\n  \"enrollment_id\": \"enrollment_id\",\n  \"status\": \"active\",\n  \"type\": \"agentic\",\n  \"credential_type\": \"card\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"currency\"\n  },\n  \"description\": \"description\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"recurring\": {\n    \"frequency\": \"weekly\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }

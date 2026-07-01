@@ -4,7 +4,7 @@ package tenants
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -97,7 +97,7 @@ func TestSettersMarkExplicitCreateTenantInvitationRequest(t *testing.T) {
 func TestSettersInvitationsListRequest(t *testing.T) {
 	t.Run("SetStatus", func(t *testing.T) {
 		obj := &InvitationsListRequest{}
-		var fernTestValueStatus *v6.TenantInvitationStatus
+		var fernTestValueStatus *v7.TenantInvitationStatus
 		obj.SetStatus(fernTestValueStatus)
 		assert.Equal(t, fernTestValueStatus, obj.Status)
 		assert.NotNil(t, obj.explicitFields)
@@ -134,7 +134,7 @@ func TestSettersMarkExplicitInvitationsListRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &InvitationsListRequest{}
-		var fernTestValueStatus *v6.TenantInvitationStatus
+		var fernTestValueStatus *v7.TenantInvitationStatus
 
 		// Act
 		obj.SetStatus(fernTestValueStatus)

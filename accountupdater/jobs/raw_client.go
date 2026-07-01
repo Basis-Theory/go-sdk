@@ -6,11 +6,11 @@ import (
 	context "context"
 	http "net/http"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	accountupdater "github.com/Basis-Theory/go-sdk/v6/accountupdater"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	accountupdater "github.com/Basis-Theory/go-sdk/v7/accountupdater"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 )
 
 type RawClient struct {

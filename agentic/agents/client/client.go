@@ -6,12 +6,12 @@ import (
 	context "context"
 	os "os"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	agentic "github.com/Basis-Theory/go-sdk/v6/agentic"
-	client "github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions/client"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	agentic "github.com/Basis-Theory/go-sdk/v7/agentic"
+	client "github.com/Basis-Theory/go-sdk/v7/agentic/agents/instructions/client"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 )
 
 type Client struct {

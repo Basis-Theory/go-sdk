@@ -7,13 +7,13 @@ import (
 	http "net/http"
 	os "os"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	agents "github.com/Basis-Theory/go-sdk/v6/agentic/agents"
-	credentials "github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions/credentials"
-	verify "github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions/verify"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	agents "github.com/Basis-Theory/go-sdk/v7/agentic/agents"
+	credentials "github.com/Basis-Theory/go-sdk/v7/agentic/agents/instructions/credentials"
+	verify "github.com/Basis-Theory/go-sdk/v7/agentic/agents/instructions/verify"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 )
 
 type Client struct {

@@ -3,9 +3,9 @@
 package reactors
 
 import (
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 )
 
 var ErrorCodes internal.ErrorCodes = internal.ErrorCodes{

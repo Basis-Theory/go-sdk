@@ -9,11 +9,11 @@ import (
 	os "os"
 	strconv "strconv"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
-	results "github.com/Basis-Theory/go-sdk/v6/reactors/results"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
+	results "github.com/Basis-Theory/go-sdk/v7/reactors/results"
 )
 
 type Client struct {

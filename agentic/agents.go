@@ -4,8 +4,8 @@ package agentic
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -18,7 +18,7 @@ var (
 type CreateAgentRequest struct {
 	Name            string              `json:"name" url:"-"`
 	EnrollmentIDs   []string            `json:"enrollment_ids,omitempty" url:"-"`
-	InstanceDetails *v6.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	InstanceDetails *v7.InstanceDetails `json:"instance_details,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -47,7 +47,7 @@ func (c *CreateAgentRequest) SetEnrollmentIDs(enrollmentIDs []string) {
 
 // SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateAgentRequest) SetInstanceDetails(instanceDetails *v6.InstanceDetails) {
+func (c *CreateAgentRequest) SetInstanceDetails(instanceDetails *v7.InstanceDetails) {
 	c.InstanceDetails = instanceDetails
 	c.require(createAgentRequestFieldInstanceDetails)
 }
@@ -82,7 +82,7 @@ var (
 type UpdateAgentRequest struct {
 	Name            *string             `json:"name,omitempty" url:"-"`
 	EnrollmentIDs   []string            `json:"enrollment_ids,omitempty" url:"-"`
-	InstanceDetails *v6.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	InstanceDetails *v7.InstanceDetails `json:"instance_details,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -111,7 +111,7 @@ func (u *UpdateAgentRequest) SetEnrollmentIDs(enrollmentIDs []string) {
 
 // SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (u *UpdateAgentRequest) SetInstanceDetails(instanceDetails *v6.InstanceDetails) {
+func (u *UpdateAgentRequest) SetInstanceDetails(instanceDetails *v7.InstanceDetails) {
 	u.InstanceDetails = instanceDetails
 	u.require(updateAgentRequestFieldInstanceDetails)
 }

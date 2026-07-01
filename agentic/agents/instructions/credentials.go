@@ -4,8 +4,8 @@ package instructions
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -18,11 +18,13 @@ var (
 )
 
 type GetCredentialsRequest struct {
-	Products        []*v6.Product       `json:"products,omitempty" url:"-"`
-	Merchant        *v6.AgenticMerchant `json:"merchant" url:"-"`
-	Amount          *v6.Amount          `json:"amount,omitempty" url:"-"`
-	DeliveryMethod  *v6.DeliveryMethod  `json:"delivery_method,omitempty" url:"-"`
-	ShippingAddress *v6.ShippingAddress `json:"shipping_address,omitempty" url:"-"`
+	Products []*v7.Product `json:"products,omitempty" url:"-"`
+	// Required for card (Visa/Mastercard) instructions unless provided at instruction
+	// creation. Not used for `spt` instructions.
+	Merchant        *v7.AgenticMerchant `json:"merchant,omitempty" url:"-"`
+	Amount          *v7.Amount          `json:"amount,omitempty" url:"-"`
+	DeliveryMethod  *v7.DeliveryMethod  `json:"delivery_method,omitempty" url:"-"`
+	ShippingAddress *v7.ShippingAddress `json:"shipping_address,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -37,35 +39,35 @@ func (g *GetCredentialsRequest) require(field *big.Int) {
 
 // SetProducts sets the Products field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GetCredentialsRequest) SetProducts(products []*v6.Product) {
+func (g *GetCredentialsRequest) SetProducts(products []*v7.Product) {
 	g.Products = products
 	g.require(getCredentialsRequestFieldProducts)
 }
 
 // SetMerchant sets the Merchant field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GetCredentialsRequest) SetMerchant(merchant *v6.AgenticMerchant) {
+func (g *GetCredentialsRequest) SetMerchant(merchant *v7.AgenticMerchant) {
 	g.Merchant = merchant
 	g.require(getCredentialsRequestFieldMerchant)
 }
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GetCredentialsRequest) SetAmount(amount *v6.Amount) {
+func (g *GetCredentialsRequest) SetAmount(amount *v7.Amount) {
 	g.Amount = amount
 	g.require(getCredentialsRequestFieldAmount)
 }
 
 // SetDeliveryMethod sets the DeliveryMethod field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GetCredentialsRequest) SetDeliveryMethod(deliveryMethod *v6.DeliveryMethod) {
+func (g *GetCredentialsRequest) SetDeliveryMethod(deliveryMethod *v7.DeliveryMethod) {
 	g.DeliveryMethod = deliveryMethod
 	g.require(getCredentialsRequestFieldDeliveryMethod)
 }
 
 // SetShippingAddress sets the ShippingAddress field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GetCredentialsRequest) SetShippingAddress(shippingAddress *v6.ShippingAddress) {
+func (g *GetCredentialsRequest) SetShippingAddress(shippingAddress *v7.ShippingAddress) {
 	g.ShippingAddress = shippingAddress
 	g.require(getCredentialsRequestFieldShippingAddress)
 }
