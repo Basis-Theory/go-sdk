@@ -8,13 +8,13 @@ import (
 	"testing"
 	"time"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	"github.com/Basis-Theory/go-sdk/v6/agentic"
-	"github.com/Basis-Theory/go-sdk/v6/agentic/agents"
-	"github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions"
-	"github.com/Basis-Theory/go-sdk/v6/agentic/enrollments"
-	basistheoryclient "github.com/Basis-Theory/go-sdk/v6/client"
-	"github.com/Basis-Theory/go-sdk/v6/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	"github.com/Basis-Theory/go-sdk/v7/agentic"
+	"github.com/Basis-Theory/go-sdk/v7/agentic/agents"
+	"github.com/Basis-Theory/go-sdk/v7/agentic/agents/instructions"
+	"github.com/Basis-Theory/go-sdk/v7/agentic/enrollments"
+	basistheoryclient "github.com/Basis-Theory/go-sdk/v7/client"
+	"github.com/Basis-Theory/go-sdk/v7/option"
 	"github.com/google/uuid"
 )
 
