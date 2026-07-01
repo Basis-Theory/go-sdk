@@ -10,10 +10,9 @@ import (
 	os "os"
 	testing "testing"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	instructions "github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions"
-	client "github.com/Basis-Theory/go-sdk/v6/client"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	instructions "github.com/Basis-Theory/go-sdk/v7/agentic/agents/instructions"
+	client "github.com/Basis-Theory/go-sdk/v7/client"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 	require "github.com/stretchr/testify/require"
 )
 
@@ -89,13 +88,7 @@ func TestAgenticAgentsInstructionsCredentialsCreateWithWireMock(
 		option.WithBaseURL(WireMockBaseURL),
 		option.WithAPIKey("test-value"),
 	)
-	request := &instructions.GetCredentialsRequest{
-		Merchant: &basistheory.AgenticMerchant{
-			Name:        "name",
-			URL:         "url",
-			CountryCode: "country_code",
-		},
-	}
+	request := &instructions.GetCredentialsRequest{}
 	_, invocationErr := client.Agentic.Agents.Instructions.Credentials.Create(
 		context.TODO(),
 		"agent_id",

@@ -5,10 +5,10 @@ package client
 import (
 	os "os"
 
-	jobs "github.com/Basis-Theory/go-sdk/v6/accountupdater/jobs"
-	realtime "github.com/Basis-Theory/go-sdk/v6/accountupdater/realtime"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	jobs "github.com/Basis-Theory/go-sdk/v7/accountupdater/jobs"
+	realtime "github.com/Basis-Theory/go-sdk/v7/accountupdater/realtime"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 )
 
 type Client struct {

@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 	time "time"
 )
@@ -2330,174 +2330,6 @@ func (a *ApplePayMerchantCertificates) MarshalJSON() ([]byte, error) {
 }
 
 func (a *ApplePayMerchantCertificates) String() string {
-	if a == nil {
-		return "<nil>"
-	}
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-var (
-	applePayTokenizeRequestFieldApplePaymentMethodToken = big.NewInt(1 << 0)
-)
-
-type ApplePayTokenizeRequest struct {
-	ApplePaymentMethodToken *ApplePayMethodToken `json:"apple_payment_method_token,omitempty" url:"apple_payment_method_token,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *ApplePayTokenizeRequest) GetApplePaymentMethodToken() *ApplePayMethodToken {
-	if a == nil {
-		return nil
-	}
-	return a.ApplePaymentMethodToken
-}
-
-func (a *ApplePayTokenizeRequest) GetExtraProperties() map[string]interface{} {
-	if a == nil {
-		return nil
-	}
-	return a.extraProperties
-}
-
-func (a *ApplePayTokenizeRequest) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
-	}
-	a.explicitFields.Or(a.explicitFields, field)
-}
-
-// SetApplePaymentMethodToken sets the ApplePaymentMethodToken field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (a *ApplePayTokenizeRequest) SetApplePaymentMethodToken(applePaymentMethodToken *ApplePayMethodToken) {
-	a.ApplePaymentMethodToken = applePaymentMethodToken
-	a.require(applePayTokenizeRequestFieldApplePaymentMethodToken)
-}
-
-func (a *ApplePayTokenizeRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePayTokenizeRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplePayTokenizeRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplePayTokenizeRequest) MarshalJSON() ([]byte, error) {
-	type embed ApplePayTokenizeRequest
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*a),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (a *ApplePayTokenizeRequest) String() string {
-	if a == nil {
-		return "<nil>"
-	}
-	if len(a.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-var (
-	applePayTokenizeResponseFieldTokenIntent = big.NewInt(1 << 0)
-)
-
-type ApplePayTokenizeResponse struct {
-	TokenIntent *CreateTokenIntentResponse `json:"token_intent,omitempty" url:"token_intent,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (a *ApplePayTokenizeResponse) GetTokenIntent() *CreateTokenIntentResponse {
-	if a == nil {
-		return nil
-	}
-	return a.TokenIntent
-}
-
-func (a *ApplePayTokenizeResponse) GetExtraProperties() map[string]interface{} {
-	if a == nil {
-		return nil
-	}
-	return a.extraProperties
-}
-
-func (a *ApplePayTokenizeResponse) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
-	}
-	a.explicitFields.Or(a.explicitFields, field)
-}
-
-// SetTokenIntent sets the TokenIntent field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (a *ApplePayTokenizeResponse) SetTokenIntent(tokenIntent *CreateTokenIntentResponse) {
-	a.TokenIntent = tokenIntent
-	a.require(applePayTokenizeResponseFieldTokenIntent)
-}
-
-func (a *ApplePayTokenizeResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApplePayTokenizeResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApplePayTokenizeResponse(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *a)
-	if err != nil {
-		return err
-	}
-	a.extraProperties = extraProperties
-	a.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *ApplePayTokenizeResponse) MarshalJSON() ([]byte, error) {
-	type embed ApplePayTokenizeResponse
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*a),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (a *ApplePayTokenizeResponse) String() string {
 	if a == nil {
 		return "<nil>"
 	}
@@ -6934,14 +6766,23 @@ func (c *CreateTokenRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+// Credential payload for the instruction. Exactly one of `card`, `spt`, or `mpp` is present:
+// `card` for Visa/Mastercard virtual card credentials, `spt` for Stripe shared payment token
+// instructions (raw mode), `mpp` for Stripe instructions created with an MPP challenge.
 var (
 	credentialsFieldCard      = big.NewInt(1 << 0)
-	credentialsFieldExpiresAt = big.NewInt(1 << 1)
+	credentialsFieldSpt       = big.NewInt(1 << 1)
+	credentialsFieldMpp       = big.NewInt(1 << 2)
+	credentialsFieldExpiresAt = big.NewInt(1 << 3)
 )
 
 type Credentials struct {
-	Card      *CredentialsCard `json:"card,omitempty" url:"card,omitempty"`
-	ExpiresAt *time.Time       `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Card *CredentialsCard `json:"card,omitempty" url:"card,omitempty"`
+	// Stripe shared payment token (raw mode)
+	Spt *CredentialsSpt `json:"spt,omitempty" url:"spt,omitempty"`
+	// MPP credential (MPP mode)
+	Mpp       *CredentialsMpp `json:"mpp,omitempty" url:"mpp,omitempty"`
+	ExpiresAt *time.Time      `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -6955,6 +6796,20 @@ func (c *Credentials) GetCard() *CredentialsCard {
 		return nil
 	}
 	return c.Card
+}
+
+func (c *Credentials) GetSpt() *CredentialsSpt {
+	if c == nil {
+		return nil
+	}
+	return c.Spt
+}
+
+func (c *Credentials) GetMpp() *CredentialsMpp {
+	if c == nil {
+		return nil
+	}
+	return c.Mpp
 }
 
 func (c *Credentials) GetExpiresAt() *time.Time {
@@ -6983,6 +6838,20 @@ func (c *Credentials) require(field *big.Int) {
 func (c *Credentials) SetCard(card *CredentialsCard) {
 	c.Card = card
 	c.require(credentialsFieldCard)
+}
+
+// SetSpt sets the Spt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Credentials) SetSpt(spt *CredentialsSpt) {
+	c.Spt = spt
+	c.require(credentialsFieldSpt)
+}
+
+// SetMpp sets the Mpp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Credentials) SetMpp(mpp *CredentialsMpp) {
+	c.Mpp = mpp
+	c.require(credentialsFieldMpp)
 }
 
 // SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
@@ -7160,6 +7029,177 @@ func (c *CredentialsCard) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CredentialsCard) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// MPP credential (MPP mode)
+var (
+	credentialsMppFieldCredential = big.NewInt(1 << 0)
+)
+
+type CredentialsMpp struct {
+	// base64url-encoded MPP credential for the merchant's Stripe charge endpoint
+	Credential *string `json:"credential,omitempty" url:"credential,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsMpp) GetCredential() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Credential
+}
+
+func (c *CredentialsMpp) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CredentialsMpp) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetCredential sets the Credential field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CredentialsMpp) SetCredential(credential *string) {
+	c.Credential = credential
+	c.require(credentialsMppFieldCredential)
+}
+
+func (c *CredentialsMpp) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsMpp
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsMpp(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsMpp) MarshalJSON() ([]byte, error) {
+	type embed CredentialsMpp
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CredentialsMpp) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Stripe shared payment token (raw mode)
+var (
+	credentialsSptFieldID = big.NewInt(1 << 0)
+)
+
+type CredentialsSpt struct {
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CredentialsSpt) GetID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *CredentialsSpt) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CredentialsSpt) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CredentialsSpt) SetID(id *string) {
+	c.ID = id
+	c.require(credentialsSptFieldID)
+}
+
+func (c *CredentialsSpt) UnmarshalJSON(data []byte) error {
+	type unmarshaler CredentialsSpt
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CredentialsSpt(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CredentialsSpt) MarshalJSON() ([]byte, error) {
+	type embed CredentialsSpt
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CredentialsSpt) String() string {
 	if c == nil {
 		return "<nil>"
 	}
@@ -8005,7 +8045,7 @@ type Enrollment struct {
 	AgentIDs []string            `json:"agent_ids,omitempty" url:"agent_ids,omitempty"`
 	// Display label shown to the cardholder during Mastercard managed-authentication challenges.
 	WalletName *string `json:"wallet_name,omitempty" url:"wallet_name,omitempty"`
-	// Enrollment type — `agentic` (default) for agent-driven payments, `autofill` for direct credential autofill.
+	// Enrollment type — `agentic` (default) for agent-driven payments, `autofill` for direct credential autofill, `spt` for shared payment tokens.
 	Type      *EnrollmentType `json:"type,omitempty" url:"type,omitempty"`
 	CreatedAt *time.Time      `json:"created_at,omitempty" url:"created_at,omitempty"`
 
@@ -8411,8 +8451,10 @@ type EnrollmentProvider string
 const (
 	EnrollmentProviderVisa           EnrollmentProvider = "visa"
 	EnrollmentProviderMastercard     EnrollmentProvider = "mastercard"
+	EnrollmentProviderStripe         EnrollmentProvider = "stripe"
 	EnrollmentProviderVisaMock       EnrollmentProvider = "visa-mock"
 	EnrollmentProviderMastercardMock EnrollmentProvider = "mastercard-mock"
+	EnrollmentProviderStripeMock     EnrollmentProvider = "stripe-mock"
 )
 
 func NewEnrollmentProviderFromString(s string) (EnrollmentProvider, error) {
@@ -8421,10 +8463,14 @@ func NewEnrollmentProviderFromString(s string) (EnrollmentProvider, error) {
 		return EnrollmentProviderVisa, nil
 	case "mastercard":
 		return EnrollmentProviderMastercard, nil
+	case "stripe":
+		return EnrollmentProviderStripe, nil
 	case "visa-mock":
 		return EnrollmentProviderVisaMock, nil
 	case "mastercard-mock":
 		return EnrollmentProviderMastercardMock, nil
+	case "stripe-mock":
+		return EnrollmentProviderStripeMock, nil
 	}
 	var t EnrollmentProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -8465,12 +8511,13 @@ func (e EnrollmentStatus) Ptr() *EnrollmentStatus {
 	return &e
 }
 
-// Enrollment type — `agentic` (default) for agent-driven payments, `autofill` for direct credential autofill.
+// Enrollment type — `agentic` (default) for agent-driven payments, `autofill` for direct credential autofill, `spt` for shared payment tokens.
 type EnrollmentType string
 
 const (
 	EnrollmentTypeAgentic  EnrollmentType = "agentic"
 	EnrollmentTypeAutofill EnrollmentType = "autofill"
+	EnrollmentTypeSpt      EnrollmentType = "spt"
 )
 
 func NewEnrollmentTypeFromString(s string) (EnrollmentType, error) {
@@ -8479,6 +8526,8 @@ func NewEnrollmentTypeFromString(s string) (EnrollmentType, error) {
 		return EnrollmentTypeAgentic, nil
 	case "autofill":
 		return EnrollmentTypeAutofill, nil
+	case "spt":
+		return EnrollmentTypeSpt, nil
 	}
 	var t EnrollmentType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -10103,174 +10152,6 @@ func (g *GooglePayMerchantCertificates) String() string {
 }
 
 var (
-	googlePayTokenizeRequestFieldGooglePaymentMethodToken = big.NewInt(1 << 0)
-)
-
-type GooglePayTokenizeRequest struct {
-	GooglePaymentMethodToken *GooglePayMethodToken `json:"google_payment_method_token,omitempty" url:"google_payment_method_token,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (g *GooglePayTokenizeRequest) GetGooglePaymentMethodToken() *GooglePayMethodToken {
-	if g == nil {
-		return nil
-	}
-	return g.GooglePaymentMethodToken
-}
-
-func (g *GooglePayTokenizeRequest) GetExtraProperties() map[string]interface{} {
-	if g == nil {
-		return nil
-	}
-	return g.extraProperties
-}
-
-func (g *GooglePayTokenizeRequest) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
-	}
-	g.explicitFields.Or(g.explicitFields, field)
-}
-
-// SetGooglePaymentMethodToken sets the GooglePaymentMethodToken field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GooglePayTokenizeRequest) SetGooglePaymentMethodToken(googlePaymentMethodToken *GooglePayMethodToken) {
-	g.GooglePaymentMethodToken = googlePaymentMethodToken
-	g.require(googlePayTokenizeRequestFieldGooglePaymentMethodToken)
-}
-
-func (g *GooglePayTokenizeRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler GooglePayTokenizeRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GooglePayTokenizeRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *g)
-	if err != nil {
-		return err
-	}
-	g.extraProperties = extraProperties
-	g.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GooglePayTokenizeRequest) MarshalJSON() ([]byte, error) {
-	type embed GooglePayTokenizeRequest
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*g),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (g *GooglePayTokenizeRequest) String() string {
-	if g == nil {
-		return "<nil>"
-	}
-	if len(g.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-var (
-	googlePayTokenizeResponseFieldTokenIntent = big.NewInt(1 << 0)
-)
-
-type GooglePayTokenizeResponse struct {
-	TokenIntent *CreateTokenIntentResponse `json:"token_intent,omitempty" url:"token_intent,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (g *GooglePayTokenizeResponse) GetTokenIntent() *CreateTokenIntentResponse {
-	if g == nil {
-		return nil
-	}
-	return g.TokenIntent
-}
-
-func (g *GooglePayTokenizeResponse) GetExtraProperties() map[string]interface{} {
-	if g == nil {
-		return nil
-	}
-	return g.extraProperties
-}
-
-func (g *GooglePayTokenizeResponse) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
-	}
-	g.explicitFields.Or(g.explicitFields, field)
-}
-
-// SetTokenIntent sets the TokenIntent field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GooglePayTokenizeResponse) SetTokenIntent(tokenIntent *CreateTokenIntentResponse) {
-	g.TokenIntent = tokenIntent
-	g.require(googlePayTokenizeResponseFieldTokenIntent)
-}
-
-func (g *GooglePayTokenizeResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler GooglePayTokenizeResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GooglePayTokenizeResponse(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *g)
-	if err != nil {
-		return err
-	}
-	g.extraProperties = extraProperties
-	g.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GooglePayTokenizeResponse) MarshalJSON() ([]byte, error) {
-	type embed GooglePayTokenizeResponse
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*g),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (g *GooglePayTokenizeResponse) String() string {
-	if g == nil {
-		return "<nil>"
-	}
-	if len(g.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-var (
 	instanceDetailsFieldIPAddress = big.NewInt(1 << 0)
 	instanceDetailsFieldBrand     = big.NewInt(1 << 1)
 	instanceDetailsFieldType      = big.NewInt(1 << 2)
@@ -10388,15 +10269,16 @@ func (i *InstanceDetails) String() string {
 }
 
 var (
-	instructionFieldID           = big.NewInt(1 << 0)
-	instructionFieldEnrollmentID = big.NewInt(1 << 1)
-	instructionFieldStatus       = big.NewInt(1 << 2)
-	instructionFieldType         = big.NewInt(1 << 3)
-	instructionFieldAmount       = big.NewInt(1 << 4)
-	instructionFieldDescription  = big.NewInt(1 << 5)
-	instructionFieldExpiresAt    = big.NewInt(1 << 6)
-	instructionFieldRecurring    = big.NewInt(1 << 7)
-	instructionFieldCreatedAt    = big.NewInt(1 << 8)
+	instructionFieldID             = big.NewInt(1 << 0)
+	instructionFieldEnrollmentID   = big.NewInt(1 << 1)
+	instructionFieldStatus         = big.NewInt(1 << 2)
+	instructionFieldType           = big.NewInt(1 << 3)
+	instructionFieldCredentialType = big.NewInt(1 << 4)
+	instructionFieldAmount         = big.NewInt(1 << 5)
+	instructionFieldDescription    = big.NewInt(1 << 6)
+	instructionFieldExpiresAt      = big.NewInt(1 << 7)
+	instructionFieldRecurring      = big.NewInt(1 << 8)
+	instructionFieldCreatedAt      = big.NewInt(1 << 9)
 )
 
 type Instruction struct {
@@ -10405,13 +10287,18 @@ type Instruction struct {
 	Status       *InstructionStatus `json:"status,omitempty" url:"status,omitempty"`
 	// Inherited from the parent enrollment. `agentic` instructions require cardholder
 	// verification before credentials can be retrieved; `autofill` instructions are
-	// auto-approved on creation and credentials can be retrieved immediately.
-	Type        *InstructionType `json:"type,omitempty" url:"type,omitempty"`
-	Amount      *Amount          `json:"amount,omitempty" url:"amount,omitempty"`
-	Description *string          `json:"description,omitempty" url:"description,omitempty"`
-	ExpiresAt   *time.Time       `json:"expires_at,omitempty" url:"expires_at,omitempty"`
-	Recurring   *Recurring       `json:"recurring,omitempty" url:"recurring,omitempty"`
-	CreatedAt   *time.Time       `json:"created_at,omitempty" url:"created_at,omitempty"`
+	// auto-approved on creation and credentials can be retrieved immediately; `spt`
+	// instructions create a shared payment token that is approved on creation.
+	Type *InstructionType `json:"type,omitempty" url:"type,omitempty"`
+	// Indicates the shape the credentials endpoint returns for this instruction:
+	// `card` (Visa/Mastercard virtual card credentials), `spt` (Stripe shared payment
+	// token ID), or `mpp` (MPP credential built from the challenge provided at creation).
+	CredentialType *InstructionCredentialType `json:"credential_type,omitempty" url:"credential_type,omitempty"`
+	Amount         *Amount                    `json:"amount,omitempty" url:"amount,omitempty"`
+	Description    *string                    `json:"description,omitempty" url:"description,omitempty"`
+	ExpiresAt      *time.Time                 `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Recurring      *Recurring                 `json:"recurring,omitempty" url:"recurring,omitempty"`
+	CreatedAt      *time.Time                 `json:"created_at,omitempty" url:"created_at,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -10446,6 +10333,13 @@ func (i *Instruction) GetType() *InstructionType {
 		return nil
 	}
 	return i.Type
+}
+
+func (i *Instruction) GetCredentialType() *InstructionCredentialType {
+	if i == nil {
+		return nil
+	}
+	return i.CredentialType
 }
 
 func (i *Instruction) GetAmount() *Amount {
@@ -10523,6 +10417,13 @@ func (i *Instruction) SetStatus(status *InstructionStatus) {
 func (i *Instruction) SetType(type_ *InstructionType) {
 	i.Type = type_
 	i.require(instructionFieldType)
+}
+
+// SetCredentialType sets the CredentialType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *Instruction) SetCredentialType(credentialType *InstructionCredentialType) {
+	i.CredentialType = credentialType
+	i.require(instructionFieldCredentialType)
 }
 
 // SetAmount sets the Amount field and marks it as non-optional;
@@ -10612,6 +10513,34 @@ func (i *Instruction) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", i)
+}
+
+// Indicates the shape the credentials endpoint returns for this instruction:
+// `card` (Visa/Mastercard virtual card credentials), `spt` (Stripe shared payment
+// token ID), or `mpp` (MPP credential built from the challenge provided at creation).
+type InstructionCredentialType string
+
+const (
+	InstructionCredentialTypeCard InstructionCredentialType = "card"
+	InstructionCredentialTypeSpt  InstructionCredentialType = "spt"
+	InstructionCredentialTypeMpp  InstructionCredentialType = "mpp"
+)
+
+func NewInstructionCredentialTypeFromString(s string) (InstructionCredentialType, error) {
+	switch s {
+	case "card":
+		return InstructionCredentialTypeCard, nil
+	case "spt":
+		return InstructionCredentialTypeSpt, nil
+	case "mpp":
+		return InstructionCredentialTypeMpp, nil
+	}
+	var t InstructionCredentialType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i InstructionCredentialType) Ptr() *InstructionCredentialType {
+	return &i
 }
 
 var (
@@ -10850,12 +10779,14 @@ func (i InstructionStatus) Ptr() *InstructionStatus {
 
 // Inherited from the parent enrollment. `agentic` instructions require cardholder
 // verification before credentials can be retrieved; `autofill` instructions are
-// auto-approved on creation and credentials can be retrieved immediately.
+// auto-approved on creation and credentials can be retrieved immediately; `spt`
+// instructions create a shared payment token that is approved on creation.
 type InstructionType string
 
 const (
 	InstructionTypeAgentic  InstructionType = "agentic"
 	InstructionTypeAutofill InstructionType = "autofill"
+	InstructionTypeSpt      InstructionType = "spt"
 )
 
 func NewInstructionTypeFromString(s string) (InstructionType, error) {
@@ -10864,6 +10795,8 @@ func NewInstructionTypeFromString(s string) (InstructionType, error) {
 		return InstructionTypeAgentic, nil
 	case "autofill":
 		return InstructionTypeAutofill, nil
+	case "spt":
+		return InstructionTypeSpt, nil
 	}
 	var t InstructionType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -12330,6 +12263,175 @@ func NewMppSourceTypeFromString(s string) (MppSourceType, error) {
 
 func (m MppSourceType) Ptr() *MppSourceType {
 	return &m
+}
+
+var (
+	mppStripeChallengeFieldID      = big.NewInt(1 << 0)
+	mppStripeChallengeFieldRealm   = big.NewInt(1 << 1)
+	mppStripeChallengeFieldIntent  = big.NewInt(1 << 2)
+	mppStripeChallengeFieldRequest = big.NewInt(1 << 3)
+	mppStripeChallengeFieldExpires = big.NewInt(1 << 4)
+)
+
+type MppStripeChallenge struct {
+	// Challenge identifier issued by the merchant
+	ID    string  `json:"id" url:"id"`
+	Realm *string `json:"realm,omitempty" url:"realm,omitempty"`
+	// Challenge intent (e.g. `charge`)
+	Intent *string `json:"intent,omitempty" url:"intent,omitempty"`
+	// base64url-encoded JSON request payload from the merchant's challenge
+	Request *string `json:"request,omitempty" url:"request,omitempty"`
+	// Challenge expiration timestamp
+	Expires *string `json:"expires,omitempty" url:"expires,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	method         string
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (m *MppStripeChallenge) GetID() string {
+	if m == nil {
+		return ""
+	}
+	return m.ID
+}
+
+func (m *MppStripeChallenge) GetRealm() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Realm
+}
+
+func (m *MppStripeChallenge) GetIntent() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Intent
+}
+
+func (m *MppStripeChallenge) GetRequest() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Request
+}
+
+func (m *MppStripeChallenge) GetExpires() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Expires
+}
+
+func (m *MppStripeChallenge) Method() string {
+	return m.method
+}
+
+func (m *MppStripeChallenge) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
+	return m.ExtraProperties
+}
+
+func (m *MppStripeChallenge) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MppStripeChallenge) SetID(id string) {
+	m.ID = id
+	m.require(mppStripeChallengeFieldID)
+}
+
+// SetRealm sets the Realm field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MppStripeChallenge) SetRealm(realm *string) {
+	m.Realm = realm
+	m.require(mppStripeChallengeFieldRealm)
+}
+
+// SetIntent sets the Intent field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MppStripeChallenge) SetIntent(intent *string) {
+	m.Intent = intent
+	m.require(mppStripeChallengeFieldIntent)
+}
+
+// SetRequest sets the Request field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MppStripeChallenge) SetRequest(request *string) {
+	m.Request = request
+	m.require(mppStripeChallengeFieldRequest)
+}
+
+// SetExpires sets the Expires field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MppStripeChallenge) SetExpires(expires *string) {
+	m.Expires = expires
+	m.require(mppStripeChallengeFieldExpires)
+}
+
+func (m *MppStripeChallenge) UnmarshalJSON(data []byte) error {
+	type embed MppStripeChallenge
+	var unmarshaler = struct {
+		embed
+		Method string `json:"method"`
+	}{
+		embed: embed(*m),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*m = MppStripeChallenge(unmarshaler.embed)
+	if unmarshaler.Method != "stripe" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", m, "stripe", unmarshaler.Method)
+	}
+	m.method = unmarshaler.Method
+	extraProperties, err := internal.ExtractExtraProperties(data, *m, "method")
+	if err != nil {
+		return err
+	}
+	m.ExtraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MppStripeChallenge) MarshalJSON() ([]byte, error) {
+	type embed MppStripeChallenge
+	var marshaler = struct {
+		embed
+		Method string `json:"method"`
+	}{
+		embed:  embed(*m),
+		Method: "stripe",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, m.ExtraProperties)
+}
+
+func (m *MppStripeChallenge) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
 }
 
 var (

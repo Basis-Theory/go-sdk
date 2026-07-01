@@ -5,8 +5,8 @@ package agentic
 import (
 	json "encoding/json"
 	fmt "fmt"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -17,11 +17,12 @@ var (
 	createEnrollmentRequestFieldAgentIDs   = big.NewInt(1 << 3)
 	createEnrollmentRequestFieldWalletName = big.NewInt(1 << 4)
 	createEnrollmentRequestFieldType       = big.NewInt(1 << 5)
+	createEnrollmentRequestFieldProvider   = big.NewInt(1 << 6)
 )
 
 type CreateEnrollmentRequest struct {
 	TokenID  string       `json:"token_id" url:"-"`
-	Consumer *v6.Consumer `json:"consumer" url:"-"`
+	Consumer *v7.Consumer `json:"consumer" url:"-"`
 	// Single agent ID (mutually exclusive with agent_ids)
 	AgentID *string `json:"agent_id,omitempty" url:"-"`
 	// Multiple agent IDs (mutually exclusive with agent_id)
@@ -31,7 +32,11 @@ type CreateEnrollmentRequest struct {
 	// Enrollment type. `agentic` (default) enrolls the card for agent-driven payments and requires verification.
 	// `autofill` enrolls the card for direct autofill credential retrieval, skips verification, and is currently
 	// available to test tenants only.
+	// `spt` enrolls the card for shared payment tokens, requires `provider` to be set, skips verification, and
+	// activates immediately.
 	Type *CreateEnrollmentRequestType `json:"type,omitempty" url:"-"`
+	// Token provider for `spt` enrollments. Required when `type` is `spt`; not allowed otherwise.
+	Provider *string `json:"provider,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -53,7 +58,7 @@ func (c *CreateEnrollmentRequest) SetTokenID(tokenID string) {
 
 // SetConsumer sets the Consumer field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateEnrollmentRequest) SetConsumer(consumer *v6.Consumer) {
+func (c *CreateEnrollmentRequest) SetConsumer(consumer *v7.Consumer) {
 	c.Consumer = consumer
 	c.require(createEnrollmentRequestFieldConsumer)
 }
@@ -84,6 +89,13 @@ func (c *CreateEnrollmentRequest) SetWalletName(walletName *string) {
 func (c *CreateEnrollmentRequest) SetType(type_ *CreateEnrollmentRequestType) {
 	c.Type = type_
 	c.require(createEnrollmentRequestFieldType)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateEnrollmentRequest) SetProvider(provider *string) {
+	c.Provider = provider
+	c.require(createEnrollmentRequestFieldProvider)
 }
 
 func (c *CreateEnrollmentRequest) UnmarshalJSON(data []byte) error {
@@ -145,11 +157,14 @@ func (e *EnrollmentsListRequest) SetCursor(cursor *string) {
 // Enrollment type. `agentic` (default) enrolls the card for agent-driven payments and requires verification.
 // `autofill` enrolls the card for direct autofill credential retrieval, skips verification, and is currently
 // available to test tenants only.
+// `spt` enrolls the card for shared payment tokens, requires `provider` to be set, skips verification, and
+// activates immediately.
 type CreateEnrollmentRequestType string
 
 const (
 	CreateEnrollmentRequestTypeAgentic  CreateEnrollmentRequestType = "agentic"
 	CreateEnrollmentRequestTypeAutofill CreateEnrollmentRequestType = "autofill"
+	CreateEnrollmentRequestTypeSpt      CreateEnrollmentRequestType = "spt"
 )
 
 func NewCreateEnrollmentRequestTypeFromString(s string) (CreateEnrollmentRequestType, error) {
@@ -158,6 +173,8 @@ func NewCreateEnrollmentRequestTypeFromString(s string) (CreateEnrollmentRequest
 		return CreateEnrollmentRequestTypeAgentic, nil
 	case "autofill":
 		return CreateEnrollmentRequestTypeAutofill, nil
+	case "spt":
+		return CreateEnrollmentRequestTypeSpt, nil
 	}
 	var t CreateEnrollmentRequestType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

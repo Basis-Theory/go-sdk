@@ -6,11 +6,11 @@ import (
 	context "context"
 	http "net/http"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	core "github.com/Basis-Theory/go-sdk/v6/core"
-	googlepay "github.com/Basis-Theory/go-sdk/v6/googlepay"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	core "github.com/Basis-Theory/go-sdk/v7/core"
+	googlepay "github.com/Basis-Theory/go-sdk/v7/googlepay"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 )
 
 type RawClient struct {

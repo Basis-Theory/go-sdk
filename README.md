@@ -50,8 +50,8 @@ package example
 import (
     context "context"
 
-    client "github.com/Basis-Theory/go-sdk/v6/client"
-    option "github.com/Basis-Theory/go-sdk/v6/option"
+    client "github.com/Basis-Theory/go-sdk/v7/client"
+    option "github.com/Basis-Theory/go-sdk/v7/option"
 )
 
 func do() {

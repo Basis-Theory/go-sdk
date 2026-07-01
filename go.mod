@@ -1,4 +1,4 @@
-module github.com/Basis-Theory/go-sdk/v6
+module github.com/Basis-Theory/go-sdk/v7
 
 go 1.21
 

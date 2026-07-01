@@ -4,8 +4,8 @@ package tenants
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -72,7 +72,7 @@ var (
 )
 
 type InvitationsListRequest struct {
-	Status *v6.TenantInvitationStatus `json:"-" url:"status,omitempty"`
+	Status *v7.TenantInvitationStatus `json:"-" url:"status,omitempty"`
 	Page   *int                       `json:"-" url:"page,omitempty"`
 	Start  *string                    `json:"-" url:"start,omitempty"`
 	Size   *int                       `json:"-" url:"size,omitempty"`
@@ -90,7 +90,7 @@ func (i *InvitationsListRequest) require(field *big.Int) {
 
 // SetStatus sets the Status field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (i *InvitationsListRequest) SetStatus(status *v6.TenantInvitationStatus) {
+func (i *InvitationsListRequest) SetStatus(status *v7.TenantInvitationStatus) {
 	i.Status = status
 	i.require(invitationsListRequestFieldStatus)
 }

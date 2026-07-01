@@ -4,7 +4,7 @@ package agentic
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -21,7 +21,7 @@ func TestSettersCreateEnrollmentRequest(t *testing.T) {
 
 	t.Run("SetConsumer", func(t *testing.T) {
 		obj := &CreateEnrollmentRequest{}
-		var fernTestValueConsumer *v6.Consumer
+		var fernTestValueConsumer *v7.Consumer
 		obj.SetConsumer(fernTestValueConsumer)
 		assert.Equal(t, fernTestValueConsumer, obj.Consumer)
 		assert.NotNil(t, obj.explicitFields)
@@ -56,6 +56,14 @@ func TestSettersCreateEnrollmentRequest(t *testing.T) {
 		var fernTestValueType *CreateEnrollmentRequestType
 		obj.SetType(fernTestValueType)
 		assert.Equal(t, fernTestValueType, obj.Type)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetProvider", func(t *testing.T) {
+		obj := &CreateEnrollmentRequest{}
+		var fernTestValueProvider *string
+		obj.SetProvider(fernTestValueProvider)
+		assert.Equal(t, fernTestValueProvider, obj.Provider)
 		assert.NotNil(t, obj.explicitFields)
 	})
 
@@ -97,7 +105,7 @@ func TestSettersMarkExplicitCreateEnrollmentRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateEnrollmentRequest{}
-		var fernTestValueConsumer *v6.Consumer
+		var fernTestValueConsumer *v7.Consumer
 
 		// Act
 		obj.SetConsumer(fernTestValueConsumer)
@@ -248,6 +256,37 @@ func TestSettersMarkExplicitCreateEnrollmentRequest(t *testing.T) {
 		// It verifies that setting a field via setter allows successful JSON round-trip
 	})
 
+	t.Run("SetProvider_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CreateEnrollmentRequest{}
+		var fernTestValueProvider *string
+
+		// Act
+		obj.SetProvider(fernTestValueProvider)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
 }
 
 func TestSettersEnrollmentsListRequest(t *testing.T) {
@@ -347,6 +386,13 @@ func TestEnumCreateEnrollmentRequestType(t *testing.T) {
 		val, err := NewCreateEnrollmentRequestTypeFromString("autofill")
 		assert.NoError(t, err, "valid enum value should not return error")
 		assert.Equal(t, CreateEnrollmentRequestType("autofill"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_spt", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewCreateEnrollmentRequestTypeFromString("spt")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, CreateEnrollmentRequestType("spt"), val, "enum value should match expected wire value")
 	})
 
 	t.Run("NewFromString_Invalid", func(t *testing.T) {

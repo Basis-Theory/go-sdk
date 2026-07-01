@@ -10,9 +10,9 @@ import (
 	os "os"
 	testing "testing"
 
-	accountupdater "github.com/Basis-Theory/go-sdk/v6/accountupdater"
-	client "github.com/Basis-Theory/go-sdk/v6/client"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	accountupdater "github.com/Basis-Theory/go-sdk/v7/accountupdater"
+	client "github.com/Basis-Theory/go-sdk/v7/client"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 	require "github.com/stretchr/testify/require"
 )
 

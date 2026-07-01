@@ -4,8 +4,8 @@ package tenants
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -63,7 +63,7 @@ type ServiceOnboardingRequest struct {
 	AccountUpdater  []string            `json:"account_updater,omitempty" url:"-"`
 	NetworkToken    []string            `json:"network_token,omitempty" url:"-"`
 	AgenticCommerce []string            `json:"agentic_commerce,omitempty" url:"-"`
-	CardNetworkInfo *v6.CardNetworkInfo `json:"card_network_info,omitempty" url:"-"`
+	CardNetworkInfo *v7.CardNetworkInfo `json:"card_network_info,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -99,7 +99,7 @@ func (s *ServiceOnboardingRequest) SetAgenticCommerce(agenticCommerce []string) 
 
 // SetCardNetworkInfo sets the CardNetworkInfo field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (s *ServiceOnboardingRequest) SetCardNetworkInfo(cardNetworkInfo *v6.CardNetworkInfo) {
+func (s *ServiceOnboardingRequest) SetCardNetworkInfo(cardNetworkInfo *v7.CardNetworkInfo) {
 	s.CardNetworkInfo = cardNetworkInfo
 	s.require(serviceOnboardingRequestFieldCardNetworkInfo)
 }

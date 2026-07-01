@@ -4,8 +4,8 @@ package tenants
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 )
 
@@ -16,7 +16,7 @@ var (
 
 type CreateTenantConnectionRequest struct {
 	Strategy string                      `json:"strategy" url:"-"`
-	Options  *v6.TenantConnectionOptions `json:"options" url:"-"`
+	Options  *v7.TenantConnectionOptions `json:"options" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -38,7 +38,7 @@ func (c *CreateTenantConnectionRequest) SetStrategy(strategy string) {
 
 // SetOptions sets the Options field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateTenantConnectionRequest) SetOptions(options *v6.TenantConnectionOptions) {
+func (c *CreateTenantConnectionRequest) SetOptions(options *v7.TenantConnectionOptions) {
 	c.Options = options
 	c.require(createTenantConnectionRequestFieldOptions)
 }

@@ -4,7 +4,7 @@ package agentic
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -29,7 +29,7 @@ func TestSettersCreateAgentRequest(t *testing.T) {
 
 	t.Run("SetInstanceDetails", func(t *testing.T) {
 		obj := &CreateAgentRequest{}
-		var fernTestValueInstanceDetails *v6.InstanceDetails
+		var fernTestValueInstanceDetails *v7.InstanceDetails
 		obj.SetInstanceDetails(fernTestValueInstanceDetails)
 		assert.Equal(t, fernTestValueInstanceDetails, obj.InstanceDetails)
 		assert.NotNil(t, obj.explicitFields)
@@ -104,7 +104,7 @@ func TestSettersMarkExplicitCreateAgentRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateAgentRequest{}
-		var fernTestValueInstanceDetails *v6.InstanceDetails
+		var fernTestValueInstanceDetails *v7.InstanceDetails
 
 		// Act
 		obj.SetInstanceDetails(fernTestValueInstanceDetails)
@@ -152,7 +152,7 @@ func TestSettersUpdateAgentRequest(t *testing.T) {
 
 	t.Run("SetInstanceDetails", func(t *testing.T) {
 		obj := &UpdateAgentRequest{}
-		var fernTestValueInstanceDetails *v6.InstanceDetails
+		var fernTestValueInstanceDetails *v7.InstanceDetails
 		obj.SetInstanceDetails(fernTestValueInstanceDetails)
 		assert.Equal(t, fernTestValueInstanceDetails, obj.InstanceDetails)
 		assert.NotNil(t, obj.explicitFields)
@@ -227,7 +227,7 @@ func TestSettersMarkExplicitUpdateAgentRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &UpdateAgentRequest{}
-		var fernTestValueInstanceDetails *v6.InstanceDetails
+		var fernTestValueInstanceDetails *v7.InstanceDetails
 
 		// Act
 		obj.SetInstanceDetails(fernTestValueInstanceDetails)

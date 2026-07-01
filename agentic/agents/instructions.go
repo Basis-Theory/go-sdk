@@ -4,30 +4,42 @@ package agents
 
 import (
 	json "encoding/json"
-	v6 "github.com/Basis-Theory/go-sdk/v6"
-	internal "github.com/Basis-Theory/go-sdk/v6/internal"
+	fmt "fmt"
+	v7 "github.com/Basis-Theory/go-sdk/v7"
+	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	big "math/big"
 	time "time"
 )
 
 var (
-	createInstructionRequestFieldEnrollmentID    = big.NewInt(1 << 0)
-	createInstructionRequestFieldAmount          = big.NewInt(1 << 1)
-	createInstructionRequestFieldDescription     = big.NewInt(1 << 2)
-	createInstructionRequestFieldExpiresAt       = big.NewInt(1 << 3)
-	createInstructionRequestFieldAssuranceData   = big.NewInt(1 << 4)
-	createInstructionRequestFieldRecurring       = big.NewInt(1 << 5)
-	createInstructionRequestFieldInstanceDetails = big.NewInt(1 << 6)
+	createInstructionRequestFieldEnrollmentID           = big.NewInt(1 << 0)
+	createInstructionRequestFieldAmount                 = big.NewInt(1 << 1)
+	createInstructionRequestFieldDescription            = big.NewInt(1 << 2)
+	createInstructionRequestFieldExpiresAt              = big.NewInt(1 << 3)
+	createInstructionRequestFieldAssuranceData          = big.NewInt(1 << 4)
+	createInstructionRequestFieldRecurring              = big.NewInt(1 << 5)
+	createInstructionRequestFieldInstanceDetails        = big.NewInt(1 << 6)
+	createInstructionRequestFieldNetworkBusinessProfile = big.NewInt(1 << 7)
+	createInstructionRequestFieldMpp                    = big.NewInt(1 << 8)
 )
 
 type CreateInstructionRequest struct {
 	EnrollmentID    string              `json:"enrollment_id" url:"-"`
-	Amount          *v6.Amount          `json:"amount" url:"-"`
+	Amount          *v7.Amount          `json:"amount" url:"-"`
 	Description     string              `json:"description" url:"-"`
 	ExpiresAt       time.Time           `json:"expires_at" url:"-"`
 	AssuranceData   map[string]any      `json:"assurance_data,omitempty" url:"-"`
-	Recurring       *v6.Recurring       `json:"recurring,omitempty" url:"-"`
-	InstanceDetails *v6.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	Recurring       *v7.Recurring       `json:"recurring,omitempty" url:"-"`
+	InstanceDetails *v7.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	// Stripe network business profile identifier (`profile_...`) of the seller allowed to use the
+	// shared payment token. Maps to Stripe's `seller_details[network_business_profile]`.
+	// Only valid for `spt` (Stripe) enrollments; required unless an MPP challenge with Stripe
+	// network details is provided.
+	NetworkBusinessProfile *string `json:"network_business_profile,omitempty" url:"-"`
+	// MPP mode — provide the merchant's MPP challenge to receive an MPP credential from the
+	// credentials endpoint instead of a raw shared payment token ID. The challenge must carry
+	// Stripe values (`method: stripe`). Only valid for `spt` (Stripe) enrollments.
+	Mpp *CreateInstructionRequestMpp `json:"mpp,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -49,7 +61,7 @@ func (c *CreateInstructionRequest) SetEnrollmentID(enrollmentID string) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequest) SetAmount(amount *v6.Amount) {
+func (c *CreateInstructionRequest) SetAmount(amount *v7.Amount) {
 	c.Amount = amount
 	c.require(createInstructionRequestFieldAmount)
 }
@@ -77,16 +89,30 @@ func (c *CreateInstructionRequest) SetAssuranceData(assuranceData map[string]any
 
 // SetRecurring sets the Recurring field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequest) SetRecurring(recurring *v6.Recurring) {
+func (c *CreateInstructionRequest) SetRecurring(recurring *v7.Recurring) {
 	c.Recurring = recurring
 	c.require(createInstructionRequestFieldRecurring)
 }
 
 // SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequest) SetInstanceDetails(instanceDetails *v6.InstanceDetails) {
+func (c *CreateInstructionRequest) SetInstanceDetails(instanceDetails *v7.InstanceDetails) {
 	c.InstanceDetails = instanceDetails
 	c.require(createInstructionRequestFieldInstanceDetails)
+}
+
+// SetNetworkBusinessProfile sets the NetworkBusinessProfile field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetNetworkBusinessProfile(networkBusinessProfile *string) {
+	c.NetworkBusinessProfile = networkBusinessProfile
+	c.require(createInstructionRequestFieldNetworkBusinessProfile)
+}
+
+// SetMpp sets the Mpp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequest) SetMpp(mpp *CreateInstructionRequestMpp) {
+	c.Mpp = mpp
+	c.require(createInstructionRequestFieldMpp)
 }
 
 func (c *CreateInstructionRequest) UnmarshalJSON(data []byte) error {
@@ -157,6 +183,93 @@ func (i *InstructionsListRequest) SetCursor(cursor *string) {
 	i.require(instructionsListRequestFieldCursor)
 }
 
+// MPP mode — provide the merchant's MPP challenge to receive an MPP credential from the
+// credentials endpoint instead of a raw shared payment token ID. The challenge must carry
+// Stripe values (`method: stripe`). Only valid for `spt` (Stripe) enrollments.
+var (
+	createInstructionRequestMppFieldChallenge = big.NewInt(1 << 0)
+)
+
+type CreateInstructionRequestMpp struct {
+	Challenge *v7.MppStripeChallenge `json:"challenge" url:"challenge"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CreateInstructionRequestMpp) GetChallenge() *v7.MppStripeChallenge {
+	if c == nil {
+		return nil
+	}
+	return c.Challenge
+}
+
+func (c *CreateInstructionRequestMpp) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CreateInstructionRequestMpp) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetChallenge sets the Challenge field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateInstructionRequestMpp) SetChallenge(challenge *v7.MppStripeChallenge) {
+	c.Challenge = challenge
+	c.require(createInstructionRequestMppFieldChallenge)
+}
+
+func (c *CreateInstructionRequestMpp) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateInstructionRequestMpp
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreateInstructionRequestMpp(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateInstructionRequestMpp) MarshalJSON() ([]byte, error) {
+	type embed CreateInstructionRequestMpp
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CreateInstructionRequestMpp) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 var (
 	updateInstructionRequestFieldAmount      = big.NewInt(1 << 0)
 	updateInstructionRequestFieldDescription = big.NewInt(1 << 1)
@@ -164,7 +277,7 @@ var (
 )
 
 type UpdateInstructionRequest struct {
-	Amount      *v6.Amount `json:"amount,omitempty" url:"-"`
+	Amount      *v7.Amount `json:"amount,omitempty" url:"-"`
 	Description *string    `json:"description,omitempty" url:"-"`
 	ExpiresAt   *time.Time `json:"expires_at,omitempty" url:"-"`
 
@@ -181,7 +294,7 @@ func (u *UpdateInstructionRequest) require(field *big.Int) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (u *UpdateInstructionRequest) SetAmount(amount *v6.Amount) {
+func (u *UpdateInstructionRequest) SetAmount(amount *v7.Amount) {
 	u.Amount = amount
 	u.require(updateInstructionRequestFieldAmount)
 }

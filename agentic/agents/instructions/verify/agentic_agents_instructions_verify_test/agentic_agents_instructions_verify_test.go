@@ -10,10 +10,10 @@ import (
 	os "os"
 	testing "testing"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v6"
-	instructions "github.com/Basis-Theory/go-sdk/v6/agentic/agents/instructions"
-	client "github.com/Basis-Theory/go-sdk/v6/client"
-	option "github.com/Basis-Theory/go-sdk/v6/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	instructions "github.com/Basis-Theory/go-sdk/v7/agentic/agents/instructions"
+	client "github.com/Basis-Theory/go-sdk/v7/client"
+	option "github.com/Basis-Theory/go-sdk/v7/option"
 	require "github.com/stretchr/testify/require"
 )
 

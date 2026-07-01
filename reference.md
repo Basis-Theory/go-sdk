@@ -4885,6 +4885,16 @@ client.Agentic.Enrollments.Create(
 Enrollment type. `agentic` (default) enrolls the card for agent-driven payments and requires verification.
 `autofill` enrolls the card for direct autofill credential retrieval, skips verification, and is currently
 available to test tenants only.
+`spt` enrolls the card for shared payment tokens, requires `provider` to be set, skips verification, and
+activates immediately.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**provider:** `*string` — Token provider for `spt` enrollments. Required when `type` is `spt`; not allowed otherwise.
     
 </dd>
 </dl>
@@ -5268,6 +5278,31 @@ client.Agentic.Agents.Instructions.Create(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**networkBusinessProfile:** `*string` 
+
+Stripe network business profile identifier (`profile_...`) of the seller allowed to use the
+shared payment token. Maps to Stripe's `seller_details[network_business_profile]`.
+Only valid for `spt` (Stripe) enrollments; required unless an MPP challenge with Stripe
+network details is provided.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**mpp:** `*agents.CreateInstructionRequestMpp` 
+
+MPP mode — provide the merchant's MPP challenge to receive an MPP credential from the
+credentials endpoint instead of a raw shared payment token ID. The challenge must carry
+Stripe values (`method: stripe`). Only valid for `spt` (Stripe) enrollments.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -5489,13 +5524,7 @@ Retrieve payment credentials (card number, expiration, CVC) for a purchase instr
 <dd>
 
 ```go
-request := &instructions.GetCredentialsRequest{
-        Merchant: &basistheory.AgenticMerchant{
-            Name: "name",
-            URL: "url",
-            CountryCode: "country_code",
-        },
-    }
+request := &instructions.GetCredentialsRequest{}
 client.Agentic.Agents.Instructions.Credentials.Create(
         context.TODO(),
         "agent_id",
@@ -5542,6 +5571,9 @@ client.Agentic.Agents.Instructions.Credentials.Create(
 <dd>
 
 **merchant:** `*basistheory.AgenticMerchant` 
+
+Required for card (Visa/Mastercard) instructions unless provided at instruction
+creation. Not used for `spt` instructions.
     
 </dd>
 </dl>
