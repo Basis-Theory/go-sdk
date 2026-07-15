@@ -2873,6 +2873,90 @@ func (a *AssuranceDetails) String() string {
 }
 
 var (
+	asyncReactorPendingResultFieldStatus = big.NewInt(1 << 0)
+)
+
+type AsyncReactorPendingResult struct {
+	Status *string `json:"status,omitempty" url:"status,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AsyncReactorPendingResult) GetStatus() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Status
+}
+
+func (a *AsyncReactorPendingResult) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AsyncReactorPendingResult) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AsyncReactorPendingResult) SetStatus(status *string) {
+	a.Status = status
+	a.require(asyncReactorPendingResultFieldStatus)
+}
+
+func (a *AsyncReactorPendingResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler AsyncReactorPendingResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AsyncReactorPendingResult(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AsyncReactorPendingResult) MarshalJSON() ([]byte, error) {
+	type embed AsyncReactorPendingResult
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AsyncReactorPendingResult) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
 	authenticateThreeDsSessionRequestFieldAuthenticationCategory    = big.NewInt(1 << 0)
 	authenticateThreeDsSessionRequestFieldAuthenticationType        = big.NewInt(1 << 1)
 	authenticateThreeDsSessionRequestFieldCardBrand                 = big.NewInt(1 << 2)
@@ -13495,186 +13579,6 @@ func NewRecurringFrequencyFromString(s string) (RecurringFrequency, error) {
 
 func (r RecurringFrequency) Ptr() *RecurringFrequency {
 	return &r
-}
-
-var (
-	runtimeFieldImage           = big.NewInt(1 << 0)
-	runtimeFieldDependencies    = big.NewInt(1 << 1)
-	runtimeFieldResolutions     = big.NewInt(1 << 2)
-	runtimeFieldWarmConcurrency = big.NewInt(1 << 3)
-	runtimeFieldTimeout         = big.NewInt(1 << 4)
-	runtimeFieldResources       = big.NewInt(1 << 5)
-	runtimeFieldPermissions     = big.NewInt(1 << 6)
-)
-
-type Runtime struct {
-	Image           *string            `json:"image,omitempty" url:"image,omitempty"`
-	Dependencies    map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
-	Resolutions     map[string]*string `json:"resolutions,omitempty" url:"resolutions,omitempty"`
-	WarmConcurrency *int               `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
-	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
-	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
-	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (r *Runtime) GetImage() *string {
-	if r == nil {
-		return nil
-	}
-	return r.Image
-}
-
-func (r *Runtime) GetDependencies() map[string]*string {
-	if r == nil {
-		return nil
-	}
-	return r.Dependencies
-}
-
-func (r *Runtime) GetResolutions() map[string]*string {
-	if r == nil {
-		return nil
-	}
-	return r.Resolutions
-}
-
-func (r *Runtime) GetWarmConcurrency() *int {
-	if r == nil {
-		return nil
-	}
-	return r.WarmConcurrency
-}
-
-func (r *Runtime) GetTimeout() *int {
-	if r == nil {
-		return nil
-	}
-	return r.Timeout
-}
-
-func (r *Runtime) GetResources() *string {
-	if r == nil {
-		return nil
-	}
-	return r.Resources
-}
-
-func (r *Runtime) GetPermissions() []string {
-	if r == nil {
-		return nil
-	}
-	return r.Permissions
-}
-
-func (r *Runtime) GetExtraProperties() map[string]interface{} {
-	if r == nil {
-		return nil
-	}
-	return r.extraProperties
-}
-
-func (r *Runtime) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
-	}
-	r.explicitFields.Or(r.explicitFields, field)
-}
-
-// SetImage sets the Image field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetImage(image *string) {
-	r.Image = image
-	r.require(runtimeFieldImage)
-}
-
-// SetDependencies sets the Dependencies field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetDependencies(dependencies map[string]*string) {
-	r.Dependencies = dependencies
-	r.require(runtimeFieldDependencies)
-}
-
-// SetResolutions sets the Resolutions field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetResolutions(resolutions map[string]*string) {
-	r.Resolutions = resolutions
-	r.require(runtimeFieldResolutions)
-}
-
-// SetWarmConcurrency sets the WarmConcurrency field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetWarmConcurrency(warmConcurrency *int) {
-	r.WarmConcurrency = warmConcurrency
-	r.require(runtimeFieldWarmConcurrency)
-}
-
-// SetTimeout sets the Timeout field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetTimeout(timeout *int) {
-	r.Timeout = timeout
-	r.require(runtimeFieldTimeout)
-}
-
-// SetResources sets the Resources field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetResources(resources *string) {
-	r.Resources = resources
-	r.require(runtimeFieldResources)
-}
-
-// SetPermissions sets the Permissions field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Runtime) SetPermissions(permissions []string) {
-	r.Permissions = permissions
-	r.require(runtimeFieldPermissions)
-}
-
-func (r *Runtime) UnmarshalJSON(data []byte) error {
-	type unmarshaler Runtime
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = Runtime(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *r)
-	if err != nil {
-		return err
-	}
-	r.extraProperties = extraProperties
-	r.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *Runtime) MarshalJSON() ([]byte, error) {
-	type embed Runtime
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*r),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (r *Runtime) String() string {
-	if r == nil {
-		return "<nil>"
-	}
-	if len(r.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
 }
 
 var (

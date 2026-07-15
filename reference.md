@@ -3133,7 +3133,7 @@ client.Reactors.Create(
 <dl>
 <dd>
 
-**runtime:** `*basistheory.Runtime` 
+**runtime:** `*basistheory.ReactorRuntime` 
     
 </dd>
 </dl>
@@ -3266,7 +3266,7 @@ client.Reactors.Update(
 <dl>
 <dd>
 
-**runtime:** `*basistheory.Runtime` 
+**runtime:** `*basistheory.ReactorRuntime` 
     
 </dd>
 </dl>
@@ -3396,7 +3396,7 @@ client.Reactors.Patch(
 <dl>
 <dd>
 
-**runtime:** `*basistheory.Runtime` 
+**runtime:** `*basistheory.ReactorRuntime` 
     
 </dd>
 </dl>
