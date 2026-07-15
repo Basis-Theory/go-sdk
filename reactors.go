@@ -23,7 +23,7 @@ type CreateReactorRequest struct {
 	Code          string             `json:"code" url:"-"`
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
+	Runtime       *ReactorRuntime    `json:"runtime,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -66,7 +66,7 @@ func (c *CreateReactorRequest) SetConfiguration(configuration map[string]*string
 
 // SetRuntime sets the Runtime field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateReactorRequest) SetRuntime(runtime *Runtime) {
+func (c *CreateReactorRequest) SetRuntime(runtime *ReactorRuntime) {
 	c.Runtime = runtime
 	c.require(createReactorRequestFieldRuntime)
 }
@@ -166,7 +166,7 @@ type PatchReactorRequest struct {
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          *string            `json:"code,omitempty" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
+	Runtime       *ReactorRuntime    `json:"runtime,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -209,7 +209,7 @@ func (p *PatchReactorRequest) SetConfiguration(configuration map[string]*string)
 
 // SetRuntime sets the Runtime field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (p *PatchReactorRequest) SetRuntime(runtime *Runtime) {
+func (p *PatchReactorRequest) SetRuntime(runtime *ReactorRuntime) {
 	p.Runtime = runtime
 	p.require(patchReactorRequestFieldRuntime)
 }
@@ -327,7 +327,7 @@ var (
 
 type PendingReactor struct {
 	Code          *string            `json:"code,omitempty" url:"code,omitempty"`
-	Runtime       *Runtime           `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Runtime       *ReactorRuntime    `json:"runtime,omitempty" url:"runtime,omitempty"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -344,7 +344,7 @@ func (p *PendingReactor) GetCode() *string {
 	return p.Code
 }
 
-func (p *PendingReactor) GetRuntime() *Runtime {
+func (p *PendingReactor) GetRuntime() *ReactorRuntime {
 	if p == nil {
 		return nil
 	}
@@ -381,7 +381,7 @@ func (p *PendingReactor) SetCode(code *string) {
 
 // SetRuntime sets the Runtime field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (p *PendingReactor) SetRuntime(runtime *Runtime) {
+func (p *PendingReactor) SetRuntime(runtime *ReactorRuntime) {
 	p.Runtime = runtime
 	p.require(pendingReactorFieldRuntime)
 }
@@ -597,7 +597,7 @@ type Reactor struct {
 	ModifiedBy    *string            `json:"modified_by,omitempty" url:"modified_by,omitempty"`
 	ModifiedAt    *time.Time         `json:"modified_at,omitempty" url:"modified_at,omitempty"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"configuration,omitempty"`
-	Runtime       *Runtime           `json:"runtime,omitempty" url:"runtime,omitempty"`
+	Runtime       *ReactorRuntime    `json:"runtime,omitempty" url:"runtime,omitempty"`
 	Requested     *RequestedReactor  `json:"requested,omitempty" url:"requested,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -691,7 +691,7 @@ func (r *Reactor) GetConfiguration() map[string]*string {
 	return r.Configuration
 }
 
-func (r *Reactor) GetRuntime() *Runtime {
+func (r *Reactor) GetRuntime() *ReactorRuntime {
 	if r == nil {
 		return nil
 	}
@@ -805,7 +805,7 @@ func (r *Reactor) SetConfiguration(configuration map[string]*string) {
 
 // SetRuntime sets the Runtime field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (r *Reactor) SetRuntime(runtime *Runtime) {
+func (r *Reactor) SetRuntime(runtime *ReactorRuntime) {
 	r.Runtime = runtime
 	r.require(reactorFieldRuntime)
 }
@@ -1508,6 +1508,202 @@ func (r *ReactorPaginatedList) String() string {
 }
 
 var (
+	reactorRuntimeFieldAsync           = big.NewInt(1 << 0)
+	reactorRuntimeFieldImage           = big.NewInt(1 << 1)
+	reactorRuntimeFieldDependencies    = big.NewInt(1 << 2)
+	reactorRuntimeFieldResolutions     = big.NewInt(1 << 3)
+	reactorRuntimeFieldWarmConcurrency = big.NewInt(1 << 4)
+	reactorRuntimeFieldTimeout         = big.NewInt(1 << 5)
+	reactorRuntimeFieldResources       = big.NewInt(1 << 6)
+	reactorRuntimeFieldPermissions     = big.NewInt(1 << 7)
+)
+
+type ReactorRuntime struct {
+	Async           *bool              `json:"async,omitempty" url:"async,omitempty"`
+	Image           *string            `json:"image,omitempty" url:"image,omitempty"`
+	Dependencies    map[string]*string `json:"dependencies,omitempty" url:"dependencies,omitempty"`
+	Resolutions     map[string]*string `json:"resolutions,omitempty" url:"resolutions,omitempty"`
+	WarmConcurrency *int               `json:"warm_concurrency,omitempty" url:"warm_concurrency,omitempty"`
+	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
+	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
+	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *ReactorRuntime) GetAsync() *bool {
+	if r == nil {
+		return nil
+	}
+	return r.Async
+}
+
+func (r *ReactorRuntime) GetImage() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Image
+}
+
+func (r *ReactorRuntime) GetDependencies() map[string]*string {
+	if r == nil {
+		return nil
+	}
+	return r.Dependencies
+}
+
+func (r *ReactorRuntime) GetResolutions() map[string]*string {
+	if r == nil {
+		return nil
+	}
+	return r.Resolutions
+}
+
+func (r *ReactorRuntime) GetWarmConcurrency() *int {
+	if r == nil {
+		return nil
+	}
+	return r.WarmConcurrency
+}
+
+func (r *ReactorRuntime) GetTimeout() *int {
+	if r == nil {
+		return nil
+	}
+	return r.Timeout
+}
+
+func (r *ReactorRuntime) GetResources() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Resources
+}
+
+func (r *ReactorRuntime) GetPermissions() []string {
+	if r == nil {
+		return nil
+	}
+	return r.Permissions
+}
+
+func (r *ReactorRuntime) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *ReactorRuntime) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetAsync sets the Async field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetAsync(async *bool) {
+	r.Async = async
+	r.require(reactorRuntimeFieldAsync)
+}
+
+// SetImage sets the Image field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetImage(image *string) {
+	r.Image = image
+	r.require(reactorRuntimeFieldImage)
+}
+
+// SetDependencies sets the Dependencies field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetDependencies(dependencies map[string]*string) {
+	r.Dependencies = dependencies
+	r.require(reactorRuntimeFieldDependencies)
+}
+
+// SetResolutions sets the Resolutions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetResolutions(resolutions map[string]*string) {
+	r.Resolutions = resolutions
+	r.require(reactorRuntimeFieldResolutions)
+}
+
+// SetWarmConcurrency sets the WarmConcurrency field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetWarmConcurrency(warmConcurrency *int) {
+	r.WarmConcurrency = warmConcurrency
+	r.require(reactorRuntimeFieldWarmConcurrency)
+}
+
+// SetTimeout sets the Timeout field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetTimeout(timeout *int) {
+	r.Timeout = timeout
+	r.require(reactorRuntimeFieldTimeout)
+}
+
+// SetResources sets the Resources field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetResources(resources *string) {
+	r.Resources = resources
+	r.require(reactorRuntimeFieldResources)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetPermissions(permissions []string) {
+	r.Permissions = permissions
+	r.require(reactorRuntimeFieldPermissions)
+}
+
+func (r *ReactorRuntime) UnmarshalJSON(data []byte) error {
+	type unmarshaler ReactorRuntime
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = ReactorRuntime(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *ReactorRuntime) MarshalJSON() ([]byte, error) {
+	type embed ReactorRuntime
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *ReactorRuntime) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+var (
 	requestedReactorFieldReactor      = big.NewInt(1 << 0)
 	requestedReactorFieldErrorCode    = big.NewInt(1 << 1)
 	requestedReactorFieldErrorMessage = big.NewInt(1 << 2)
@@ -1652,7 +1848,7 @@ type UpdateReactorRequest struct {
 	Application   *Application       `json:"application,omitempty" url:"-"`
 	Code          string             `json:"code" url:"-"`
 	Configuration map[string]*string `json:"configuration,omitempty" url:"-"`
-	Runtime       *Runtime           `json:"runtime,omitempty" url:"-"`
+	Runtime       *ReactorRuntime    `json:"runtime,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1695,7 +1891,7 @@ func (u *UpdateReactorRequest) SetConfiguration(configuration map[string]*string
 
 // SetRuntime sets the Runtime field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (u *UpdateReactorRequest) SetRuntime(runtime *Runtime) {
+func (u *UpdateReactorRequest) SetRuntime(runtime *ReactorRuntime) {
 	u.Runtime = runtime
 	u.require(updateReactorRequestFieldRuntime)
 }
