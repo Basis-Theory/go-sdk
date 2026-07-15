@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/Basis-Theory/go-sdk/compare/v6.0.0...v7.0.0) (2026-07-15)
+
+
+### Features
+
+* **ENG-11343:** add async Reactor SDK contract ([0355d43](https://github.com/Basis-Theory/go-sdk/commit/0355d43ee4c1b3059617490019e2d5f3e6c61194))
+
+
+### BREAKING CHANGES
+
+* **ENG-11343:** Reactor request and response models now use ReactorRuntime instead of Runtime for runtime configuration.
+
 # [6.0.0](https://github.com/Basis-Theory/go-sdk/compare/v5.10.0...v6.0.0) (2026-06-05)
 
 
