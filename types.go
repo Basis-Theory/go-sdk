@@ -15426,7 +15426,7 @@ var (
 
 type TenantMerchantRequest struct {
 	Name    string           `json:"name" url:"name"`
-	Details *MerchantDetails `json:"details" url:"details"`
+	Details *MerchantDetails `json:"details,omitempty" url:"details,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`

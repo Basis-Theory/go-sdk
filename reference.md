@@ -7818,7 +7818,6 @@ client.Tenants.Merchants.List(
 ```go
 request := &basistheory.TenantMerchantRequest{
         Name: "name",
-        Details: &basistheory.MerchantDetails{},
     }
 client.Tenants.Merchants.Create(
         context.TODO(),
@@ -7981,7 +7980,6 @@ client.Tenants.Merchants.Delete(
 ```go
 request := &basistheory.TenantMerchantRequest{
         Name: "name",
-        Details: &basistheory.MerchantDetails{},
     }
 client.Tenants.Merchants.Update(
         context.TODO(),
