@@ -125,8 +125,7 @@ func TestTenantsMerchantsCreateWithWireMock(
 		option.WithAPIKey("test-value"),
 	)
 	request := &basistheory.TenantMerchantRequest{
-		Name:    "name",
-		Details: &basistheory.MerchantDetails{},
+		Name: "name",
 	}
 	_, invocationErr := client.Tenants.Merchants.Create(
 		context.TODO(),
@@ -201,8 +200,7 @@ func TestTenantsMerchantsUpdateWithWireMock(
 		option.WithAPIKey("test-value"),
 	)
 	request := &basistheory.TenantMerchantRequest{
-		Name:    "name",
-		Details: &basistheory.MerchantDetails{},
+		Name: "name",
 	}
 	_, invocationErr := client.Tenants.Merchants.Update(
 		context.TODO(),
