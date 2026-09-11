@@ -1,3 +1,10 @@
+# [7.1.0](https://github.com/Basis-Theory/go-sdk/compare/v7.0.0...v7.1.0) (2026-09-11)
+
+
+### Features
+
+* **ENG-11715:** resolve US and EU environments to regional hosts ([#143](https://github.com/Basis-Theory/go-sdk/issues/143)) ([feaa114](https://github.com/Basis-Theory/go-sdk/commit/feaa11495933b7b8f2a5c99d5271f39a0587806a))
+
 # [7.0.0](https://github.com/Basis-Theory/go-sdk/compare/v6.0.0...v7.0.0) (2026-07-15)
 
 
