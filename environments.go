@@ -13,7 +13,7 @@ var Environments = struct {
 	Test    string
 }{
 	Default: "https://api.basistheory.com",
-	Us:      "https://api.basistheory.com",
-	Eu:      "https://api.basistheory.com",
+	Us:      "https://api.us.basistheory.com",
+	Eu:      "https://api.eu.basistheory.com",
 	Test:    "https://api.test.basistheory.com",
 }
