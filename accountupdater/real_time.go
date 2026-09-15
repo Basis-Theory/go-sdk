@@ -9,14 +9,18 @@ import (
 )
 
 var (
-	accountUpdaterRealTimeRequestFieldTokenID          = big.NewInt(1 << 0)
-	accountUpdaterRealTimeRequestFieldExpirationYear   = big.NewInt(1 << 1)
-	accountUpdaterRealTimeRequestFieldExpirationMonth  = big.NewInt(1 << 2)
-	accountUpdaterRealTimeRequestFieldDeduplicateToken = big.NewInt(1 << 3)
-	accountUpdaterRealTimeRequestFieldMerchantID       = big.NewInt(1 << 4)
+	accountUpdaterRealTimeRequestFieldBtMerchantID            = big.NewInt(1 << 0)
+	accountUpdaterRealTimeRequestFieldTokenID                 = big.NewInt(1 << 1)
+	accountUpdaterRealTimeRequestFieldExpirationYear          = big.NewInt(1 << 2)
+	accountUpdaterRealTimeRequestFieldExpirationMonth         = big.NewInt(1 << 3)
+	accountUpdaterRealTimeRequestFieldDeduplicateToken        = big.NewInt(1 << 4)
+	accountUpdaterRealTimeRequestFieldConfigurationMerchantID = big.NewInt(1 << 5)
+	accountUpdaterRealTimeRequestFieldMerchantID              = big.NewInt(1 << 6)
 )
 
 type AccountUpdaterRealTimeRequest struct {
+	// Tenant merchant the request acts as. The card token is read within this merchant's scope and the updated token is associated with it. Responds 404 if the merchant does not exist in the tenant.
+	BtMerchantID *string `json:"-" url:"-"`
 	// Card Token identifier
 	TokenID string `json:"token_id" url:"-"`
 	// The 4-digit expiration year of the account number. Not required if the card token already stores this value.
@@ -25,7 +29,9 @@ type AccountUpdaterRealTimeRequest struct {
 	ExpirationMonth *int `json:"expiration_month,omitempty" url:"-"`
 	// Whether deduplication should be enabled when creating the new token. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
 	DeduplicateToken *bool `json:"deduplicate_token,omitempty" url:"-"`
-	// Tenant merchant identifier
+	// Tenant merchant whose provider configuration is used for this request. Selects configuration only; it does not scope token access or associate the new token with the merchant. Takes precedence over merchant_id; defaults to the BT-MERCHANT-ID header merchant, then the tenant-level configuration.
+	ConfigurationMerchantID *string `json:"configuration_merchant_id,omitempty" url:"-"`
+	// Deprecated: use configuration_merchant_id instead. Legacy alias kept for backward compatibility with lower precedence. Selects configuration only.
 	MerchantID *string `json:"merchant_id,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -37,6 +43,13 @@ func (a *AccountUpdaterRealTimeRequest) require(field *big.Int) {
 		a.explicitFields = big.NewInt(0)
 	}
 	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetBtMerchantID sets the BtMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetBtMerchantID(btMerchantID *string) {
+	a.BtMerchantID = btMerchantID
+	a.require(accountUpdaterRealTimeRequestFieldBtMerchantID)
 }
 
 // SetTokenID sets the TokenID field and marks it as non-optional;
@@ -65,6 +78,13 @@ func (a *AccountUpdaterRealTimeRequest) SetExpirationMonth(expirationMonth *int)
 func (a *AccountUpdaterRealTimeRequest) SetDeduplicateToken(deduplicateToken *bool) {
 	a.DeduplicateToken = deduplicateToken
 	a.require(accountUpdaterRealTimeRequestFieldDeduplicateToken)
+}
+
+// SetConfigurationMerchantID sets the ConfigurationMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AccountUpdaterRealTimeRequest) SetConfigurationMerchantID(configurationMerchantID *string) {
+	a.ConfigurationMerchantID = configurationMerchantID
+	a.require(accountUpdaterRealTimeRequestFieldConfigurationMerchantID)
 }
 
 // SetMerchantID sets the MerchantID field and marks it as non-optional;

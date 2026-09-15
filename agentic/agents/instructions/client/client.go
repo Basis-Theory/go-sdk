@@ -188,3 +188,24 @@ func (c *Client) Update(
 	}
 	return response.Body, nil
 }
+
+// Report the outcome of a transaction back to the card network.
+func (c *Client) Confirmations(
+	ctx context.Context,
+	agentID string,
+	instructionID string,
+	request *agents.PublishConfirmationRequest,
+	opts ...option.RequestOption,
+) (*basistheory.PublishConfirmationResponse, error) {
+	response, err := c.WithRawResponse.Confirmations(
+		ctx,
+		agentID,
+		instructionID,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}

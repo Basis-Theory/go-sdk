@@ -1693,6 +1693,2036 @@ func (a *AgenticMerchant) String() string {
 }
 
 var (
+	allowanceFieldID               = big.NewInt(1 << 0)
+	allowanceFieldPaymentMethodID  = big.NewInt(1 << 1)
+	allowanceFieldAgentID          = big.NewInt(1 << 2)
+	allowanceFieldStatus           = big.NewInt(1 << 3)
+	allowanceFieldAmount           = big.NewInt(1 << 4)
+	allowanceFieldDescription      = big.NewInt(1 << 5)
+	allowanceFieldMerchant         = big.NewInt(1 << 6)
+	allowanceFieldAmountSpent      = big.NewInt(1 << 7)
+	allowanceFieldAmountReserved   = big.NewInt(1 << 8)
+	allowanceFieldAmountAvailable  = big.NewInt(1 << 9)
+	allowanceFieldCredentialsCount = big.NewInt(1 << 10)
+	allowanceFieldMetadata         = big.NewInt(1 << 11)
+	allowanceFieldRails            = big.NewInt(1 << 12)
+	allowanceFieldCreatedAt        = big.NewInt(1 << 13)
+	allowanceFieldUpdatedAt        = big.NewInt(1 << 14)
+)
+
+type Allowance struct {
+	ID              *string `json:"id,omitempty" url:"id,omitempty"`
+	PaymentMethodID *string `json:"payment_method_id,omitempty" url:"payment_method_id,omitempty"`
+	// Optional agent attribution. This is informational and is not an authorization grant.
+	AgentID     *string              `json:"agent_id,omitempty" url:"agent_id,omitempty"`
+	Status      *AllowanceStatus     `json:"status,omitempty" url:"status,omitempty"`
+	Amount      *SharedPaymentAmount `json:"amount,omitempty" url:"amount,omitempty"`
+	Description *string              `json:"description,omitempty" url:"description,omitempty"`
+	// Merchant the allowance is scoped to. Absent on an open allowance, which supplies a merchant per credential request instead.
+	Merchant         *SharedPaymentMerchant `json:"merchant,omitempty" url:"merchant,omitempty"`
+	AmountSpent      *SharedPaymentAmount   `json:"amount_spent,omitempty" url:"amount_spent,omitempty"`
+	AmountReserved   *SharedPaymentAmount   `json:"amount_reserved,omitempty" url:"amount_reserved,omitempty"`
+	AmountAvailable  *SharedPaymentAmount   `json:"amount_available,omitempty" url:"amount_available,omitempty"`
+	CredentialsCount *int                   `json:"credentials_count,omitempty" url:"credentials_count,omitempty"`
+	Metadata         map[string]any         `json:"metadata,omitempty" url:"metadata,omitempty"`
+	Rails            []*AllowanceRail       `json:"rails,omitempty" url:"rails,omitempty"`
+	CreatedAt        *time.Time             `json:"created_at,omitempty" url:"created_at,omitempty"`
+	UpdatedAt        *time.Time             `json:"updated_at,omitempty" url:"updated_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *Allowance) GetID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ID
+}
+
+func (a *Allowance) GetPaymentMethodID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.PaymentMethodID
+}
+
+func (a *Allowance) GetAgentID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.AgentID
+}
+
+func (a *Allowance) GetStatus() *AllowanceStatus {
+	if a == nil {
+		return nil
+	}
+	return a.Status
+}
+
+func (a *Allowance) GetAmount() *SharedPaymentAmount {
+	if a == nil {
+		return nil
+	}
+	return a.Amount
+}
+
+func (a *Allowance) GetDescription() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Description
+}
+
+func (a *Allowance) GetMerchant() *SharedPaymentMerchant {
+	if a == nil {
+		return nil
+	}
+	return a.Merchant
+}
+
+func (a *Allowance) GetAmountSpent() *SharedPaymentAmount {
+	if a == nil {
+		return nil
+	}
+	return a.AmountSpent
+}
+
+func (a *Allowance) GetAmountReserved() *SharedPaymentAmount {
+	if a == nil {
+		return nil
+	}
+	return a.AmountReserved
+}
+
+func (a *Allowance) GetAmountAvailable() *SharedPaymentAmount {
+	if a == nil {
+		return nil
+	}
+	return a.AmountAvailable
+}
+
+func (a *Allowance) GetCredentialsCount() *int {
+	if a == nil {
+		return nil
+	}
+	return a.CredentialsCount
+}
+
+func (a *Allowance) GetMetadata() map[string]any {
+	if a == nil {
+		return nil
+	}
+	return a.Metadata
+}
+
+func (a *Allowance) GetRails() []*AllowanceRail {
+	if a == nil {
+		return nil
+	}
+	return a.Rails
+}
+
+func (a *Allowance) GetCreatedAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.CreatedAt
+}
+
+func (a *Allowance) GetUpdatedAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.UpdatedAt
+}
+
+func (a *Allowance) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *Allowance) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetID(id *string) {
+	a.ID = id
+	a.require(allowanceFieldID)
+}
+
+// SetPaymentMethodID sets the PaymentMethodID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetPaymentMethodID(paymentMethodID *string) {
+	a.PaymentMethodID = paymentMethodID
+	a.require(allowanceFieldPaymentMethodID)
+}
+
+// SetAgentID sets the AgentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetAgentID(agentID *string) {
+	a.AgentID = agentID
+	a.require(allowanceFieldAgentID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetStatus(status *AllowanceStatus) {
+	a.Status = status
+	a.require(allowanceFieldStatus)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetAmount(amount *SharedPaymentAmount) {
+	a.Amount = amount
+	a.require(allowanceFieldAmount)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetDescription(description *string) {
+	a.Description = description
+	a.require(allowanceFieldDescription)
+}
+
+// SetMerchant sets the Merchant field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetMerchant(merchant *SharedPaymentMerchant) {
+	a.Merchant = merchant
+	a.require(allowanceFieldMerchant)
+}
+
+// SetAmountSpent sets the AmountSpent field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetAmountSpent(amountSpent *SharedPaymentAmount) {
+	a.AmountSpent = amountSpent
+	a.require(allowanceFieldAmountSpent)
+}
+
+// SetAmountReserved sets the AmountReserved field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetAmountReserved(amountReserved *SharedPaymentAmount) {
+	a.AmountReserved = amountReserved
+	a.require(allowanceFieldAmountReserved)
+}
+
+// SetAmountAvailable sets the AmountAvailable field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetAmountAvailable(amountAvailable *SharedPaymentAmount) {
+	a.AmountAvailable = amountAvailable
+	a.require(allowanceFieldAmountAvailable)
+}
+
+// SetCredentialsCount sets the CredentialsCount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetCredentialsCount(credentialsCount *int) {
+	a.CredentialsCount = credentialsCount
+	a.require(allowanceFieldCredentialsCount)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetMetadata(metadata map[string]any) {
+	a.Metadata = metadata
+	a.require(allowanceFieldMetadata)
+}
+
+// SetRails sets the Rails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetRails(rails []*AllowanceRail) {
+	a.Rails = rails
+	a.require(allowanceFieldRails)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetCreatedAt(createdAt *time.Time) {
+	a.CreatedAt = createdAt
+	a.require(allowanceFieldCreatedAt)
+}
+
+// SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allowance) SetUpdatedAt(updatedAt *time.Time) {
+	a.UpdatedAt = updatedAt
+	a.require(allowanceFieldUpdatedAt)
+}
+
+func (a *Allowance) UnmarshalJSON(data []byte) error {
+	type embed Allowance
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		UpdatedAt *internal.DateTime `json:"updated_at,omitempty"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = Allowance(unmarshaler.embed)
+	a.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	a.UpdatedAt = unmarshaler.UpdatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *Allowance) MarshalJSON() ([]byte, error) {
+	type embed Allowance
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		UpdatedAt *internal.DateTime `json:"updated_at,omitempty"`
+	}{
+		embed:     embed(*a),
+		CreatedAt: internal.NewOptionalDateTime(a.CreatedAt),
+		UpdatedAt: internal.NewOptionalDateTime(a.UpdatedAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *Allowance) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceListFieldData       = big.NewInt(1 << 0)
+	allowanceListFieldPagination = big.NewInt(1 << 1)
+)
+
+type AllowanceList struct {
+	Data       []*Allowance             `json:"data" url:"data"`
+	Pagination *AllowanceListPagination `json:"pagination" url:"pagination"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceList) GetData() []*Allowance {
+	if a == nil {
+		return nil
+	}
+	return a.Data
+}
+
+func (a *AllowanceList) GetPagination() *AllowanceListPagination {
+	if a == nil {
+		return nil
+	}
+	return a.Pagination
+}
+
+func (a *AllowanceList) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceList) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceList) SetData(data []*Allowance) {
+	a.Data = data
+	a.require(allowanceListFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceList) SetPagination(pagination *AllowanceListPagination) {
+	a.Pagination = pagination
+	a.require(allowanceListFieldPagination)
+}
+
+func (a *AllowanceList) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceList) MarshalJSON() ([]byte, error) {
+	type embed AllowanceList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceList) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceListPaginationFieldNext     = big.NewInt(1 << 0)
+	allowanceListPaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type AllowanceListPagination struct {
+	// Cursor for the next page. Absent on the last page.
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize int     `json:"page_size" url:"page_size"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceListPagination) GetNext() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Next
+}
+
+func (a *AllowanceListPagination) GetPageSize() int {
+	if a == nil {
+		return 0
+	}
+	return a.PageSize
+}
+
+func (a *AllowanceListPagination) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceListPagination) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceListPagination) SetNext(next *string) {
+	a.Next = next
+	a.require(allowanceListPaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceListPagination) SetPageSize(pageSize int) {
+	a.PageSize = pageSize
+	a.require(allowanceListPaginationFieldPageSize)
+}
+
+func (a *AllowanceListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceListPagination) MarshalJSON() ([]byte, error) {
+	type embed AllowanceListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceListPagination) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceRailFieldRail              = big.NewInt(1 << 0)
+	allowanceRailFieldProvider          = big.NewInt(1 << 1)
+	allowanceRailFieldProviderIDs       = big.NewInt(1 << 2)
+	allowanceRailFieldCredentialFormats = big.NewInt(1 << 3)
+	allowanceRailFieldStatus            = big.NewInt(1 << 4)
+	allowanceRailFieldError             = big.NewInt(1 << 5)
+)
+
+type AllowanceRail struct {
+	Rail     *string `json:"rail,omitempty" url:"rail,omitempty"`
+	Provider *string `json:"provider,omitempty" url:"provider,omitempty"`
+	// Provider-native reference identifiers for this rail. Informational; use for support and correlation, not as a stable contract.
+	ProviderIDs map[string]string `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+	// Credential representations accepted by this rail/provider when minting. card, network-token, and identifier are direct API credentials; mpp is an HTTP Machine Payments Protocol credential.
+	CredentialFormats []AllowanceRailCredentialFormatsItem `json:"credential_formats" url:"credential_formats"`
+	Status            *string                              `json:"status,omitempty" url:"status,omitempty"`
+	Error             *SharedPaymentRailError              `json:"error,omitempty" url:"error,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceRail) GetProviderIDs() map[string]string {
+	if a == nil {
+		return nil
+	}
+	return a.ProviderIDs
+}
+
+func (a *AllowanceRail) GetCredentialFormats() []AllowanceRailCredentialFormatsItem {
+	if a == nil {
+		return nil
+	}
+	return a.CredentialFormats
+}
+
+func (a *AllowanceRail) GetError() *SharedPaymentRailError {
+	if a == nil {
+		return nil
+	}
+	return a.Error
+}
+
+func (a *AllowanceRail) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceRail) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceRail) SetRail(rail *string) {
+	a.Rail = rail
+	a.require(allowanceRailFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceRail) SetProvider(provider *string) {
+	a.Provider = provider
+	a.require(allowanceRailFieldProvider)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceRail) SetProviderIDs(providerIDs map[string]string) {
+	a.ProviderIDs = providerIDs
+	a.require(allowanceRailFieldProviderIDs)
+}
+
+// SetCredentialFormats sets the CredentialFormats field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceRail) SetCredentialFormats(credentialFormats []AllowanceRailCredentialFormatsItem) {
+	a.CredentialFormats = credentialFormats
+	a.require(allowanceRailFieldCredentialFormats)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceRail) SetStatus(status *string) {
+	a.Status = status
+	a.require(allowanceRailFieldStatus)
+}
+
+// SetError sets the Error field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceRail) SetError(error_ *SharedPaymentRailError) {
+	a.Error = error_
+	a.require(allowanceRailFieldError)
+}
+
+func (a *AllowanceRail) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceRail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceRail(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceRail) MarshalJSON() ([]byte, error) {
+	type embed AllowanceRail
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceRail) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AllowanceRailCredentialFormatsItem string
+
+const (
+	AllowanceRailCredentialFormatsItemCard         AllowanceRailCredentialFormatsItem = "card"
+	AllowanceRailCredentialFormatsItemNetworkToken AllowanceRailCredentialFormatsItem = "network-token"
+	AllowanceRailCredentialFormatsItemIdentifier   AllowanceRailCredentialFormatsItem = "identifier"
+	AllowanceRailCredentialFormatsItemMpp          AllowanceRailCredentialFormatsItem = "mpp"
+)
+
+func NewAllowanceRailCredentialFormatsItemFromString(s string) (AllowanceRailCredentialFormatsItem, error) {
+	switch s {
+	case "card":
+		return AllowanceRailCredentialFormatsItemCard, nil
+	case "network-token":
+		return AllowanceRailCredentialFormatsItemNetworkToken, nil
+	case "identifier":
+		return AllowanceRailCredentialFormatsItemIdentifier, nil
+	case "mpp":
+		return AllowanceRailCredentialFormatsItemMpp, nil
+	}
+	var t AllowanceRailCredentialFormatsItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceRailCredentialFormatsItem) Ptr() *AllowanceRailCredentialFormatsItem {
+	return &a
+}
+
+type AllowanceRailProvider string
+
+const (
+	AllowanceRailProviderVic      AllowanceRailProvider = "vic"
+	AllowanceRailProviderAgentpay AllowanceRailProvider = "agentpay"
+)
+
+func NewAllowanceRailProviderFromString(s string) (AllowanceRailProvider, error) {
+	switch s {
+	case "vic":
+		return AllowanceRailProviderVic, nil
+	case "agentpay":
+		return AllowanceRailProviderAgentpay, nil
+	}
+	var t AllowanceRailProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceRailProvider) Ptr() *AllowanceRailProvider {
+	return &a
+}
+
+type AllowanceStatus string
+
+const (
+	AllowanceStatusActive    AllowanceStatus = "active"
+	AllowanceStatusCancelled AllowanceStatus = "cancelled"
+	AllowanceStatusExpired   AllowanceStatus = "expired"
+)
+
+func NewAllowanceStatusFromString(s string) (AllowanceStatus, error) {
+	switch s {
+	case "active":
+		return AllowanceStatusActive, nil
+	case "cancelled":
+		return AllowanceStatusCancelled, nil
+	case "expired":
+		return AllowanceStatusExpired, nil
+	}
+	var t AllowanceStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceStatus) Ptr() *AllowanceStatus {
+	return &a
+}
+
+var (
+	allowanceVerificationMethodFieldID    = big.NewInt(1 << 0)
+	allowanceVerificationMethodFieldType  = big.NewInt(1 << 1)
+	allowanceVerificationMethodFieldValue = big.NewInt(1 << 2)
+)
+
+type AllowanceVerificationMethod struct {
+	ID   string                          `json:"id" url:"id"`
+	Type AllowanceVerificationMethodType `json:"type" url:"type"`
+	// Masked destination or issuer-provided display label.
+	Value string `json:"value" url:"value"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationMethod) GetID() string {
+	if a == nil {
+		return ""
+	}
+	return a.ID
+}
+
+func (a *AllowanceVerificationMethod) GetType() AllowanceVerificationMethodType {
+	if a == nil {
+		return ""
+	}
+	return a.Type
+}
+
+func (a *AllowanceVerificationMethod) GetValue() string {
+	if a == nil {
+		return ""
+	}
+	return a.Value
+}
+
+func (a *AllowanceVerificationMethod) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationMethod) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationMethod) SetID(id string) {
+	a.ID = id
+	a.require(allowanceVerificationMethodFieldID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationMethod) SetType(type_ AllowanceVerificationMethodType) {
+	a.Type = type_
+	a.require(allowanceVerificationMethodFieldType)
+}
+
+// SetValue sets the Value field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationMethod) SetValue(value string) {
+	a.Value = value
+	a.require(allowanceVerificationMethodFieldValue)
+}
+
+func (a *AllowanceVerificationMethod) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationMethod
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationMethod(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationMethod) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationMethod
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationMethod) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AllowanceVerificationMethodType string
+
+const (
+	AllowanceVerificationMethodTypeSms              AllowanceVerificationMethodType = "sms"
+	AllowanceVerificationMethodTypeEmail            AllowanceVerificationMethodType = "email"
+	AllowanceVerificationMethodTypeOtponlinebanking AllowanceVerificationMethodType = "otponlinebanking"
+)
+
+func NewAllowanceVerificationMethodTypeFromString(s string) (AllowanceVerificationMethodType, error) {
+	switch s {
+	case "sms":
+		return AllowanceVerificationMethodTypeSms, nil
+	case "email":
+		return AllowanceVerificationMethodTypeEmail, nil
+	case "otponlinebanking":
+		return AllowanceVerificationMethodTypeOtponlinebanking, nil
+	}
+	var t AllowanceVerificationMethodType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceVerificationMethodType) Ptr() *AllowanceVerificationMethodType {
+	return &a
+}
+
+type AllowanceVerificationNextAction struct {
+	Type            string
+	SelectOtpMethod *AllowanceVerificationNextActionSelectOtpMethod
+	Otp             *AllowanceVerificationNextActionOtp
+	PasskeySession  *AllowanceVerificationNextActionPasskeySession
+	Passkey         *AllowanceVerificationNextActionPasskey
+	Redirect        *AllowanceVerificationNextActionRedirect
+}
+
+func (a *AllowanceVerificationNextAction) GetType() string {
+	if a == nil {
+		return ""
+	}
+	return a.Type
+}
+
+func (a *AllowanceVerificationNextAction) GetSelectOtpMethod() *AllowanceVerificationNextActionSelectOtpMethod {
+	if a == nil {
+		return nil
+	}
+	return a.SelectOtpMethod
+}
+
+func (a *AllowanceVerificationNextAction) GetOtp() *AllowanceVerificationNextActionOtp {
+	if a == nil {
+		return nil
+	}
+	return a.Otp
+}
+
+func (a *AllowanceVerificationNextAction) GetPasskeySession() *AllowanceVerificationNextActionPasskeySession {
+	if a == nil {
+		return nil
+	}
+	return a.PasskeySession
+}
+
+func (a *AllowanceVerificationNextAction) GetPasskey() *AllowanceVerificationNextActionPasskey {
+	if a == nil {
+		return nil
+	}
+	return a.Passkey
+}
+
+func (a *AllowanceVerificationNextAction) GetRedirect() *AllowanceVerificationNextActionRedirect {
+	if a == nil {
+		return nil
+	}
+	return a.Redirect
+}
+
+func (a *AllowanceVerificationNextAction) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	a.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", a)
+	}
+	switch unmarshaler.Type {
+	case "select_otp_method":
+		value := new(AllowanceVerificationNextActionSelectOtpMethod)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.SelectOtpMethod = value
+	case "otp":
+		value := new(AllowanceVerificationNextActionOtp)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.Otp = value
+	case "passkey_session":
+		value := new(AllowanceVerificationNextActionPasskeySession)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.PasskeySession = value
+	case "passkey":
+		value := new(AllowanceVerificationNextActionPasskey)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.Passkey = value
+	case "redirect":
+		value := new(AllowanceVerificationNextActionRedirect)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.Redirect = value
+	}
+	return nil
+}
+
+func (a AllowanceVerificationNextAction) MarshalJSON() ([]byte, error) {
+	if err := a.validate(); err != nil {
+		return nil, err
+	}
+	if a.SelectOtpMethod != nil {
+		return internal.MarshalJSONWithExtraProperty(a.SelectOtpMethod, "type", "select_otp_method")
+	}
+	if a.Otp != nil {
+		return internal.MarshalJSONWithExtraProperty(a.Otp, "type", "otp")
+	}
+	if a.PasskeySession != nil {
+		return internal.MarshalJSONWithExtraProperty(a.PasskeySession, "type", "passkey_session")
+	}
+	if a.Passkey != nil {
+		return internal.MarshalJSONWithExtraProperty(a.Passkey, "type", "passkey")
+	}
+	if a.Redirect != nil {
+		return internal.MarshalJSONWithExtraProperty(a.Redirect, "type", "redirect")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", a)
+}
+
+type AllowanceVerificationNextActionVisitor interface {
+	VisitSelectOtpMethod(*AllowanceVerificationNextActionSelectOtpMethod) error
+	VisitOtp(*AllowanceVerificationNextActionOtp) error
+	VisitPasskeySession(*AllowanceVerificationNextActionPasskeySession) error
+	VisitPasskey(*AllowanceVerificationNextActionPasskey) error
+	VisitRedirect(*AllowanceVerificationNextActionRedirect) error
+}
+
+func (a *AllowanceVerificationNextAction) Accept(visitor AllowanceVerificationNextActionVisitor) error {
+	if a.SelectOtpMethod != nil {
+		return visitor.VisitSelectOtpMethod(a.SelectOtpMethod)
+	}
+	if a.Otp != nil {
+		return visitor.VisitOtp(a.Otp)
+	}
+	if a.PasskeySession != nil {
+		return visitor.VisitPasskeySession(a.PasskeySession)
+	}
+	if a.Passkey != nil {
+		return visitor.VisitPasskey(a.Passkey)
+	}
+	if a.Redirect != nil {
+		return visitor.VisitRedirect(a.Redirect)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", a)
+}
+
+func (a *AllowanceVerificationNextAction) validate() error {
+	if a == nil {
+		return fmt.Errorf("type %T is nil", a)
+	}
+	var fields []string
+	if a.SelectOtpMethod != nil {
+		fields = append(fields, "select_otp_method")
+	}
+	if a.Otp != nil {
+		fields = append(fields, "otp")
+	}
+	if a.PasskeySession != nil {
+		fields = append(fields, "passkey_session")
+	}
+	if a.Passkey != nil {
+		fields = append(fields, "passkey")
+	}
+	if a.Redirect != nil {
+		fields = append(fields, "redirect")
+	}
+	if len(fields) == 0 {
+		if a.Type != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", a, a.Type)
+		}
+		return fmt.Errorf("type %T is empty", a)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", a, fields)
+	}
+	if a.Type != "" {
+		field := fields[0]
+		if a.Type != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				a,
+				a.Type,
+				a,
+			)
+		}
+	}
+	return nil
+}
+
+var (
+	allowanceVerificationNextActionOtpFieldMethod                = big.NewInt(1 << 0)
+	allowanceVerificationNextActionOtpFieldCodeExpirationMinutes = big.NewInt(1 << 1)
+	allowanceVerificationNextActionOtpFieldMaxAttempts           = big.NewInt(1 << 2)
+)
+
+type AllowanceVerificationNextActionOtp struct {
+	Method                *AllowanceVerificationMethod `json:"method" url:"method"`
+	CodeExpirationMinutes int                          `json:"code_expiration_minutes" url:"code_expiration_minutes"`
+	MaxAttempts           int                          `json:"max_attempts" url:"max_attempts"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionOtp) GetMethod() *AllowanceVerificationMethod {
+	if a == nil {
+		return nil
+	}
+	return a.Method
+}
+
+func (a *AllowanceVerificationNextActionOtp) GetCodeExpirationMinutes() int {
+	if a == nil {
+		return 0
+	}
+	return a.CodeExpirationMinutes
+}
+
+func (a *AllowanceVerificationNextActionOtp) GetMaxAttempts() int {
+	if a == nil {
+		return 0
+	}
+	return a.MaxAttempts
+}
+
+func (a *AllowanceVerificationNextActionOtp) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionOtp) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetMethod sets the Method field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionOtp) SetMethod(method *AllowanceVerificationMethod) {
+	a.Method = method
+	a.require(allowanceVerificationNextActionOtpFieldMethod)
+}
+
+// SetCodeExpirationMinutes sets the CodeExpirationMinutes field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionOtp) SetCodeExpirationMinutes(codeExpirationMinutes int) {
+	a.CodeExpirationMinutes = codeExpirationMinutes
+	a.require(allowanceVerificationNextActionOtpFieldCodeExpirationMinutes)
+}
+
+// SetMaxAttempts sets the MaxAttempts field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionOtp) SetMaxAttempts(maxAttempts int) {
+	a.MaxAttempts = maxAttempts
+	a.require(allowanceVerificationNextActionOtpFieldMaxAttempts)
+}
+
+func (a *AllowanceVerificationNextActionOtp) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationNextActionOtp
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionOtp(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionOtp) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionOtp
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionOtp) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationNextActionPasskeyFieldPasskeyContext = big.NewInt(1 << 0)
+	allowanceVerificationNextActionPasskeyFieldEmbed          = big.NewInt(1 << 1)
+)
+
+type AllowanceVerificationNextActionPasskey struct {
+	// Provider ceremony context. Pass through without modification.
+	PasskeyContext map[string]any                               `json:"passkey_context" url:"passkey_context"`
+	Embed          *AllowanceVerificationNextActionPasskeyEmbed `json:"embed" url:"embed"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionPasskey) GetPasskeyContext() map[string]any {
+	if a == nil {
+		return nil
+	}
+	return a.PasskeyContext
+}
+
+func (a *AllowanceVerificationNextActionPasskey) GetEmbed() *AllowanceVerificationNextActionPasskeyEmbed {
+	if a == nil {
+		return nil
+	}
+	return a.Embed
+}
+
+func (a *AllowanceVerificationNextActionPasskey) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionPasskey) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetPasskeyContext sets the PasskeyContext field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskey) SetPasskeyContext(passkeyContext map[string]any) {
+	a.PasskeyContext = passkeyContext
+	a.require(allowanceVerificationNextActionPasskeyFieldPasskeyContext)
+}
+
+// SetEmbed sets the Embed field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskey) SetEmbed(embed *AllowanceVerificationNextActionPasskeyEmbed) {
+	a.Embed = embed
+	a.require(allowanceVerificationNextActionPasskeyFieldEmbed)
+}
+
+func (a *AllowanceVerificationNextActionPasskey) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationNextActionPasskey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionPasskey(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionPasskey) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionPasskey
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionPasskey) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationNextActionPasskeyEmbedFieldIframeURL   = big.NewInt(1 << 0)
+	allowanceVerificationNextActionPasskeyEmbedFieldAPIKey      = big.NewInt(1 << 1)
+	allowanceVerificationNextActionPasskeyEmbedFieldClientAppID = big.NewInt(1 << 2)
+)
+
+type AllowanceVerificationNextActionPasskeyEmbed struct {
+	IframeURL   string `json:"iframe_url" url:"iframe_url"`
+	APIKey      string `json:"api_key" url:"api_key"`
+	ClientAppID string `json:"client_app_id" url:"client_app_id"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) GetIframeURL() string {
+	if a == nil {
+		return ""
+	}
+	return a.IframeURL
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) GetAPIKey() string {
+	if a == nil {
+		return ""
+	}
+	return a.APIKey
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) GetClientAppID() string {
+	if a == nil {
+		return ""
+	}
+	return a.ClientAppID
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetIframeURL sets the IframeURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeyEmbed) SetIframeURL(iframeURL string) {
+	a.IframeURL = iframeURL
+	a.require(allowanceVerificationNextActionPasskeyEmbedFieldIframeURL)
+}
+
+// SetAPIKey sets the APIKey field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeyEmbed) SetAPIKey(apiKey string) {
+	a.APIKey = apiKey
+	a.require(allowanceVerificationNextActionPasskeyEmbedFieldAPIKey)
+}
+
+// SetClientAppID sets the ClientAppID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeyEmbed) SetClientAppID(clientAppID string) {
+	a.ClientAppID = clientAppID
+	a.require(allowanceVerificationNextActionPasskeyEmbedFieldClientAppID)
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationNextActionPasskeyEmbed
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionPasskeyEmbed(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionPasskeyEmbed
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionPasskeyEmbed) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationNextActionPasskeySessionFieldEmbed = big.NewInt(1 << 0)
+)
+
+type AllowanceVerificationNextActionPasskeySession struct {
+	Embed *AllowanceVerificationNextActionPasskeySessionEmbed `json:"embed" url:"embed"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionPasskeySession) GetEmbed() *AllowanceVerificationNextActionPasskeySessionEmbed {
+	if a == nil {
+		return nil
+	}
+	return a.Embed
+}
+
+func (a *AllowanceVerificationNextActionPasskeySession) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionPasskeySession) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetEmbed sets the Embed field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeySession) SetEmbed(embed *AllowanceVerificationNextActionPasskeySessionEmbed) {
+	a.Embed = embed
+	a.require(allowanceVerificationNextActionPasskeySessionFieldEmbed)
+}
+
+func (a *AllowanceVerificationNextActionPasskeySession) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationNextActionPasskeySession
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionPasskeySession(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionPasskeySession) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionPasskeySession
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionPasskeySession) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationNextActionPasskeySessionEmbedFieldIframeURL   = big.NewInt(1 << 0)
+	allowanceVerificationNextActionPasskeySessionEmbedFieldAPIKey      = big.NewInt(1 << 1)
+	allowanceVerificationNextActionPasskeySessionEmbedFieldClientAppID = big.NewInt(1 << 2)
+)
+
+type AllowanceVerificationNextActionPasskeySessionEmbed struct {
+	IframeURL   string `json:"iframe_url" url:"iframe_url"`
+	APIKey      string `json:"api_key" url:"api_key"`
+	ClientAppID string `json:"client_app_id" url:"client_app_id"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) GetIframeURL() string {
+	if a == nil {
+		return ""
+	}
+	return a.IframeURL
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) GetAPIKey() string {
+	if a == nil {
+		return ""
+	}
+	return a.APIKey
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) GetClientAppID() string {
+	if a == nil {
+		return ""
+	}
+	return a.ClientAppID
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetIframeURL sets the IframeURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) SetIframeURL(iframeURL string) {
+	a.IframeURL = iframeURL
+	a.require(allowanceVerificationNextActionPasskeySessionEmbedFieldIframeURL)
+}
+
+// SetAPIKey sets the APIKey field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) SetAPIKey(apiKey string) {
+	a.APIKey = apiKey
+	a.require(allowanceVerificationNextActionPasskeySessionEmbedFieldAPIKey)
+}
+
+// SetClientAppID sets the ClientAppID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) SetClientAppID(clientAppID string) {
+	a.ClientAppID = clientAppID
+	a.require(allowanceVerificationNextActionPasskeySessionEmbedFieldClientAppID)
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationNextActionPasskeySessionEmbed
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionPasskeySessionEmbed(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionPasskeySessionEmbed
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionPasskeySessionEmbed) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationNextActionRedirectFieldURI       = big.NewInt(1 << 0)
+	allowanceVerificationNextActionRedirectFieldExpiresAt = big.NewInt(1 << 1)
+)
+
+type AllowanceVerificationNextActionRedirect struct {
+	URI       string     `json:"uri" url:"uri"`
+	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	purpose        string
+	uriType        string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionRedirect) GetURI() string {
+	if a == nil {
+		return ""
+	}
+	return a.URI
+}
+
+func (a *AllowanceVerificationNextActionRedirect) GetExpiresAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.ExpiresAt
+}
+
+func (a *AllowanceVerificationNextActionRedirect) Purpose() string {
+	return a.purpose
+}
+
+func (a *AllowanceVerificationNextActionRedirect) URIType() string {
+	return a.uriType
+}
+
+func (a *AllowanceVerificationNextActionRedirect) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionRedirect) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetURI sets the URI field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionRedirect) SetURI(uri string) {
+	a.URI = uri
+	a.require(allowanceVerificationNextActionRedirectFieldURI)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionRedirect) SetExpiresAt(expiresAt *time.Time) {
+	a.ExpiresAt = expiresAt
+	a.require(allowanceVerificationNextActionRedirectFieldExpiresAt)
+}
+
+func (a *AllowanceVerificationNextActionRedirect) UnmarshalJSON(data []byte) error {
+	type embed AllowanceVerificationNextActionRedirect
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+		Purpose   string             `json:"purpose"`
+		URIType   string             `json:"uri_type"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionRedirect(unmarshaler.embed)
+	a.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	if unmarshaler.Purpose != "transaction_authentication" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", a, "transaction_authentication", unmarshaler.Purpose)
+	}
+	a.purpose = unmarshaler.Purpose
+	if unmarshaler.URIType != "WEB_URI" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", a, "WEB_URI", unmarshaler.URIType)
+	}
+	a.uriType = unmarshaler.URIType
+	extraProperties, err := internal.ExtractExtraProperties(data, *a, "purpose", "uri_type")
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionRedirect) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionRedirect
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+		Purpose   string             `json:"purpose"`
+		URIType   string             `json:"uri_type"`
+	}{
+		embed:     embed(*a),
+		ExpiresAt: internal.NewOptionalDateTime(a.ExpiresAt),
+		Purpose:   "transaction_authentication",
+		URIType:   "WEB_URI",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionRedirect) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationNextActionSelectOtpMethodFieldMethods = big.NewInt(1 << 0)
+)
+
+type AllowanceVerificationNextActionSelectOtpMethod struct {
+	Methods []*AllowanceVerificationMethod `json:"methods" url:"methods"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationNextActionSelectOtpMethod) GetMethods() []*AllowanceVerificationMethod {
+	if a == nil {
+		return nil
+	}
+	return a.Methods
+}
+
+func (a *AllowanceVerificationNextActionSelectOtpMethod) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationNextActionSelectOtpMethod) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetMethods sets the Methods field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationNextActionSelectOtpMethod) SetMethods(methods []*AllowanceVerificationMethod) {
+	a.Methods = methods
+	a.require(allowanceVerificationNextActionSelectOtpMethodFieldMethods)
+}
+
+func (a *AllowanceVerificationNextActionSelectOtpMethod) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationNextActionSelectOtpMethod
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationNextActionSelectOtpMethod(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationNextActionSelectOtpMethod) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationNextActionSelectOtpMethod
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationNextActionSelectOtpMethod) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	allowanceVerificationResponseFieldStatus     = big.NewInt(1 << 0)
+	allowanceVerificationResponseFieldRail       = big.NewInt(1 << 1)
+	allowanceVerificationResponseFieldProvider   = big.NewInt(1 << 2)
+	allowanceVerificationResponseFieldNextAction = big.NewInt(1 << 3)
+)
+
+type AllowanceVerificationResponse struct {
+	Status     AllowanceVerificationResponseStatus   `json:"status" url:"status"`
+	Rail       AllowanceVerificationResponseRail     `json:"rail" url:"rail"`
+	Provider   AllowanceVerificationResponseProvider `json:"provider" url:"provider"`
+	NextAction *AllowanceVerificationNextAction      `json:"next_action,omitempty" url:"next_action,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AllowanceVerificationResponse) GetStatus() AllowanceVerificationResponseStatus {
+	if a == nil {
+		return ""
+	}
+	return a.Status
+}
+
+func (a *AllowanceVerificationResponse) GetRail() AllowanceVerificationResponseRail {
+	if a == nil {
+		return ""
+	}
+	return a.Rail
+}
+
+func (a *AllowanceVerificationResponse) GetProvider() AllowanceVerificationResponseProvider {
+	if a == nil {
+		return ""
+	}
+	return a.Provider
+}
+
+func (a *AllowanceVerificationResponse) GetNextAction() *AllowanceVerificationNextAction {
+	if a == nil {
+		return nil
+	}
+	return a.NextAction
+}
+
+func (a *AllowanceVerificationResponse) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AllowanceVerificationResponse) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationResponse) SetStatus(status AllowanceVerificationResponseStatus) {
+	a.Status = status
+	a.require(allowanceVerificationResponseFieldStatus)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationResponse) SetRail(rail AllowanceVerificationResponseRail) {
+	a.Rail = rail
+	a.require(allowanceVerificationResponseFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationResponse) SetProvider(provider AllowanceVerificationResponseProvider) {
+	a.Provider = provider
+	a.require(allowanceVerificationResponseFieldProvider)
+}
+
+// SetNextAction sets the NextAction field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AllowanceVerificationResponse) SetNextAction(nextAction *AllowanceVerificationNextAction) {
+	a.NextAction = nextAction
+	a.require(allowanceVerificationResponseFieldNextAction)
+}
+
+func (a *AllowanceVerificationResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AllowanceVerificationResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AllowanceVerificationResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AllowanceVerificationResponse) MarshalJSON() ([]byte, error) {
+	type embed AllowanceVerificationResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AllowanceVerificationResponse) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AllowanceVerificationResponseProvider string
+
+const (
+	AllowanceVerificationResponseProviderVic      AllowanceVerificationResponseProvider = "vic"
+	AllowanceVerificationResponseProviderAgentpay AllowanceVerificationResponseProvider = "agentpay"
+	AllowanceVerificationResponseProviderStripe   AllowanceVerificationResponseProvider = "stripe"
+	AllowanceVerificationResponseProviderLink     AllowanceVerificationResponseProvider = "link"
+)
+
+func NewAllowanceVerificationResponseProviderFromString(s string) (AllowanceVerificationResponseProvider, error) {
+	switch s {
+	case "vic":
+		return AllowanceVerificationResponseProviderVic, nil
+	case "agentpay":
+		return AllowanceVerificationResponseProviderAgentpay, nil
+	case "stripe":
+		return AllowanceVerificationResponseProviderStripe, nil
+	case "link":
+		return AllowanceVerificationResponseProviderLink, nil
+	}
+	var t AllowanceVerificationResponseProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceVerificationResponseProvider) Ptr() *AllowanceVerificationResponseProvider {
+	return &a
+}
+
+type AllowanceVerificationResponseRail string
+
+const (
+	AllowanceVerificationResponseRailAgenticToken AllowanceVerificationResponseRail = "agentic-token"
+	AllowanceVerificationResponseRailSpt          AllowanceVerificationResponseRail = "spt"
+	AllowanceVerificationResponseRailVirtualCard  AllowanceVerificationResponseRail = "virtual-card"
+)
+
+func NewAllowanceVerificationResponseRailFromString(s string) (AllowanceVerificationResponseRail, error) {
+	switch s {
+	case "agentic-token":
+		return AllowanceVerificationResponseRailAgenticToken, nil
+	case "spt":
+		return AllowanceVerificationResponseRailSpt, nil
+	case "virtual-card":
+		return AllowanceVerificationResponseRailVirtualCard, nil
+	}
+	var t AllowanceVerificationResponseRail
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceVerificationResponseRail) Ptr() *AllowanceVerificationResponseRail {
+	return &a
+}
+
+type AllowanceVerificationResponseStatus string
+
+const (
+	AllowanceVerificationResponseStatusVerificationRequired AllowanceVerificationResponseStatus = "verification_required"
+	AllowanceVerificationResponseStatusActive               AllowanceVerificationResponseStatus = "active"
+)
+
+func NewAllowanceVerificationResponseStatusFromString(s string) (AllowanceVerificationResponseStatus, error) {
+	switch s {
+	case "verification_required":
+		return AllowanceVerificationResponseStatusVerificationRequired, nil
+	case "active":
+		return AllowanceVerificationResponseStatusActive, nil
+	}
+	var t AllowanceVerificationResponseStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AllowanceVerificationResponseStatus) Ptr() *AllowanceVerificationResponseStatus {
+	return &a
+}
+
+var (
 	amexConfigFieldSeNumber = big.NewInt(1 << 0)
 )
 
@@ -3334,6 +5364,387 @@ func (a *AuthenticationResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AuthenticationResponse) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AuthorizeConnectionRequest struct {
+	Action string
+	// Advance an outstanding ceremony by exactly one provider call.
+	Poll *AuthorizeConnectionRequestPoll
+	// Re-run the ceremony on this connection. The single entry point for repairing a broken authorization and for widening permissions; the connection id and every payment method and allowance referencing it survive. The existing authorization stays usable until the new one succeeds.
+	Restart *AuthorizeConnectionRequestRestart
+	// Present or rotate a credential for a grant method that has no ceremony — a restricted API key an administrator generated, for instance. Secrets are accepted here rather than on create so that a failed write never leaves Basis Theory holding a live credential with no resource to reference it.
+	Present *AuthorizeConnectionRequestPresent
+}
+
+func (a *AuthorizeConnectionRequest) GetAction() string {
+	if a == nil {
+		return ""
+	}
+	return a.Action
+}
+
+func (a *AuthorizeConnectionRequest) GetPoll() *AuthorizeConnectionRequestPoll {
+	if a == nil {
+		return nil
+	}
+	return a.Poll
+}
+
+func (a *AuthorizeConnectionRequest) GetRestart() *AuthorizeConnectionRequestRestart {
+	if a == nil {
+		return nil
+	}
+	return a.Restart
+}
+
+func (a *AuthorizeConnectionRequest) GetPresent() *AuthorizeConnectionRequestPresent {
+	if a == nil {
+		return nil
+	}
+	return a.Present
+}
+
+func (a *AuthorizeConnectionRequest) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Action string `json:"action"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	a.Action = unmarshaler.Action
+	if unmarshaler.Action == "" {
+		return fmt.Errorf("%T did not include discriminant action", a)
+	}
+	switch unmarshaler.Action {
+	case "poll":
+		value := new(AuthorizeConnectionRequestPoll)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.Poll = value
+	case "restart":
+		value := new(AuthorizeConnectionRequestRestart)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.Restart = value
+	case "present":
+		value := new(AuthorizeConnectionRequestPresent)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		a.Present = value
+	}
+	return nil
+}
+
+func (a AuthorizeConnectionRequest) MarshalJSON() ([]byte, error) {
+	if err := a.validate(); err != nil {
+		return nil, err
+	}
+	if a.Poll != nil {
+		return internal.MarshalJSONWithExtraProperty(a.Poll, "action", "poll")
+	}
+	if a.Restart != nil {
+		return internal.MarshalJSONWithExtraProperty(a.Restart, "action", "restart")
+	}
+	if a.Present != nil {
+		return internal.MarshalJSONWithExtraProperty(a.Present, "action", "present")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", a)
+}
+
+type AuthorizeConnectionRequestVisitor interface {
+	VisitPoll(*AuthorizeConnectionRequestPoll) error
+	VisitRestart(*AuthorizeConnectionRequestRestart) error
+	VisitPresent(*AuthorizeConnectionRequestPresent) error
+}
+
+func (a *AuthorizeConnectionRequest) Accept(visitor AuthorizeConnectionRequestVisitor) error {
+	if a.Poll != nil {
+		return visitor.VisitPoll(a.Poll)
+	}
+	if a.Restart != nil {
+		return visitor.VisitRestart(a.Restart)
+	}
+	if a.Present != nil {
+		return visitor.VisitPresent(a.Present)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", a)
+}
+
+func (a *AuthorizeConnectionRequest) validate() error {
+	if a == nil {
+		return fmt.Errorf("type %T is nil", a)
+	}
+	var fields []string
+	if a.Poll != nil {
+		fields = append(fields, "poll")
+	}
+	if a.Restart != nil {
+		fields = append(fields, "restart")
+	}
+	if a.Present != nil {
+		fields = append(fields, "present")
+	}
+	if len(fields) == 0 {
+		if a.Action != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", a, a.Action)
+		}
+		return fmt.Errorf("type %T is empty", a)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", a, fields)
+	}
+	if a.Action != "" {
+		field := fields[0]
+		if a.Action != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				a,
+				a.Action,
+				a,
+			)
+		}
+	}
+	return nil
+}
+
+// Advance an outstanding ceremony by exactly one provider call.
+type AuthorizeConnectionRequestPoll struct {
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AuthorizeConnectionRequestPoll) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AuthorizeConnectionRequestPoll) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+func (a *AuthorizeConnectionRequestPoll) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthorizeConnectionRequestPoll
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthorizeConnectionRequestPoll(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthorizeConnectionRequestPoll) MarshalJSON() ([]byte, error) {
+	type embed AuthorizeConnectionRequestPoll
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AuthorizeConnectionRequestPoll) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Present or rotate a credential for a grant method that has no ceremony — a restricted API key an administrator generated, for instance. Secrets are accepted here rather than on create so that a failed write never leaves Basis Theory holding a live credential with no resource to reference it.
+var (
+	authorizeConnectionRequestPresentFieldCredential = big.NewInt(1 << 0)
+)
+
+type AuthorizeConnectionRequestPresent struct {
+	// Provider-shaped. Validated by the provider adapter. Never logged, never returned, never published.
+	Credential map[string]any `json:"credential" url:"credential"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AuthorizeConnectionRequestPresent) GetCredential() map[string]any {
+	if a == nil {
+		return nil
+	}
+	return a.Credential
+}
+
+func (a *AuthorizeConnectionRequestPresent) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AuthorizeConnectionRequestPresent) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetCredential sets the Credential field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AuthorizeConnectionRequestPresent) SetCredential(credential map[string]any) {
+	a.Credential = credential
+	a.require(authorizeConnectionRequestPresentFieldCredential)
+}
+
+func (a *AuthorizeConnectionRequestPresent) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthorizeConnectionRequestPresent
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthorizeConnectionRequestPresent(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthorizeConnectionRequestPresent) MarshalJSON() ([]byte, error) {
+	type embed AuthorizeConnectionRequestPresent
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AuthorizeConnectionRequestPresent) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Re-run the ceremony on this connection. The single entry point for repairing a broken authorization and for widening permissions; the connection id and every payment method and allowance referencing it survive. The existing authorization stays usable until the new one succeeds.
+var (
+	authorizeConnectionRequestRestartFieldPermissions = big.NewInt(1 << 0)
+)
+
+type AuthorizeConnectionRequestRestart struct {
+	Permissions []string `json:"permissions,omitempty" url:"permissions,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AuthorizeConnectionRequestRestart) GetPermissions() []string {
+	if a == nil {
+		return nil
+	}
+	return a.Permissions
+}
+
+func (a *AuthorizeConnectionRequestRestart) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AuthorizeConnectionRequestRestart) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AuthorizeConnectionRequestRestart) SetPermissions(permissions []string) {
+	a.Permissions = permissions
+	a.require(authorizeConnectionRequestRestartFieldPermissions)
+}
+
+func (a *AuthorizeConnectionRequestRestart) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthorizeConnectionRequestRestart
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthorizeConnectionRequestRestart(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthorizeConnectionRequestRestart) MarshalJSON() ([]byte, error) {
+	type embed AuthorizeConnectionRequestRestart
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AuthorizeConnectionRequestRestart) String() string {
 	if a == nil {
 		return "<nil>"
 	}
@@ -5663,6 +8074,1631 @@ func (c *ConfirmationEntry) String() string {
 }
 
 var (
+	connectionFieldID                     = big.NewInt(1 << 0)
+	connectionFieldProvider               = big.NewInt(1 << 1)
+	connectionFieldGrantMethod            = big.NewInt(1 << 2)
+	connectionFieldPrincipal              = big.NewInt(1 << 3)
+	connectionFieldStatus                 = big.NewInt(1 << 4)
+	connectionFieldStatusDetails          = big.NewInt(1 << 5)
+	connectionFieldPermissions            = big.NewInt(1 << 6)
+	connectionFieldAuthorizationDetails   = big.NewInt(1 << 7)
+	connectionFieldNextAction             = big.NewInt(1 << 8)
+	connectionFieldAuthorizationExpiresAt = big.NewInt(1 << 9)
+	connectionFieldCreatedAt              = big.NewInt(1 << 10)
+	connectionFieldUpdatedAt              = big.NewInt(1 << 11)
+)
+
+type Connection struct {
+	ID       string `json:"id" url:"id"`
+	Provider string `json:"provider" url:"provider"`
+	// How the authorization was established. A property of the grant, not of the provider — one provider may offer several.
+	GrantMethod   string                   `json:"grant_method" url:"grant_method"`
+	Principal     *ConnectionPrincipal     `json:"principal" url:"principal"`
+	Status        ConnectionStatus         `json:"status" url:"status"`
+	StatusDetails *ConnectionStatusDetails `json:"status_details" url:"status_details"`
+	Permissions   *ConnectionPermissions   `json:"permissions" url:"permissions"`
+	// RFC 9396 authorization details actually granted by the provider.
+	AuthorizationDetails []*ConnectionAuthorizationDetailsItem `json:"authorization_details,omitempty" url:"authorization_details,omitempty"`
+	NextAction           *ConnectionNextAction                 `json:"next_action,omitempty" url:"next_action,omitempty"`
+	// When the authority itself lapses, if the provider tells us. Absent means no scheduled end, which is the common case — most providers on this roster never expire an authorization. This is deliberately not the bearer credential's own expiry, which is internal.
+	AuthorizationExpiresAt *time.Time `json:"authorization_expires_at,omitempty" url:"authorization_expires_at,omitempty"`
+	CreatedAt              time.Time  `json:"created_at" url:"created_at"`
+	UpdatedAt              time.Time  `json:"updated_at" url:"updated_at"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *Connection) GetID() string {
+	if c == nil {
+		return ""
+	}
+	return c.ID
+}
+
+func (c *Connection) GetProvider() string {
+	if c == nil {
+		return ""
+	}
+	return c.Provider
+}
+
+func (c *Connection) GetGrantMethod() string {
+	if c == nil {
+		return ""
+	}
+	return c.GrantMethod
+}
+
+func (c *Connection) GetPrincipal() *ConnectionPrincipal {
+	if c == nil {
+		return nil
+	}
+	return c.Principal
+}
+
+func (c *Connection) GetStatus() ConnectionStatus {
+	if c == nil {
+		return ""
+	}
+	return c.Status
+}
+
+func (c *Connection) GetStatusDetails() *ConnectionStatusDetails {
+	if c == nil {
+		return nil
+	}
+	return c.StatusDetails
+}
+
+func (c *Connection) GetPermissions() *ConnectionPermissions {
+	if c == nil {
+		return nil
+	}
+	return c.Permissions
+}
+
+func (c *Connection) GetAuthorizationDetails() []*ConnectionAuthorizationDetailsItem {
+	if c == nil {
+		return nil
+	}
+	return c.AuthorizationDetails
+}
+
+func (c *Connection) GetNextAction() *ConnectionNextAction {
+	if c == nil {
+		return nil
+	}
+	return c.NextAction
+}
+
+func (c *Connection) GetAuthorizationExpiresAt() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.AuthorizationExpiresAt
+}
+
+func (c *Connection) GetCreatedAt() time.Time {
+	if c == nil {
+		return time.Time{}
+	}
+	return c.CreatedAt
+}
+
+func (c *Connection) GetUpdatedAt() time.Time {
+	if c == nil {
+		return time.Time{}
+	}
+	return c.UpdatedAt
+}
+
+func (c *Connection) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *Connection) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetID(id string) {
+	c.ID = id
+	c.require(connectionFieldID)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetProvider(provider string) {
+	c.Provider = provider
+	c.require(connectionFieldProvider)
+}
+
+// SetGrantMethod sets the GrantMethod field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetGrantMethod(grantMethod string) {
+	c.GrantMethod = grantMethod
+	c.require(connectionFieldGrantMethod)
+}
+
+// SetPrincipal sets the Principal field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetPrincipal(principal *ConnectionPrincipal) {
+	c.Principal = principal
+	c.require(connectionFieldPrincipal)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetStatus(status ConnectionStatus) {
+	c.Status = status
+	c.require(connectionFieldStatus)
+}
+
+// SetStatusDetails sets the StatusDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetStatusDetails(statusDetails *ConnectionStatusDetails) {
+	c.StatusDetails = statusDetails
+	c.require(connectionFieldStatusDetails)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetPermissions(permissions *ConnectionPermissions) {
+	c.Permissions = permissions
+	c.require(connectionFieldPermissions)
+}
+
+// SetAuthorizationDetails sets the AuthorizationDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetAuthorizationDetails(authorizationDetails []*ConnectionAuthorizationDetailsItem) {
+	c.AuthorizationDetails = authorizationDetails
+	c.require(connectionFieldAuthorizationDetails)
+}
+
+// SetNextAction sets the NextAction field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetNextAction(nextAction *ConnectionNextAction) {
+	c.NextAction = nextAction
+	c.require(connectionFieldNextAction)
+}
+
+// SetAuthorizationExpiresAt sets the AuthorizationExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetAuthorizationExpiresAt(authorizationExpiresAt *time.Time) {
+	c.AuthorizationExpiresAt = authorizationExpiresAt
+	c.require(connectionFieldAuthorizationExpiresAt)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetCreatedAt(createdAt time.Time) {
+	c.CreatedAt = createdAt
+	c.require(connectionFieldCreatedAt)
+}
+
+// SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *Connection) SetUpdatedAt(updatedAt time.Time) {
+	c.UpdatedAt = updatedAt
+	c.require(connectionFieldUpdatedAt)
+}
+
+func (c *Connection) UnmarshalJSON(data []byte) error {
+	type embed Connection
+	var unmarshaler = struct {
+		embed
+		AuthorizationExpiresAt *internal.DateTime `json:"authorization_expires_at,omitempty"`
+		CreatedAt              *internal.DateTime `json:"created_at"`
+		UpdatedAt              *internal.DateTime `json:"updated_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = Connection(unmarshaler.embed)
+	c.AuthorizationExpiresAt = unmarshaler.AuthorizationExpiresAt.TimePtr()
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
+	c.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *Connection) MarshalJSON() ([]byte, error) {
+	type embed Connection
+	var marshaler = struct {
+		embed
+		AuthorizationExpiresAt *internal.DateTime `json:"authorization_expires_at,omitempty"`
+		CreatedAt              *internal.DateTime `json:"created_at"`
+		UpdatedAt              *internal.DateTime `json:"updated_at"`
+	}{
+		embed:                  embed(*c),
+		AuthorizationExpiresAt: internal.NewOptionalDateTime(c.AuthorizationExpiresAt),
+		CreatedAt:              internal.NewDateTime(c.CreatedAt),
+		UpdatedAt:              internal.NewDateTime(c.UpdatedAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *Connection) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	connectionAuthorizationDetailsItemFieldType    = big.NewInt(1 << 0)
+	connectionAuthorizationDetailsItemFieldActions = big.NewInt(1 << 1)
+)
+
+type ConnectionAuthorizationDetailsItem struct {
+	Type    string   `json:"type" url:"type"`
+	Actions []string `json:"actions" url:"actions"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionAuthorizationDetailsItem) GetType() string {
+	if c == nil {
+		return ""
+	}
+	return c.Type
+}
+
+func (c *ConnectionAuthorizationDetailsItem) GetActions() []string {
+	if c == nil {
+		return nil
+	}
+	return c.Actions
+}
+
+func (c *ConnectionAuthorizationDetailsItem) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionAuthorizationDetailsItem) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionAuthorizationDetailsItem) SetType(type_ string) {
+	c.Type = type_
+	c.require(connectionAuthorizationDetailsItemFieldType)
+}
+
+// SetActions sets the Actions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionAuthorizationDetailsItem) SetActions(actions []string) {
+	c.Actions = actions
+	c.require(connectionAuthorizationDetailsItemFieldActions)
+}
+
+func (c *ConnectionAuthorizationDetailsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionAuthorizationDetailsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionAuthorizationDetailsItem(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionAuthorizationDetailsItem) MarshalJSON() ([]byte, error) {
+	type embed ConnectionAuthorizationDetailsItem
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionAuthorizationDetailsItem) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// A funding instrument the connection can reach. This is a read-through projection of provider state, not a Basis Theory resource, so `instrument_id` is the provider's own identifier and is only as stable as the provider makes it.
+var (
+	connectionInstrumentFieldInstrumentID = big.NewInt(1 << 0)
+	connectionInstrumentFieldType         = big.NewInt(1 << 1)
+	connectionInstrumentFieldIsDefault    = big.NewInt(1 << 2)
+	connectionInstrumentFieldNickname     = big.NewInt(1 << 3)
+	connectionInstrumentFieldDisplay      = big.NewInt(1 << 4)
+)
+
+type ConnectionInstrument struct {
+	InstrumentID string `json:"instrument_id" url:"instrument_id"`
+	// `other` is the mandatory catch-all. An instrument we cannot classify is still listed — dropping it silently would hide a card the consumer can see in their own wallet.
+	Type      ConnectionInstrumentType `json:"type" url:"type"`
+	IsDefault bool                     `json:"is_default" url:"is_default"`
+	Nickname  *string                  `json:"nickname,omitempty" url:"nickname,omitempty"`
+	// Non-sensitive identifying data, shaped by `type`. Empty for `other`. Never contains a PAN, a CVC, or a key.
+	Display map[string]any `json:"display,omitempty" url:"display,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionInstrument) GetInstrumentID() string {
+	if c == nil {
+		return ""
+	}
+	return c.InstrumentID
+}
+
+func (c *ConnectionInstrument) GetType() ConnectionInstrumentType {
+	if c == nil {
+		return ""
+	}
+	return c.Type
+}
+
+func (c *ConnectionInstrument) GetIsDefault() bool {
+	if c == nil {
+		return false
+	}
+	return c.IsDefault
+}
+
+func (c *ConnectionInstrument) GetNickname() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Nickname
+}
+
+func (c *ConnectionInstrument) GetDisplay() map[string]any {
+	if c == nil {
+		return nil
+	}
+	return c.Display
+}
+
+func (c *ConnectionInstrument) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionInstrument) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetInstrumentID sets the InstrumentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrument) SetInstrumentID(instrumentID string) {
+	c.InstrumentID = instrumentID
+	c.require(connectionInstrumentFieldInstrumentID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrument) SetType(type_ ConnectionInstrumentType) {
+	c.Type = type_
+	c.require(connectionInstrumentFieldType)
+}
+
+// SetIsDefault sets the IsDefault field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrument) SetIsDefault(isDefault bool) {
+	c.IsDefault = isDefault
+	c.require(connectionInstrumentFieldIsDefault)
+}
+
+// SetNickname sets the Nickname field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrument) SetNickname(nickname *string) {
+	c.Nickname = nickname
+	c.require(connectionInstrumentFieldNickname)
+}
+
+// SetDisplay sets the Display field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrument) SetDisplay(display map[string]any) {
+	c.Display = display
+	c.require(connectionInstrumentFieldDisplay)
+}
+
+func (c *ConnectionInstrument) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionInstrument
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionInstrument(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionInstrument) MarshalJSON() ([]byte, error) {
+	type embed ConnectionInstrument
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionInstrument) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	connectionInstrumentListFieldData       = big.NewInt(1 << 0)
+	connectionInstrumentListFieldPagination = big.NewInt(1 << 1)
+)
+
+type ConnectionInstrumentList struct {
+	Data       []*ConnectionInstrument             `json:"data" url:"data"`
+	Pagination *ConnectionInstrumentListPagination `json:"pagination" url:"pagination"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionInstrumentList) GetData() []*ConnectionInstrument {
+	if c == nil {
+		return nil
+	}
+	return c.Data
+}
+
+func (c *ConnectionInstrumentList) GetPagination() *ConnectionInstrumentListPagination {
+	if c == nil {
+		return nil
+	}
+	return c.Pagination
+}
+
+func (c *ConnectionInstrumentList) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionInstrumentList) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrumentList) SetData(data []*ConnectionInstrument) {
+	c.Data = data
+	c.require(connectionInstrumentListFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrumentList) SetPagination(pagination *ConnectionInstrumentListPagination) {
+	c.Pagination = pagination
+	c.require(connectionInstrumentListFieldPagination)
+}
+
+func (c *ConnectionInstrumentList) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionInstrumentList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionInstrumentList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionInstrumentList) MarshalJSON() ([]byte, error) {
+	type embed ConnectionInstrumentList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionInstrumentList) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	connectionInstrumentListPaginationFieldNext     = big.NewInt(1 << 0)
+	connectionInstrumentListPaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type ConnectionInstrumentListPagination struct {
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize int     `json:"page_size" url:"page_size"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionInstrumentListPagination) GetNext() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Next
+}
+
+func (c *ConnectionInstrumentListPagination) GetPageSize() int {
+	if c == nil {
+		return 0
+	}
+	return c.PageSize
+}
+
+func (c *ConnectionInstrumentListPagination) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionInstrumentListPagination) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrumentListPagination) SetNext(next *string) {
+	c.Next = next
+	c.require(connectionInstrumentListPaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionInstrumentListPagination) SetPageSize(pageSize int) {
+	c.PageSize = pageSize
+	c.require(connectionInstrumentListPaginationFieldPageSize)
+}
+
+func (c *ConnectionInstrumentListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionInstrumentListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionInstrumentListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionInstrumentListPagination) MarshalJSON() ([]byte, error) {
+	type embed ConnectionInstrumentListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionInstrumentListPagination) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// `other` is the mandatory catch-all. An instrument we cannot classify is still listed — dropping it silently would hide a card the consumer can see in their own wallet.
+type ConnectionInstrumentType string
+
+const (
+	ConnectionInstrumentTypeCard             ConnectionInstrumentType = "card"
+	ConnectionInstrumentTypeBankAccount      ConnectionInstrumentType = "bank_account"
+	ConnectionInstrumentTypeStablecoinWallet ConnectionInstrumentType = "stablecoin_wallet"
+	ConnectionInstrumentTypeBnplAccount      ConnectionInstrumentType = "bnpl_account"
+	ConnectionInstrumentTypeOther            ConnectionInstrumentType = "other"
+)
+
+func NewConnectionInstrumentTypeFromString(s string) (ConnectionInstrumentType, error) {
+	switch s {
+	case "card":
+		return ConnectionInstrumentTypeCard, nil
+	case "bank_account":
+		return ConnectionInstrumentTypeBankAccount, nil
+	case "stablecoin_wallet":
+		return ConnectionInstrumentTypeStablecoinWallet, nil
+	case "bnpl_account":
+		return ConnectionInstrumentTypeBnplAccount, nil
+	case "other":
+		return ConnectionInstrumentTypeOther, nil
+	}
+	var t ConnectionInstrumentType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionInstrumentType) Ptr() *ConnectionInstrumentType {
+	return &c
+}
+
+var (
+	connectionListFieldData       = big.NewInt(1 << 0)
+	connectionListFieldPagination = big.NewInt(1 << 1)
+)
+
+type ConnectionList struct {
+	Data       []*Connection             `json:"data" url:"data"`
+	Pagination *ConnectionListPagination `json:"pagination" url:"pagination"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionList) GetData() []*Connection {
+	if c == nil {
+		return nil
+	}
+	return c.Data
+}
+
+func (c *ConnectionList) GetPagination() *ConnectionListPagination {
+	if c == nil {
+		return nil
+	}
+	return c.Pagination
+}
+
+func (c *ConnectionList) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionList) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionList) SetData(data []*Connection) {
+	c.Data = data
+	c.require(connectionListFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionList) SetPagination(pagination *ConnectionListPagination) {
+	c.Pagination = pagination
+	c.require(connectionListFieldPagination)
+}
+
+func (c *ConnectionList) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionList) MarshalJSON() ([]byte, error) {
+	type embed ConnectionList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionList) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	connectionListPaginationFieldNext     = big.NewInt(1 << 0)
+	connectionListPaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type ConnectionListPagination struct {
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize int     `json:"page_size" url:"page_size"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionListPagination) GetNext() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Next
+}
+
+func (c *ConnectionListPagination) GetPageSize() int {
+	if c == nil {
+		return 0
+	}
+	return c.PageSize
+}
+
+func (c *ConnectionListPagination) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionListPagination) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionListPagination) SetNext(next *string) {
+	c.Next = next
+	c.require(connectionListPaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionListPagination) SetPageSize(pageSize int) {
+	c.PageSize = pageSize
+	c.require(connectionListPaginationFieldPageSize)
+}
+
+func (c *ConnectionListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionListPagination) MarshalJSON() ([]byte, error) {
+	type embed ConnectionListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionListPagination) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Present only while a ceremony is outstanding. A grant method whose ceremony is `none` never returns this field, and its absence together with `status_details.action: none` means there is nothing to do.
+var (
+	connectionNextActionFieldPurpose          = big.NewInt(1 << 0)
+	connectionNextActionFieldURI              = big.NewInt(1 << 1)
+	connectionNextActionFieldExpiresAt        = big.NewInt(1 << 2)
+	connectionNextActionFieldPollAfterSeconds = big.NewInt(1 << 3)
+)
+
+type ConnectionNextAction struct {
+	// Why the principal is being sent to the provider. Open by design: a provider may introduce a ceremony purpose without a breaking change to this schema.
+	Purpose          string     `json:"purpose" url:"purpose"`
+	URI              string     `json:"uri" url:"uri"`
+	ExpiresAt        *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	PollAfterSeconds *int       `json:"poll_after_seconds,omitempty" url:"poll_after_seconds,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	type_          string
+	uriType        string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionNextAction) GetPurpose() string {
+	if c == nil {
+		return ""
+	}
+	return c.Purpose
+}
+
+func (c *ConnectionNextAction) GetURI() string {
+	if c == nil {
+		return ""
+	}
+	return c.URI
+}
+
+func (c *ConnectionNextAction) GetExpiresAt() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.ExpiresAt
+}
+
+func (c *ConnectionNextAction) GetPollAfterSeconds() *int {
+	if c == nil {
+		return nil
+	}
+	return c.PollAfterSeconds
+}
+
+func (c *ConnectionNextAction) Type() string {
+	return c.type_
+}
+
+func (c *ConnectionNextAction) URIType() string {
+	return c.uriType
+}
+
+func (c *ConnectionNextAction) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionNextAction) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetPurpose sets the Purpose field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionNextAction) SetPurpose(purpose string) {
+	c.Purpose = purpose
+	c.require(connectionNextActionFieldPurpose)
+}
+
+// SetURI sets the URI field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionNextAction) SetURI(uri string) {
+	c.URI = uri
+	c.require(connectionNextActionFieldURI)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionNextAction) SetExpiresAt(expiresAt *time.Time) {
+	c.ExpiresAt = expiresAt
+	c.require(connectionNextActionFieldExpiresAt)
+}
+
+// SetPollAfterSeconds sets the PollAfterSeconds field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionNextAction) SetPollAfterSeconds(pollAfterSeconds *int) {
+	c.PollAfterSeconds = pollAfterSeconds
+	c.require(connectionNextActionFieldPollAfterSeconds)
+}
+
+func (c *ConnectionNextAction) UnmarshalJSON(data []byte) error {
+	type embed ConnectionNextAction
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+		Type      string             `json:"type"`
+		URIType   string             `json:"uri_type"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ConnectionNextAction(unmarshaler.embed)
+	c.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	if unmarshaler.Type != "redirect" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", c, "redirect", unmarshaler.Type)
+	}
+	c.type_ = unmarshaler.Type
+	if unmarshaler.URIType != "WEB_URI" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", c, "WEB_URI", unmarshaler.URIType)
+	}
+	c.uriType = unmarshaler.URIType
+	extraProperties, err := internal.ExtractExtraProperties(data, *c, "type", "uri_type")
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionNextAction) MarshalJSON() ([]byte, error) {
+	type embed ConnectionNextAction
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+		Type      string             `json:"type"`
+		URIType   string             `json:"uri_type"`
+	}{
+		embed:     embed(*c),
+		ExpiresAt: internal.NewOptionalDateTime(c.ExpiresAt),
+		Type:      "redirect",
+		URIType:   "WEB_URI",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionNextAction) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Requested and granted are different things and are never merged. A provider may grant a subset of what was asked for, and some providers cannot report their grant at all.
+var (
+	connectionPermissionsFieldVocabulary      = big.NewInt(1 << 0)
+	connectionPermissionsFieldRequested       = big.NewInt(1 << 1)
+	connectionPermissionsFieldGranted         = big.NewInt(1 << 2)
+	connectionPermissionsFieldGrantedVerified = big.NewInt(1 << 3)
+)
+
+type ConnectionPermissions struct {
+	// Namespace the permission strings belong to. Basis Theory does not normalize provider permissions into its own enum, so this is what makes three strings and seventy-six interpretable in one field.
+	Vocabulary string   `json:"vocabulary" url:"vocabulary"`
+	Requested  []string `json:"requested" url:"requested"`
+	Granted    []string `json:"granted" url:"granted"`
+	// False when the provider gives us no way to read the grant back — a pasted API key, for instance. `granted` is then our best assertion rather than an observation, and `status_details.cause` is `unverified`.
+	GrantedVerified bool `json:"granted_verified" url:"granted_verified"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionPermissions) GetVocabulary() string {
+	if c == nil {
+		return ""
+	}
+	return c.Vocabulary
+}
+
+func (c *ConnectionPermissions) GetRequested() []string {
+	if c == nil {
+		return nil
+	}
+	return c.Requested
+}
+
+func (c *ConnectionPermissions) GetGranted() []string {
+	if c == nil {
+		return nil
+	}
+	return c.Granted
+}
+
+func (c *ConnectionPermissions) GetGrantedVerified() bool {
+	if c == nil {
+		return false
+	}
+	return c.GrantedVerified
+}
+
+func (c *ConnectionPermissions) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionPermissions) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetVocabulary sets the Vocabulary field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPermissions) SetVocabulary(vocabulary string) {
+	c.Vocabulary = vocabulary
+	c.require(connectionPermissionsFieldVocabulary)
+}
+
+// SetRequested sets the Requested field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPermissions) SetRequested(requested []string) {
+	c.Requested = requested
+	c.require(connectionPermissionsFieldRequested)
+}
+
+// SetGranted sets the Granted field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPermissions) SetGranted(granted []string) {
+	c.Granted = granted
+	c.require(connectionPermissionsFieldGranted)
+}
+
+// SetGrantedVerified sets the GrantedVerified field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPermissions) SetGrantedVerified(grantedVerified bool) {
+	c.GrantedVerified = grantedVerified
+	c.require(connectionPermissionsFieldGrantedVerified)
+}
+
+func (c *ConnectionPermissions) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionPermissions
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionPermissions(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionPermissions) MarshalJSON() ([]byte, error) {
+	type embed ConnectionPermissions
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionPermissions) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Who granted the authorization. `consumer` is an individual whose own account is being connected; `tenant` is the Basis Theory customer's own business account, granted by one of its administrators.
+var (
+	connectionPrincipalFieldType  = big.NewInt(1 << 0)
+	connectionPrincipalFieldID    = big.NewInt(1 << 1)
+	connectionPrincipalFieldEmail = big.NewInt(1 << 2)
+)
+
+type ConnectionPrincipal struct {
+	Type  ConnectionPrincipalType `json:"type" url:"type"`
+	ID    *string                 `json:"id,omitempty" url:"id,omitempty"`
+	Email *string                 `json:"email,omitempty" url:"email,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionPrincipal) GetType() ConnectionPrincipalType {
+	if c == nil {
+		return ""
+	}
+	return c.Type
+}
+
+func (c *ConnectionPrincipal) GetID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *ConnectionPrincipal) GetEmail() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Email
+}
+
+func (c *ConnectionPrincipal) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionPrincipal) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPrincipal) SetType(type_ ConnectionPrincipalType) {
+	c.Type = type_
+	c.require(connectionPrincipalFieldType)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPrincipal) SetID(id *string) {
+	c.ID = id
+	c.require(connectionPrincipalFieldID)
+}
+
+// SetEmail sets the Email field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionPrincipal) SetEmail(email *string) {
+	c.Email = email
+	c.require(connectionPrincipalFieldEmail)
+}
+
+func (c *ConnectionPrincipal) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionPrincipal
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionPrincipal(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionPrincipal) MarshalJSON() ([]byte, error) {
+	type embed ConnectionPrincipal
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionPrincipal) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectionPrincipalType string
+
+const (
+	ConnectionPrincipalTypeConsumer ConnectionPrincipalType = "consumer"
+	ConnectionPrincipalTypeTenant   ConnectionPrincipalType = "tenant"
+)
+
+func NewConnectionPrincipalTypeFromString(s string) (ConnectionPrincipalType, error) {
+	switch s {
+	case "consumer":
+		return ConnectionPrincipalTypeConsumer, nil
+	case "tenant":
+		return ConnectionPrincipalTypeTenant, nil
+	}
+	var t ConnectionPrincipalType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionPrincipalType) Ptr() *ConnectionPrincipalType {
+	return &c
+}
+
+type ConnectionStatus string
+
+const (
+	ConnectionStatusPendingAuthorization    ConnectionStatus = "pending_authorization"
+	ConnectionStatusActive                  ConnectionStatus = "active"
+	ConnectionStatusRequiresReauthorization ConnectionStatus = "requires_reauthorization"
+	ConnectionStatusInactive                ConnectionStatus = "inactive"
+	ConnectionStatusRevoked                 ConnectionStatus = "revoked"
+)
+
+func NewConnectionStatusFromString(s string) (ConnectionStatus, error) {
+	switch s {
+	case "pending_authorization":
+		return ConnectionStatusPendingAuthorization, nil
+	case "active":
+		return ConnectionStatusActive, nil
+	case "requires_reauthorization":
+		return ConnectionStatusRequiresReauthorization, nil
+	case "inactive":
+		return ConnectionStatusInactive, nil
+	case "revoked":
+		return ConnectionStatusRevoked, nil
+	}
+	var t ConnectionStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionStatus) Ptr() *ConnectionStatus {
+	return &c
+}
+
+// `status` alone does not tell an integrator what to do. `action` is the contract with their UI and `actor` says who must perform it. Both are derived on read.
+var (
+	connectionStatusDetailsFieldAction = big.NewInt(1 << 0)
+	connectionStatusDetailsFieldActor  = big.NewInt(1 << 1)
+	connectionStatusDetailsFieldCause  = big.NewInt(1 << 2)
+	connectionStatusDetailsFieldSince  = big.NewInt(1 << 3)
+)
+
+type ConnectionStatusDetails struct {
+	Action ConnectionStatusDetailsAction `json:"action" url:"action"`
+	Actor  ConnectionStatusDetailsActor  `json:"actor" url:"actor"`
+	// Absent when the connection is healthy and unremarkable.
+	Cause *string    `json:"cause,omitempty" url:"cause,omitempty"`
+	Since *time.Time `json:"since,omitempty" url:"since,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ConnectionStatusDetails) GetAction() ConnectionStatusDetailsAction {
+	if c == nil {
+		return ""
+	}
+	return c.Action
+}
+
+func (c *ConnectionStatusDetails) GetActor() ConnectionStatusDetailsActor {
+	if c == nil {
+		return ""
+	}
+	return c.Actor
+}
+
+func (c *ConnectionStatusDetails) GetCause() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Cause
+}
+
+func (c *ConnectionStatusDetails) GetSince() *time.Time {
+	if c == nil {
+		return nil
+	}
+	return c.Since
+}
+
+func (c *ConnectionStatusDetails) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ConnectionStatusDetails) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetAction sets the Action field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionStatusDetails) SetAction(action ConnectionStatusDetailsAction) {
+	c.Action = action
+	c.require(connectionStatusDetailsFieldAction)
+}
+
+// SetActor sets the Actor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionStatusDetails) SetActor(actor ConnectionStatusDetailsActor) {
+	c.Actor = actor
+	c.require(connectionStatusDetailsFieldActor)
+}
+
+// SetCause sets the Cause field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionStatusDetails) SetCause(cause *string) {
+	c.Cause = cause
+	c.require(connectionStatusDetailsFieldCause)
+}
+
+// SetSince sets the Since field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ConnectionStatusDetails) SetSince(since *time.Time) {
+	c.Since = since
+	c.require(connectionStatusDetailsFieldSince)
+}
+
+func (c *ConnectionStatusDetails) UnmarshalJSON(data []byte) error {
+	type embed ConnectionStatusDetails
+	var unmarshaler = struct {
+		embed
+		Since *internal.DateTime `json:"since,omitempty"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ConnectionStatusDetails(unmarshaler.embed)
+	c.Since = unmarshaler.Since.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionStatusDetails) MarshalJSON() ([]byte, error) {
+	type embed ConnectionStatusDetails
+	var marshaler = struct {
+		embed
+		Since *internal.DateTime `json:"since,omitempty"`
+	}{
+		embed: embed(*c),
+		Since: internal.NewOptionalDateTime(c.Since),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ConnectionStatusDetails) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ConnectionStatusDetailsAction string
+
+const (
+	ConnectionStatusDetailsActionAuthorize   ConnectionStatusDetailsAction = "authorize"
+	ConnectionStatusDetailsActionReauthorize ConnectionStatusDetailsAction = "reauthorize"
+	ConnectionStatusDetailsActionNone        ConnectionStatusDetailsAction = "none"
+)
+
+func NewConnectionStatusDetailsActionFromString(s string) (ConnectionStatusDetailsAction, error) {
+	switch s {
+	case "authorize":
+		return ConnectionStatusDetailsActionAuthorize, nil
+	case "reauthorize":
+		return ConnectionStatusDetailsActionReauthorize, nil
+	case "none":
+		return ConnectionStatusDetailsActionNone, nil
+	}
+	var t ConnectionStatusDetailsAction
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionStatusDetailsAction) Ptr() *ConnectionStatusDetailsAction {
+	return &c
+}
+
+type ConnectionStatusDetailsActor string
+
+const (
+	ConnectionStatusDetailsActorConsumer    ConnectionStatusDetailsActor = "consumer"
+	ConnectionStatusDetailsActorTenantAdmin ConnectionStatusDetailsActor = "tenant_admin"
+	ConnectionStatusDetailsActorBasisTheory ConnectionStatusDetailsActor = "basis_theory"
+)
+
+func NewConnectionStatusDetailsActorFromString(s string) (ConnectionStatusDetailsActor, error) {
+	switch s {
+	case "consumer":
+		return ConnectionStatusDetailsActorConsumer, nil
+	case "tenant_admin":
+		return ConnectionStatusDetailsActorTenantAdmin, nil
+	case "basis_theory":
+		return ConnectionStatusDetailsActorBasisTheory, nil
+	}
+	var t ConnectionStatusDetailsActor
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionStatusDetailsActor) Ptr() *ConnectionStatusDetailsActor {
+	return &c
+}
+
+var (
 	consumerFieldEmail        = big.NewInt(1 << 0)
 	consumerFieldID           = big.NewInt(1 << 1)
 	consumerFieldCountryCode  = big.NewInt(1 << 2)
@@ -5780,6 +9816,140 @@ func (c *Consumer) MarshalJSON() ([]byte, error) {
 }
 
 func (c *Consumer) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	createConnectionRequestFieldProvider    = big.NewInt(1 << 0)
+	createConnectionRequestFieldGrantMethod = big.NewInt(1 << 1)
+	createConnectionRequestFieldPrincipal   = big.NewInt(1 << 2)
+	createConnectionRequestFieldPermissions = big.NewInt(1 << 3)
+)
+
+type CreateConnectionRequest struct {
+	Provider string `json:"provider" url:"provider"`
+	// Omit to use the provider's default grant method.
+	GrantMethod *string              `json:"grant_method,omitempty" url:"grant_method,omitempty"`
+	Principal   *ConnectionPrincipal `json:"principal,omitempty" url:"principal,omitempty"`
+	// Exact provider-native permission strings to request. Omit to use the grant method's defaults. Validated against the provider's own vocabulary, not against a Basis Theory enum.
+	Permissions []string `json:"permissions,omitempty" url:"permissions,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CreateConnectionRequest) GetProvider() string {
+	if c == nil {
+		return ""
+	}
+	return c.Provider
+}
+
+func (c *CreateConnectionRequest) GetGrantMethod() *string {
+	if c == nil {
+		return nil
+	}
+	return c.GrantMethod
+}
+
+func (c *CreateConnectionRequest) GetPrincipal() *ConnectionPrincipal {
+	if c == nil {
+		return nil
+	}
+	return c.Principal
+}
+
+func (c *CreateConnectionRequest) GetPermissions() []string {
+	if c == nil {
+		return nil
+	}
+	return c.Permissions
+}
+
+func (c *CreateConnectionRequest) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CreateConnectionRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateConnectionRequest) SetProvider(provider string) {
+	c.Provider = provider
+	c.require(createConnectionRequestFieldProvider)
+}
+
+// SetGrantMethod sets the GrantMethod field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateConnectionRequest) SetGrantMethod(grantMethod *string) {
+	c.GrantMethod = grantMethod
+	c.require(createConnectionRequestFieldGrantMethod)
+}
+
+// SetPrincipal sets the Principal field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateConnectionRequest) SetPrincipal(principal *ConnectionPrincipal) {
+	c.Principal = principal
+	c.require(createConnectionRequestFieldPrincipal)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateConnectionRequest) SetPermissions(permissions []string) {
+	c.Permissions = permissions
+	c.require(createConnectionRequestFieldPermissions)
+}
+
+func (c *CreateConnectionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreateConnectionRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreateConnectionRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreateConnectionRequest) MarshalJSON() ([]byte, error) {
+	type embed CreateConnectionRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CreateConnectionRequest) String() string {
 	if c == nil {
 		return "<nil>"
 	}
@@ -6310,11 +10480,12 @@ var (
 	createTokenIntentResponseFieldCreatedBy      = big.NewInt(1 << 4)
 	createTokenIntentResponseFieldCreatedAt      = big.NewInt(1 << 5)
 	createTokenIntentResponseFieldExpiresAt      = big.NewInt(1 << 6)
-	createTokenIntentResponseFieldCard           = big.NewInt(1 << 7)
-	createTokenIntentResponseFieldBank           = big.NewInt(1 << 8)
-	createTokenIntentResponseFieldNetworkToken   = big.NewInt(1 << 9)
-	createTokenIntentResponseFieldAuthentication = big.NewInt(1 << 10)
-	createTokenIntentResponseFieldExtras         = big.NewInt(1 << 11)
+	createTokenIntentResponseFieldData           = big.NewInt(1 << 7)
+	createTokenIntentResponseFieldCard           = big.NewInt(1 << 8)
+	createTokenIntentResponseFieldBank           = big.NewInt(1 << 9)
+	createTokenIntentResponseFieldNetworkToken   = big.NewInt(1 << 10)
+	createTokenIntentResponseFieldAuthentication = big.NewInt(1 << 11)
+	createTokenIntentResponseFieldExtras         = big.NewInt(1 << 12)
 )
 
 type CreateTokenIntentResponse struct {
@@ -6325,6 +10496,7 @@ type CreateTokenIntentResponse struct {
 	CreatedBy      *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt      *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ExpiresAt      *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Data           any                `json:"data,omitempty" url:"data,omitempty"`
 	Card           *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
 	Bank           *BankDetails       `json:"bank,omitempty" url:"bank,omitempty"`
 	NetworkToken   *CardDetails       `json:"network_token,omitempty" url:"network_token,omitempty"`
@@ -6385,6 +10557,13 @@ func (c *CreateTokenIntentResponse) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return c.ExpiresAt
+}
+
+func (c *CreateTokenIntentResponse) GetData() any {
+	if c == nil {
+		return nil
+	}
+	return c.Data
 }
 
 func (c *CreateTokenIntentResponse) GetCard() *CardDetails {
@@ -6483,6 +10662,13 @@ func (c *CreateTokenIntentResponse) SetCreatedAt(createdAt *time.Time) {
 func (c *CreateTokenIntentResponse) SetExpiresAt(expiresAt *time.Time) {
 	c.ExpiresAt = expiresAt
 	c.require(createTokenIntentResponseFieldExpiresAt)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenIntentResponse) SetData(data any) {
+	c.Data = data
+	c.require(createTokenIntentResponseFieldData)
 }
 
 // SetCard sets the Card field and marks it as non-optional;
@@ -6588,6 +10774,7 @@ var (
 	createTokenRequestFieldExpiresAt             = big.NewInt(1 << 10)
 	createTokenRequestFieldContainers            = big.NewInt(1 << 11)
 	createTokenRequestFieldTokenIntentID         = big.NewInt(1 << 12)
+	createTokenRequestFieldOwnerMerchantID       = big.NewInt(1 << 13)
 )
 
 type CreateTokenRequest struct {
@@ -6604,6 +10791,7 @@ type CreateTokenRequest struct {
 	ExpiresAt             *string            `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
 	TokenIntentID         *string            `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	OwnerMerchantID       *string            `json:"owner_merchant_id,omitempty" url:"owner_merchant_id,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -6701,6 +10889,13 @@ func (c *CreateTokenRequest) GetTokenIntentID() *string {
 		return nil
 	}
 	return c.TokenIntentID
+}
+
+func (c *CreateTokenRequest) GetOwnerMerchantID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.OwnerMerchantID
 }
 
 func (c *CreateTokenRequest) GetExtraProperties() map[string]interface{} {
@@ -6806,6 +11001,13 @@ func (c *CreateTokenRequest) SetContainers(containers []string) {
 func (c *CreateTokenRequest) SetTokenIntentID(tokenIntentID *string) {
 	c.TokenIntentID = tokenIntentID
 	c.require(createTokenRequestFieldTokenIntentID)
+}
+
+// SetOwnerMerchantID sets the OwnerMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenRequest) SetOwnerMerchantID(ownerMerchantID *string) {
+	c.OwnerMerchantID = ownerMerchantID
+	c.require(createTokenRequestFieldOwnerMerchantID)
 }
 
 func (c *CreateTokenRequest) UnmarshalJSON(data []byte) error {
@@ -7952,162 +12154,6 @@ func (d *DomainRegistrationResponse) String() string {
 }
 
 var (
-	encryptionJwkFieldKid = big.NewInt(1 << 0)
-	encryptionJwkFieldN   = big.NewInt(1 << 1)
-	encryptionJwkFieldE   = big.NewInt(1 << 2)
-)
-
-type EncryptionJwk struct {
-	Kid string `json:"kid" url:"kid"`
-	N   string `json:"n" url:"n"`
-	E   string `json:"e" url:"e"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-	kty            string
-	use            string
-	alg            string
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (e *EncryptionJwk) GetKid() string {
-	if e == nil {
-		return ""
-	}
-	return e.Kid
-}
-
-func (e *EncryptionJwk) GetN() string {
-	if e == nil {
-		return ""
-	}
-	return e.N
-}
-
-func (e *EncryptionJwk) GetE() string {
-	if e == nil {
-		return ""
-	}
-	return e.E
-}
-
-func (e *EncryptionJwk) Kty() string {
-	return e.kty
-}
-
-func (e *EncryptionJwk) Use() string {
-	return e.use
-}
-
-func (e *EncryptionJwk) Alg() string {
-	return e.alg
-}
-
-func (e *EncryptionJwk) GetExtraProperties() map[string]interface{} {
-	if e == nil {
-		return nil
-	}
-	return e.extraProperties
-}
-
-func (e *EncryptionJwk) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
-	}
-	e.explicitFields.Or(e.explicitFields, field)
-}
-
-// SetKid sets the Kid field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (e *EncryptionJwk) SetKid(kid string) {
-	e.Kid = kid
-	e.require(encryptionJwkFieldKid)
-}
-
-// SetN sets the N field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (e *EncryptionJwk) SetN(n string) {
-	e.N = n
-	e.require(encryptionJwkFieldN)
-}
-
-// SetE sets the E field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (_SetE *EncryptionJwk) SetE(e string) {
-	_SetE.E = e
-	_SetE.require(encryptionJwkFieldE)
-}
-
-func (e *EncryptionJwk) UnmarshalJSON(data []byte) error {
-	type embed EncryptionJwk
-	var unmarshaler = struct {
-		embed
-		Kty string `json:"kty"`
-		Use string `json:"use"`
-		Alg string `json:"alg"`
-	}{
-		embed: embed(*e),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*e = EncryptionJwk(unmarshaler.embed)
-	if unmarshaler.Kty != "RSA" {
-		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", e, "RSA", unmarshaler.Kty)
-	}
-	e.kty = unmarshaler.Kty
-	if unmarshaler.Use != "enc" {
-		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", e, "enc", unmarshaler.Use)
-	}
-	e.use = unmarshaler.Use
-	if unmarshaler.Alg != "RSA-OAEP-256" {
-		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", e, "RSA-OAEP-256", unmarshaler.Alg)
-	}
-	e.alg = unmarshaler.Alg
-	extraProperties, err := internal.ExtractExtraProperties(data, *e, "kty", "use", "alg")
-	if err != nil {
-		return err
-	}
-	e.extraProperties = extraProperties
-	e.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (e *EncryptionJwk) MarshalJSON() ([]byte, error) {
-	type embed EncryptionJwk
-	var marshaler = struct {
-		embed
-		Kty string `json:"kty"`
-		Use string `json:"use"`
-		Alg string `json:"alg"`
-	}{
-		embed: embed(*e),
-		Kty:   "RSA",
-		Use:   "enc",
-		Alg:   "RSA-OAEP-256",
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (e *EncryptionJwk) String() string {
-	if e == nil {
-		return "<nil>"
-	}
-	if len(e.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(e); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", e)
-}
-
-var (
 	enrollmentFieldID         = big.NewInt(1 << 0)
 	enrollmentFieldTokenID    = big.NewInt(1 << 1)
 	enrollmentFieldProvider   = big.NewInt(1 << 2)
@@ -8622,6 +12668,254 @@ func (e EnrollmentType) Ptr() *EnrollmentType {
 }
 
 type EventTypes = []string
+
+var (
+	functionSourceDetectionFieldCategory = big.NewInt(1 << 0)
+	functionSourceDetectionFieldStart    = big.NewInt(1 << 1)
+	functionSourceDetectionFieldLength   = big.NewInt(1 << 2)
+)
+
+type FunctionSourceDetection struct {
+	Category *string `json:"category,omitempty" url:"category,omitempty"`
+	Start    *int    `json:"start,omitempty" url:"start,omitempty"`
+	Length   *int    `json:"length,omitempty" url:"length,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (f *FunctionSourceDetection) GetCategory() *string {
+	if f == nil {
+		return nil
+	}
+	return f.Category
+}
+
+func (f *FunctionSourceDetection) GetStart() *int {
+	if f == nil {
+		return nil
+	}
+	return f.Start
+}
+
+func (f *FunctionSourceDetection) GetLength() *int {
+	if f == nil {
+		return nil
+	}
+	return f.Length
+}
+
+func (f *FunctionSourceDetection) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
+	return f.extraProperties
+}
+
+func (f *FunctionSourceDetection) require(field *big.Int) {
+	if f.explicitFields == nil {
+		f.explicitFields = big.NewInt(0)
+	}
+	f.explicitFields.Or(f.explicitFields, field)
+}
+
+// SetCategory sets the Category field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceDetection) SetCategory(category *string) {
+	f.Category = category
+	f.require(functionSourceDetectionFieldCategory)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceDetection) SetStart(start *int) {
+	f.Start = start
+	f.require(functionSourceDetectionFieldStart)
+}
+
+// SetLength sets the Length field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceDetection) SetLength(length *int) {
+	f.Length = length
+	f.require(functionSourceDetectionFieldLength)
+}
+
+func (f *FunctionSourceDetection) UnmarshalJSON(data []byte) error {
+	type unmarshaler FunctionSourceDetection
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FunctionSourceDetection(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FunctionSourceDetection) MarshalJSON() ([]byte, error) {
+	type embed FunctionSourceDetection
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*f),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, f.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (f *FunctionSourceDetection) String() string {
+	if f == nil {
+		return "<nil>"
+	}
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
+}
+
+var (
+	functionSourceValidationFieldDetected     = big.NewInt(1 << 0)
+	functionSourceValidationFieldCategories   = big.NewInt(1 << 1)
+	functionSourceValidationFieldDetections   = big.NewInt(1 << 2)
+	functionSourceValidationFieldRedactedCode = big.NewInt(1 << 3)
+)
+
+type FunctionSourceValidation struct {
+	Detected     *bool                      `json:"detected,omitempty" url:"detected,omitempty"`
+	Categories   []string                   `json:"categories,omitempty" url:"categories,omitempty"`
+	Detections   []*FunctionSourceDetection `json:"detections,omitempty" url:"detections,omitempty"`
+	RedactedCode *string                    `json:"redacted_code,omitempty" url:"redacted_code,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (f *FunctionSourceValidation) GetDetected() *bool {
+	if f == nil {
+		return nil
+	}
+	return f.Detected
+}
+
+func (f *FunctionSourceValidation) GetCategories() []string {
+	if f == nil {
+		return nil
+	}
+	return f.Categories
+}
+
+func (f *FunctionSourceValidation) GetDetections() []*FunctionSourceDetection {
+	if f == nil {
+		return nil
+	}
+	return f.Detections
+}
+
+func (f *FunctionSourceValidation) GetRedactedCode() *string {
+	if f == nil {
+		return nil
+	}
+	return f.RedactedCode
+}
+
+func (f *FunctionSourceValidation) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
+	return f.extraProperties
+}
+
+func (f *FunctionSourceValidation) require(field *big.Int) {
+	if f.explicitFields == nil {
+		f.explicitFields = big.NewInt(0)
+	}
+	f.explicitFields.Or(f.explicitFields, field)
+}
+
+// SetDetected sets the Detected field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetDetected(detected *bool) {
+	f.Detected = detected
+	f.require(functionSourceValidationFieldDetected)
+}
+
+// SetCategories sets the Categories field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetCategories(categories []string) {
+	f.Categories = categories
+	f.require(functionSourceValidationFieldCategories)
+}
+
+// SetDetections sets the Detections field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetDetections(detections []*FunctionSourceDetection) {
+	f.Detections = detections
+	f.require(functionSourceValidationFieldDetections)
+}
+
+// SetRedactedCode sets the RedactedCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetRedactedCode(redactedCode *string) {
+	f.RedactedCode = redactedCode
+	f.require(functionSourceValidationFieldRedactedCode)
+}
+
+func (f *FunctionSourceValidation) UnmarshalJSON(data []byte) error {
+	type unmarshaler FunctionSourceValidation
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FunctionSourceValidation(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FunctionSourceValidation) MarshalJSON() ([]byte, error) {
+	type embed FunctionSourceValidation
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*f),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, f.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (f *FunctionSourceValidation) String() string {
+	if f == nil {
+		return "<nil>"
+	}
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
+}
 
 var (
 	getApplicationsFieldID    = big.NewInt(1 << 0)
@@ -11831,536 +16125,20 @@ func (m *MerchantServices) String() string {
 }
 
 var (
-	mppChallengeFieldID               = big.NewInt(1 << 0)
-	mppChallengeFieldRealm            = big.NewInt(1 << 1)
-	mppChallengeFieldAmount           = big.NewInt(1 << 2)
-	mppChallengeFieldCurrency         = big.NewInt(1 << 3)
-	mppChallengeFieldAcceptedNetworks = big.NewInt(1 << 4)
-	mppChallengeFieldMerchantName     = big.NewInt(1 << 5)
-	mppChallengeFieldEncryptionJwk    = big.NewInt(1 << 6)
-	mppChallengeFieldJwksURI          = big.NewInt(1 << 7)
-	mppChallengeFieldKid              = big.NewInt(1 << 8)
-)
-
-type MppChallenge struct {
-	ID               string   `json:"id" url:"id"`
-	Realm            string   `json:"realm" url:"realm"`
-	Amount           string   `json:"amount" url:"amount"`
-	Currency         string   `json:"currency" url:"currency"`
-	AcceptedNetworks []string `json:"accepted_networks" url:"accepted_networks"`
-	MerchantName     string   `json:"merchant_name" url:"merchant_name"`
-	// Mutually exclusive with jwks_uri
-	EncryptionJwk *EncryptionJwk `json:"encryption_jwk,omitempty" url:"encryption_jwk,omitempty"`
-	// Mutually exclusive with encryption_jwk
-	JwksURI *string `json:"jwks_uri,omitempty" url:"jwks_uri,omitempty"`
-	// Required when jwks_uri is provided
-	Kid *string `json:"kid,omitempty" url:"kid,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (m *MppChallenge) GetID() string {
-	if m == nil {
-		return ""
-	}
-	return m.ID
-}
-
-func (m *MppChallenge) GetRealm() string {
-	if m == nil {
-		return ""
-	}
-	return m.Realm
-}
-
-func (m *MppChallenge) GetAmount() string {
-	if m == nil {
-		return ""
-	}
-	return m.Amount
-}
-
-func (m *MppChallenge) GetCurrency() string {
-	if m == nil {
-		return ""
-	}
-	return m.Currency
-}
-
-func (m *MppChallenge) GetAcceptedNetworks() []string {
-	if m == nil {
-		return nil
-	}
-	return m.AcceptedNetworks
-}
-
-func (m *MppChallenge) GetMerchantName() string {
-	if m == nil {
-		return ""
-	}
-	return m.MerchantName
-}
-
-func (m *MppChallenge) GetEncryptionJwk() *EncryptionJwk {
-	if m == nil {
-		return nil
-	}
-	return m.EncryptionJwk
-}
-
-func (m *MppChallenge) GetJwksURI() *string {
-	if m == nil {
-		return nil
-	}
-	return m.JwksURI
-}
-
-func (m *MppChallenge) GetKid() *string {
-	if m == nil {
-		return nil
-	}
-	return m.Kid
-}
-
-func (m *MppChallenge) GetExtraProperties() map[string]interface{} {
-	if m == nil {
-		return nil
-	}
-	return m.extraProperties
-}
-
-func (m *MppChallenge) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
-	}
-	m.explicitFields.Or(m.explicitFields, field)
-}
-
-// SetID sets the ID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetID(id string) {
-	m.ID = id
-	m.require(mppChallengeFieldID)
-}
-
-// SetRealm sets the Realm field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetRealm(realm string) {
-	m.Realm = realm
-	m.require(mppChallengeFieldRealm)
-}
-
-// SetAmount sets the Amount field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetAmount(amount string) {
-	m.Amount = amount
-	m.require(mppChallengeFieldAmount)
-}
-
-// SetCurrency sets the Currency field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetCurrency(currency string) {
-	m.Currency = currency
-	m.require(mppChallengeFieldCurrency)
-}
-
-// SetAcceptedNetworks sets the AcceptedNetworks field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetAcceptedNetworks(acceptedNetworks []string) {
-	m.AcceptedNetworks = acceptedNetworks
-	m.require(mppChallengeFieldAcceptedNetworks)
-}
-
-// SetMerchantName sets the MerchantName field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetMerchantName(merchantName string) {
-	m.MerchantName = merchantName
-	m.require(mppChallengeFieldMerchantName)
-}
-
-// SetEncryptionJwk sets the EncryptionJwk field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetEncryptionJwk(encryptionJwk *EncryptionJwk) {
-	m.EncryptionJwk = encryptionJwk
-	m.require(mppChallengeFieldEncryptionJwk)
-}
-
-// SetJwksURI sets the JwksURI field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetJwksURI(jwksURI *string) {
-	m.JwksURI = jwksURI
-	m.require(mppChallengeFieldJwksURI)
-}
-
-// SetKid sets the Kid field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppChallenge) SetKid(kid *string) {
-	m.Kid = kid
-	m.require(mppChallengeFieldKid)
-}
-
-func (m *MppChallenge) UnmarshalJSON(data []byte) error {
-	type unmarshaler MppChallenge
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MppChallenge(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *m)
-	if err != nil {
-		return err
-	}
-	m.extraProperties = extraProperties
-	m.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MppChallenge) MarshalJSON() ([]byte, error) {
-	type embed MppChallenge
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*m),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (m *MppChallenge) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	if len(m.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-var (
-	mppCredentialsRequestFieldChallenge = big.NewInt(1 << 0)
-	mppCredentialsRequestFieldSource    = big.NewInt(1 << 1)
-	mppCredentialsRequestFieldCardID    = big.NewInt(1 << 2)
-)
-
-type MppCredentialsRequest struct {
-	Challenge *MppChallenge `json:"challenge" url:"challenge"`
-	// Mutually exclusive with card_id
-	Source *MppSource `json:"source,omitempty" url:"source,omitempty"`
-	// Mutually exclusive with source
-	CardID *string `json:"card_id,omitempty" url:"card_id,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (m *MppCredentialsRequest) GetChallenge() *MppChallenge {
-	if m == nil {
-		return nil
-	}
-	return m.Challenge
-}
-
-func (m *MppCredentialsRequest) GetSource() *MppSource {
-	if m == nil {
-		return nil
-	}
-	return m.Source
-}
-
-func (m *MppCredentialsRequest) GetCardID() *string {
-	if m == nil {
-		return nil
-	}
-	return m.CardID
-}
-
-func (m *MppCredentialsRequest) GetExtraProperties() map[string]interface{} {
-	if m == nil {
-		return nil
-	}
-	return m.extraProperties
-}
-
-func (m *MppCredentialsRequest) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
-	}
-	m.explicitFields.Or(m.explicitFields, field)
-}
-
-// SetChallenge sets the Challenge field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppCredentialsRequest) SetChallenge(challenge *MppChallenge) {
-	m.Challenge = challenge
-	m.require(mppCredentialsRequestFieldChallenge)
-}
-
-// SetSource sets the Source field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppCredentialsRequest) SetSource(source *MppSource) {
-	m.Source = source
-	m.require(mppCredentialsRequestFieldSource)
-}
-
-// SetCardID sets the CardID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppCredentialsRequest) SetCardID(cardID *string) {
-	m.CardID = cardID
-	m.require(mppCredentialsRequestFieldCardID)
-}
-
-func (m *MppCredentialsRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler MppCredentialsRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MppCredentialsRequest(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *m)
-	if err != nil {
-		return err
-	}
-	m.extraProperties = extraProperties
-	m.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MppCredentialsRequest) MarshalJSON() ([]byte, error) {
-	type embed MppCredentialsRequest
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*m),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (m *MppCredentialsRequest) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	if len(m.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Encrypted payment credentials response
-type MppCredentialsResponse = map[string]any
-
-var (
-	mppSourceFieldType         = big.NewInt(1 << 0)
-	mppSourceFieldID           = big.NewInt(1 << 1)
-	mppSourceFieldEnrollmentID = big.NewInt(1 << 2)
-	mppSourceFieldConsumer     = big.NewInt(1 << 3)
-	mppSourceFieldAgentID      = big.NewInt(1 << 4)
-)
-
-type MppSource struct {
-	Type MppSourceType `json:"type" url:"type"`
-	// Token ID (required for token, network_token, apple_pay, google_pay)
-	ID *string `json:"id,omitempty" url:"id,omitempty"`
-	// Enrollment ID (VIC only, mutually exclusive with id)
-	EnrollmentID *string `json:"enrollment_id,omitempty" url:"enrollment_id,omitempty"`
-	// Required for VIC with token id
-	Consumer *Consumer `json:"consumer,omitempty" url:"consumer,omitempty"`
-	// Agent ID (VIC only)
-	AgentID *string `json:"agent_id,omitempty" url:"agent_id,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (m *MppSource) GetType() MppSourceType {
-	if m == nil {
-		return ""
-	}
-	return m.Type
-}
-
-func (m *MppSource) GetID() *string {
-	if m == nil {
-		return nil
-	}
-	return m.ID
-}
-
-func (m *MppSource) GetEnrollmentID() *string {
-	if m == nil {
-		return nil
-	}
-	return m.EnrollmentID
-}
-
-func (m *MppSource) GetConsumer() *Consumer {
-	if m == nil {
-		return nil
-	}
-	return m.Consumer
-}
-
-func (m *MppSource) GetAgentID() *string {
-	if m == nil {
-		return nil
-	}
-	return m.AgentID
-}
-
-func (m *MppSource) GetExtraProperties() map[string]interface{} {
-	if m == nil {
-		return nil
-	}
-	return m.extraProperties
-}
-
-func (m *MppSource) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
-	}
-	m.explicitFields.Or(m.explicitFields, field)
-}
-
-// SetType sets the Type field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppSource) SetType(type_ MppSourceType) {
-	m.Type = type_
-	m.require(mppSourceFieldType)
-}
-
-// SetID sets the ID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppSource) SetID(id *string) {
-	m.ID = id
-	m.require(mppSourceFieldID)
-}
-
-// SetEnrollmentID sets the EnrollmentID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppSource) SetEnrollmentID(enrollmentID *string) {
-	m.EnrollmentID = enrollmentID
-	m.require(mppSourceFieldEnrollmentID)
-}
-
-// SetConsumer sets the Consumer field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppSource) SetConsumer(consumer *Consumer) {
-	m.Consumer = consumer
-	m.require(mppSourceFieldConsumer)
-}
-
-// SetAgentID sets the AgentID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (m *MppSource) SetAgentID(agentID *string) {
-	m.AgentID = agentID
-	m.require(mppSourceFieldAgentID)
-}
-
-func (m *MppSource) UnmarshalJSON(data []byte) error {
-	type unmarshaler MppSource
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MppSource(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *m)
-	if err != nil {
-		return err
-	}
-	m.extraProperties = extraProperties
-	m.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MppSource) MarshalJSON() ([]byte, error) {
-	type embed MppSource
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*m),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (m *MppSource) String() string {
-	if m == nil {
-		return "<nil>"
-	}
-	if len(m.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-type MppSourceType string
-
-const (
-	MppSourceTypeToken                   MppSourceType = "token"
-	MppSourceTypeNetworkToken            MppSourceType = "network_token"
-	MppSourceTypeApplePay                MppSourceType = "apple_pay"
-	MppSourceTypeGooglePay               MppSourceType = "google_pay"
-	MppSourceTypeVisaIntelligentCommerce MppSourceType = "visa_intelligent_commerce"
-)
-
-func NewMppSourceTypeFromString(s string) (MppSourceType, error) {
-	switch s {
-	case "token":
-		return MppSourceTypeToken, nil
-	case "network_token":
-		return MppSourceTypeNetworkToken, nil
-	case "apple_pay":
-		return MppSourceTypeApplePay, nil
-	case "google_pay":
-		return MppSourceTypeGooglePay, nil
-	case "visa_intelligent_commerce":
-		return MppSourceTypeVisaIntelligentCommerce, nil
-	}
-	var t MppSourceType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (m MppSourceType) Ptr() *MppSourceType {
-	return &m
-}
-
-var (
 	mppStripeChallengeFieldID      = big.NewInt(1 << 0)
-	mppStripeChallengeFieldRealm   = big.NewInt(1 << 1)
-	mppStripeChallengeFieldIntent  = big.NewInt(1 << 2)
-	mppStripeChallengeFieldRequest = big.NewInt(1 << 3)
-	mppStripeChallengeFieldExpires = big.NewInt(1 << 4)
+	mppStripeChallengeFieldMethod  = big.NewInt(1 << 1)
+	mppStripeChallengeFieldRealm   = big.NewInt(1 << 2)
+	mppStripeChallengeFieldIntent  = big.NewInt(1 << 3)
+	mppStripeChallengeFieldRequest = big.NewInt(1 << 4)
+	mppStripeChallengeFieldExpires = big.NewInt(1 << 5)
 )
 
 type MppStripeChallenge struct {
 	// Challenge identifier issued by the merchant
-	ID    string  `json:"id" url:"id"`
-	Realm *string `json:"realm,omitempty" url:"realm,omitempty"`
+	ID string `json:"id" url:"id"`
+	// Payment method of the challenge — must be `stripe`
+	Method string  `json:"method" url:"method"`
+	Realm  *string `json:"realm,omitempty" url:"realm,omitempty"`
 	// Challenge intent (e.g. `charge`)
 	Intent *string `json:"intent,omitempty" url:"intent,omitempty"`
 	// base64url-encoded JSON request payload from the merchant's challenge
@@ -12370,7 +16148,6 @@ type MppStripeChallenge struct {
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
-	method         string
 
 	ExtraProperties map[string]interface{} `json:"-" url:"-"`
 
@@ -12382,6 +16159,13 @@ func (m *MppStripeChallenge) GetID() string {
 		return ""
 	}
 	return m.ID
+}
+
+func (m *MppStripeChallenge) GetMethod() string {
+	if m == nil {
+		return ""
+	}
+	return m.Method
 }
 
 func (m *MppStripeChallenge) GetRealm() *string {
@@ -12412,10 +16196,6 @@ func (m *MppStripeChallenge) GetExpires() *string {
 	return m.Expires
 }
 
-func (m *MppStripeChallenge) Method() string {
-	return m.method
-}
-
 func (m *MppStripeChallenge) GetExtraProperties() map[string]interface{} {
 	if m == nil {
 		return nil
@@ -12435,6 +16215,13 @@ func (m *MppStripeChallenge) require(field *big.Int) {
 func (m *MppStripeChallenge) SetID(id string) {
 	m.ID = id
 	m.require(mppStripeChallengeFieldID)
+}
+
+// SetMethod sets the Method field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MppStripeChallenge) SetMethod(method string) {
+	m.Method = method
+	m.require(mppStripeChallengeFieldMethod)
 }
 
 // SetRealm sets the Realm field and marks it as non-optional;
@@ -12469,7 +16256,6 @@ func (m *MppStripeChallenge) UnmarshalJSON(data []byte) error {
 	type embed MppStripeChallenge
 	var unmarshaler = struct {
 		embed
-		Method string `json:"method"`
 	}{
 		embed: embed(*m),
 	}
@@ -12477,11 +16263,7 @@ func (m *MppStripeChallenge) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*m = MppStripeChallenge(unmarshaler.embed)
-	if unmarshaler.Method != "stripe" {
-		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", m, "stripe", unmarshaler.Method)
-	}
-	m.method = unmarshaler.Method
-	extraProperties, err := internal.ExtractExtraProperties(data, *m, "method")
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
 	if err != nil {
 		return err
 	}
@@ -12494,10 +16276,8 @@ func (m *MppStripeChallenge) MarshalJSON() ([]byte, error) {
 	type embed MppStripeChallenge
 	var marshaler = struct {
 		embed
-		Method string `json:"method"`
 	}{
-		embed:  embed(*m),
-		Method: "stripe",
+		embed: embed(*m),
 	}
 	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
 	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, m.ExtraProperties)
@@ -12899,6 +16679,2167 @@ func (p *Pagination) String() string {
 }
 
 var (
+	paymentCredentialFieldID          = big.NewInt(1 << 0)
+	paymentCredentialFieldRail        = big.NewInt(1 << 1)
+	paymentCredentialFieldProvider    = big.NewInt(1 << 2)
+	paymentCredentialFieldAmount      = big.NewInt(1 << 3)
+	paymentCredentialFieldCredential  = big.NewInt(1 << 4)
+	paymentCredentialFieldProviderIDs = big.NewInt(1 << 5)
+	paymentCredentialFieldExpiresAt   = big.NewInt(1 << 6)
+)
+
+type PaymentCredential struct {
+	ID         string                       `json:"id" url:"id"`
+	Rail       string                       `json:"rail" url:"rail"`
+	Provider   PaymentCredentialProvider    `json:"provider" url:"provider"`
+	Amount     *SharedPaymentAmount         `json:"amount" url:"amount"`
+	Credential *PaymentCredentialCredential `json:"credential" url:"credential"`
+	// Safe provider-native references for support. Never contains a spendable credential.
+	ProviderIDs map[string]any `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+	ExpiresAt   time.Time      `json:"expires_at" url:"expires_at"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentCredential) GetID() string {
+	if p == nil {
+		return ""
+	}
+	return p.ID
+}
+
+func (p *PaymentCredential) GetRail() string {
+	if p == nil {
+		return ""
+	}
+	return p.Rail
+}
+
+func (p *PaymentCredential) GetProvider() PaymentCredentialProvider {
+	if p == nil {
+		return ""
+	}
+	return p.Provider
+}
+
+func (p *PaymentCredential) GetAmount() *SharedPaymentAmount {
+	if p == nil {
+		return nil
+	}
+	return p.Amount
+}
+
+func (p *PaymentCredential) GetCredential() *PaymentCredentialCredential {
+	if p == nil {
+		return nil
+	}
+	return p.Credential
+}
+
+func (p *PaymentCredential) GetProviderIDs() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.ProviderIDs
+}
+
+func (p *PaymentCredential) GetExpiresAt() time.Time {
+	if p == nil {
+		return time.Time{}
+	}
+	return p.ExpiresAt
+}
+
+func (p *PaymentCredential) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentCredential) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetID(id string) {
+	p.ID = id
+	p.require(paymentCredentialFieldID)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetRail(rail string) {
+	p.Rail = rail
+	p.require(paymentCredentialFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetProvider(provider PaymentCredentialProvider) {
+	p.Provider = provider
+	p.require(paymentCredentialFieldProvider)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetAmount(amount *SharedPaymentAmount) {
+	p.Amount = amount
+	p.require(paymentCredentialFieldAmount)
+}
+
+// SetCredential sets the Credential field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetCredential(credential *PaymentCredentialCredential) {
+	p.Credential = credential
+	p.require(paymentCredentialFieldCredential)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetProviderIDs(providerIDs map[string]any) {
+	p.ProviderIDs = providerIDs
+	p.require(paymentCredentialFieldProviderIDs)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredential) SetExpiresAt(expiresAt time.Time) {
+	p.ExpiresAt = expiresAt
+	p.require(paymentCredentialFieldExpiresAt)
+}
+
+func (p *PaymentCredential) UnmarshalJSON(data []byte) error {
+	type embed PaymentCredential
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at"`
+	}{
+		embed: embed(*p),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*p = PaymentCredential(unmarshaler.embed)
+	p.ExpiresAt = unmarshaler.ExpiresAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentCredential) MarshalJSON() ([]byte, error) {
+	type embed PaymentCredential
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at"`
+	}{
+		embed:     embed(*p),
+		ExpiresAt: internal.NewDateTime(p.ExpiresAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentCredential) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+var (
+	paymentCredentialCredentialFieldFormat = big.NewInt(1 << 0)
+	paymentCredentialCredentialFieldValue  = big.NewInt(1 << 1)
+)
+
+type PaymentCredentialCredential struct {
+	// card, network-token, and identifier are direct API credentials. mpp is a complete base64url Machine Payments Protocol credential for an Authorization Payment header.
+	Format PaymentCredentialCredentialFormat `json:"format" url:"format"`
+	// Spendable credential value in the requested format. Returned once and never persisted.
+	Value *PaymentCredentialCredentialValue `json:"value" url:"value"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentCredentialCredential) GetFormat() PaymentCredentialCredentialFormat {
+	if p == nil {
+		return ""
+	}
+	return p.Format
+}
+
+func (p *PaymentCredentialCredential) GetValue() *PaymentCredentialCredentialValue {
+	if p == nil {
+		return nil
+	}
+	return p.Value
+}
+
+func (p *PaymentCredentialCredential) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentCredentialCredential) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetFormat sets the Format field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialCredential) SetFormat(format PaymentCredentialCredentialFormat) {
+	p.Format = format
+	p.require(paymentCredentialCredentialFieldFormat)
+}
+
+// SetValue sets the Value field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialCredential) SetValue(value *PaymentCredentialCredentialValue) {
+	p.Value = value
+	p.require(paymentCredentialCredentialFieldValue)
+}
+
+func (p *PaymentCredentialCredential) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentCredentialCredential
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentCredentialCredential(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentCredentialCredential) MarshalJSON() ([]byte, error) {
+	type embed PaymentCredentialCredential
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentCredentialCredential) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+// card, network-token, and identifier are direct API credentials. mpp is a complete base64url Machine Payments Protocol credential for an Authorization Payment header.
+type PaymentCredentialCredentialFormat string
+
+const (
+	PaymentCredentialCredentialFormatCard         PaymentCredentialCredentialFormat = "card"
+	PaymentCredentialCredentialFormatNetworkToken PaymentCredentialCredentialFormat = "network-token"
+	PaymentCredentialCredentialFormatIdentifier   PaymentCredentialCredentialFormat = "identifier"
+	PaymentCredentialCredentialFormatMpp          PaymentCredentialCredentialFormat = "mpp"
+)
+
+func NewPaymentCredentialCredentialFormatFromString(s string) (PaymentCredentialCredentialFormat, error) {
+	switch s {
+	case "card":
+		return PaymentCredentialCredentialFormatCard, nil
+	case "network-token":
+		return PaymentCredentialCredentialFormatNetworkToken, nil
+	case "identifier":
+		return PaymentCredentialCredentialFormatIdentifier, nil
+	case "mpp":
+		return PaymentCredentialCredentialFormatMpp, nil
+	}
+	var t PaymentCredentialCredentialFormat
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentCredentialCredentialFormat) Ptr() *PaymentCredentialCredentialFormat {
+	return &p
+}
+
+// Spendable credential value in the requested format. Returned once and never persisted.
+type PaymentCredentialCredentialValue struct {
+	StringUnknownMap map[string]any
+	String           string
+
+	typ string
+}
+
+func (p *PaymentCredentialCredentialValue) GetStringUnknownMap() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.StringUnknownMap
+}
+
+func (p *PaymentCredentialCredentialValue) GetString() string {
+	if p == nil {
+		return ""
+	}
+	return p.String
+}
+
+func (p *PaymentCredentialCredentialValue) UnmarshalJSON(data []byte) error {
+	var valueStringUnknownMap map[string]any
+	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
+		p.typ = "StringUnknownMap"
+		p.StringUnknownMap = valueStringUnknownMap
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		p.typ = "String"
+		p.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
+}
+
+func (p PaymentCredentialCredentialValue) MarshalJSON() ([]byte, error) {
+	if p.typ == "StringUnknownMap" || p.StringUnknownMap != nil {
+		return json.Marshal(p.StringUnknownMap)
+	}
+	if p.typ == "String" || p.String != "" {
+		return json.Marshal(p.String)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+type PaymentCredentialCredentialValueVisitor interface {
+	VisitStringUnknownMap(map[string]any) error
+	VisitString(string) error
+}
+
+func (p *PaymentCredentialCredentialValue) Accept(visitor PaymentCredentialCredentialValueVisitor) error {
+	if p.typ == "StringUnknownMap" || p.StringUnknownMap != nil {
+		return visitor.VisitStringUnknownMap(p.StringUnknownMap)
+	}
+	if p.typ == "String" || p.String != "" {
+		return visitor.VisitString(p.String)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+var (
+	paymentCredentialListFieldData       = big.NewInt(1 << 0)
+	paymentCredentialListFieldPagination = big.NewInt(1 << 1)
+)
+
+type PaymentCredentialList struct {
+	Data       []*PaymentCredentialMetadata     `json:"data" url:"data"`
+	Pagination *PaymentCredentialListPagination `json:"pagination" url:"pagination"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentCredentialList) GetData() []*PaymentCredentialMetadata {
+	if p == nil {
+		return nil
+	}
+	return p.Data
+}
+
+func (p *PaymentCredentialList) GetPagination() *PaymentCredentialListPagination {
+	if p == nil {
+		return nil
+	}
+	return p.Pagination
+}
+
+func (p *PaymentCredentialList) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentCredentialList) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialList) SetData(data []*PaymentCredentialMetadata) {
+	p.Data = data
+	p.require(paymentCredentialListFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialList) SetPagination(pagination *PaymentCredentialListPagination) {
+	p.Pagination = pagination
+	p.require(paymentCredentialListFieldPagination)
+}
+
+func (p *PaymentCredentialList) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentCredentialList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentCredentialList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentCredentialList) MarshalJSON() ([]byte, error) {
+	type embed PaymentCredentialList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentCredentialList) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+var (
+	paymentCredentialListPaginationFieldNext     = big.NewInt(1 << 0)
+	paymentCredentialListPaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type PaymentCredentialListPagination struct {
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize int     `json:"page_size" url:"page_size"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentCredentialListPagination) GetNext() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Next
+}
+
+func (p *PaymentCredentialListPagination) GetPageSize() int {
+	if p == nil {
+		return 0
+	}
+	return p.PageSize
+}
+
+func (p *PaymentCredentialListPagination) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentCredentialListPagination) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialListPagination) SetNext(next *string) {
+	p.Next = next
+	p.require(paymentCredentialListPaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialListPagination) SetPageSize(pageSize int) {
+	p.PageSize = pageSize
+	p.require(paymentCredentialListPaginationFieldPageSize)
+}
+
+func (p *PaymentCredentialListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentCredentialListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentCredentialListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentCredentialListPagination) MarshalJSON() ([]byte, error) {
+	type embed PaymentCredentialListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentCredentialListPagination) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+// Credential metadata. Never contains card numbers, SPT values, or MPP payloads.
+var (
+	paymentCredentialMetadataFieldID              = big.NewInt(1 << 0)
+	paymentCredentialMetadataFieldAllowanceID     = big.NewInt(1 << 1)
+	paymentCredentialMetadataFieldPaymentMethodID = big.NewInt(1 << 2)
+	paymentCredentialMetadataFieldRail            = big.NewInt(1 << 3)
+	paymentCredentialMetadataFieldProvider        = big.NewInt(1 << 4)
+	paymentCredentialMetadataFieldFormat          = big.NewInt(1 << 5)
+	paymentCredentialMetadataFieldProviderIDs     = big.NewInt(1 << 6)
+	paymentCredentialMetadataFieldAmount          = big.NewInt(1 << 7)
+	paymentCredentialMetadataFieldMerchant        = big.NewInt(1 << 8)
+	paymentCredentialMetadataFieldExpiresAt       = big.NewInt(1 << 9)
+	paymentCredentialMetadataFieldCreatedAt       = big.NewInt(1 << 10)
+)
+
+type PaymentCredentialMetadata struct {
+	ID              string                            `json:"id" url:"id"`
+	AllowanceID     string                            `json:"allowance_id" url:"allowance_id"`
+	PaymentMethodID string                            `json:"payment_method_id" url:"payment_method_id"`
+	Rail            string                            `json:"rail" url:"rail"`
+	Provider        PaymentCredentialMetadataProvider `json:"provider" url:"provider"`
+	Format          PaymentCredentialMetadataFormat   `json:"format" url:"format"`
+	// Safe provider-native references for support. Never contains a spendable credential.
+	ProviderIDs map[string]any       `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+	Amount      *SharedPaymentAmount `json:"amount" url:"amount"`
+	// Merchant the spend was authorized against, taken from the allowance or from the credential request. Absent on credentials minted before merchant was recorded.
+	Merchant  *SharedPaymentMerchant `json:"merchant,omitempty" url:"merchant,omitempty"`
+	ExpiresAt time.Time              `json:"expires_at" url:"expires_at"`
+	CreatedAt time.Time              `json:"created_at" url:"created_at"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	status         string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentCredentialMetadata) GetID() string {
+	if p == nil {
+		return ""
+	}
+	return p.ID
+}
+
+func (p *PaymentCredentialMetadata) GetAllowanceID() string {
+	if p == nil {
+		return ""
+	}
+	return p.AllowanceID
+}
+
+func (p *PaymentCredentialMetadata) GetPaymentMethodID() string {
+	if p == nil {
+		return ""
+	}
+	return p.PaymentMethodID
+}
+
+func (p *PaymentCredentialMetadata) GetRail() string {
+	if p == nil {
+		return ""
+	}
+	return p.Rail
+}
+
+func (p *PaymentCredentialMetadata) GetProvider() PaymentCredentialMetadataProvider {
+	if p == nil {
+		return ""
+	}
+	return p.Provider
+}
+
+func (p *PaymentCredentialMetadata) GetFormat() PaymentCredentialMetadataFormat {
+	if p == nil {
+		return ""
+	}
+	return p.Format
+}
+
+func (p *PaymentCredentialMetadata) GetProviderIDs() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.ProviderIDs
+}
+
+func (p *PaymentCredentialMetadata) GetAmount() *SharedPaymentAmount {
+	if p == nil {
+		return nil
+	}
+	return p.Amount
+}
+
+func (p *PaymentCredentialMetadata) GetMerchant() *SharedPaymentMerchant {
+	if p == nil {
+		return nil
+	}
+	return p.Merchant
+}
+
+func (p *PaymentCredentialMetadata) GetExpiresAt() time.Time {
+	if p == nil {
+		return time.Time{}
+	}
+	return p.ExpiresAt
+}
+
+func (p *PaymentCredentialMetadata) GetCreatedAt() time.Time {
+	if p == nil {
+		return time.Time{}
+	}
+	return p.CreatedAt
+}
+
+func (p *PaymentCredentialMetadata) Status() string {
+	return p.status
+}
+
+func (p *PaymentCredentialMetadata) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentCredentialMetadata) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetID(id string) {
+	p.ID = id
+	p.require(paymentCredentialMetadataFieldID)
+}
+
+// SetAllowanceID sets the AllowanceID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetAllowanceID(allowanceID string) {
+	p.AllowanceID = allowanceID
+	p.require(paymentCredentialMetadataFieldAllowanceID)
+}
+
+// SetPaymentMethodID sets the PaymentMethodID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetPaymentMethodID(paymentMethodID string) {
+	p.PaymentMethodID = paymentMethodID
+	p.require(paymentCredentialMetadataFieldPaymentMethodID)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetRail(rail string) {
+	p.Rail = rail
+	p.require(paymentCredentialMetadataFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetProvider(provider PaymentCredentialMetadataProvider) {
+	p.Provider = provider
+	p.require(paymentCredentialMetadataFieldProvider)
+}
+
+// SetFormat sets the Format field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetFormat(format PaymentCredentialMetadataFormat) {
+	p.Format = format
+	p.require(paymentCredentialMetadataFieldFormat)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetProviderIDs(providerIDs map[string]any) {
+	p.ProviderIDs = providerIDs
+	p.require(paymentCredentialMetadataFieldProviderIDs)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetAmount(amount *SharedPaymentAmount) {
+	p.Amount = amount
+	p.require(paymentCredentialMetadataFieldAmount)
+}
+
+// SetMerchant sets the Merchant field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetMerchant(merchant *SharedPaymentMerchant) {
+	p.Merchant = merchant
+	p.require(paymentCredentialMetadataFieldMerchant)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetExpiresAt(expiresAt time.Time) {
+	p.ExpiresAt = expiresAt
+	p.require(paymentCredentialMetadataFieldExpiresAt)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentCredentialMetadata) SetCreatedAt(createdAt time.Time) {
+	p.CreatedAt = createdAt
+	p.require(paymentCredentialMetadataFieldCreatedAt)
+}
+
+func (p *PaymentCredentialMetadata) UnmarshalJSON(data []byte) error {
+	type embed PaymentCredentialMetadata
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at"`
+		CreatedAt *internal.DateTime `json:"created_at"`
+		Status    string             `json:"status"`
+	}{
+		embed: embed(*p),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*p = PaymentCredentialMetadata(unmarshaler.embed)
+	p.ExpiresAt = unmarshaler.ExpiresAt.Time()
+	p.CreatedAt = unmarshaler.CreatedAt.Time()
+	if unmarshaler.Status != "created" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", p, "created", unmarshaler.Status)
+	}
+	p.status = unmarshaler.Status
+	extraProperties, err := internal.ExtractExtraProperties(data, *p, "status")
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentCredentialMetadata) MarshalJSON() ([]byte, error) {
+	type embed PaymentCredentialMetadata
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at"`
+		CreatedAt *internal.DateTime `json:"created_at"`
+		Status    string             `json:"status"`
+	}{
+		embed:     embed(*p),
+		ExpiresAt: internal.NewDateTime(p.ExpiresAt),
+		CreatedAt: internal.NewDateTime(p.CreatedAt),
+		Status:    "created",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentCredentialMetadata) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+type PaymentCredentialMetadataFormat string
+
+const (
+	PaymentCredentialMetadataFormatCard         PaymentCredentialMetadataFormat = "card"
+	PaymentCredentialMetadataFormatNetworkToken PaymentCredentialMetadataFormat = "network-token"
+	PaymentCredentialMetadataFormatIdentifier   PaymentCredentialMetadataFormat = "identifier"
+	PaymentCredentialMetadataFormatMpp          PaymentCredentialMetadataFormat = "mpp"
+)
+
+func NewPaymentCredentialMetadataFormatFromString(s string) (PaymentCredentialMetadataFormat, error) {
+	switch s {
+	case "card":
+		return PaymentCredentialMetadataFormatCard, nil
+	case "network-token":
+		return PaymentCredentialMetadataFormatNetworkToken, nil
+	case "identifier":
+		return PaymentCredentialMetadataFormatIdentifier, nil
+	case "mpp":
+		return PaymentCredentialMetadataFormatMpp, nil
+	}
+	var t PaymentCredentialMetadataFormat
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentCredentialMetadataFormat) Ptr() *PaymentCredentialMetadataFormat {
+	return &p
+}
+
+type PaymentCredentialMetadataProvider string
+
+const (
+	PaymentCredentialMetadataProviderVic      PaymentCredentialMetadataProvider = "vic"
+	PaymentCredentialMetadataProviderAgentpay PaymentCredentialMetadataProvider = "agentpay"
+	PaymentCredentialMetadataProviderStripe   PaymentCredentialMetadataProvider = "stripe"
+	PaymentCredentialMetadataProviderLink     PaymentCredentialMetadataProvider = "link"
+)
+
+func NewPaymentCredentialMetadataProviderFromString(s string) (PaymentCredentialMetadataProvider, error) {
+	switch s {
+	case "vic":
+		return PaymentCredentialMetadataProviderVic, nil
+	case "agentpay":
+		return PaymentCredentialMetadataProviderAgentpay, nil
+	case "stripe":
+		return PaymentCredentialMetadataProviderStripe, nil
+	case "link":
+		return PaymentCredentialMetadataProviderLink, nil
+	}
+	var t PaymentCredentialMetadataProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentCredentialMetadataProvider) Ptr() *PaymentCredentialMetadataProvider {
+	return &p
+}
+
+type PaymentCredentialProvider string
+
+const (
+	PaymentCredentialProviderVic      PaymentCredentialProvider = "vic"
+	PaymentCredentialProviderAgentpay PaymentCredentialProvider = "agentpay"
+	PaymentCredentialProviderStripe   PaymentCredentialProvider = "stripe"
+	PaymentCredentialProviderLink     PaymentCredentialProvider = "link"
+)
+
+func NewPaymentCredentialProviderFromString(s string) (PaymentCredentialProvider, error) {
+	switch s {
+	case "vic":
+		return PaymentCredentialProviderVic, nil
+	case "agentpay":
+		return PaymentCredentialProviderAgentpay, nil
+	case "stripe":
+		return PaymentCredentialProviderStripe, nil
+	case "link":
+		return PaymentCredentialProviderLink, nil
+	}
+	var t PaymentCredentialProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentCredentialProvider) Ptr() *PaymentCredentialProvider {
+	return &p
+}
+
+var (
+	paymentMethodFieldID         = big.NewInt(1 << 0)
+	paymentMethodFieldSource     = big.NewInt(1 << 1)
+	paymentMethodFieldInstrument = big.NewInt(1 << 2)
+	paymentMethodFieldAgentID    = big.NewInt(1 << 3)
+	paymentMethodFieldStatus     = big.NewInt(1 << 4)
+	paymentMethodFieldConsumer   = big.NewInt(1 << 5)
+	paymentMethodFieldCard       = big.NewInt(1 << 6)
+	paymentMethodFieldRails      = big.NewInt(1 << 7)
+	paymentMethodFieldCreatedAt  = big.NewInt(1 << 8)
+	paymentMethodFieldUpdatedAt  = big.NewInt(1 << 9)
+)
+
+type PaymentMethod struct {
+	ID         *string                  `json:"id,omitempty" url:"id,omitempty"`
+	Source     *PaymentMethodSource     `json:"source,omitempty" url:"source,omitempty"`
+	Instrument *PaymentMethodInstrument `json:"instrument,omitempty" url:"instrument,omitempty"`
+	AgentID    *string                  `json:"agent_id,omitempty" url:"agent_id,omitempty"`
+	Status     *PaymentMethodStatus     `json:"status,omitempty" url:"status,omitempty"`
+	Consumer   *SharedPaymentConsumer   `json:"consumer,omitempty" url:"consumer,omitempty"`
+	Card       *SharedPaymentCard       `json:"card,omitempty" url:"card,omitempty"`
+	Rails      []*PaymentMethodRail     `json:"rails,omitempty" url:"rails,omitempty"`
+	CreatedAt  *time.Time               `json:"created_at,omitempty" url:"created_at,omitempty"`
+	UpdatedAt  *time.Time               `json:"updated_at,omitempty" url:"updated_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethod) GetID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.ID
+}
+
+func (p *PaymentMethod) GetSource() *PaymentMethodSource {
+	if p == nil {
+		return nil
+	}
+	return p.Source
+}
+
+func (p *PaymentMethod) GetInstrument() *PaymentMethodInstrument {
+	if p == nil {
+		return nil
+	}
+	return p.Instrument
+}
+
+func (p *PaymentMethod) GetAgentID() *string {
+	if p == nil {
+		return nil
+	}
+	return p.AgentID
+}
+
+func (p *PaymentMethod) GetStatus() *PaymentMethodStatus {
+	if p == nil {
+		return nil
+	}
+	return p.Status
+}
+
+func (p *PaymentMethod) GetConsumer() *SharedPaymentConsumer {
+	if p == nil {
+		return nil
+	}
+	return p.Consumer
+}
+
+func (p *PaymentMethod) GetCard() *SharedPaymentCard {
+	if p == nil {
+		return nil
+	}
+	return p.Card
+}
+
+func (p *PaymentMethod) GetRails() []*PaymentMethodRail {
+	if p == nil {
+		return nil
+	}
+	return p.Rails
+}
+
+func (p *PaymentMethod) GetCreatedAt() *time.Time {
+	if p == nil {
+		return nil
+	}
+	return p.CreatedAt
+}
+
+func (p *PaymentMethod) GetUpdatedAt() *time.Time {
+	if p == nil {
+		return nil
+	}
+	return p.UpdatedAt
+}
+
+func (p *PaymentMethod) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethod) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetID(id *string) {
+	p.ID = id
+	p.require(paymentMethodFieldID)
+}
+
+// SetSource sets the Source field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetSource(source *PaymentMethodSource) {
+	p.Source = source
+	p.require(paymentMethodFieldSource)
+}
+
+// SetInstrument sets the Instrument field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetInstrument(instrument *PaymentMethodInstrument) {
+	p.Instrument = instrument
+	p.require(paymentMethodFieldInstrument)
+}
+
+// SetAgentID sets the AgentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetAgentID(agentID *string) {
+	p.AgentID = agentID
+	p.require(paymentMethodFieldAgentID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetStatus(status *PaymentMethodStatus) {
+	p.Status = status
+	p.require(paymentMethodFieldStatus)
+}
+
+// SetConsumer sets the Consumer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetConsumer(consumer *SharedPaymentConsumer) {
+	p.Consumer = consumer
+	p.require(paymentMethodFieldConsumer)
+}
+
+// SetCard sets the Card field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetCard(card *SharedPaymentCard) {
+	p.Card = card
+	p.require(paymentMethodFieldCard)
+}
+
+// SetRails sets the Rails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetRails(rails []*PaymentMethodRail) {
+	p.Rails = rails
+	p.require(paymentMethodFieldRails)
+}
+
+// SetCreatedAt sets the CreatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetCreatedAt(createdAt *time.Time) {
+	p.CreatedAt = createdAt
+	p.require(paymentMethodFieldCreatedAt)
+}
+
+// SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethod) SetUpdatedAt(updatedAt *time.Time) {
+	p.UpdatedAt = updatedAt
+	p.require(paymentMethodFieldUpdatedAt)
+}
+
+func (p *PaymentMethod) UnmarshalJSON(data []byte) error {
+	type embed PaymentMethod
+	var unmarshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		UpdatedAt *internal.DateTime `json:"updated_at,omitempty"`
+	}{
+		embed: embed(*p),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*p = PaymentMethod(unmarshaler.embed)
+	p.CreatedAt = unmarshaler.CreatedAt.TimePtr()
+	p.UpdatedAt = unmarshaler.UpdatedAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethod) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethod
+	var marshaler = struct {
+		embed
+		CreatedAt *internal.DateTime `json:"created_at,omitempty"`
+		UpdatedAt *internal.DateTime `json:"updated_at,omitempty"`
+	}{
+		embed:     embed(*p),
+		CreatedAt: internal.NewOptionalDateTime(p.CreatedAt),
+		UpdatedAt: internal.NewOptionalDateTime(p.UpdatedAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethod) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+var (
+	paymentMethodInstrumentFieldType     = big.NewInt(1 << 0)
+	paymentMethodInstrumentFieldProvider = big.NewInt(1 << 1)
+	paymentMethodInstrumentFieldDisplay  = big.NewInt(1 << 2)
+)
+
+type PaymentMethodInstrument struct {
+	// The set a payment method can actually carry today. `stablecoin_wallet` and `bnpl_account` are listed on ConnectionInstrument and can be enumerated, but no rail funds them yet, so sourcing one fails before a payment method exists. `other` is an instrument the provider offers that Basis Theory could not classify.
+	Type     PaymentMethodInstrumentType `json:"type" url:"type"`
+	Provider string                      `json:"provider" url:"provider"`
+	// Shaped by `type`; empty for `other`.
+	Display *PaymentMethodInstrumentDisplay `json:"display" url:"display"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodInstrument) GetType() PaymentMethodInstrumentType {
+	if p == nil {
+		return ""
+	}
+	return p.Type
+}
+
+func (p *PaymentMethodInstrument) GetProvider() string {
+	if p == nil {
+		return ""
+	}
+	return p.Provider
+}
+
+func (p *PaymentMethodInstrument) GetDisplay() *PaymentMethodInstrumentDisplay {
+	if p == nil {
+		return nil
+	}
+	return p.Display
+}
+
+func (p *PaymentMethodInstrument) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodInstrument) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrument) SetType(type_ PaymentMethodInstrumentType) {
+	p.Type = type_
+	p.require(paymentMethodInstrumentFieldType)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrument) SetProvider(provider string) {
+	p.Provider = provider
+	p.require(paymentMethodInstrumentFieldProvider)
+}
+
+// SetDisplay sets the Display field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrument) SetDisplay(display *PaymentMethodInstrumentDisplay) {
+	p.Display = display
+	p.require(paymentMethodInstrumentFieldDisplay)
+}
+
+func (p *PaymentMethodInstrument) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodInstrument
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodInstrument(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodInstrument) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodInstrument
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodInstrument) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+// Shaped by `type`; empty for `other`.
+var (
+	paymentMethodInstrumentDisplayFieldBrand           = big.NewInt(1 << 0)
+	paymentMethodInstrumentDisplayFieldLast4           = big.NewInt(1 << 1)
+	paymentMethodInstrumentDisplayFieldLabel           = big.NewInt(1 << 2)
+	paymentMethodInstrumentDisplayFieldBankName        = big.NewInt(1 << 3)
+	paymentMethodInstrumentDisplayFieldExpirationMonth = big.NewInt(1 << 4)
+	paymentMethodInstrumentDisplayFieldExpirationYear  = big.NewInt(1 << 5)
+)
+
+type PaymentMethodInstrumentDisplay struct {
+	Brand           *string `json:"brand,omitempty" url:"brand,omitempty"`
+	Last4           *string `json:"last4,omitempty" url:"last4,omitempty"`
+	Label           *string `json:"label,omitempty" url:"label,omitempty"`
+	BankName        *string `json:"bank_name,omitempty" url:"bank_name,omitempty"`
+	ExpirationMonth *int    `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
+	ExpirationYear  *int    `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetBrand() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Brand
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetLast4() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Last4
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetLabel() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Label
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetBankName() *string {
+	if p == nil {
+		return nil
+	}
+	return p.BankName
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetExpirationMonth() *int {
+	if p == nil {
+		return nil
+	}
+	return p.ExpirationMonth
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetExpirationYear() *int {
+	if p == nil {
+		return nil
+	}
+	return p.ExpirationYear
+}
+
+func (p *PaymentMethodInstrumentDisplay) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodInstrumentDisplay) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetBrand sets the Brand field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrumentDisplay) SetBrand(brand *string) {
+	p.Brand = brand
+	p.require(paymentMethodInstrumentDisplayFieldBrand)
+}
+
+// SetLast4 sets the Last4 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrumentDisplay) SetLast4(last4 *string) {
+	p.Last4 = last4
+	p.require(paymentMethodInstrumentDisplayFieldLast4)
+}
+
+// SetLabel sets the Label field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrumentDisplay) SetLabel(label *string) {
+	p.Label = label
+	p.require(paymentMethodInstrumentDisplayFieldLabel)
+}
+
+// SetBankName sets the BankName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrumentDisplay) SetBankName(bankName *string) {
+	p.BankName = bankName
+	p.require(paymentMethodInstrumentDisplayFieldBankName)
+}
+
+// SetExpirationMonth sets the ExpirationMonth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrumentDisplay) SetExpirationMonth(expirationMonth *int) {
+	p.ExpirationMonth = expirationMonth
+	p.require(paymentMethodInstrumentDisplayFieldExpirationMonth)
+}
+
+// SetExpirationYear sets the ExpirationYear field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodInstrumentDisplay) SetExpirationYear(expirationYear *int) {
+	p.ExpirationYear = expirationYear
+	p.require(paymentMethodInstrumentDisplayFieldExpirationYear)
+}
+
+func (p *PaymentMethodInstrumentDisplay) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodInstrumentDisplay
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodInstrumentDisplay(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodInstrumentDisplay) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodInstrumentDisplay
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodInstrumentDisplay) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+// The set a payment method can actually carry today. `stablecoin_wallet` and `bnpl_account` are listed on ConnectionInstrument and can be enumerated, but no rail funds them yet, so sourcing one fails before a payment method exists. `other` is an instrument the provider offers that Basis Theory could not classify.
+type PaymentMethodInstrumentType string
+
+const (
+	PaymentMethodInstrumentTypeCard        PaymentMethodInstrumentType = "card"
+	PaymentMethodInstrumentTypeBankAccount PaymentMethodInstrumentType = "bank_account"
+	PaymentMethodInstrumentTypeOther       PaymentMethodInstrumentType = "other"
+)
+
+func NewPaymentMethodInstrumentTypeFromString(s string) (PaymentMethodInstrumentType, error) {
+	switch s {
+	case "card":
+		return PaymentMethodInstrumentTypeCard, nil
+	case "bank_account":
+		return PaymentMethodInstrumentTypeBankAccount, nil
+	case "other":
+		return PaymentMethodInstrumentTypeOther, nil
+	}
+	var t PaymentMethodInstrumentType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentMethodInstrumentType) Ptr() *PaymentMethodInstrumentType {
+	return &p
+}
+
+var (
+	paymentMethodListFieldData       = big.NewInt(1 << 0)
+	paymentMethodListFieldPagination = big.NewInt(1 << 1)
+)
+
+type PaymentMethodList struct {
+	Data       []*PaymentMethod             `json:"data" url:"data"`
+	Pagination *PaymentMethodListPagination `json:"pagination" url:"pagination"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodList) GetData() []*PaymentMethod {
+	if p == nil {
+		return nil
+	}
+	return p.Data
+}
+
+func (p *PaymentMethodList) GetPagination() *PaymentMethodListPagination {
+	if p == nil {
+		return nil
+	}
+	return p.Pagination
+}
+
+func (p *PaymentMethodList) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodList) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodList) SetData(data []*PaymentMethod) {
+	p.Data = data
+	p.require(paymentMethodListFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodList) SetPagination(pagination *PaymentMethodListPagination) {
+	p.Pagination = pagination
+	p.require(paymentMethodListFieldPagination)
+}
+
+func (p *PaymentMethodList) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodList) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodList) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+var (
+	paymentMethodListPaginationFieldNext     = big.NewInt(1 << 0)
+	paymentMethodListPaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type PaymentMethodListPagination struct {
+	// Cursor for the next page. Absent on the last page.
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize int     `json:"page_size" url:"page_size"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodListPagination) GetNext() *string {
+	if p == nil {
+		return nil
+	}
+	return p.Next
+}
+
+func (p *PaymentMethodListPagination) GetPageSize() int {
+	if p == nil {
+		return 0
+	}
+	return p.PageSize
+}
+
+func (p *PaymentMethodListPagination) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodListPagination) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodListPagination) SetNext(next *string) {
+	p.Next = next
+	p.require(paymentMethodListPaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodListPagination) SetPageSize(pageSize int) {
+	p.PageSize = pageSize
+	p.require(paymentMethodListPaginationFieldPageSize)
+}
+
+func (p *PaymentMethodListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodListPagination) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodListPagination) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+var (
+	paymentMethodRailFieldRail        = big.NewInt(1 << 0)
+	paymentMethodRailFieldProvider    = big.NewInt(1 << 1)
+	paymentMethodRailFieldProviderIDs = big.NewInt(1 << 2)
+	paymentMethodRailFieldStatus      = big.NewInt(1 << 3)
+	paymentMethodRailFieldError       = big.NewInt(1 << 4)
+)
+
+type PaymentMethodRail struct {
+	Rail     *string `json:"rail,omitempty" url:"rail,omitempty"`
+	Provider *string `json:"provider,omitempty" url:"provider,omitempty"`
+	// Provider-native reference identifiers for this rail. Informational; use for support and correlation, not as a stable contract.
+	ProviderIDs map[string]string       `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+	Status      *string                 `json:"status,omitempty" url:"status,omitempty"`
+	Error       *SharedPaymentRailError `json:"error,omitempty" url:"error,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodRail) GetProviderIDs() map[string]string {
+	if p == nil {
+		return nil
+	}
+	return p.ProviderIDs
+}
+
+func (p *PaymentMethodRail) GetError() *SharedPaymentRailError {
+	if p == nil {
+		return nil
+	}
+	return p.Error
+}
+
+func (p *PaymentMethodRail) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodRail) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodRail) SetRail(rail *string) {
+	p.Rail = rail
+	p.require(paymentMethodRailFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodRail) SetProvider(provider *string) {
+	p.Provider = provider
+	p.require(paymentMethodRailFieldProvider)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodRail) SetProviderIDs(providerIDs map[string]string) {
+	p.ProviderIDs = providerIDs
+	p.require(paymentMethodRailFieldProviderIDs)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodRail) SetStatus(status *string) {
+	p.Status = status
+	p.require(paymentMethodRailFieldStatus)
+}
+
+// SetError sets the Error field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodRail) SetError(error_ *SharedPaymentRailError) {
+	p.Error = error_
+	p.require(paymentMethodRailFieldError)
+}
+
+func (p *PaymentMethodRail) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodRail
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodRail(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodRail) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodRail
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodRail) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+type PaymentMethodRailProvider string
+
+const (
+	PaymentMethodRailProviderVic      PaymentMethodRailProvider = "vic"
+	PaymentMethodRailProviderAgentpay PaymentMethodRailProvider = "agentpay"
+)
+
+func NewPaymentMethodRailProviderFromString(s string) (PaymentMethodRailProvider, error) {
+	switch s {
+	case "vic":
+		return PaymentMethodRailProviderVic, nil
+	case "agentpay":
+		return PaymentMethodRailProviderAgentpay, nil
+	}
+	var t PaymentMethodRailProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentMethodRailProvider) Ptr() *PaymentMethodRailProvider {
+	return &p
+}
+
+type PaymentMethodSource struct {
+	Type                 string
+	BasisTheoryCardToken *PaymentMethodSourceBasisTheoryCardToken
+	Connection           *PaymentMethodSourceConnection
+}
+
+func (p *PaymentMethodSource) GetType() string {
+	if p == nil {
+		return ""
+	}
+	return p.Type
+}
+
+func (p *PaymentMethodSource) GetBasisTheoryCardToken() *PaymentMethodSourceBasisTheoryCardToken {
+	if p == nil {
+		return nil
+	}
+	return p.BasisTheoryCardToken
+}
+
+func (p *PaymentMethodSource) GetConnection() *PaymentMethodSourceConnection {
+	if p == nil {
+		return nil
+	}
+	return p.Connection
+}
+
+func (p *PaymentMethodSource) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	p.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", p)
+	}
+	switch unmarshaler.Type {
+	case "basis_theory_card_token":
+		value := new(PaymentMethodSourceBasisTheoryCardToken)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		p.BasisTheoryCardToken = value
+	case "connection":
+		value := new(PaymentMethodSourceConnection)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		p.Connection = value
+	}
+	return nil
+}
+
+func (p PaymentMethodSource) MarshalJSON() ([]byte, error) {
+	if err := p.validate(); err != nil {
+		return nil, err
+	}
+	if p.BasisTheoryCardToken != nil {
+		return internal.MarshalJSONWithExtraProperty(p.BasisTheoryCardToken, "type", "basis_theory_card_token")
+	}
+	if p.Connection != nil {
+		return internal.MarshalJSONWithExtraProperty(p.Connection, "type", "connection")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", p)
+}
+
+type PaymentMethodSourceVisitor interface {
+	VisitBasisTheoryCardToken(*PaymentMethodSourceBasisTheoryCardToken) error
+	VisitConnection(*PaymentMethodSourceConnection) error
+}
+
+func (p *PaymentMethodSource) Accept(visitor PaymentMethodSourceVisitor) error {
+	if p.BasisTheoryCardToken != nil {
+		return visitor.VisitBasisTheoryCardToken(p.BasisTheoryCardToken)
+	}
+	if p.Connection != nil {
+		return visitor.VisitConnection(p.Connection)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", p)
+}
+
+func (p *PaymentMethodSource) validate() error {
+	if p == nil {
+		return fmt.Errorf("type %T is nil", p)
+	}
+	var fields []string
+	if p.BasisTheoryCardToken != nil {
+		fields = append(fields, "basis_theory_card_token")
+	}
+	if p.Connection != nil {
+		fields = append(fields, "connection")
+	}
+	if len(fields) == 0 {
+		if p.Type != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", p, p.Type)
+		}
+		return fmt.Errorf("type %T is empty", p)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", p, fields)
+	}
+	if p.Type != "" {
+		field := fields[0]
+		if p.Type != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				p,
+				p.Type,
+				p,
+			)
+		}
+	}
+	return nil
+}
+
+var (
+	paymentMethodSourceBasisTheoryCardTokenFieldTokenID = big.NewInt(1 << 0)
+)
+
+type PaymentMethodSourceBasisTheoryCardToken struct {
+	TokenID string `json:"token_id" url:"token_id"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodSourceBasisTheoryCardToken) GetTokenID() string {
+	if p == nil {
+		return ""
+	}
+	return p.TokenID
+}
+
+func (p *PaymentMethodSourceBasisTheoryCardToken) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodSourceBasisTheoryCardToken) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetTokenID sets the TokenID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodSourceBasisTheoryCardToken) SetTokenID(tokenID string) {
+	p.TokenID = tokenID
+	p.require(paymentMethodSourceBasisTheoryCardTokenFieldTokenID)
+}
+
+func (p *PaymentMethodSourceBasisTheoryCardToken) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodSourceBasisTheoryCardToken
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodSourceBasisTheoryCardToken(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodSourceBasisTheoryCardToken) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodSourceBasisTheoryCardToken
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodSourceBasisTheoryCardToken) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+var (
+	paymentMethodSourceConnectionFieldConnectionID = big.NewInt(1 << 0)
+	paymentMethodSourceConnectionFieldInstrumentID = big.NewInt(1 << 1)
+)
+
+type PaymentMethodSourceConnection struct {
+	ConnectionID string `json:"connection_id" url:"connection_id"`
+	InstrumentID string `json:"instrument_id" url:"instrument_id"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PaymentMethodSourceConnection) GetConnectionID() string {
+	if p == nil {
+		return ""
+	}
+	return p.ConnectionID
+}
+
+func (p *PaymentMethodSourceConnection) GetInstrumentID() string {
+	if p == nil {
+		return ""
+	}
+	return p.InstrumentID
+}
+
+func (p *PaymentMethodSourceConnection) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PaymentMethodSourceConnection) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetConnectionID sets the ConnectionID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodSourceConnection) SetConnectionID(connectionID string) {
+	p.ConnectionID = connectionID
+	p.require(paymentMethodSourceConnectionFieldConnectionID)
+}
+
+// SetInstrumentID sets the InstrumentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PaymentMethodSourceConnection) SetInstrumentID(instrumentID string) {
+	p.InstrumentID = instrumentID
+	p.require(paymentMethodSourceConnectionFieldInstrumentID)
+}
+
+func (p *PaymentMethodSourceConnection) UnmarshalJSON(data []byte) error {
+	type unmarshaler PaymentMethodSourceConnection
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PaymentMethodSourceConnection(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PaymentMethodSourceConnection) MarshalJSON() ([]byte, error) {
+	type embed PaymentMethodSourceConnection
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PaymentMethodSourceConnection) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+type PaymentMethodStatus string
+
+const (
+	PaymentMethodStatusActive  PaymentMethodStatus = "active"
+	PaymentMethodStatusDeleted PaymentMethodStatus = "deleted"
+)
+
+func NewPaymentMethodStatusFromString(s string) (PaymentMethodStatus, error) {
+	switch s {
+	case "active":
+		return PaymentMethodStatusActive, nil
+	case "deleted":
+		return PaymentMethodStatusDeleted, nil
+	}
+	var t PaymentMethodStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PaymentMethodStatus) Ptr() *PaymentMethodStatus {
+	return &p
+}
+
+var (
 	privacyFieldClassification    = big.NewInt(1 << 0)
 	privacyFieldImpactLevel       = big.NewInt(1 << 1)
 	privacyFieldRestrictionPolicy = big.NewInt(1 << 2)
@@ -13289,11 +19230,12 @@ func (p *Product) String() string {
 type PublicKey = string
 
 var (
-	publishConfirmationRequestFieldConfirmationData = big.NewInt(1 << 0)
+	publishConfirmationResponseFieldClientReferenceID = big.NewInt(1 << 0)
 )
 
-type PublishConfirmationRequest struct {
-	ConfirmationData []*ConfirmationEntry `json:"confirmation_data" url:"confirmation_data"`
+type PublishConfirmationResponse struct {
+	// Provider correlation identifier for the confirmation.
+	ClientReferenceID string `json:"client_reference_id" url:"client_reference_id"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -13302,41 +19244,41 @@ type PublishConfirmationRequest struct {
 	rawJSON         json.RawMessage
 }
 
-func (p *PublishConfirmationRequest) GetConfirmationData() []*ConfirmationEntry {
+func (p *PublishConfirmationResponse) GetClientReferenceID() string {
 	if p == nil {
-		return nil
+		return ""
 	}
-	return p.ConfirmationData
+	return p.ClientReferenceID
 }
 
-func (p *PublishConfirmationRequest) GetExtraProperties() map[string]interface{} {
+func (p *PublishConfirmationResponse) GetExtraProperties() map[string]interface{} {
 	if p == nil {
 		return nil
 	}
 	return p.extraProperties
 }
 
-func (p *PublishConfirmationRequest) require(field *big.Int) {
+func (p *PublishConfirmationResponse) require(field *big.Int) {
 	if p.explicitFields == nil {
 		p.explicitFields = big.NewInt(0)
 	}
 	p.explicitFields.Or(p.explicitFields, field)
 }
 
-// SetConfirmationData sets the ConfirmationData field and marks it as non-optional;
+// SetClientReferenceID sets the ClientReferenceID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (p *PublishConfirmationRequest) SetConfirmationData(confirmationData []*ConfirmationEntry) {
-	p.ConfirmationData = confirmationData
-	p.require(publishConfirmationRequestFieldConfirmationData)
+func (p *PublishConfirmationResponse) SetClientReferenceID(clientReferenceID string) {
+	p.ClientReferenceID = clientReferenceID
+	p.require(publishConfirmationResponseFieldClientReferenceID)
 }
 
-func (p *PublishConfirmationRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler PublishConfirmationRequest
+func (p *PublishConfirmationResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler PublishConfirmationResponse
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*p = PublishConfirmationRequest(value)
+	*p = PublishConfirmationResponse(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *p)
 	if err != nil {
 		return err
@@ -13346,8 +19288,8 @@ func (p *PublishConfirmationRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (p *PublishConfirmationRequest) MarshalJSON() ([]byte, error) {
-	type embed PublishConfirmationRequest
+func (p *PublishConfirmationResponse) MarshalJSON() ([]byte, error) {
+	type embed PublishConfirmationResponse
 	var marshaler = struct {
 		embed
 	}{
@@ -13357,7 +19299,7 @@ func (p *PublishConfirmationRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(explicitMarshaler)
 }
 
-func (p *PublishConfirmationRequest) String() string {
+func (p *PublishConfirmationResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
@@ -13582,6 +19524,106 @@ func (r RecurringFrequency) Ptr() *RecurringFrequency {
 }
 
 var (
+	runtimeLogOptionsFieldEnabled = big.NewInt(1 << 0)
+	runtimeLogOptionsFieldLevel   = big.NewInt(1 << 1)
+)
+
+type RuntimeLogOptions struct {
+	Enabled *bool   `json:"enabled,omitempty" url:"enabled,omitempty"`
+	Level   *string `json:"level,omitempty" url:"level,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RuntimeLogOptions) GetEnabled() *bool {
+	if r == nil {
+		return nil
+	}
+	return r.Enabled
+}
+
+func (r *RuntimeLogOptions) GetLevel() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Level
+}
+
+func (r *RuntimeLogOptions) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *RuntimeLogOptions) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetEnabled sets the Enabled field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogOptions) SetEnabled(enabled *bool) {
+	r.Enabled = enabled
+	r.require(runtimeLogOptionsFieldEnabled)
+}
+
+// SetLevel sets the Level field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogOptions) SetLevel(level *string) {
+	r.Level = level
+	r.require(runtimeLogOptionsFieldLevel)
+}
+
+func (r *RuntimeLogOptions) UnmarshalJSON(data []byte) error {
+	type unmarshaler RuntimeLogOptions
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RuntimeLogOptions(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RuntimeLogOptions) MarshalJSON() ([]byte, error) {
+	type embed RuntimeLogOptions
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *RuntimeLogOptions) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+var (
 	securityContactEmailResponseFieldEmail = big.NewInt(1 << 0)
 )
 
@@ -13767,6 +19809,2095 @@ func (s *ServiceStatus) MarshalJSON() ([]byte, error) {
 }
 
 func (s *ServiceStatus) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentAmountFieldValue    = big.NewInt(1 << 0)
+	sharedPaymentAmountFieldCurrency = big.NewInt(1 << 1)
+)
+
+type SharedPaymentAmount struct {
+	// Major-unit decimal amount. Precision follows the currency's ISO 4217 minor unit and responses are canonicalized to that precision.
+	Value string `json:"value" url:"value"`
+	// Current ISO 4217 code with a numeric minor-unit definition. Lowercase request values are normalized.
+	Currency string `json:"currency" url:"currency"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentAmount) GetValue() string {
+	if s == nil {
+		return ""
+	}
+	return s.Value
+}
+
+func (s *SharedPaymentAmount) GetCurrency() string {
+	if s == nil {
+		return ""
+	}
+	return s.Currency
+}
+
+func (s *SharedPaymentAmount) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentAmount) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetValue sets the Value field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentAmount) SetValue(value string) {
+	s.Value = value
+	s.require(sharedPaymentAmountFieldValue)
+}
+
+// SetCurrency sets the Currency field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentAmount) SetCurrency(currency string) {
+	s.Currency = currency
+	s.require(sharedPaymentAmountFieldCurrency)
+}
+
+func (s *SharedPaymentAmount) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentAmount
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentAmount(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentAmount) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentAmount
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentAmount) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentCardFieldBrand           = big.NewInt(1 << 0)
+	sharedPaymentCardFieldBin             = big.NewInt(1 << 1)
+	sharedPaymentCardFieldLast4           = big.NewInt(1 << 2)
+	sharedPaymentCardFieldExpirationMonth = big.NewInt(1 << 3)
+	sharedPaymentCardFieldExpirationYear  = big.NewInt(1 << 4)
+	sharedPaymentCardFieldFunding         = big.NewInt(1 << 5)
+	sharedPaymentCardFieldIssuer          = big.NewInt(1 << 6)
+	sharedPaymentCardFieldIssuerCountry   = big.NewInt(1 << 7)
+	sharedPaymentCardFieldSegment         = big.NewInt(1 << 8)
+	sharedPaymentCardFieldType            = big.NewInt(1 << 9)
+	sharedPaymentCardFieldDisplay         = big.NewInt(1 << 10)
+)
+
+type SharedPaymentCard struct {
+	// Card network reported by the vault. `agentic-token` rails require `visa` or `mastercard`; the `spt` rail accepts any network Stripe supports, so treat this as an open string rather than a closed set.
+	Brand           *string                         `json:"brand,omitempty" url:"brand,omitempty"`
+	Bin             *string                         `json:"bin,omitempty" url:"bin,omitempty"`
+	Last4           *string                         `json:"last4,omitempty" url:"last4,omitempty"`
+	ExpirationMonth *int                            `json:"expiration_month,omitempty" url:"expiration_month,omitempty"`
+	ExpirationYear  *int                            `json:"expiration_year,omitempty" url:"expiration_year,omitempty"`
+	Funding         *string                         `json:"funding,omitempty" url:"funding,omitempty"`
+	Issuer          *SharedPaymentCardIssuer        `json:"issuer,omitempty" url:"issuer,omitempty"`
+	IssuerCountry   *SharedPaymentCardIssuerCountry `json:"issuer_country,omitempty" url:"issuer_country,omitempty"`
+	Segment         *string                         `json:"segment,omitempty" url:"segment,omitempty"`
+	Type            *string                         `json:"type,omitempty" url:"type,omitempty"`
+	Display         *SharedPaymentCardDisplay       `json:"display,omitempty" url:"display,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentCard) GetBrand() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Brand
+}
+
+func (s *SharedPaymentCard) GetBin() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Bin
+}
+
+func (s *SharedPaymentCard) GetLast4() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Last4
+}
+
+func (s *SharedPaymentCard) GetExpirationMonth() *int {
+	if s == nil {
+		return nil
+	}
+	return s.ExpirationMonth
+}
+
+func (s *SharedPaymentCard) GetExpirationYear() *int {
+	if s == nil {
+		return nil
+	}
+	return s.ExpirationYear
+}
+
+func (s *SharedPaymentCard) GetFunding() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Funding
+}
+
+func (s *SharedPaymentCard) GetIssuer() *SharedPaymentCardIssuer {
+	if s == nil {
+		return nil
+	}
+	return s.Issuer
+}
+
+func (s *SharedPaymentCard) GetIssuerCountry() *SharedPaymentCardIssuerCountry {
+	if s == nil {
+		return nil
+	}
+	return s.IssuerCountry
+}
+
+func (s *SharedPaymentCard) GetSegment() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Segment
+}
+
+func (s *SharedPaymentCard) GetType() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Type
+}
+
+func (s *SharedPaymentCard) GetDisplay() *SharedPaymentCardDisplay {
+	if s == nil {
+		return nil
+	}
+	return s.Display
+}
+
+func (s *SharedPaymentCard) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentCard) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetBrand sets the Brand field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetBrand(brand *string) {
+	s.Brand = brand
+	s.require(sharedPaymentCardFieldBrand)
+}
+
+// SetBin sets the Bin field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetBin(bin *string) {
+	s.Bin = bin
+	s.require(sharedPaymentCardFieldBin)
+}
+
+// SetLast4 sets the Last4 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetLast4(last4 *string) {
+	s.Last4 = last4
+	s.require(sharedPaymentCardFieldLast4)
+}
+
+// SetExpirationMonth sets the ExpirationMonth field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetExpirationMonth(expirationMonth *int) {
+	s.ExpirationMonth = expirationMonth
+	s.require(sharedPaymentCardFieldExpirationMonth)
+}
+
+// SetExpirationYear sets the ExpirationYear field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetExpirationYear(expirationYear *int) {
+	s.ExpirationYear = expirationYear
+	s.require(sharedPaymentCardFieldExpirationYear)
+}
+
+// SetFunding sets the Funding field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetFunding(funding *string) {
+	s.Funding = funding
+	s.require(sharedPaymentCardFieldFunding)
+}
+
+// SetIssuer sets the Issuer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetIssuer(issuer *SharedPaymentCardIssuer) {
+	s.Issuer = issuer
+	s.require(sharedPaymentCardFieldIssuer)
+}
+
+// SetIssuerCountry sets the IssuerCountry field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetIssuerCountry(issuerCountry *SharedPaymentCardIssuerCountry) {
+	s.IssuerCountry = issuerCountry
+	s.require(sharedPaymentCardFieldIssuerCountry)
+}
+
+// SetSegment sets the Segment field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetSegment(segment *string) {
+	s.Segment = segment
+	s.require(sharedPaymentCardFieldSegment)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetType(type_ *string) {
+	s.Type = type_
+	s.require(sharedPaymentCardFieldType)
+}
+
+// SetDisplay sets the Display field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCard) SetDisplay(display *SharedPaymentCardDisplay) {
+	s.Display = display
+	s.require(sharedPaymentCardFieldDisplay)
+}
+
+func (s *SharedPaymentCard) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentCard
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentCard(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentCard) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentCard
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentCard) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentCardDisplayFieldArtURL          = big.NewInt(1 << 0)
+	sharedPaymentCardDisplayFieldBackgroundColor = big.NewInt(1 << 1)
+	sharedPaymentCardDisplayFieldForegroundColor = big.NewInt(1 << 2)
+	sharedPaymentCardDisplayFieldDescription     = big.NewInt(1 << 3)
+	sharedPaymentCardDisplayFieldIssuerName      = big.NewInt(1 << 4)
+)
+
+type SharedPaymentCardDisplay struct {
+	ArtURL          *string `json:"art_url,omitempty" url:"art_url,omitempty"`
+	BackgroundColor *string `json:"background_color,omitempty" url:"background_color,omitempty"`
+	ForegroundColor *string `json:"foreground_color,omitempty" url:"foreground_color,omitempty"`
+	Description     *string `json:"description,omitempty" url:"description,omitempty"`
+	IssuerName      *string `json:"issuer_name,omitempty" url:"issuer_name,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentCardDisplay) GetArtURL() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ArtURL
+}
+
+func (s *SharedPaymentCardDisplay) GetBackgroundColor() *string {
+	if s == nil {
+		return nil
+	}
+	return s.BackgroundColor
+}
+
+func (s *SharedPaymentCardDisplay) GetForegroundColor() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ForegroundColor
+}
+
+func (s *SharedPaymentCardDisplay) GetDescription() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Description
+}
+
+func (s *SharedPaymentCardDisplay) GetIssuerName() *string {
+	if s == nil {
+		return nil
+	}
+	return s.IssuerName
+}
+
+func (s *SharedPaymentCardDisplay) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentCardDisplay) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetArtURL sets the ArtURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardDisplay) SetArtURL(artURL *string) {
+	s.ArtURL = artURL
+	s.require(sharedPaymentCardDisplayFieldArtURL)
+}
+
+// SetBackgroundColor sets the BackgroundColor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardDisplay) SetBackgroundColor(backgroundColor *string) {
+	s.BackgroundColor = backgroundColor
+	s.require(sharedPaymentCardDisplayFieldBackgroundColor)
+}
+
+// SetForegroundColor sets the ForegroundColor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardDisplay) SetForegroundColor(foregroundColor *string) {
+	s.ForegroundColor = foregroundColor
+	s.require(sharedPaymentCardDisplayFieldForegroundColor)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardDisplay) SetDescription(description *string) {
+	s.Description = description
+	s.require(sharedPaymentCardDisplayFieldDescription)
+}
+
+// SetIssuerName sets the IssuerName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardDisplay) SetIssuerName(issuerName *string) {
+	s.IssuerName = issuerName
+	s.require(sharedPaymentCardDisplayFieldIssuerName)
+}
+
+func (s *SharedPaymentCardDisplay) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentCardDisplay
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentCardDisplay(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentCardDisplay) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentCardDisplay
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentCardDisplay) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentCardIssuerFieldName    = big.NewInt(1 << 0)
+	sharedPaymentCardIssuerFieldCountry = big.NewInt(1 << 1)
+)
+
+type SharedPaymentCardIssuer struct {
+	Name    *string `json:"name,omitempty" url:"name,omitempty"`
+	Country *string `json:"country,omitempty" url:"country,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentCardIssuer) GetName() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Name
+}
+
+func (s *SharedPaymentCardIssuer) GetCountry() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Country
+}
+
+func (s *SharedPaymentCardIssuer) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentCardIssuer) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardIssuer) SetName(name *string) {
+	s.Name = name
+	s.require(sharedPaymentCardIssuerFieldName)
+}
+
+// SetCountry sets the Country field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardIssuer) SetCountry(country *string) {
+	s.Country = country
+	s.require(sharedPaymentCardIssuerFieldCountry)
+}
+
+func (s *SharedPaymentCardIssuer) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentCardIssuer
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentCardIssuer(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentCardIssuer) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentCardIssuer
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentCardIssuer) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentCardIssuerCountryFieldAlpha2  = big.NewInt(1 << 0)
+	sharedPaymentCardIssuerCountryFieldName    = big.NewInt(1 << 1)
+	sharedPaymentCardIssuerCountryFieldNumeric = big.NewInt(1 << 2)
+)
+
+type SharedPaymentCardIssuerCountry struct {
+	Alpha2  *string `json:"alpha2,omitempty" url:"alpha2,omitempty"`
+	Name    *string `json:"name,omitempty" url:"name,omitempty"`
+	Numeric *string `json:"numeric,omitempty" url:"numeric,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentCardIssuerCountry) GetAlpha2() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Alpha2
+}
+
+func (s *SharedPaymentCardIssuerCountry) GetName() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Name
+}
+
+func (s *SharedPaymentCardIssuerCountry) GetNumeric() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Numeric
+}
+
+func (s *SharedPaymentCardIssuerCountry) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentCardIssuerCountry) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetAlpha2 sets the Alpha2 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardIssuerCountry) SetAlpha2(alpha2 *string) {
+	s.Alpha2 = alpha2
+	s.require(sharedPaymentCardIssuerCountryFieldAlpha2)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardIssuerCountry) SetName(name *string) {
+	s.Name = name
+	s.require(sharedPaymentCardIssuerCountryFieldName)
+}
+
+// SetNumeric sets the Numeric field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentCardIssuerCountry) SetNumeric(numeric *string) {
+	s.Numeric = numeric
+	s.require(sharedPaymentCardIssuerCountryFieldNumeric)
+}
+
+func (s *SharedPaymentCardIssuerCountry) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentCardIssuerCountry
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentCardIssuerCountry(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentCardIssuerCountry) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentCardIssuerCountry
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentCardIssuerCountry) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentConsumerFieldEmail        = big.NewInt(1 << 0)
+	sharedPaymentConsumerFieldID           = big.NewInt(1 << 1)
+	sharedPaymentConsumerFieldCountryCode  = big.NewInt(1 << 2)
+	sharedPaymentConsumerFieldLanguageCode = big.NewInt(1 << 3)
+)
+
+type SharedPaymentConsumer struct {
+	Email string  `json:"email" url:"email"`
+	ID    *string `json:"id,omitempty" url:"id,omitempty"`
+	// Officially assigned ISO 3166-1 alpha-2 code. Lowercase request values are normalized.
+	CountryCode *string `json:"country_code,omitempty" url:"country_code,omitempty"`
+	// BCP 47 language tag. Canonicalized on input (for example, `EN-us` becomes `en-US`).
+	LanguageCode *string `json:"language_code,omitempty" url:"language_code,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentConsumer) GetEmail() string {
+	if s == nil {
+		return ""
+	}
+	return s.Email
+}
+
+func (s *SharedPaymentConsumer) GetID() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ID
+}
+
+func (s *SharedPaymentConsumer) GetCountryCode() *string {
+	if s == nil {
+		return nil
+	}
+	return s.CountryCode
+}
+
+func (s *SharedPaymentConsumer) GetLanguageCode() *string {
+	if s == nil {
+		return nil
+	}
+	return s.LanguageCode
+}
+
+func (s *SharedPaymentConsumer) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentConsumer) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetEmail sets the Email field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentConsumer) SetEmail(email string) {
+	s.Email = email
+	s.require(sharedPaymentConsumerFieldEmail)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentConsumer) SetID(id *string) {
+	s.ID = id
+	s.require(sharedPaymentConsumerFieldID)
+}
+
+// SetCountryCode sets the CountryCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentConsumer) SetCountryCode(countryCode *string) {
+	s.CountryCode = countryCode
+	s.require(sharedPaymentConsumerFieldCountryCode)
+}
+
+// SetLanguageCode sets the LanguageCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentConsumer) SetLanguageCode(languageCode *string) {
+	s.LanguageCode = languageCode
+	s.require(sharedPaymentConsumerFieldLanguageCode)
+}
+
+func (s *SharedPaymentConsumer) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentConsumer
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentConsumer(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentConsumer) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentConsumer
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentConsumer) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentMerchantFieldName         = big.NewInt(1 << 0)
+	sharedPaymentMerchantFieldURL          = big.NewInt(1 << 1)
+	sharedPaymentMerchantFieldCountryCode  = big.NewInt(1 << 2)
+	sharedPaymentMerchantFieldCategoryCode = big.NewInt(1 << 3)
+	sharedPaymentMerchantFieldAcquirerBin  = big.NewInt(1 << 4)
+)
+
+type SharedPaymentMerchant struct {
+	Name string `json:"name" url:"name"`
+	// Absolute HTTP or HTTPS merchant URL.
+	URL string `json:"url" url:"url"`
+	// Officially assigned ISO 3166-1 alpha-2 code. Lowercase request values are normalized.
+	CountryCode string `json:"country_code" url:"country_code"`
+	// Merchant category code used for network authentication. Mastercard defaults to 5399 when omitted; Visa forwards the value only when supplied.
+	CategoryCode *string `json:"category_code,omitempty" url:"category_code,omitempty"`
+	// Acquirer BIN used for Mastercard authentication. Defaults to 545301 when omitted.
+	AcquirerBin *string `json:"acquirer_bin,omitempty" url:"acquirer_bin,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentMerchant) GetName() string {
+	if s == nil {
+		return ""
+	}
+	return s.Name
+}
+
+func (s *SharedPaymentMerchant) GetURL() string {
+	if s == nil {
+		return ""
+	}
+	return s.URL
+}
+
+func (s *SharedPaymentMerchant) GetCountryCode() string {
+	if s == nil {
+		return ""
+	}
+	return s.CountryCode
+}
+
+func (s *SharedPaymentMerchant) GetCategoryCode() *string {
+	if s == nil {
+		return nil
+	}
+	return s.CategoryCode
+}
+
+func (s *SharedPaymentMerchant) GetAcquirerBin() *string {
+	if s == nil {
+		return nil
+	}
+	return s.AcquirerBin
+}
+
+func (s *SharedPaymentMerchant) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentMerchant) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentMerchant) SetName(name string) {
+	s.Name = name
+	s.require(sharedPaymentMerchantFieldName)
+}
+
+// SetURL sets the URL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentMerchant) SetURL(url string) {
+	s.URL = url
+	s.require(sharedPaymentMerchantFieldURL)
+}
+
+// SetCountryCode sets the CountryCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentMerchant) SetCountryCode(countryCode string) {
+	s.CountryCode = countryCode
+	s.require(sharedPaymentMerchantFieldCountryCode)
+}
+
+// SetCategoryCode sets the CategoryCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentMerchant) SetCategoryCode(categoryCode *string) {
+	s.CategoryCode = categoryCode
+	s.require(sharedPaymentMerchantFieldCategoryCode)
+}
+
+// SetAcquirerBin sets the AcquirerBin field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentMerchant) SetAcquirerBin(acquirerBin *string) {
+	s.AcquirerBin = acquirerBin
+	s.require(sharedPaymentMerchantFieldAcquirerBin)
+}
+
+func (s *SharedPaymentMerchant) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentMerchant
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentMerchant(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentMerchant) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentMerchant
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentMerchant) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentProviderErrorFieldID                    = big.NewInt(1 << 0)
+	sharedPaymentProviderErrorFieldCode                  = big.NewInt(1 << 1)
+	sharedPaymentProviderErrorFieldTitle                 = big.NewInt(1 << 2)
+	sharedPaymentProviderErrorFieldDetail                = big.NewInt(1 << 3)
+	sharedPaymentProviderErrorFieldProvider              = big.NewInt(1 << 4)
+	sharedPaymentProviderErrorFieldOperation             = big.NewInt(1 << 5)
+	sharedPaymentProviderErrorFieldRail                  = big.NewInt(1 << 6)
+	sharedPaymentProviderErrorFieldConnectionID          = big.NewInt(1 << 7)
+	sharedPaymentProviderErrorFieldProviderCode          = big.NewInt(1 << 8)
+	sharedPaymentProviderErrorFieldProviderCorrelationID = big.NewInt(1 << 9)
+	sharedPaymentProviderErrorFieldPaymentMethodID       = big.NewInt(1 << 10)
+	sharedPaymentProviderErrorFieldAllowanceID           = big.NewInt(1 << 11)
+	sharedPaymentProviderErrorFieldPaymentCredentialID   = big.NewInt(1 << 12)
+	sharedPaymentProviderErrorFieldOccurredAt            = big.NewInt(1 << 13)
+)
+
+type SharedPaymentProviderError struct {
+	ID string `json:"id" url:"id"`
+	// Stable Agentic Commerce error code.
+	Code string `json:"code" url:"code"`
+	// Stable Basis Theory-controlled summary suitable for display.
+	Title string `json:"title" url:"title"`
+	// Sanitized Basis Theory-controlled remediation guidance suitable for display.
+	Detail string `json:"detail" url:"detail"`
+	// Who failed. Errors recorded on a payment method or allowance name the rail provider (`vic`, `agentpay`, `stripe`, `link`); errors recorded on a source connection name the connection provider (`stripe_link`). Both appear because one wallet provider can stand behind a rail and a connection with different names.
+	Provider     SharedPaymentProviderErrorProvider `json:"provider" url:"provider"`
+	Operation    *string                            `json:"operation,omitempty" url:"operation,omitempty"`
+	Rail         *string                            `json:"rail,omitempty" url:"rail,omitempty"`
+	ConnectionID *string                            `json:"connection_id,omitempty" url:"connection_id,omitempty"`
+	// Provider-native machine-readable code when available.
+	ProviderCode *string `json:"provider_code,omitempty" url:"provider_code,omitempty"`
+	// Safe provider correlation identifier for support.
+	ProviderCorrelationID *string `json:"provider_correlation_id,omitempty" url:"provider_correlation_id,omitempty"`
+	PaymentMethodID       *string `json:"payment_method_id,omitempty" url:"payment_method_id,omitempty"`
+	AllowanceID           *string `json:"allowance_id,omitempty" url:"allowance_id,omitempty"`
+	// Generated credential attempt ID; the credential resource may not exist when minting failed.
+	PaymentCredentialID *string   `json:"payment_credential_id,omitempty" url:"payment_credential_id,omitempty"`
+	OccurredAt          time.Time `json:"occurred_at" url:"occurred_at"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentProviderError) GetID() string {
+	if s == nil {
+		return ""
+	}
+	return s.ID
+}
+
+func (s *SharedPaymentProviderError) GetCode() string {
+	if s == nil {
+		return ""
+	}
+	return s.Code
+}
+
+func (s *SharedPaymentProviderError) GetTitle() string {
+	if s == nil {
+		return ""
+	}
+	return s.Title
+}
+
+func (s *SharedPaymentProviderError) GetDetail() string {
+	if s == nil {
+		return ""
+	}
+	return s.Detail
+}
+
+func (s *SharedPaymentProviderError) GetProvider() SharedPaymentProviderErrorProvider {
+	if s == nil {
+		return ""
+	}
+	return s.Provider
+}
+
+func (s *SharedPaymentProviderError) GetOperation() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Operation
+}
+
+func (s *SharedPaymentProviderError) GetRail() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Rail
+}
+
+func (s *SharedPaymentProviderError) GetConnectionID() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ConnectionID
+}
+
+func (s *SharedPaymentProviderError) GetProviderCode() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ProviderCode
+}
+
+func (s *SharedPaymentProviderError) GetProviderCorrelationID() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ProviderCorrelationID
+}
+
+func (s *SharedPaymentProviderError) GetPaymentMethodID() *string {
+	if s == nil {
+		return nil
+	}
+	return s.PaymentMethodID
+}
+
+func (s *SharedPaymentProviderError) GetAllowanceID() *string {
+	if s == nil {
+		return nil
+	}
+	return s.AllowanceID
+}
+
+func (s *SharedPaymentProviderError) GetPaymentCredentialID() *string {
+	if s == nil {
+		return nil
+	}
+	return s.PaymentCredentialID
+}
+
+func (s *SharedPaymentProviderError) GetOccurredAt() time.Time {
+	if s == nil {
+		return time.Time{}
+	}
+	return s.OccurredAt
+}
+
+func (s *SharedPaymentProviderError) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentProviderError) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetID(id string) {
+	s.ID = id
+	s.require(sharedPaymentProviderErrorFieldID)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetCode(code string) {
+	s.Code = code
+	s.require(sharedPaymentProviderErrorFieldCode)
+}
+
+// SetTitle sets the Title field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetTitle(title string) {
+	s.Title = title
+	s.require(sharedPaymentProviderErrorFieldTitle)
+}
+
+// SetDetail sets the Detail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetDetail(detail string) {
+	s.Detail = detail
+	s.require(sharedPaymentProviderErrorFieldDetail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetProvider(provider SharedPaymentProviderErrorProvider) {
+	s.Provider = provider
+	s.require(sharedPaymentProviderErrorFieldProvider)
+}
+
+// SetOperation sets the Operation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetOperation(operation *string) {
+	s.Operation = operation
+	s.require(sharedPaymentProviderErrorFieldOperation)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetRail(rail *string) {
+	s.Rail = rail
+	s.require(sharedPaymentProviderErrorFieldRail)
+}
+
+// SetConnectionID sets the ConnectionID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetConnectionID(connectionID *string) {
+	s.ConnectionID = connectionID
+	s.require(sharedPaymentProviderErrorFieldConnectionID)
+}
+
+// SetProviderCode sets the ProviderCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetProviderCode(providerCode *string) {
+	s.ProviderCode = providerCode
+	s.require(sharedPaymentProviderErrorFieldProviderCode)
+}
+
+// SetProviderCorrelationID sets the ProviderCorrelationID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetProviderCorrelationID(providerCorrelationID *string) {
+	s.ProviderCorrelationID = providerCorrelationID
+	s.require(sharedPaymentProviderErrorFieldProviderCorrelationID)
+}
+
+// SetPaymentMethodID sets the PaymentMethodID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetPaymentMethodID(paymentMethodID *string) {
+	s.PaymentMethodID = paymentMethodID
+	s.require(sharedPaymentProviderErrorFieldPaymentMethodID)
+}
+
+// SetAllowanceID sets the AllowanceID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetAllowanceID(allowanceID *string) {
+	s.AllowanceID = allowanceID
+	s.require(sharedPaymentProviderErrorFieldAllowanceID)
+}
+
+// SetPaymentCredentialID sets the PaymentCredentialID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetPaymentCredentialID(paymentCredentialID *string) {
+	s.PaymentCredentialID = paymentCredentialID
+	s.require(sharedPaymentProviderErrorFieldPaymentCredentialID)
+}
+
+// SetOccurredAt sets the OccurredAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderError) SetOccurredAt(occurredAt time.Time) {
+	s.OccurredAt = occurredAt
+	s.require(sharedPaymentProviderErrorFieldOccurredAt)
+}
+
+func (s *SharedPaymentProviderError) UnmarshalJSON(data []byte) error {
+	type embed SharedPaymentProviderError
+	var unmarshaler = struct {
+		embed
+		OccurredAt *internal.DateTime `json:"occurred_at"`
+	}{
+		embed: embed(*s),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*s = SharedPaymentProviderError(unmarshaler.embed)
+	s.OccurredAt = unmarshaler.OccurredAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentProviderError) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentProviderError
+	var marshaler = struct {
+		embed
+		OccurredAt *internal.DateTime `json:"occurred_at"`
+	}{
+		embed:      embed(*s),
+		OccurredAt: internal.NewDateTime(s.OccurredAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentProviderError) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentProviderErrorListFieldData       = big.NewInt(1 << 0)
+	sharedPaymentProviderErrorListFieldPagination = big.NewInt(1 << 1)
+)
+
+type SharedPaymentProviderErrorList struct {
+	Data       []*SharedPaymentProviderError             `json:"data,omitempty" url:"data,omitempty"`
+	Pagination *SharedPaymentProviderErrorListPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentProviderErrorList) GetData() []*SharedPaymentProviderError {
+	if s == nil {
+		return nil
+	}
+	return s.Data
+}
+
+func (s *SharedPaymentProviderErrorList) GetPagination() *SharedPaymentProviderErrorListPagination {
+	if s == nil {
+		return nil
+	}
+	return s.Pagination
+}
+
+func (s *SharedPaymentProviderErrorList) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentProviderErrorList) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderErrorList) SetData(data []*SharedPaymentProviderError) {
+	s.Data = data
+	s.require(sharedPaymentProviderErrorListFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderErrorList) SetPagination(pagination *SharedPaymentProviderErrorListPagination) {
+	s.Pagination = pagination
+	s.require(sharedPaymentProviderErrorListFieldPagination)
+}
+
+func (s *SharedPaymentProviderErrorList) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentProviderErrorList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentProviderErrorList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentProviderErrorList) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentProviderErrorList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentProviderErrorList) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentProviderErrorListPaginationFieldNext     = big.NewInt(1 << 0)
+	sharedPaymentProviderErrorListPaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type SharedPaymentProviderErrorListPagination struct {
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize *int    `json:"page_size,omitempty" url:"page_size,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentProviderErrorListPagination) GetNext() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Next
+}
+
+func (s *SharedPaymentProviderErrorListPagination) GetPageSize() *int {
+	if s == nil {
+		return nil
+	}
+	return s.PageSize
+}
+
+func (s *SharedPaymentProviderErrorListPagination) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentProviderErrorListPagination) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderErrorListPagination) SetNext(next *string) {
+	s.Next = next
+	s.require(sharedPaymentProviderErrorListPaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentProviderErrorListPagination) SetPageSize(pageSize *int) {
+	s.PageSize = pageSize
+	s.require(sharedPaymentProviderErrorListPaginationFieldPageSize)
+}
+
+func (s *SharedPaymentProviderErrorListPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentProviderErrorListPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentProviderErrorListPagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentProviderErrorListPagination) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentProviderErrorListPagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentProviderErrorListPagination) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+// Who failed. Errors recorded on a payment method or allowance name the rail provider (`vic`, `agentpay`, `stripe`, `link`); errors recorded on a source connection name the connection provider (`stripe_link`). Both appear because one wallet provider can stand behind a rail and a connection with different names.
+type SharedPaymentProviderErrorProvider string
+
+const (
+	SharedPaymentProviderErrorProviderVic        SharedPaymentProviderErrorProvider = "vic"
+	SharedPaymentProviderErrorProviderAgentpay   SharedPaymentProviderErrorProvider = "agentpay"
+	SharedPaymentProviderErrorProviderStripe     SharedPaymentProviderErrorProvider = "stripe"
+	SharedPaymentProviderErrorProviderLink       SharedPaymentProviderErrorProvider = "link"
+	SharedPaymentProviderErrorProviderStripeLink SharedPaymentProviderErrorProvider = "stripe_link"
+)
+
+func NewSharedPaymentProviderErrorProviderFromString(s string) (SharedPaymentProviderErrorProvider, error) {
+	switch s {
+	case "vic":
+		return SharedPaymentProviderErrorProviderVic, nil
+	case "agentpay":
+		return SharedPaymentProviderErrorProviderAgentpay, nil
+	case "stripe":
+		return SharedPaymentProviderErrorProviderStripe, nil
+	case "link":
+		return SharedPaymentProviderErrorProviderLink, nil
+	case "stripe_link":
+		return SharedPaymentProviderErrorProviderStripeLink, nil
+	}
+	var t SharedPaymentProviderErrorProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SharedPaymentProviderErrorProvider) Ptr() *SharedPaymentProviderErrorProvider {
+	return &s
+}
+
+type SharedPaymentRailBase struct {
+	Rail         string
+	AgenticToken *SharedPaymentRailBaseAgenticToken
+	Spt          *SharedPaymentRailBaseSpt
+	// A virtual card funded from a `stripe_link` connection instrument. Only payment methods whose `source.type` is `connection` carry this rail.
+	VirtualCard *SharedPaymentRailBaseVirtualCard
+}
+
+func (s *SharedPaymentRailBase) GetRail() string {
+	if s == nil {
+		return ""
+	}
+	return s.Rail
+}
+
+func (s *SharedPaymentRailBase) GetAgenticToken() *SharedPaymentRailBaseAgenticToken {
+	if s == nil {
+		return nil
+	}
+	return s.AgenticToken
+}
+
+func (s *SharedPaymentRailBase) GetSpt() *SharedPaymentRailBaseSpt {
+	if s == nil {
+		return nil
+	}
+	return s.Spt
+}
+
+func (s *SharedPaymentRailBase) GetVirtualCard() *SharedPaymentRailBaseVirtualCard {
+	if s == nil {
+		return nil
+	}
+	return s.VirtualCard
+}
+
+func (s *SharedPaymentRailBase) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Rail string `json:"rail"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	s.Rail = unmarshaler.Rail
+	if unmarshaler.Rail == "" {
+		return fmt.Errorf("%T did not include discriminant rail", s)
+	}
+	switch unmarshaler.Rail {
+	case "agentic-token":
+		value := new(SharedPaymentRailBaseAgenticToken)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.AgenticToken = value
+	case "spt":
+		value := new(SharedPaymentRailBaseSpt)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.Spt = value
+	case "virtual-card":
+		value := new(SharedPaymentRailBaseVirtualCard)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.VirtualCard = value
+	}
+	return nil
+}
+
+func (s SharedPaymentRailBase) MarshalJSON() ([]byte, error) {
+	if err := s.validate(); err != nil {
+		return nil, err
+	}
+	if s.AgenticToken != nil {
+		return internal.MarshalJSONWithExtraProperty(s.AgenticToken, "rail", "agentic-token")
+	}
+	if s.Spt != nil {
+		return internal.MarshalJSONWithExtraProperty(s.Spt, "rail", "spt")
+	}
+	if s.VirtualCard != nil {
+		return internal.MarshalJSONWithExtraProperty(s.VirtualCard, "rail", "virtual-card")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", s)
+}
+
+type SharedPaymentRailBaseVisitor interface {
+	VisitAgenticToken(*SharedPaymentRailBaseAgenticToken) error
+	VisitSpt(*SharedPaymentRailBaseSpt) error
+	VisitVirtualCard(*SharedPaymentRailBaseVirtualCard) error
+}
+
+func (s *SharedPaymentRailBase) Accept(visitor SharedPaymentRailBaseVisitor) error {
+	if s.AgenticToken != nil {
+		return visitor.VisitAgenticToken(s.AgenticToken)
+	}
+	if s.Spt != nil {
+		return visitor.VisitSpt(s.Spt)
+	}
+	if s.VirtualCard != nil {
+		return visitor.VisitVirtualCard(s.VirtualCard)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", s)
+}
+
+func (s *SharedPaymentRailBase) validate() error {
+	if s == nil {
+		return fmt.Errorf("type %T is nil", s)
+	}
+	var fields []string
+	if s.AgenticToken != nil {
+		fields = append(fields, "agentic-token")
+	}
+	if s.Spt != nil {
+		fields = append(fields, "spt")
+	}
+	if s.VirtualCard != nil {
+		fields = append(fields, "virtual-card")
+	}
+	if len(fields) == 0 {
+		if s.Rail != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", s, s.Rail)
+		}
+		return fmt.Errorf("type %T is empty", s)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", s, fields)
+	}
+	if s.Rail != "" {
+		field := fields[0]
+		if s.Rail != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				s,
+				s.Rail,
+				s,
+			)
+		}
+	}
+	return nil
+}
+
+var (
+	sharedPaymentRailBaseAgenticTokenFieldProvider    = big.NewInt(1 << 0)
+	sharedPaymentRailBaseAgenticTokenFieldProviderIDs = big.NewInt(1 << 1)
+)
+
+type SharedPaymentRailBaseAgenticToken struct {
+	Provider SharedPaymentRailBaseAgenticTokenProvider `json:"provider" url:"provider"`
+	// Provider-native reference identifiers for this rail. Informational; use for support and correlation, not as a stable contract.
+	ProviderIDs map[string]string `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) GetProvider() SharedPaymentRailBaseAgenticTokenProvider {
+	if s == nil {
+		return ""
+	}
+	return s.Provider
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) GetProviderIDs() map[string]string {
+	if s == nil {
+		return nil
+	}
+	return s.ProviderIDs
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentRailBaseAgenticToken) SetProvider(provider SharedPaymentRailBaseAgenticTokenProvider) {
+	s.Provider = provider
+	s.require(sharedPaymentRailBaseAgenticTokenFieldProvider)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentRailBaseAgenticToken) SetProviderIDs(providerIDs map[string]string) {
+	s.ProviderIDs = providerIDs
+	s.require(sharedPaymentRailBaseAgenticTokenFieldProviderIDs)
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentRailBaseAgenticToken
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentRailBaseAgenticToken(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentRailBaseAgenticToken
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentRailBaseAgenticToken) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+type SharedPaymentRailBaseAgenticTokenProvider string
+
+const (
+	SharedPaymentRailBaseAgenticTokenProviderVic      SharedPaymentRailBaseAgenticTokenProvider = "vic"
+	SharedPaymentRailBaseAgenticTokenProviderAgentpay SharedPaymentRailBaseAgenticTokenProvider = "agentpay"
+)
+
+func NewSharedPaymentRailBaseAgenticTokenProviderFromString(s string) (SharedPaymentRailBaseAgenticTokenProvider, error) {
+	switch s {
+	case "vic":
+		return SharedPaymentRailBaseAgenticTokenProviderVic, nil
+	case "agentpay":
+		return SharedPaymentRailBaseAgenticTokenProviderAgentpay, nil
+	}
+	var t SharedPaymentRailBaseAgenticTokenProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SharedPaymentRailBaseAgenticTokenProvider) Ptr() *SharedPaymentRailBaseAgenticTokenProvider {
+	return &s
+}
+
+var (
+	sharedPaymentRailBaseSptFieldProviderIDs = big.NewInt(1 << 0)
+)
+
+type SharedPaymentRailBaseSpt struct {
+	// Provider-native reference identifiers for this rail. Informational; use for support and correlation, not as a stable contract.
+	ProviderIDs map[string]string `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	provider       string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentRailBaseSpt) GetProviderIDs() map[string]string {
+	if s == nil {
+		return nil
+	}
+	return s.ProviderIDs
+}
+
+func (s *SharedPaymentRailBaseSpt) Provider() string {
+	return s.provider
+}
+
+func (s *SharedPaymentRailBaseSpt) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentRailBaseSpt) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentRailBaseSpt) SetProviderIDs(providerIDs map[string]string) {
+	s.ProviderIDs = providerIDs
+	s.require(sharedPaymentRailBaseSptFieldProviderIDs)
+}
+
+func (s *SharedPaymentRailBaseSpt) UnmarshalJSON(data []byte) error {
+	type embed SharedPaymentRailBaseSpt
+	var unmarshaler = struct {
+		embed
+		Provider string `json:"provider"`
+	}{
+		embed: embed(*s),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*s = SharedPaymentRailBaseSpt(unmarshaler.embed)
+	if unmarshaler.Provider != "stripe" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", s, "stripe", unmarshaler.Provider)
+	}
+	s.provider = unmarshaler.Provider
+	extraProperties, err := internal.ExtractExtraProperties(data, *s, "provider")
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentRailBaseSpt) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentRailBaseSpt
+	var marshaler = struct {
+		embed
+		Provider string `json:"provider"`
+	}{
+		embed:    embed(*s),
+		Provider: "stripe",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentRailBaseSpt) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+// A virtual card funded from a `stripe_link` connection instrument. Only payment methods whose `source.type` is `connection` carry this rail.
+var (
+	sharedPaymentRailBaseVirtualCardFieldProviderIDs = big.NewInt(1 << 0)
+)
+
+type SharedPaymentRailBaseVirtualCard struct {
+	// Provider-native reference identifiers for this rail. Informational; use for support and correlation, not as a stable contract.
+	ProviderIDs map[string]string `json:"provider_ids,omitempty" url:"provider_ids,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	provider       string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) GetProviderIDs() map[string]string {
+	if s == nil {
+		return nil
+	}
+	return s.ProviderIDs
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) Provider() string {
+	return s.provider
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetProviderIDs sets the ProviderIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentRailBaseVirtualCard) SetProviderIDs(providerIDs map[string]string) {
+	s.ProviderIDs = providerIDs
+	s.require(sharedPaymentRailBaseVirtualCardFieldProviderIDs)
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) UnmarshalJSON(data []byte) error {
+	type embed SharedPaymentRailBaseVirtualCard
+	var unmarshaler = struct {
+		embed
+		Provider string `json:"provider"`
+	}{
+		embed: embed(*s),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*s = SharedPaymentRailBaseVirtualCard(unmarshaler.embed)
+	if unmarshaler.Provider != "link" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", s, "link", unmarshaler.Provider)
+	}
+	s.provider = unmarshaler.Provider
+	extraProperties, err := internal.ExtractExtraProperties(data, *s, "provider")
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentRailBaseVirtualCard
+	var marshaler = struct {
+		embed
+		Provider string `json:"provider"`
+	}{
+		embed:    embed(*s),
+		Provider: "link",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentRailBaseVirtualCard) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	sharedPaymentRailErrorFieldCode = big.NewInt(1 << 0)
+)
+
+type SharedPaymentRailError struct {
+	// Stable machine-readable provisioning error code.
+	Code string `json:"code" url:"code"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SharedPaymentRailError) GetCode() string {
+	if s == nil {
+		return ""
+	}
+	return s.Code
+}
+
+func (s *SharedPaymentRailError) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *SharedPaymentRailError) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *SharedPaymentRailError) SetCode(code string) {
+	s.Code = code
+	s.require(sharedPaymentRailErrorFieldCode)
+}
+
+func (s *SharedPaymentRailError) UnmarshalJSON(data []byte) error {
+	type unmarshaler SharedPaymentRailError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SharedPaymentRailError(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SharedPaymentRailError) MarshalJSON() ([]byte, error) {
+	type embed SharedPaymentRailError
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *SharedPaymentRailError) String() string {
 	if s == nil {
 		return "<nil>"
 	}
@@ -21275,6 +29406,90 @@ func (u *User) String() string {
 }
 
 var (
+	validateFunctionSourceRequestFieldCode = big.NewInt(1 << 0)
+)
+
+type ValidateFunctionSourceRequest struct {
+	Code string `json:"code" url:"code"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *ValidateFunctionSourceRequest) GetCode() string {
+	if v == nil {
+		return ""
+	}
+	return v.Code
+}
+
+func (v *ValidateFunctionSourceRequest) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *ValidateFunctionSourceRequest) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *ValidateFunctionSourceRequest) SetCode(code string) {
+	v.Code = code
+	v.require(validateFunctionSourceRequestFieldCode)
+}
+
+func (v *ValidateFunctionSourceRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ValidateFunctionSourceRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = ValidateFunctionSourceRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *ValidateFunctionSourceRequest) MarshalJSON() ([]byte, error) {
+	type embed ValidateFunctionSourceRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *ValidateFunctionSourceRequest) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+var (
 	validationProblemDetailsFieldErrors   = big.NewInt(1 << 0)
 	validationProblemDetailsFieldType     = big.NewInt(1 << 1)
 	validationProblemDetailsFieldTitle    = big.NewInt(1 << 2)
@@ -22362,6 +30577,1193 @@ func NewVerificationResponseStatusFromString(s string) (VerificationResponseStat
 
 func (v VerificationResponseStatus) Ptr() *VerificationResponseStatus {
 	return &v
+}
+
+// Each action is only valid for the providers that run that ceremony: Visa (`vic`) uses the session/OTP/passkey actions, Mastercard (`agentpay`) uses `complete`, and an interactive Stripe Link allowance (`virtual-card`/`link`) uses `start` to obtain the consumer's approval redirect and `complete` to check it once. A rail with no cardholder ceremony (`spt`, or a delegated `virtual-card` allowance) accepts `start` and answers `400 VERIFICATION_NOT_REQUIRED`.
+type VerifyAllowanceRequest struct {
+	Action          string
+	Start           *VerifyAllowanceRequestStart
+	SubmitSession   *VerifyAllowanceRequestSubmitSession
+	Complete        *VerifyAllowanceRequestComplete
+	SelectOtpMethod *VerifyAllowanceRequestSelectOtpMethod
+	SubmitOtp       *VerifyAllowanceRequestSubmitOtp
+	SubmitPasskey   *VerifyAllowanceRequestSubmitPasskey
+}
+
+func (v *VerifyAllowanceRequest) GetAction() string {
+	if v == nil {
+		return ""
+	}
+	return v.Action
+}
+
+func (v *VerifyAllowanceRequest) GetStart() *VerifyAllowanceRequestStart {
+	if v == nil {
+		return nil
+	}
+	return v.Start
+}
+
+func (v *VerifyAllowanceRequest) GetSubmitSession() *VerifyAllowanceRequestSubmitSession {
+	if v == nil {
+		return nil
+	}
+	return v.SubmitSession
+}
+
+func (v *VerifyAllowanceRequest) GetComplete() *VerifyAllowanceRequestComplete {
+	if v == nil {
+		return nil
+	}
+	return v.Complete
+}
+
+func (v *VerifyAllowanceRequest) GetSelectOtpMethod() *VerifyAllowanceRequestSelectOtpMethod {
+	if v == nil {
+		return nil
+	}
+	return v.SelectOtpMethod
+}
+
+func (v *VerifyAllowanceRequest) GetSubmitOtp() *VerifyAllowanceRequestSubmitOtp {
+	if v == nil {
+		return nil
+	}
+	return v.SubmitOtp
+}
+
+func (v *VerifyAllowanceRequest) GetSubmitPasskey() *VerifyAllowanceRequestSubmitPasskey {
+	if v == nil {
+		return nil
+	}
+	return v.SubmitPasskey
+}
+
+func (v *VerifyAllowanceRequest) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Action string `json:"action"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	v.Action = unmarshaler.Action
+	if unmarshaler.Action == "" {
+		return fmt.Errorf("%T did not include discriminant action", v)
+	}
+	switch unmarshaler.Action {
+	case "start":
+		value := new(VerifyAllowanceRequestStart)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Start = value
+	case "submit_session":
+		value := new(VerifyAllowanceRequestSubmitSession)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.SubmitSession = value
+	case "complete":
+		value := new(VerifyAllowanceRequestComplete)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Complete = value
+	case "select_otp_method":
+		value := new(VerifyAllowanceRequestSelectOtpMethod)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.SelectOtpMethod = value
+	case "submit_otp":
+		value := new(VerifyAllowanceRequestSubmitOtp)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.SubmitOtp = value
+	case "submit_passkey":
+		value := new(VerifyAllowanceRequestSubmitPasskey)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.SubmitPasskey = value
+	}
+	return nil
+}
+
+func (v VerifyAllowanceRequest) MarshalJSON() ([]byte, error) {
+	if err := v.validate(); err != nil {
+		return nil, err
+	}
+	if v.Start != nil {
+		return internal.MarshalJSONWithExtraProperty(v.Start, "action", "start")
+	}
+	if v.SubmitSession != nil {
+		return internal.MarshalJSONWithExtraProperty(v.SubmitSession, "action", "submit_session")
+	}
+	if v.Complete != nil {
+		return internal.MarshalJSONWithExtraProperty(v.Complete, "action", "complete")
+	}
+	if v.SelectOtpMethod != nil {
+		return internal.MarshalJSONWithExtraProperty(v.SelectOtpMethod, "action", "select_otp_method")
+	}
+	if v.SubmitOtp != nil {
+		return internal.MarshalJSONWithExtraProperty(v.SubmitOtp, "action", "submit_otp")
+	}
+	if v.SubmitPasskey != nil {
+		return internal.MarshalJSONWithExtraProperty(v.SubmitPasskey, "action", "submit_passkey")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", v)
+}
+
+type VerifyAllowanceRequestVisitor interface {
+	VisitStart(*VerifyAllowanceRequestStart) error
+	VisitSubmitSession(*VerifyAllowanceRequestSubmitSession) error
+	VisitComplete(*VerifyAllowanceRequestComplete) error
+	VisitSelectOtpMethod(*VerifyAllowanceRequestSelectOtpMethod) error
+	VisitSubmitOtp(*VerifyAllowanceRequestSubmitOtp) error
+	VisitSubmitPasskey(*VerifyAllowanceRequestSubmitPasskey) error
+}
+
+func (v *VerifyAllowanceRequest) Accept(visitor VerifyAllowanceRequestVisitor) error {
+	if v.Start != nil {
+		return visitor.VisitStart(v.Start)
+	}
+	if v.SubmitSession != nil {
+		return visitor.VisitSubmitSession(v.SubmitSession)
+	}
+	if v.Complete != nil {
+		return visitor.VisitComplete(v.Complete)
+	}
+	if v.SelectOtpMethod != nil {
+		return visitor.VisitSelectOtpMethod(v.SelectOtpMethod)
+	}
+	if v.SubmitOtp != nil {
+		return visitor.VisitSubmitOtp(v.SubmitOtp)
+	}
+	if v.SubmitPasskey != nil {
+		return visitor.VisitSubmitPasskey(v.SubmitPasskey)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", v)
+}
+
+func (v *VerifyAllowanceRequest) validate() error {
+	if v == nil {
+		return fmt.Errorf("type %T is nil", v)
+	}
+	var fields []string
+	if v.Start != nil {
+		fields = append(fields, "start")
+	}
+	if v.SubmitSession != nil {
+		fields = append(fields, "submit_session")
+	}
+	if v.Complete != nil {
+		fields = append(fields, "complete")
+	}
+	if v.SelectOtpMethod != nil {
+		fields = append(fields, "select_otp_method")
+	}
+	if v.SubmitOtp != nil {
+		fields = append(fields, "submit_otp")
+	}
+	if v.SubmitPasskey != nil {
+		fields = append(fields, "submit_passkey")
+	}
+	if len(fields) == 0 {
+		if v.Action != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", v, v.Action)
+		}
+		return fmt.Errorf("type %T is empty", v)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", v, fields)
+	}
+	if v.Action != "" {
+		field := fields[0]
+		if v.Action != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				v,
+				v.Action,
+				v,
+			)
+		}
+	}
+	return nil
+}
+
+var (
+	verifyAllowanceRequestCompleteFieldRail     = big.NewInt(1 << 0)
+	verifyAllowanceRequestCompleteFieldProvider = big.NewInt(1 << 1)
+)
+
+type VerifyAllowanceRequestComplete struct {
+	Rail     VerifyAllowanceRequestCompleteRail     `json:"rail" url:"rail"`
+	Provider VerifyAllowanceRequestCompleteProvider `json:"provider" url:"provider"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestComplete) GetRail() VerifyAllowanceRequestCompleteRail {
+	if v == nil {
+		return ""
+	}
+	return v.Rail
+}
+
+func (v *VerifyAllowanceRequestComplete) GetProvider() VerifyAllowanceRequestCompleteProvider {
+	if v == nil {
+		return ""
+	}
+	return v.Provider
+}
+
+func (v *VerifyAllowanceRequestComplete) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestComplete) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestComplete) SetRail(rail VerifyAllowanceRequestCompleteRail) {
+	v.Rail = rail
+	v.require(verifyAllowanceRequestCompleteFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestComplete) SetProvider(provider VerifyAllowanceRequestCompleteProvider) {
+	v.Provider = provider
+	v.require(verifyAllowanceRequestCompleteFieldProvider)
+}
+
+func (v *VerifyAllowanceRequestComplete) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerifyAllowanceRequestComplete
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestComplete(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestComplete) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestComplete
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestComplete) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerifyAllowanceRequestCompleteProvider string
+
+const (
+	VerifyAllowanceRequestCompleteProviderAgentpay VerifyAllowanceRequestCompleteProvider = "agentpay"
+	VerifyAllowanceRequestCompleteProviderLink     VerifyAllowanceRequestCompleteProvider = "link"
+)
+
+func NewVerifyAllowanceRequestCompleteProviderFromString(s string) (VerifyAllowanceRequestCompleteProvider, error) {
+	switch s {
+	case "agentpay":
+		return VerifyAllowanceRequestCompleteProviderAgentpay, nil
+	case "link":
+		return VerifyAllowanceRequestCompleteProviderLink, nil
+	}
+	var t VerifyAllowanceRequestCompleteProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerifyAllowanceRequestCompleteProvider) Ptr() *VerifyAllowanceRequestCompleteProvider {
+	return &v
+}
+
+type VerifyAllowanceRequestCompleteRail string
+
+const (
+	VerifyAllowanceRequestCompleteRailAgenticToken VerifyAllowanceRequestCompleteRail = "agentic-token"
+	VerifyAllowanceRequestCompleteRailVirtualCard  VerifyAllowanceRequestCompleteRail = "virtual-card"
+)
+
+func NewVerifyAllowanceRequestCompleteRailFromString(s string) (VerifyAllowanceRequestCompleteRail, error) {
+	switch s {
+	case "agentic-token":
+		return VerifyAllowanceRequestCompleteRailAgenticToken, nil
+	case "virtual-card":
+		return VerifyAllowanceRequestCompleteRailVirtualCard, nil
+	}
+	var t VerifyAllowanceRequestCompleteRail
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerifyAllowanceRequestCompleteRail) Ptr() *VerifyAllowanceRequestCompleteRail {
+	return &v
+}
+
+var (
+	verifyAllowanceRequestSelectOtpMethodFieldMethodID = big.NewInt(1 << 0)
+)
+
+type VerifyAllowanceRequestSelectOtpMethod struct {
+	MethodID string `json:"method_id" url:"method_id"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	rail           string
+	provider       string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) GetMethodID() string {
+	if v == nil {
+		return ""
+	}
+	return v.MethodID
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) Rail() string {
+	return v.rail
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) Provider() string {
+	return v.provider
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetMethodID sets the MethodID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestSelectOtpMethod) SetMethodID(methodID string) {
+	v.MethodID = methodID
+	v.require(verifyAllowanceRequestSelectOtpMethodFieldMethodID)
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) UnmarshalJSON(data []byte) error {
+	type embed VerifyAllowanceRequestSelectOtpMethod
+	var unmarshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed: embed(*v),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestSelectOtpMethod(unmarshaler.embed)
+	if unmarshaler.Rail != "agentic-token" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "agentic-token", unmarshaler.Rail)
+	}
+	v.rail = unmarshaler.Rail
+	if unmarshaler.Provider != "vic" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "vic", unmarshaler.Provider)
+	}
+	v.provider = unmarshaler.Provider
+	extraProperties, err := internal.ExtractExtraProperties(data, *v, "rail", "provider")
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestSelectOtpMethod
+	var marshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed:    embed(*v),
+		Rail:     "agentic-token",
+		Provider: "vic",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestSelectOtpMethod) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+var (
+	verifyAllowanceRequestStartFieldRail          = big.NewInt(1 << 0)
+	verifyAllowanceRequestStartFieldProvider      = big.NewInt(1 << 1)
+	verifyAllowanceRequestStartFieldDisplayName   = big.NewInt(1 << 2)
+	verifyAllowanceRequestStartFieldDeviceContext = big.NewInt(1 << 3)
+)
+
+type VerifyAllowanceRequestStart struct {
+	Rail     VerifyAllowanceRequestStartRail     `json:"rail" url:"rail"`
+	Provider VerifyAllowanceRequestStartProvider `json:"provider" url:"provider"`
+	// Application or agent name shown on network verification screens, including approval and return-to-application messages.
+	DisplayName *string `json:"display_name,omitempty" url:"display_name,omitempty"`
+	// Browser/device data captured once on Visa `start`. Only `language_code` and `time_zone` are validated; every other property is forwarded to Visa unchanged. The API retains it for `submit_session`.
+	DeviceContext *VerifyAllowanceRequestStartDeviceContext `json:"device_context,omitempty" url:"device_context,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestStart) GetRail() VerifyAllowanceRequestStartRail {
+	if v == nil {
+		return ""
+	}
+	return v.Rail
+}
+
+func (v *VerifyAllowanceRequestStart) GetProvider() VerifyAllowanceRequestStartProvider {
+	if v == nil {
+		return ""
+	}
+	return v.Provider
+}
+
+func (v *VerifyAllowanceRequestStart) GetDisplayName() *string {
+	if v == nil {
+		return nil
+	}
+	return v.DisplayName
+}
+
+func (v *VerifyAllowanceRequestStart) GetDeviceContext() *VerifyAllowanceRequestStartDeviceContext {
+	if v == nil {
+		return nil
+	}
+	return v.DeviceContext
+}
+
+func (v *VerifyAllowanceRequestStart) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestStart) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetRail sets the Rail field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestStart) SetRail(rail VerifyAllowanceRequestStartRail) {
+	v.Rail = rail
+	v.require(verifyAllowanceRequestStartFieldRail)
+}
+
+// SetProvider sets the Provider field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestStart) SetProvider(provider VerifyAllowanceRequestStartProvider) {
+	v.Provider = provider
+	v.require(verifyAllowanceRequestStartFieldProvider)
+}
+
+// SetDisplayName sets the DisplayName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestStart) SetDisplayName(displayName *string) {
+	v.DisplayName = displayName
+	v.require(verifyAllowanceRequestStartFieldDisplayName)
+}
+
+// SetDeviceContext sets the DeviceContext field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestStart) SetDeviceContext(deviceContext *VerifyAllowanceRequestStartDeviceContext) {
+	v.DeviceContext = deviceContext
+	v.require(verifyAllowanceRequestStartFieldDeviceContext)
+}
+
+func (v *VerifyAllowanceRequestStart) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerifyAllowanceRequestStart
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestStart(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestStart) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestStart
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestStart) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// Browser/device data captured once on Visa `start`. Only `language_code` and `time_zone` are validated; every other property is forwarded to Visa unchanged. The API retains it for `submit_session`.
+var (
+	verifyAllowanceRequestStartDeviceContextFieldLanguageCode = big.NewInt(1 << 0)
+	verifyAllowanceRequestStartDeviceContextFieldTimeZone     = big.NewInt(1 << 1)
+)
+
+type VerifyAllowanceRequestStartDeviceContext struct {
+	// BCP 47 language tag. Canonicalized on input (for example, `EN-us` becomes `en-US`); underscore locales such as `en_US` are rejected.
+	LanguageCode *string `json:"language_code,omitempty" url:"language_code,omitempty"`
+	// IANA time zone identifier, such as `America/New_York`.
+	TimeZone *string `json:"time_zone,omitempty" url:"time_zone,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) GetLanguageCode() *string {
+	if v == nil {
+		return nil
+	}
+	return v.LanguageCode
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) GetTimeZone() *string {
+	if v == nil {
+		return nil
+	}
+	return v.TimeZone
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.ExtraProperties
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetLanguageCode sets the LanguageCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestStartDeviceContext) SetLanguageCode(languageCode *string) {
+	v.LanguageCode = languageCode
+	v.require(verifyAllowanceRequestStartDeviceContextFieldLanguageCode)
+}
+
+// SetTimeZone sets the TimeZone field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestStartDeviceContext) SetTimeZone(timeZone *string) {
+	v.TimeZone = timeZone
+	v.require(verifyAllowanceRequestStartDeviceContextFieldTimeZone)
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) UnmarshalJSON(data []byte) error {
+	type embed VerifyAllowanceRequestStartDeviceContext
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestStartDeviceContext(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.ExtraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestStartDeviceContext
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, v.ExtraProperties)
+}
+
+func (v *VerifyAllowanceRequestStartDeviceContext) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerifyAllowanceRequestStartProvider string
+
+const (
+	VerifyAllowanceRequestStartProviderVic      VerifyAllowanceRequestStartProvider = "vic"
+	VerifyAllowanceRequestStartProviderAgentpay VerifyAllowanceRequestStartProvider = "agentpay"
+	VerifyAllowanceRequestStartProviderStripe   VerifyAllowanceRequestStartProvider = "stripe"
+	VerifyAllowanceRequestStartProviderLink     VerifyAllowanceRequestStartProvider = "link"
+)
+
+func NewVerifyAllowanceRequestStartProviderFromString(s string) (VerifyAllowanceRequestStartProvider, error) {
+	switch s {
+	case "vic":
+		return VerifyAllowanceRequestStartProviderVic, nil
+	case "agentpay":
+		return VerifyAllowanceRequestStartProviderAgentpay, nil
+	case "stripe":
+		return VerifyAllowanceRequestStartProviderStripe, nil
+	case "link":
+		return VerifyAllowanceRequestStartProviderLink, nil
+	}
+	var t VerifyAllowanceRequestStartProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerifyAllowanceRequestStartProvider) Ptr() *VerifyAllowanceRequestStartProvider {
+	return &v
+}
+
+type VerifyAllowanceRequestStartRail string
+
+const (
+	VerifyAllowanceRequestStartRailAgenticToken VerifyAllowanceRequestStartRail = "agentic-token"
+	VerifyAllowanceRequestStartRailSpt          VerifyAllowanceRequestStartRail = "spt"
+	VerifyAllowanceRequestStartRailVirtualCard  VerifyAllowanceRequestStartRail = "virtual-card"
+)
+
+func NewVerifyAllowanceRequestStartRailFromString(s string) (VerifyAllowanceRequestStartRail, error) {
+	switch s {
+	case "agentic-token":
+		return VerifyAllowanceRequestStartRailAgenticToken, nil
+	case "spt":
+		return VerifyAllowanceRequestStartRailSpt, nil
+	case "virtual-card":
+		return VerifyAllowanceRequestStartRailVirtualCard, nil
+	}
+	var t VerifyAllowanceRequestStartRail
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerifyAllowanceRequestStartRail) Ptr() *VerifyAllowanceRequestStartRail {
+	return &v
+}
+
+var (
+	verifyAllowanceRequestSubmitOtpFieldOtpCode = big.NewInt(1 << 0)
+)
+
+type VerifyAllowanceRequestSubmitOtp struct {
+	OtpCode string `json:"otp_code" url:"otp_code"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	rail           string
+	provider       string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) GetOtpCode() string {
+	if v == nil {
+		return ""
+	}
+	return v.OtpCode
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) Rail() string {
+	return v.rail
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) Provider() string {
+	return v.provider
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetOtpCode sets the OtpCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestSubmitOtp) SetOtpCode(otpCode string) {
+	v.OtpCode = otpCode
+	v.require(verifyAllowanceRequestSubmitOtpFieldOtpCode)
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) UnmarshalJSON(data []byte) error {
+	type embed VerifyAllowanceRequestSubmitOtp
+	var unmarshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed: embed(*v),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestSubmitOtp(unmarshaler.embed)
+	if unmarshaler.Rail != "agentic-token" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "agentic-token", unmarshaler.Rail)
+	}
+	v.rail = unmarshaler.Rail
+	if unmarshaler.Provider != "vic" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "vic", unmarshaler.Provider)
+	}
+	v.provider = unmarshaler.Provider
+	extraProperties, err := internal.ExtractExtraProperties(data, *v, "rail", "provider")
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestSubmitOtp
+	var marshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed:    embed(*v),
+		Rail:     "agentic-token",
+		Provider: "vic",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestSubmitOtp) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+var (
+	verifyAllowanceRequestSubmitPasskeyFieldAssuranceData = big.NewInt(1 << 0)
+)
+
+type VerifyAllowanceRequestSubmitPasskey struct {
+	AssuranceData map[string]any `json:"assurance_data" url:"assurance_data"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	rail           string
+	provider       string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) GetAssuranceData() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.AssuranceData
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) Rail() string {
+	return v.rail
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) Provider() string {
+	return v.provider
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetAssuranceData sets the AssuranceData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestSubmitPasskey) SetAssuranceData(assuranceData map[string]any) {
+	v.AssuranceData = assuranceData
+	v.require(verifyAllowanceRequestSubmitPasskeyFieldAssuranceData)
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) UnmarshalJSON(data []byte) error {
+	type embed VerifyAllowanceRequestSubmitPasskey
+	var unmarshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed: embed(*v),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestSubmitPasskey(unmarshaler.embed)
+	if unmarshaler.Rail != "agentic-token" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "agentic-token", unmarshaler.Rail)
+	}
+	v.rail = unmarshaler.Rail
+	if unmarshaler.Provider != "vic" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "vic", unmarshaler.Provider)
+	}
+	v.provider = unmarshaler.Provider
+	extraProperties, err := internal.ExtractExtraProperties(data, *v, "rail", "provider")
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestSubmitPasskey
+	var marshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed:    embed(*v),
+		Rail:     "agentic-token",
+		Provider: "vic",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestSubmitPasskey) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+var (
+	verifyAllowanceRequestSubmitSessionFieldSessionContext = big.NewInt(1 << 0)
+)
+
+type VerifyAllowanceRequestSubmitSession struct {
+	// Secure session returned by Visa's hosted iframe after `passkey_session`. The original device context and display name are retained server-side.
+	SessionContext *VerifyAllowanceRequestSubmitSessionSessionContext `json:"session_context" url:"session_context"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+	rail           string
+	provider       string
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) GetSessionContext() *VerifyAllowanceRequestSubmitSessionSessionContext {
+	if v == nil {
+		return nil
+	}
+	return v.SessionContext
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) Rail() string {
+	return v.rail
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) Provider() string {
+	return v.provider
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetSessionContext sets the SessionContext field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestSubmitSession) SetSessionContext(sessionContext *VerifyAllowanceRequestSubmitSessionSessionContext) {
+	v.SessionContext = sessionContext
+	v.require(verifyAllowanceRequestSubmitSessionFieldSessionContext)
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) UnmarshalJSON(data []byte) error {
+	type embed VerifyAllowanceRequestSubmitSession
+	var unmarshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed: embed(*v),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestSubmitSession(unmarshaler.embed)
+	if unmarshaler.Rail != "agentic-token" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "agentic-token", unmarshaler.Rail)
+	}
+	v.rail = unmarshaler.Rail
+	if unmarshaler.Provider != "vic" {
+		return fmt.Errorf("unexpected value for literal on type %T; expected %v got %v", v, "vic", unmarshaler.Provider)
+	}
+	v.provider = unmarshaler.Provider
+	extraProperties, err := internal.ExtractExtraProperties(data, *v, "rail", "provider")
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestSubmitSession
+	var marshaler = struct {
+		embed
+		Rail     string `json:"rail"`
+		Provider string `json:"provider"`
+	}{
+		embed:    embed(*v),
+		Rail:     "agentic-token",
+		Provider: "vic",
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestSubmitSession) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// Secure session returned by Visa's hosted iframe after `passkey_session`. The original device context and display name are retained server-side.
+var (
+	verifyAllowanceRequestSubmitSessionSessionContextFieldSecureToken = big.NewInt(1 << 0)
+)
+
+type VerifyAllowanceRequestSubmitSessionSessionContext struct {
+	SecureToken string `json:"secure_token" url:"secure_token"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) GetSecureToken() string {
+	if v == nil {
+		return ""
+	}
+	return v.SecureToken
+}
+
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetSecureToken sets the SecureToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) SetSecureToken(secureToken string) {
+	v.SecureToken = secureToken
+	v.require(verifyAllowanceRequestSubmitSessionSessionContextFieldSecureToken)
+}
+
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerifyAllowanceRequestSubmitSessionSessionContext
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerifyAllowanceRequestSubmitSessionSessionContext(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) MarshalJSON() ([]byte, error) {
+	type embed VerifyAllowanceRequestSubmitSessionSessionContext
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *VerifyAllowanceRequestSubmitSessionSessionContext) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 var (

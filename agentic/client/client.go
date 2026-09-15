@@ -5,15 +5,21 @@ package client
 import (
 	os "os"
 
-	client "github.com/Basis-Theory/go-sdk/v7/agentic/agents/client"
-	enrollmentsclient "github.com/Basis-Theory/go-sdk/v7/agentic/enrollments/client"
+	agentsclient "github.com/Basis-Theory/go-sdk/v7/agentic/agents/client"
+	allowancesclient "github.com/Basis-Theory/go-sdk/v7/agentic/allowances/client"
+	client "github.com/Basis-Theory/go-sdk/v7/agentic/enrollments/client"
+	paymentcredentials "github.com/Basis-Theory/go-sdk/v7/agentic/paymentcredentials"
+	paymentmethodsclient "github.com/Basis-Theory/go-sdk/v7/agentic/paymentmethods/client"
 	core "github.com/Basis-Theory/go-sdk/v7/core"
 	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 )
 
 type Client struct {
-	Agents      *client.Client
-	Enrollments *enrollmentsclient.Client
+	Enrollments        *client.Client
+	Agents             *agentsclient.Client
+	PaymentMethods     *paymentmethodsclient.Client
+	PaymentCredentials *paymentcredentials.Client
+	Allowances         *allowancesclient.Client
 
 	options *core.RequestOptions
 	baseURL string
@@ -25,10 +31,13 @@ func NewClient(options *core.RequestOptions) *Client {
 		options.APIKey = os.Getenv("BT-API-KEY")
 	}
 	return &Client{
-		Agents:      client.NewClient(options),
-		Enrollments: enrollmentsclient.NewClient(options),
-		options:     options,
-		baseURL:     options.BaseURL,
+		Enrollments:        client.NewClient(options),
+		Agents:             agentsclient.NewClient(options),
+		PaymentMethods:     paymentmethodsclient.NewClient(options),
+		PaymentCredentials: paymentcredentials.NewClient(options),
+		Allowances:         allowancesclient.NewClient(options),
+		options:            options,
+		baseURL:            options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
 				Client:         options.HTTPClient,

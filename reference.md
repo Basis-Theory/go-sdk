@@ -2100,6 +2100,22 @@ client.NetworkTokens.Create(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**configurationMerchantID:** `*string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ownerMerchantID:** `*string` 
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -2958,6 +2974,62 @@ client.Proxies.Patch(
 <dd>
 
 **disableDetokenization:** `*bool` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Proxies.TransferHostname(ID, request) -> error</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &basistheory.TransferProxyHostnameRequest{
+        ProxyHost: "proxy_host",
+    }
+client.Proxies.TransferHostname(
+        context.TODO(),
+        "id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**proxyHost:** `string` 
     
 </dd>
 </dl>
@@ -4369,6 +4441,14 @@ client.AccountUpdater.Jobs.Create(
 <dl>
 <dd>
 
+**btMerchantID:** `*string` — Tenant merchant the job acts as. Tokens in the file are read within this merchant's scope and new tokens are associated with it. Responds 404 if the merchant does not exist in the tenant.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **deduplicateTokens:** `*bool` — Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
     
 </dd>
@@ -4377,7 +4457,15 @@ client.AccountUpdater.Jobs.Create(
 <dl>
 <dd>
 
-**merchantID:** `*string` — Tenant merchant identifier
+**configurationMerchantID:** `*string` — Tenant merchant whose provider configuration is used for this job. Selects configuration only; it does not scope token access or associate tokens with the merchant. Takes precedence over merchant_id; defaults to the BT-MERCHANT-ID header merchant, then the tenant-level configuration.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**merchantID:** `*string` — Deprecated: use configuration_merchant_id instead. Legacy alias kept for backward compatibility with lower precedence. Selects configuration only.
     
 </dd>
 </dl>
@@ -4447,6 +4535,14 @@ client.AccountUpdater.RealTime.Invoke(
 <dl>
 <dd>
 
+**btMerchantID:** `*string` — Tenant merchant the request acts as. The card token is read within this merchant's scope and the updated token is associated with it. Responds 404 if the merchant does not exist in the tenant.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **tokenID:** `string` — Card Token identifier
     
 </dd>
@@ -4479,55 +4575,7 @@ client.AccountUpdater.RealTime.Invoke(
 <dl>
 <dd>
 
-**merchantID:** `*string` — Tenant merchant identifier
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-## Agentic Agents
-<details><summary><code>client.Agentic.Agents.Create(request) -> *basistheory.Agent</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```go
-request := &agentic.CreateAgentRequest{
-        Name: "name",
-    }
-client.Agentic.Agents.Create(
-        context.TODO(),
-        request,
-    )
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**name:** `string` 
+**configurationMerchantID:** `*string` — Tenant merchant whose provider configuration is used for this request. Selects configuration only; it does not scope token access or associate the new token with the merchant. Takes precedence over merchant_id; defaults to the BT-MERCHANT-ID header merchant, then the tenant-level configuration.
     
 </dd>
 </dl>
@@ -4535,173 +4583,7 @@ client.Agentic.Agents.Create(
 <dl>
 <dd>
 
-**enrollmentIDs:** `[]string` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**instanceDetails:** `*basistheory.InstanceDetails` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.Agentic.Agents.Get(AgentID) -> *basistheory.Agent</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```go
-client.Agentic.Agents.Get(
-        context.TODO(),
-        "agent_id",
-    )
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**agentID:** `string` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.Agentic.Agents.Delete(AgentID) -> error</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```go
-client.Agentic.Agents.Delete(
-        context.TODO(),
-        "agent_id",
-    )
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**agentID:** `string` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.Agentic.Agents.Update(AgentID, request) -> *basistheory.Agent</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```go
-request := &agentic.UpdateAgentRequest{}
-client.Agentic.Agents.Update(
-        context.TODO(),
-        "agent_id",
-        request,
-    )
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**agentID:** `string` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `*string` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**enrollmentIDs:** `[]string` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**instanceDetails:** `*basistheory.InstanceDetails` 
+**merchantID:** `*string` — Deprecated: use configuration_merchant_id instead. Legacy alias kept for backward compatibility with lower precedence. Selects configuration only.
     
 </dd>
 </dl>
@@ -5055,6 +4937,1237 @@ client.Agentic.Enrollments.Retry(
 <dd>
 
 **enrollmentID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Agentic Agents
+<details><summary><code>client.Agentic.Agents.Create(request) -> *basistheory.Agent</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.CreateAgentRequest{
+        Name: "name",
+    }
+client.Agentic.Agents.Create(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enrollmentIDs:** `[]string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instanceDetails:** `*basistheory.InstanceDetails` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Agents.Get(AgentID) -> *basistheory.Agent</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.Agents.Get(
+        context.TODO(),
+        "agent_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**agentID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Agents.Delete(AgentID) -> error</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.Agents.Delete(
+        context.TODO(),
+        "agent_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**agentID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Agents.Update(AgentID, request) -> *basistheory.Agent</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.UpdateAgentRequest{}
+client.Agentic.Agents.Update(
+        context.TODO(),
+        "agent_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**agentID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `*string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enrollmentIDs:** `[]string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instanceDetails:** `*basistheory.InstanceDetails` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Agentic PaymentMethods
+<details><summary><code>client.Agentic.PaymentMethods.List() -> *basistheory.PaymentMethodList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists shared payment methods for the current tenant. Defaults to active resources; use `status=all` for a complete Portal history. Server-side page filling prevents sparse pages when filtering by status.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.PaymentMethodsListRequest{
+        Size: basistheory.Int(
+            1,
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+        ConsumerID: basistheory.String(
+            "consumer_id",
+        ),
+        Status: agentic.PaymentMethodsListRequestStatusActive.Ptr(),
+    }
+client.Agentic.PaymentMethods.List(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**size:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**consumerID:** `*string` — Optional consumer UUID to list payment methods for one customer.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `*agentic.PaymentMethodsListRequestStatus` — Resource status filter. Defaults to active.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.PaymentMethods.Create(request) -> *basistheory.PaymentMethod</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a shared payment method from a funding source — a Basis Theory card token, or an instrument reached through a source connection — and provision the rails that source is eligible for. Public and private applications may call this operation with `agentic:payment-method:create`. Supply BT-IDEMPOTENCY-KEY to make matching retries return the same resource. Without it, every request is a new create operation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.CreatePaymentMethodRequest{
+        Source: &basistheory.PaymentMethodSource{
+            BasisTheoryCardToken: &basistheory.PaymentMethodSourceBasisTheoryCardToken{
+                TokenID: "token_id",
+            },
+        },
+        Consumer: &basistheory.SharedPaymentConsumer{
+            Email: "email",
+        },
+    }
+client.Agentic.PaymentMethods.Create(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**btIdempotencyKey:** `*string` — Optional stable key for safely replaying this create request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**source:** `*basistheory.PaymentMethodSource` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**consumer:** `*basistheory.SharedPaymentConsumer` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agentID:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.PaymentMethods.Get(PaymentMethodID) -> *basistheory.PaymentMethod</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.PaymentMethods.Get(
+        context.TODO(),
+        "payment_method_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**paymentMethodID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.PaymentMethods.Delete(PaymentMethodID) -> error</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a payment method and revoke everything downstream - every allowance backed by it is cancelled (including network-side purchase instructions) and no further verification or credential minting is possible.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.PaymentMethods.Delete(
+        context.TODO(),
+        "payment_method_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**paymentMethodID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.PaymentMethods.Errors(PaymentMethodID) -> *basistheory.SharedPaymentProviderErrorList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists sanitized provider failures for a payment method and its downstream operations. Raw provider bodies and card data are never returned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.PaymentMethodsErrorsRequest{
+        Size: basistheory.Int(
+            1,
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+    }
+client.Agentic.PaymentMethods.Errors(
+        context.TODO(),
+        "payment_method_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**paymentMethodID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Agentic PaymentCredentials
+<details><summary><code>client.Agentic.PaymentCredentials.List() -> *basistheory.PaymentCredentialList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists credential metadata across the tenant for Portal history. Spendable card, SPT, and MPP payloads are never returned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.PaymentCredentialsListRequest{
+        Size: basistheory.Int(
+            1,
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+    }
+client.Agentic.PaymentCredentials.List(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**size:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Agentic Allowances
+<details><summary><code>client.Agentic.Allowances.List() -> *basistheory.AllowanceList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists allowances for the current tenant. Defaults to active, unexpired resources; use `status=all` for a complete Portal history. Results can be scoped to one payment method, and server-side page filling prevents sparse pages when filtering by status.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.AllowancesListRequest{
+        Size: basistheory.Int(
+            1,
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+        PaymentMethodID: basistheory.String(
+            "payment_method_id",
+        ),
+        Status: agentic.AllowancesListRequestStatusActive.Ptr(),
+    }
+client.Agentic.Allowances.List(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**size:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**paymentMethodID:** `*string` — Optional payment method ID to list its allowances.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `*agentic.AllowancesListRequestStatus` — Derived resource status filter. Defaults to active.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Create(request) -> *basistheory.Allowance</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a spending allowance from a payment method. Supply `merchant` to scope the mandate to one merchant, or omit it to leave the allowance open and name a merchant on each credential request instead. The payment method must have at least one enabled rail; otherwise the request returns `NO_ACTIVE_RAILS`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.CreateAllowanceRequest{
+        PaymentMethodID: "payment_method_id",
+        Amount: &basistheory.SharedPaymentAmount{
+            Value: "100.00",
+            Currency: "USD",
+        },
+        Description: "description",
+        ExpiresAt: basistheory.MustParseDateTime(
+            "2024-01-15T09:30:00Z",
+        ),
+    }
+client.Agentic.Allowances.Create(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**btIdempotencyKey:** `*string` — Optional stable key for safely replaying this create request. Without it, every request creates a new allowance.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**paymentMethodID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agentID:** `*string` — Optional attribution to an agent owned by the tenant. This does not authorize the caller; tenant API-key permissions remain the authorization boundary.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**amount:** `*basistheory.SharedPaymentAmount` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**merchant:** `*basistheory.SharedPaymentMerchant` — Optional merchant the allowance is scoped to. Omit it to leave the allowance open and supply `merchant` on each credential request instead. Once set it cannot be changed, and a credential request for a merchant-scoped allowance must not send its own `merchant`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `string` — Customer-facing prompt describing what the allowance permits.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**expiresAt:** `time.Time` — ISO 8601 timestamp when the allowance expires. Must be in the future.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `map[string]any` — Public integration metadata. The JSON-encoded value must not exceed 32 KiB.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Get(AllowanceID) -> *basistheory.Allowance</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.Allowances.Get(
+        context.TODO(),
+        "allowance_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Delete(AllowanceID) -> error</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Cancel an allowance so new credentials cannot be created from it. Network-side purchase instructions held by its rails are cancelled with the provider.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.Allowances.Delete(
+        context.TODO(),
+        "allowance_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Update(AllowanceID, request) -> *basistheory.Allowance</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Updates one or more mutable fields by changing the provider-side mandate first, then committing the same amount, prompt, and expiry locally. Mints are blocked while the update is in flight, and an empty request body is rejected.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.AllowancesUpdateRequest{}
+client.Agentic.Allowances.Update(
+        context.TODO(),
+        "allowance_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**amount:** `*basistheory.SharedPaymentAmount` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `*string` — Customer-facing prompt describing what the allowance permits.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**expiresAt:** `*time.Time` — ISO 8601 timestamp when the allowance expires. Must be in the future.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Errors(AllowanceID) -> *basistheory.SharedPaymentProviderErrorList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists sanitized provider failures for an allowance, including failed verification and credential attempts. Raw provider bodies and card data are never returned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agentic.AllowancesErrorsRequest{
+        Size: basistheory.Int(
+            1,
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+    }
+client.Agentic.Allowances.Errors(
+        context.TODO(),
+        "allowance_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Verify(AllowanceID, request) -> *basistheory.AllowanceVerificationResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Start or continue self-served verification for a rail that requires it. Public and private applications may call this operation with `agentic:allowance:verify`; browser clients should use a public application key. Visa verification is advanced through explicit ceremony actions. Mastercard managed authentication is finalized with `complete` after the hosted ceremony; callback delivery is only a browser signal and is not required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &basistheory.VerifyAllowanceRequest{
+        Start: &basistheory.VerifyAllowanceRequestStart{
+            Rail: basistheory.VerifyAllowanceRequestStartRailAgenticToken,
+            Provider: basistheory.VerifyAllowanceRequestStartProviderVic,
+        },
+    }
+client.Agentic.Allowances.Verify(
+        context.TODO(),
+        "allowance_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `*basistheory.VerifyAllowanceRequest` 
     
 </dd>
 </dl>
@@ -5496,6 +6609,90 @@ client.Agentic.Agents.Instructions.Update(
 </dl>
 </details>
 
+<details><summary><code>client.Agentic.Agents.Instructions.Confirmations(AgentID, InstructionID, request) -> *basistheory.PublishConfirmationResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Report the outcome of a transaction back to the card network.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &agents.PublishConfirmationRequest{
+        ConfirmationData: []*basistheory.ConfirmationEntry{
+            &basistheory.ConfirmationEntry{
+                TransactionStatus: basistheory.TransactionStatusApproved,
+                TransactionType: basistheory.TransactionTypePurchase,
+            },
+        },
+    }
+client.Agentic.Agents.Instructions.Confirmations(
+        context.TODO(),
+        "agent_id",
+        "instruction_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**agentID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instructionID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**confirmationData:** `[]*basistheory.ConfirmationEntry` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Agentic Agents Instructions Credentials
 <details><summary><code>client.Agentic.Agents.Instructions.Credentials.Create(AgentID, InstructionID, request) -> *basistheory.Credentials</code></summary>
 <dl>
@@ -5796,6 +6993,351 @@ client.Agentic.Agents.Instructions.Verify.Passkey(
 </dl>
 </details>
 
+## Agentic Allowances Rails
+<details><summary><code>client.Agentic.Allowances.Rails.Retry(AllowanceID, request) -> *basistheory.Allowance</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Re-run provider setup for one failed allowance rail. Allowance creation keeps rails that failed at the provider, so a transient outage does not require rebuilding the mandate. Only rails with status `error` can be retried, and the payment method's matching rail must still be `enabled`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &allowances.RailsRetryRequest{
+        Rail: allowances.RailsRetryRequestRailAgenticToken,
+        Provider: allowances.RailsRetryRequestProviderVic,
+    }
+client.Agentic.Allowances.Rails.Retry(
+        context.TODO(),
+        "allowance_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**rail:** `*allowances.RailsRetryRequestRail` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**provider:** `*allowances.RailsRetryRequestProvider` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Agentic Allowances Credentials
+<details><summary><code>client.Agentic.Allowances.Credentials.List(AllowanceID) -> *basistheory.PaymentCredentialList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List credential metadata for an allowance. Responses contain metadata only — never card numbers, SPT values, or MPP payloads.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &allowances.CredentialsListRequest{
+        Size: basistheory.Int(
+            1,
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+    }
+client.Agentic.Allowances.Credentials.List(
+        context.TODO(),
+        "allowance_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Credentials.Create(AllowanceID, request) -> *basistheory.PaymentCredential</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a spend credential from an allowance. Supply BT-IDEMPOTENCY-KEY for retry protection. Without it, every request is a new mint and may spend the allowance again.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &allowances.CreatePaymentCredentialRequest{
+        Rail: allowances.CreatePaymentCredentialRequestRailAgenticToken,
+        Provider: allowances.CreatePaymentCredentialRequestProviderVic,
+        Credential: &allowances.CreatePaymentCredentialRequestCredential{
+            Card: &allowances.CreatePaymentCredentialRequestCredentialCard{},
+        },
+    }
+client.Agentic.Allowances.Credentials.Create(
+        context.TODO(),
+        "allowance_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**btIdempotencyKey:** `*string` — Optional stable key for detecting retries. A successful bearer credential cannot be replayed.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**rail:** `*allowances.CreatePaymentCredentialRequestRail` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**provider:** `*allowances.CreatePaymentCredentialRequestProvider` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**amount:** `*basistheory.SharedPaymentAmount` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**merchant:** `*basistheory.SharedPaymentMerchant` — Merchant this credential is being minted for. Required when the allowance has no `merchant`, and rejected when it does — the allowance's merchant is the scope the cardholder verified against, so a mint can neither restate nor replace it. Required on every rail for consistency. At mint Visa (`vic`) forwards it to the network, and Stripe Link (`link`) names it on the spend request the consumer sees.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**credential:** `*allowances.CreatePaymentCredentialRequestCredential` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agentic.Allowances.Credentials.Get(AllowanceID, CredentialID) -> *basistheory.PaymentCredentialMetadata</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get credential metadata. The credential payload itself (card number, SPT, MPP token) is only ever returned by the create call.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agentic.Allowances.Credentials.Get(
+        context.TODO(),
+        "allowance_id",
+        "credential_id",
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**allowanceID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**credentialID:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Agentic Enrollments Verify
 <details><summary><code>client.Agentic.Enrollments.Verify.Start(EnrollmentID, request) -> *basistheory.VerificationResponse</code></summary>
 <dl>
@@ -6082,6 +7624,86 @@ client.Agentic.Enrollments.Verify.Complete(
 <dd>
 
 **srcCorrelationID:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Agentic PaymentMethods Rails
+<details><summary><code>client.Agentic.PaymentMethods.Rails.Retry(PaymentMethodID, request) -> *basistheory.PaymentMethod</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retry one payment method rail after pending or failed provisioning. Public and private applications may call this operation with `agentic:payment-method:create`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &paymentmethods.RailsRetryRequest{
+        Rail: paymentmethods.RailsRetryRequestRailAgenticToken,
+        Provider: paymentmethods.RailsRetryRequestProviderVic,
+    }
+client.Agentic.PaymentMethods.Rails.Retry(
+        context.TODO(),
+        "payment_method_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**paymentMethodID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**rail:** `*paymentmethods.RailsRetryRequestRail` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**provider:** `*paymentmethods.RailsRetryRequestProvider` 
     
 </dd>
 </dl>

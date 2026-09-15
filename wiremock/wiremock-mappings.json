@@ -579,7 +579,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"google_pay\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"status\": \"status\",\n    \"expires_at\": \"2024-01-15T09:30:00Z\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"card\": {\n      \"bin\": \"bin\",\n      \"last4\": \"last4\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1,\n      \"brand\": \"brand\",\n      \"funding\": \"funding\",\n      \"authentication\": \"authentication\",\n      \"segment\": \"segment\",\n      \"additional\": [\n        {}\n      ]\n    },\n    \"data\": {\n      \"key\": \"value\"\n    },\n    \"authentication\": {\n      \"threeds_cryptogram\": \"threeds_cryptogram\",\n      \"eci_indicator\": \"eci_indicator\"\n    },\n    \"details\": {\n      \"tsp\": \"tsp\",\n      \"auth_method\": \"auth_method\",\n      \"message_id\": \"message_id\",\n      \"eci_indicator\": \"eci_indicator\",\n      \"transaction_id\": \"transaction_id\",\n      \"currency_code\": \"currency_code\",\n      \"transaction_amount\": 1000000,\n      \"cardholder_name\": \"cardholder_name\",\n      \"device_manufacturer_identifier\": \"device_manufacturer_identifier\",\n      \"payment_data_type\": \"payment_data_type\",\n      \"merchant_token_identifier\": \"merchant_token_identifier\",\n      \"authentication_responses\": [\n        {}\n      ],\n      \"status\": \"status\"\n    },\n    \"fingerprint\": \"fingerprint\",\n    \"type\": \"type\",\n    \"ingest_source\": \"ingest_source\"\n  },\n  \"token_intent\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"tenant_id\": \"tenant_id\",\n    \"fingerprint\": \"fingerprint\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"expires_at\": \"2024-01-15T09:30:00Z\",\n    \"card\": {\n      \"bin\": \"bin\",\n      \"last4\": \"last4\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1,\n      \"brand\": \"brand\",\n      \"funding\": \"funding\",\n      \"authentication\": \"authentication\",\n      \"segment\": \"segment\",\n      \"additional\": [\n        {}\n      ]\n    },\n    \"bank\": {\n      \"routing_number\": \"routing_number\",\n      \"account_number_last4\": \"account_number_last4\"\n    },\n    \"network_token\": {\n      \"bin\": \"bin\",\n      \"last4\": \"last4\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1,\n      \"brand\": \"brand\",\n      \"funding\": \"funding\",\n      \"authentication\": \"authentication\",\n      \"segment\": \"segment\",\n      \"additional\": [\n        {}\n      ]\n    },\n    \"authentication\": {\n      \"key\": \"value\"\n    },\n    \"_extras\": {\n      \"network_token_ids\": [\n        \"network_token_ids\"\n      ]\n    }\n  }\n}",
+        "body": "{\n  \"google_pay\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"status\": \"status\",\n    \"expires_at\": \"2024-01-15T09:30:00Z\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"card\": {\n      \"bin\": \"bin\",\n      \"last4\": \"last4\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1,\n      \"brand\": \"brand\",\n      \"funding\": \"funding\",\n      \"authentication\": \"authentication\",\n      \"segment\": \"segment\",\n      \"additional\": [\n        {}\n      ]\n    },\n    \"data\": {\n      \"key\": \"value\"\n    },\n    \"authentication\": {\n      \"threeds_cryptogram\": \"threeds_cryptogram\",\n      \"eci_indicator\": \"eci_indicator\"\n    },\n    \"details\": {\n      \"tsp\": \"tsp\",\n      \"auth_method\": \"auth_method\",\n      \"message_id\": \"message_id\",\n      \"eci_indicator\": \"eci_indicator\",\n      \"transaction_id\": \"transaction_id\",\n      \"currency_code\": \"currency_code\",\n      \"transaction_amount\": 1000000,\n      \"cardholder_name\": \"cardholder_name\",\n      \"device_manufacturer_identifier\": \"device_manufacturer_identifier\",\n      \"payment_data_type\": \"payment_data_type\",\n      \"merchant_token_identifier\": \"merchant_token_identifier\",\n      \"authentication_responses\": [\n        {}\n      ],\n      \"status\": \"status\"\n    },\n    \"fingerprint\": \"fingerprint\",\n    \"type\": \"type\",\n    \"ingest_source\": \"ingest_source\"\n  },\n  \"token_intent\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"tenant_id\": \"tenant_id\",\n    \"fingerprint\": \"fingerprint\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"expires_at\": \"2024-01-15T09:30:00Z\",\n    \"data\": {\n      \"key\": \"value\"\n    },\n    \"card\": {\n      \"bin\": \"bin\",\n      \"last4\": \"last4\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1,\n      \"brand\": \"brand\",\n      \"funding\": \"funding\",\n      \"authentication\": \"authentication\",\n      \"segment\": \"segment\",\n      \"additional\": [\n        {}\n      ]\n    },\n    \"bank\": {\n      \"routing_number\": \"routing_number\",\n      \"account_number_last4\": \"account_number_last4\"\n    },\n    \"network_token\": {\n      \"bin\": \"bin\",\n      \"last4\": \"last4\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1,\n      \"brand\": \"brand\",\n      \"funding\": \"funding\",\n      \"authentication\": \"authentication\",\n      \"segment\": \"segment\",\n      \"additional\": [\n        {}\n      ]\n    },\n    \"authentication\": {\n      \"key\": \"value\"\n    },\n    \"_extras\": {\n      \"network_token_ids\": [\n        \"network_token_ids\"\n      ]\n    }\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -1819,6 +1819,42 @@
       }
     },
     {
+      "id": "b5f38874-1ddb-44d9-9db1-e39b144c4c92",
+      "name": "transferHostname - default",
+      "request": {
+        "urlPathTemplate": "/proxies/{id}/hostname",
+        "method": "PUT",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "b5f38874-1ddb-44d9-9db1-e39b144c4c92",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "cc3ec66b-29fe-475c-a446-21c195dc7542",
       "name": "list - default",
       "request": {
@@ -1885,7 +1921,7 @@
       },
       "response": {
         "status": 201,
-        "body": "{\n  \"id\": \"id\",\n  \"tenant_id\": \"tenant_id\",\n  \"name\": \"name\",\n  \"formula\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"status\": \"status\",\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"icon\": \"icon\",\n    \"code\": \"code\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"configuration\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ],\n    \"request_parameters\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ]\n  },\n  \"state\": \"state\",\n  \"code\": \"code\",\n  \"application\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"name\": \"name\",\n    \"keys\": [\n      {}\n    ],\n    \"type\": \"type\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"rules\": [\n      {}\n    ]\n  },\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"modified_by\": \"modified_by\",\n  \"modified_at\": \"2024-01-15T09:30:00Z\",\n  \"configuration\": {\n    \"key\": \"value\"\n  },\n  \"runtime\": {\n    \"async\": true,\n    \"image\": \"image\",\n    \"dependencies\": {\n      \"key\": \"value\"\n    },\n    \"resolutions\": {\n      \"key\": \"value\"\n    },\n    \"warm_concurrency\": 1,\n    \"timeout\": 1,\n    \"resources\": \"resources\",\n    \"permissions\": [\n      \"permissions\"\n    ]\n  },\n  \"requested\": {\n    \"reactor\": {\n      \"code\": \"code\"\n    },\n    \"error_code\": \"error_code\",\n    \"error_message\": \"error_message\",\n    \"error_details\": {\n      \"key\": \"value\"\n    }\n  }\n}",
+        "body": "{\n  \"id\": \"id\",\n  \"tenant_id\": \"tenant_id\",\n  \"name\": \"name\",\n  \"formula\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"status\": \"status\",\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"icon\": \"icon\",\n    \"code\": \"code\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"configuration\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ],\n    \"request_parameters\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ]\n  },\n  \"state\": \"state\",\n  \"code\": \"code\",\n  \"application\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"name\": \"name\",\n    \"keys\": [\n      {}\n    ],\n    \"type\": \"type\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"rules\": [\n      {}\n    ]\n  },\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"modified_by\": \"modified_by\",\n  \"modified_at\": \"2024-01-15T09:30:00Z\",\n  \"configuration\": {\n    \"key\": \"value\"\n  },\n  \"runtime\": {\n    \"async\": true,\n    \"image\": \"image\",\n    \"dependencies\": {\n      \"key\": \"value\"\n    },\n    \"resolutions\": {\n      \"key\": \"value\"\n    },\n    \"warm_concurrency\": 1,\n    \"timeout\": 1,\n    \"resources\": \"resources\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"logs\": {\n      \"enabled\": true,\n      \"level\": \"level\"\n    }\n  },\n  \"requested\": {\n    \"reactor\": {\n      \"code\": \"code\"\n    },\n    \"error_code\": \"error_code\",\n    \"error_message\": \"error_message\",\n    \"error_details\": {\n      \"key\": \"value\"\n    }\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -1921,7 +1957,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"id\",\n  \"tenant_id\": \"tenant_id\",\n  \"name\": \"name\",\n  \"formula\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"status\": \"status\",\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"icon\": \"icon\",\n    \"code\": \"code\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"configuration\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ],\n    \"request_parameters\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ]\n  },\n  \"state\": \"state\",\n  \"code\": \"code\",\n  \"application\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"name\": \"name\",\n    \"keys\": [\n      {}\n    ],\n    \"type\": \"type\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"rules\": [\n      {}\n    ]\n  },\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"modified_by\": \"modified_by\",\n  \"modified_at\": \"2024-01-15T09:30:00Z\",\n  \"configuration\": {\n    \"key\": \"value\"\n  },\n  \"runtime\": {\n    \"async\": true,\n    \"image\": \"image\",\n    \"dependencies\": {\n      \"key\": \"value\"\n    },\n    \"resolutions\": {\n      \"key\": \"value\"\n    },\n    \"warm_concurrency\": 1,\n    \"timeout\": 1,\n    \"resources\": \"resources\",\n    \"permissions\": [\n      \"permissions\"\n    ]\n  },\n  \"requested\": {\n    \"reactor\": {\n      \"code\": \"code\"\n    },\n    \"error_code\": \"error_code\",\n    \"error_message\": \"error_message\",\n    \"error_details\": {\n      \"key\": \"value\"\n    }\n  }\n}",
+        "body": "{\n  \"id\": \"id\",\n  \"tenant_id\": \"tenant_id\",\n  \"name\": \"name\",\n  \"formula\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"status\": \"status\",\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"icon\": \"icon\",\n    \"code\": \"code\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"configuration\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ],\n    \"request_parameters\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ]\n  },\n  \"state\": \"state\",\n  \"code\": \"code\",\n  \"application\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"name\": \"name\",\n    \"keys\": [\n      {}\n    ],\n    \"type\": \"type\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"rules\": [\n      {}\n    ]\n  },\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"modified_by\": \"modified_by\",\n  \"modified_at\": \"2024-01-15T09:30:00Z\",\n  \"configuration\": {\n    \"key\": \"value\"\n  },\n  \"runtime\": {\n    \"async\": true,\n    \"image\": \"image\",\n    \"dependencies\": {\n      \"key\": \"value\"\n    },\n    \"resolutions\": {\n      \"key\": \"value\"\n    },\n    \"warm_concurrency\": 1,\n    \"timeout\": 1,\n    \"resources\": \"resources\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"logs\": {\n      \"enabled\": true,\n      \"level\": \"level\"\n    }\n  },\n  \"requested\": {\n    \"reactor\": {\n      \"code\": \"code\"\n    },\n    \"error_code\": \"error_code\",\n    \"error_message\": \"error_message\",\n    \"error_details\": {\n      \"key\": \"value\"\n    }\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -1957,7 +1993,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"id\",\n  \"tenant_id\": \"tenant_id\",\n  \"name\": \"name\",\n  \"formula\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"status\": \"status\",\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"icon\": \"icon\",\n    \"code\": \"code\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"configuration\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ],\n    \"request_parameters\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ]\n  },\n  \"state\": \"state\",\n  \"code\": \"code\",\n  \"application\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"name\": \"name\",\n    \"keys\": [\n      {}\n    ],\n    \"type\": \"type\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"rules\": [\n      {}\n    ]\n  },\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"modified_by\": \"modified_by\",\n  \"modified_at\": \"2024-01-15T09:30:00Z\",\n  \"configuration\": {\n    \"key\": \"value\"\n  },\n  \"runtime\": {\n    \"async\": true,\n    \"image\": \"image\",\n    \"dependencies\": {\n      \"key\": \"value\"\n    },\n    \"resolutions\": {\n      \"key\": \"value\"\n    },\n    \"warm_concurrency\": 1,\n    \"timeout\": 1,\n    \"resources\": \"resources\",\n    \"permissions\": [\n      \"permissions\"\n    ]\n  },\n  \"requested\": {\n    \"reactor\": {\n      \"code\": \"code\"\n    },\n    \"error_code\": \"error_code\",\n    \"error_message\": \"error_message\",\n    \"error_details\": {\n      \"key\": \"value\"\n    }\n  }\n}",
+        "body": "{\n  \"id\": \"id\",\n  \"tenant_id\": \"tenant_id\",\n  \"name\": \"name\",\n  \"formula\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"status\": \"status\",\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"icon\": \"icon\",\n    \"code\": \"code\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"configuration\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ],\n    \"request_parameters\": [\n      {\n        \"name\": \"name\",\n        \"type\": \"type\"\n      }\n    ]\n  },\n  \"state\": \"state\",\n  \"code\": \"code\",\n  \"application\": {\n    \"id\": \"id\",\n    \"tenant_id\": \"tenant_id\",\n    \"name\": \"name\",\n    \"keys\": [\n      {}\n    ],\n    \"type\": \"type\",\n    \"created_by\": \"created_by\",\n    \"created_at\": \"2024-01-15T09:30:00Z\",\n    \"modified_by\": \"modified_by\",\n    \"modified_at\": \"2024-01-15T09:30:00Z\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"rules\": [\n      {}\n    ]\n  },\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"modified_by\": \"modified_by\",\n  \"modified_at\": \"2024-01-15T09:30:00Z\",\n  \"configuration\": {\n    \"key\": \"value\"\n  },\n  \"runtime\": {\n    \"async\": true,\n    \"image\": \"image\",\n    \"dependencies\": {\n      \"key\": \"value\"\n    },\n    \"resolutions\": {\n      \"key\": \"value\"\n    },\n    \"warm_concurrency\": 1,\n    \"timeout\": 1,\n    \"resources\": \"resources\",\n    \"permissions\": [\n      \"permissions\"\n    ],\n    \"logs\": {\n      \"enabled\": true,\n      \"level\": \"level\"\n    }\n  },\n  \"requested\": {\n    \"reactor\": {\n      \"code\": \"code\"\n    },\n    \"error_code\": \"error_code\",\n    \"error_message\": \"error_message\",\n    \"error_details\": {\n      \"key\": \"value\"\n    }\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -2231,7 +2267,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"id\",\n  \"type\": \"type\",\n  \"tenant_id\": \"tenant_id\",\n  \"fingerprint\": \"fingerprint\",\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"card\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"bank\": {\n    \"routing_number\": \"routing_number\",\n    \"account_number_last4\": \"account_number_last4\"\n  },\n  \"network_token\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"authentication\": {\n    \"key\": \"value\"\n  },\n  \"_extras\": {\n    \"tsp_details\": {\n      \"tsp\": \"tsp\",\n      \"auth_method\": \"auth_method\",\n      \"message_id\": \"message_id\",\n      \"eci_indicator\": \"eci_indicator\",\n      \"transaction_id\": \"transaction_id\",\n      \"currency_code\": \"currency_code\",\n      \"transaction_amount\": 1000000,\n      \"cardholder_name\": \"cardholder_name\",\n      \"device_manufacturer_identifier\": \"device_manufacturer_identifier\",\n      \"payment_data_type\": \"payment_data_type\",\n      \"merchant_token_identifier\": \"merchant_token_identifier\",\n      \"authentication_responses\": [\n        {}\n      ],\n      \"status\": \"status\"\n    },\n    \"network_token_ids\": [\n      \"network_token_ids\"\n    ]\n  }\n}",
+        "body": "{\n  \"id\": \"id\",\n  \"type\": \"type\",\n  \"tenant_id\": \"tenant_id\",\n  \"fingerprint\": \"fingerprint\",\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"card\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"bank\": {\n    \"routing_number\": \"routing_number\",\n    \"account_number_last4\": \"account_number_last4\"\n  },\n  \"network_token\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"authentication\": {\n    \"key\": \"value\"\n  },\n  \"_extras\": {\n    \"tsp_details\": {\n      \"tsp\": \"tsp\",\n      \"auth_method\": \"auth_method\",\n      \"message_id\": \"message_id\",\n      \"eci_indicator\": \"eci_indicator\",\n      \"transaction_id\": \"transaction_id\",\n      \"currency_code\": \"currency_code\",\n      \"transaction_amount\": 1000000,\n      \"cardholder_name\": \"cardholder_name\",\n      \"device_manufacturer_identifier\": \"device_manufacturer_identifier\",\n      \"payment_data_type\": \"payment_data_type\",\n      \"merchant_token_identifier\": \"merchant_token_identifier\",\n      \"authentication_responses\": [\n        {}\n      ],\n      \"status\": \"status\"\n    },\n    \"network_token_ids\": [\n      \"network_token_ids\"\n    ]\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -2298,7 +2334,7 @@
       },
       "response": {
         "status": 201,
-        "body": "{\n  \"id\": \"id\",\n  \"type\": \"type\",\n  \"tenant_id\": \"tenant_id\",\n  \"fingerprint\": \"fingerprint\",\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"card\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"bank\": {\n    \"routing_number\": \"routing_number\",\n    \"account_number_last4\": \"account_number_last4\"\n  },\n  \"network_token\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"authentication\": {\n    \"key\": \"value\"\n  },\n  \"_extras\": {\n    \"tsp_details\": {\n      \"tsp\": \"tsp\",\n      \"auth_method\": \"auth_method\",\n      \"message_id\": \"message_id\",\n      \"eci_indicator\": \"eci_indicator\",\n      \"transaction_id\": \"transaction_id\",\n      \"currency_code\": \"currency_code\",\n      \"transaction_amount\": 1000000,\n      \"cardholder_name\": \"cardholder_name\",\n      \"device_manufacturer_identifier\": \"device_manufacturer_identifier\",\n      \"payment_data_type\": \"payment_data_type\",\n      \"merchant_token_identifier\": \"merchant_token_identifier\",\n      \"authentication_responses\": [\n        {}\n      ],\n      \"status\": \"status\"\n    },\n    \"network_token_ids\": [\n      \"network_token_ids\"\n    ]\n  }\n}",
+        "body": "{\n  \"id\": \"id\",\n  \"type\": \"type\",\n  \"tenant_id\": \"tenant_id\",\n  \"fingerprint\": \"fingerprint\",\n  \"created_by\": \"created_by\",\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"card\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"bank\": {\n    \"routing_number\": \"routing_number\",\n    \"account_number_last4\": \"account_number_last4\"\n  },\n  \"network_token\": {\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"brand\": \"brand\",\n    \"funding\": \"funding\",\n    \"authentication\": \"authentication\",\n    \"issuer\": {\n      \"country\": \"country\",\n      \"name\": \"name\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"product\": {\n      \"code\": \"code\"\n    },\n    \"additional\": [\n      {}\n    ]\n  },\n  \"authentication\": {\n    \"key\": \"value\"\n  },\n  \"_extras\": {\n    \"tsp_details\": {\n      \"tsp\": \"tsp\",\n      \"auth_method\": \"auth_method\",\n      \"message_id\": \"message_id\",\n      \"eci_indicator\": \"eci_indicator\",\n      \"transaction_id\": \"transaction_id\",\n      \"currency_code\": \"currency_code\",\n      \"transaction_amount\": 1000000,\n      \"cardholder_name\": \"cardholder_name\",\n      \"device_manufacturer_identifier\": \"device_manufacturer_identifier\",\n      \"payment_data_type\": \"payment_data_type\",\n      \"merchant_token_identifier\": \"merchant_token_identifier\",\n      \"authentication_responses\": [\n        {}\n      ],\n      \"status\": \"status\"\n    },\n    \"network_token_ids\": [\n      \"network_token_ids\"\n    ]\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -2657,145 +2693,6 @@
       }
     },
     {
-      "id": "03a70a12-b33e-4c98-b92c-c0adb18dbdcd",
-      "name": "Create an agent - default",
-      "request": {
-        "urlPathTemplate": "/agentic/agents",
-        "method": "POST",
-        "headers": {
-          "BT-API-KEY": {
-            "matches": ".+"
-          }
-        }
-      },
-      "response": {
-        "status": 201,
-        "body": "{\n  \"id\": \"agt_abc123\",\n  \"name\": \"name\",\n  \"status\": \"active\",\n  \"enrollment_ids\": [\n    \"enrollment_ids\"\n  ],\n  \"instance_details\": {\n    \"ip_address\": \"192.168.1.1\",\n    \"brand\": \"brand\",\n    \"type\": \"mobile-phone\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "uuid": "03a70a12-b33e-4c98-b92c-c0adb18dbdcd",
-      "persistent": true,
-      "priority": 3,
-      "metadata": {
-        "mocklab": {
-          "created": {
-            "at": "2020-01-01T00:00:00.000Z",
-            "via": "SYSTEM"
-          }
-        }
-      }
-    },
-    {
-      "id": "be581012-f2f8-47a1-974a-20d642b45353",
-      "name": "Get an agent - default",
-      "request": {
-        "urlPathTemplate": "/agentic/agents/{agent_id}",
-        "method": "GET",
-        "headers": {
-          "BT-API-KEY": {
-            "matches": ".+"
-          }
-        },
-        "pathParameters": {
-          "agent_id": {
-            "equalTo": "agent_id"
-          }
-        }
-      },
-      "response": {
-        "status": 200,
-        "body": "{\n  \"id\": \"agt_abc123\",\n  \"name\": \"name\",\n  \"status\": \"active\",\n  \"enrollment_ids\": [\n    \"enrollment_ids\"\n  ],\n  \"instance_details\": {\n    \"ip_address\": \"192.168.1.1\",\n    \"brand\": \"brand\",\n    \"type\": \"mobile-phone\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "uuid": "be581012-f2f8-47a1-974a-20d642b45353",
-      "persistent": true,
-      "priority": 3,
-      "metadata": {
-        "mocklab": {
-          "created": {
-            "at": "2020-01-01T00:00:00.000Z",
-            "via": "SYSTEM"
-          }
-        }
-      }
-    },
-    {
-      "id": "f68cc13d-d4d4-4c74-92dd-d099c4218cab",
-      "name": "Delete an agent - default",
-      "request": {
-        "urlPathTemplate": "/agentic/agents/{agent_id}",
-        "method": "DELETE",
-        "headers": {
-          "BT-API-KEY": {
-            "matches": ".+"
-          }
-        },
-        "pathParameters": {
-          "agent_id": {
-            "equalTo": "agent_id"
-          }
-        }
-      },
-      "response": {
-        "status": 200,
-        "body": "\"\"",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "uuid": "f68cc13d-d4d4-4c74-92dd-d099c4218cab",
-      "persistent": true,
-      "priority": 3,
-      "metadata": {
-        "mocklab": {
-          "created": {
-            "at": "2020-01-01T00:00:00.000Z",
-            "via": "SYSTEM"
-          }
-        }
-      }
-    },
-    {
-      "id": "eb6593d6-8537-4c7a-a7b7-ef2b2ef252be",
-      "name": "Update an agent - default",
-      "request": {
-        "urlPathTemplate": "/agentic/agents/{agent_id}",
-        "method": "PATCH",
-        "headers": {
-          "BT-API-KEY": {
-            "matches": ".+"
-          }
-        },
-        "pathParameters": {
-          "agent_id": {
-            "equalTo": "agent_id"
-          }
-        }
-      },
-      "response": {
-        "status": 200,
-        "body": "{\n  \"id\": \"agt_abc123\",\n  \"name\": \"name\",\n  \"status\": \"active\",\n  \"enrollment_ids\": [\n    \"enrollment_ids\"\n  ],\n  \"instance_details\": {\n    \"ip_address\": \"192.168.1.1\",\n    \"brand\": \"brand\",\n    \"type\": \"mobile-phone\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "uuid": "eb6593d6-8537-4c7a-a7b7-ef2b2ef252be",
-      "persistent": true,
-      "priority": 3,
-      "metadata": {
-        "mocklab": {
-          "created": {
-            "at": "2020-01-01T00:00:00.000Z",
-            "via": "SYSTEM"
-          }
-        }
-      }
-    },
-    {
       "id": "8659dbbd-b264-4233-88f7-4432dc7a48b5",
       "name": "List enrollments - default",
       "request": {
@@ -2963,6 +2860,643 @@
         }
       },
       "uuid": "5d4021c2-29e6-4a0c-a7c4-39fa1e3093b2",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "03a70a12-b33e-4c98-b92c-c0adb18dbdcd",
+      "name": "Create an agent - default",
+      "request": {
+        "urlPathTemplate": "/agentic/agents",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": "{\n  \"id\": \"agt_abc123\",\n  \"name\": \"name\",\n  \"status\": \"active\",\n  \"enrollment_ids\": [\n    \"enrollment_ids\"\n  ],\n  \"instance_details\": {\n    \"ip_address\": \"192.168.1.1\",\n    \"brand\": \"brand\",\n    \"type\": \"mobile-phone\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "03a70a12-b33e-4c98-b92c-c0adb18dbdcd",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "be581012-f2f8-47a1-974a-20d642b45353",
+      "name": "Get an agent - default",
+      "request": {
+        "urlPathTemplate": "/agentic/agents/{agent_id}",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "agent_id": {
+            "equalTo": "agent_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"agt_abc123\",\n  \"name\": \"name\",\n  \"status\": \"active\",\n  \"enrollment_ids\": [\n    \"enrollment_ids\"\n  ],\n  \"instance_details\": {\n    \"ip_address\": \"192.168.1.1\",\n    \"brand\": \"brand\",\n    \"type\": \"mobile-phone\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "be581012-f2f8-47a1-974a-20d642b45353",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "f68cc13d-d4d4-4c74-92dd-d099c4218cab",
+      "name": "Delete an agent - default",
+      "request": {
+        "urlPathTemplate": "/agentic/agents/{agent_id}",
+        "method": "DELETE",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "agent_id": {
+            "equalTo": "agent_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "f68cc13d-d4d4-4c74-92dd-d099c4218cab",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "eb6593d6-8537-4c7a-a7b7-ef2b2ef252be",
+      "name": "Update an agent - default",
+      "request": {
+        "urlPathTemplate": "/agentic/agents/{agent_id}",
+        "method": "PATCH",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "agent_id": {
+            "equalTo": "agent_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"agt_abc123\",\n  \"name\": \"name\",\n  \"status\": \"active\",\n  \"enrollment_ids\": [\n    \"enrollment_ids\"\n  ],\n  \"instance_details\": {\n    \"ip_address\": \"192.168.1.1\",\n    \"brand\": \"brand\",\n    \"type\": \"mobile-phone\"\n  },\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "eb6593d6-8537-4c7a-a7b7-ef2b2ef252be",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "085b7230-4a66-41dd-ae09-d98cce3cff9e",
+      "name": "List payment methods - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-methods",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "size": {
+            "equalTo": "1"
+          },
+          "start": {
+            "equalTo": "start"
+          },
+          "consumer_id": {
+            "equalTo": "consumer_id"
+          },
+          "status": {
+            "equalTo": "active"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"pm_abc123\",\n      \"source\": {\n        \"token_id\": \"token_id\",\n        \"type\": \"basis_theory_card_token\"\n      },\n      \"instrument\": {\n        \"type\": \"card\",\n        \"provider\": \"provider\",\n        \"display\": {}\n      },\n      \"agent_id\": \"agent_id\",\n      \"status\": \"active\",\n      \"consumer\": {\n        \"email\": \"email\"\n      },\n      \"card\": {\n        \"brand\": \"visa\"\n      },\n      \"rails\": [\n        {}\n      ],\n      \"created_at\": \"2024-01-15T09:30:00Z\",\n      \"updated_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "085b7230-4a66-41dd-ae09-d98cce3cff9e",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "8cc324a7-0960-4ead-99e2-d9ce1b1acafd",
+      "name": "Create a payment method - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-methods",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": "{\n  \"id\": \"pm_abc123\",\n  \"source\": {\n    \"token_id\": \"token_id\",\n    \"type\": \"basis_theory_card_token\"\n  },\n  \"instrument\": {\n    \"type\": \"card\",\n    \"provider\": \"provider\",\n    \"display\": {\n      \"brand\": \"brand\",\n      \"last4\": \"last4\",\n      \"label\": \"label\",\n      \"bank_name\": \"bank_name\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1\n    }\n  },\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"consumer\": {\n    \"email\": \"email\",\n    \"id\": \"id\",\n    \"country_code\": \"country_code\",\n    \"language_code\": \"language_code\"\n  },\n  \"card\": {\n    \"brand\": \"visa\",\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"funding\": \"funding\",\n    \"issuer\": {\n      \"name\": \"name\",\n      \"country\": \"country\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"type\": \"type\",\n    \"display\": {\n      \"art_url\": \"art_url\",\n      \"background_color\": \"background_color\",\n      \"foreground_color\": \"foreground_color\",\n      \"description\": \"description\",\n      \"issuer_name\": \"issuer_name\"\n    }\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "8cc324a7-0960-4ead-99e2-d9ce1b1acafd",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "c8c137f3-5d76-47ab-b8b1-e93104e715a8",
+      "name": "Get a payment method - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-methods/{payment_method_id}",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "payment_method_id": {
+            "equalTo": "payment_method_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"pm_abc123\",\n  \"source\": {\n    \"token_id\": \"token_id\",\n    \"type\": \"basis_theory_card_token\"\n  },\n  \"instrument\": {\n    \"type\": \"card\",\n    \"provider\": \"provider\",\n    \"display\": {\n      \"brand\": \"brand\",\n      \"last4\": \"last4\",\n      \"label\": \"label\",\n      \"bank_name\": \"bank_name\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1\n    }\n  },\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"consumer\": {\n    \"email\": \"email\",\n    \"id\": \"id\",\n    \"country_code\": \"country_code\",\n    \"language_code\": \"language_code\"\n  },\n  \"card\": {\n    \"brand\": \"visa\",\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"funding\": \"funding\",\n    \"issuer\": {\n      \"name\": \"name\",\n      \"country\": \"country\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"type\": \"type\",\n    \"display\": {\n      \"art_url\": \"art_url\",\n      \"background_color\": \"background_color\",\n      \"foreground_color\": \"foreground_color\",\n      \"description\": \"description\",\n      \"issuer_name\": \"issuer_name\"\n    }\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "c8c137f3-5d76-47ab-b8b1-e93104e715a8",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "1de6fbfd-fb53-41ac-aa99-ae0e9b6a4124",
+      "name": "Delete a payment method - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-methods/{payment_method_id}",
+        "method": "DELETE",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "payment_method_id": {
+            "equalTo": "payment_method_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "1de6fbfd-fb53-41ac-aa99-ae0e9b6a4124",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "c83de63f-3004-4709-b9e5-e3d012c6d55a",
+      "name": "List payment method provider errors - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-methods/{payment_method_id}/errors",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "payment_method_id": {
+            "equalTo": "payment_method_id"
+          }
+        },
+        "queryParameters": {
+          "size": {
+            "equalTo": "1"
+          },
+          "start": {
+            "equalTo": "start"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"prv_abc123\",\n      \"code\": \"code\",\n      \"title\": \"title\",\n      \"detail\": \"detail\",\n      \"provider\": \"vic\",\n      \"operation\": \"operation\",\n      \"rail\": \"rail\",\n      \"connection_id\": \"connection_id\",\n      \"provider_code\": \"provider_code\",\n      \"provider_correlation_id\": \"provider_correlation_id\",\n      \"payment_method_id\": \"payment_method_id\",\n      \"allowance_id\": \"allowance_id\",\n      \"payment_credential_id\": \"payment_credential_id\",\n      \"occurred_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "c83de63f-3004-4709-b9e5-e3d012c6d55a",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "3276ec57-427d-4f94-97fe-c460ce5e2e5f",
+      "name": "List payment credential metadata - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-credentials",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "size": {
+            "equalTo": "1"
+          },
+          "start": {
+            "equalTo": "start"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"cred_abc123\",\n      \"allowance_id\": \"allowance_id\",\n      \"payment_method_id\": \"payment_method_id\",\n      \"rail\": \"rail\",\n      \"provider\": \"vic\",\n      \"format\": \"card\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"amount\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"merchant\": {\n        \"name\": \"name\",\n        \"url\": \"url\",\n        \"country_code\": \"country_code\"\n      },\n      \"status\": \"created\",\n      \"expires_at\": \"2024-01-15T09:30:00Z\",\n      \"created_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "3276ec57-427d-4f94-97fe-c460ce5e2e5f",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "1faa2960-f060-4e8f-b146-08ea6b0d79ec",
+      "name": "List allowances - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "size": {
+            "equalTo": "1"
+          },
+          "start": {
+            "equalTo": "start"
+          },
+          "payment_method_id": {
+            "equalTo": "payment_method_id"
+          },
+          "status": {
+            "equalTo": "active"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"alw_abc123\",\n      \"payment_method_id\": \"payment_method_id\",\n      \"agent_id\": \"agent_id\",\n      \"status\": \"active\",\n      \"amount\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"description\": \"description\",\n      \"merchant\": {\n        \"name\": \"name\",\n        \"url\": \"url\",\n        \"country_code\": \"country_code\"\n      },\n      \"amount_spent\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"amount_reserved\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"amount_available\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"credentials_count\": 1,\n      \"metadata\": {\n        \"key\": \"value\"\n      },\n      \"rails\": [\n        {\n          \"credential_formats\": [\n            \"card\"\n          ]\n        }\n      ],\n      \"created_at\": \"2024-01-15T09:30:00Z\",\n      \"updated_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "1faa2960-f060-4e8f-b146-08ea6b0d79ec",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "a8fafd8e-a7fb-4db5-ad63-30f05d668bfe",
+      "name": "Create an allowance - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": "{\n  \"id\": \"alw_abc123\",\n  \"payment_method_id\": \"payment_method_id\",\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"description\": \"description\",\n  \"merchant\": {\n    \"name\": \"name\",\n    \"url\": \"url\",\n    \"country_code\": \"country_code\",\n    \"category_code\": \"category_code\",\n    \"acquirer_bin\": \"acquirer_bin\"\n  },\n  \"amount_spent\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_reserved\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_available\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"credentials_count\": 1,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"credential_formats\": [\n        \"card\"\n      ],\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "a8fafd8e-a7fb-4db5-ad63-30f05d668bfe",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "eeea868d-61bf-456c-891f-9aa414b21a39",
+      "name": "Get an allowance - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"alw_abc123\",\n  \"payment_method_id\": \"payment_method_id\",\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"description\": \"description\",\n  \"merchant\": {\n    \"name\": \"name\",\n    \"url\": \"url\",\n    \"country_code\": \"country_code\",\n    \"category_code\": \"category_code\",\n    \"acquirer_bin\": \"acquirer_bin\"\n  },\n  \"amount_spent\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_reserved\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_available\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"credentials_count\": 1,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"credential_formats\": [\n        \"card\"\n      ],\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "eeea868d-61bf-456c-891f-9aa414b21a39",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "bc0ef6f8-88d5-4427-8082-b5d4d011b0df",
+      "name": "Delete an allowance - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}",
+        "method": "DELETE",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "bc0ef6f8-88d5-4427-8082-b5d4d011b0df",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "6b6095ac-496e-4665-b945-7287701b80ff",
+      "name": "Update an allowance - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}",
+        "method": "PATCH",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"alw_abc123\",\n  \"payment_method_id\": \"payment_method_id\",\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"description\": \"description\",\n  \"merchant\": {\n    \"name\": \"name\",\n    \"url\": \"url\",\n    \"country_code\": \"country_code\",\n    \"category_code\": \"category_code\",\n    \"acquirer_bin\": \"acquirer_bin\"\n  },\n  \"amount_spent\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_reserved\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_available\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"credentials_count\": 1,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"credential_formats\": [\n        \"card\"\n      ],\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "6b6095ac-496e-4665-b945-7287701b80ff",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "03ace16e-9e13-44b4-975c-2ac2ad587b47",
+      "name": "List allowance provider errors - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}/errors",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        },
+        "queryParameters": {
+          "size": {
+            "equalTo": "1"
+          },
+          "start": {
+            "equalTo": "start"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"prv_abc123\",\n      \"code\": \"code\",\n      \"title\": \"title\",\n      \"detail\": \"detail\",\n      \"provider\": \"vic\",\n      \"operation\": \"operation\",\n      \"rail\": \"rail\",\n      \"connection_id\": \"connection_id\",\n      \"provider_code\": \"provider_code\",\n      \"provider_correlation_id\": \"provider_correlation_id\",\n      \"payment_method_id\": \"payment_method_id\",\n      \"allowance_id\": \"allowance_id\",\n      \"payment_credential_id\": \"payment_credential_id\",\n      \"occurred_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "03ace16e-9e13-44b4-975c-2ac2ad587b47",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "12371eb3-4ba3-4500-91bf-cb0bfb14be1f",
+      "name": "Continue allowance verification - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}/verify",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"verification_required\",\n  \"rail\": \"agentic-token\",\n  \"provider\": \"vic\",\n  \"next_action\": {\n    \"methods\": [\n      {\n        \"id\": \"id\",\n        \"type\": \"sms\",\n        \"value\": \"value\"\n      }\n    ],\n    \"type\": \"select_otp_method\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "12371eb3-4ba3-4500-91bf-cb0bfb14be1f",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -3175,6 +3709,45 @@
       }
     },
     {
+      "id": "3240614a-1cff-4a59-903d-962d8f841f0c",
+      "name": "Publish transaction confirmation - default",
+      "request": {
+        "urlPathTemplate": "/agentic/agents/{agent_id}/instructions/{instruction_id}/confirmations",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "agent_id": {
+            "equalTo": "agent_id"
+          },
+          "instruction_id": {
+            "equalTo": "instruction_id"
+          }
+        }
+      },
+      "response": {
+        "status": 202,
+        "body": "{\n  \"client_reference_id\": \"client_reference_id\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "3240614a-1cff-4a59-903d-962d8f841f0c",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "1c7c03a8-f3ef-4299-bdb3-1b2847d1e3ac",
       "name": "Get virtual card credentials - default",
       "request": {
@@ -3280,6 +3853,161 @@
         }
       },
       "uuid": "ac515471-7204-453c-8a25-1c0c13749ee2",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "1551e270-6e9a-469f-bbc8-6128772cea52",
+      "name": "Retry allowance rail setup - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}/rails/retry",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"alw_abc123\",\n  \"payment_method_id\": \"payment_method_id\",\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"description\": \"description\",\n  \"merchant\": {\n    \"name\": \"name\",\n    \"url\": \"url\",\n    \"country_code\": \"country_code\",\n    \"category_code\": \"category_code\",\n    \"acquirer_bin\": \"acquirer_bin\"\n  },\n  \"amount_spent\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_reserved\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"amount_available\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"credentials_count\": 1,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"credential_formats\": [\n        \"card\"\n      ],\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "1551e270-6e9a-469f-bbc8-6128772cea52",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "25bb17cf-cb28-4311-9554-fee28d42d971",
+      "name": "List payment credentials - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}/credentials",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        },
+        "queryParameters": {
+          "size": {
+            "equalTo": "1"
+          },
+          "start": {
+            "equalTo": "start"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"cred_abc123\",\n      \"allowance_id\": \"allowance_id\",\n      \"payment_method_id\": \"payment_method_id\",\n      \"rail\": \"rail\",\n      \"provider\": \"vic\",\n      \"format\": \"card\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"amount\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"merchant\": {\n        \"name\": \"name\",\n        \"url\": \"url\",\n        \"country_code\": \"country_code\"\n      },\n      \"status\": \"created\",\n      \"expires_at\": \"2024-01-15T09:30:00Z\",\n      \"created_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "25bb17cf-cb28-4311-9554-fee28d42d971",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "80604c4b-dfc7-4ec9-b16a-1f24dbfd33be",
+      "name": "Create a payment credential - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}/credentials",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": "{\n  \"id\": \"cred_abc123\",\n  \"rail\": \"rail\",\n  \"provider\": \"vic\",\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"credential\": {\n    \"format\": \"card\",\n    \"value\": {\n      \"key\": \"value\"\n    }\n  },\n  \"provider_ids\": {\n    \"key\": \"value\"\n  },\n  \"expires_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "80604c4b-dfc7-4ec9-b16a-1f24dbfd33be",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "73113673-5057-4323-b151-fd7704136482",
+      "name": "Get a payment credential - default",
+      "request": {
+        "urlPathTemplate": "/agentic/allowances/{allowance_id}/credentials/{credential_id}",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "allowance_id": {
+            "equalTo": "allowance_id"
+          },
+          "credential_id": {
+            "equalTo": "credential_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"cred_abc123\",\n  \"allowance_id\": \"allowance_id\",\n  \"payment_method_id\": \"payment_method_id\",\n  \"rail\": \"rail\",\n  \"provider\": \"vic\",\n  \"format\": \"card\",\n  \"provider_ids\": {\n    \"key\": \"value\"\n  },\n  \"amount\": {\n    \"value\": \"100.00\",\n    \"currency\": \"USD\"\n  },\n  \"merchant\": {\n    \"name\": \"name\",\n    \"url\": \"url\",\n    \"country_code\": \"country_code\",\n    \"category_code\": \"category_code\",\n    \"acquirer_bin\": \"acquirer_bin\"\n  },\n  \"status\": \"created\",\n  \"expires_at\": \"2024-01-15T09:30:00Z\",\n  \"created_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "73113673-5057-4323-b151-fd7704136482",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -3424,6 +4152,42 @@
         }
       },
       "uuid": "7c609382-e95b-4f8a-821a-8d43951be8d4",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "294220af-2aba-43a3-92c6-c6e00fcdf6f4",
+      "name": "Retry payment method rail provisioning - default",
+      "request": {
+        "urlPathTemplate": "/agentic/payment-methods/{payment_method_id}/rails/retry",
+        "method": "POST",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "payment_method_id": {
+            "equalTo": "payment_method_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"id\": \"pm_abc123\",\n  \"source\": {\n    \"token_id\": \"token_id\",\n    \"type\": \"basis_theory_card_token\"\n  },\n  \"instrument\": {\n    \"type\": \"card\",\n    \"provider\": \"provider\",\n    \"display\": {\n      \"brand\": \"brand\",\n      \"last4\": \"last4\",\n      \"label\": \"label\",\n      \"bank_name\": \"bank_name\",\n      \"expiration_month\": 1,\n      \"expiration_year\": 1\n    }\n  },\n  \"agent_id\": \"agent_id\",\n  \"status\": \"active\",\n  \"consumer\": {\n    \"email\": \"email\",\n    \"id\": \"id\",\n    \"country_code\": \"country_code\",\n    \"language_code\": \"language_code\"\n  },\n  \"card\": {\n    \"brand\": \"visa\",\n    \"bin\": \"bin\",\n    \"last4\": \"last4\",\n    \"expiration_month\": 1,\n    \"expiration_year\": 1,\n    \"funding\": \"funding\",\n    \"issuer\": {\n      \"name\": \"name\",\n      \"country\": \"country\"\n    },\n    \"issuer_country\": {\n      \"alpha2\": \"alpha2\",\n      \"name\": \"name\",\n      \"numeric\": \"numeric\"\n    },\n    \"segment\": \"segment\",\n    \"type\": \"type\",\n    \"display\": {\n      \"art_url\": \"art_url\",\n      \"background_color\": \"background_color\",\n      \"foreground_color\": \"foreground_color\",\n      \"description\": \"description\",\n      \"issuer_name\": \"issuer_name\"\n    }\n  },\n  \"rails\": [\n    {\n      \"rail\": \"virtual-card\",\n      \"provider\": \"link\",\n      \"provider_ids\": {\n        \"key\": \"value\"\n      },\n      \"status\": \"error\",\n      \"error\": {\n        \"code\": \"code\"\n      }\n    }\n  ],\n  \"created_at\": \"2024-01-15T09:30:00Z\",\n  \"updated_at\": \"2024-01-15T09:30:00Z\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "294220af-2aba-43a3-92c6-c6e00fcdf6f4",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -3827,7 +4591,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{}",
+        "body": "{\n  \"key\": \"value\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -5169,6 +5933,6 @@
     }
   ],
   "meta": {
-    "total": 144
+    "total": 164
   }
 }

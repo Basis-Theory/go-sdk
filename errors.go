@@ -10,11 +10,11 @@ import (
 // Bad Request
 type BadRequestError struct {
 	*core.APIError
-	Body *ValidationProblemDetails
+	Body any
 }
 
 func (b *BadRequestError) UnmarshalJSON(data []byte) error {
-	var body *ValidationProblemDetails
+	var body any
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -34,11 +34,11 @@ func (b *BadRequestError) Unwrap() error {
 // Conflict
 type ConflictError struct {
 	*core.APIError
-	Body *ProblemDetails
+	Body any
 }
 
 func (c *ConflictError) UnmarshalJSON(data []byte) error {
-	var body *ProblemDetails
+	var body any
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -58,11 +58,11 @@ func (c *ConflictError) Unwrap() error {
 // Forbidden
 type ForbiddenError struct {
 	*core.APIError
-	Body *ProblemDetails
+	Body any
 }
 
 func (f *ForbiddenError) UnmarshalJSON(data []byte) error {
-	var body *ProblemDetails
+	var body any
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -82,11 +82,11 @@ func (f *ForbiddenError) Unwrap() error {
 // Server Error
 type InternalServerError struct {
 	*core.APIError
-	Body *ProblemDetails
+	Body any
 }
 
 func (i *InternalServerError) UnmarshalJSON(data []byte) error {
-	var body *ProblemDetails
+	var body any
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -127,6 +127,30 @@ func (n *NotFoundError) Unwrap() error {
 	return n.APIError
 }
 
+// The connection instrument's type is enumerable but not yet fundable by any rail
+type NotImplementedError struct {
+	*core.APIError
+	Body *ProblemDetails
+}
+
+func (n *NotImplementedError) UnmarshalJSON(data []byte) error {
+	var body *ProblemDetails
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	n.StatusCode = 501
+	n.Body = body
+	return nil
+}
+
+func (n *NotImplementedError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(n.Body)
+}
+
+func (n *NotImplementedError) Unwrap() error {
+	return n.APIError
+}
+
 // Server Error
 type ServiceUnavailableError struct {
 	*core.APIError
@@ -154,11 +178,11 @@ func (s *ServiceUnavailableError) Unwrap() error {
 // Unauthorized
 type UnauthorizedError struct {
 	*core.APIError
-	Body *ProblemDetails
+	Body any
 }
 
 func (u *UnauthorizedError) UnmarshalJSON(data []byte) error {
-	var body *ProblemDetails
+	var body any
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}

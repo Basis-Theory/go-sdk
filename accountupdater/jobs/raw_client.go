@@ -143,6 +143,9 @@ func (r *RawClient) Create(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	if request.BtMerchantID != nil {
+		headers.Add("BT-MERCHANT-ID", *request.BtMerchantID)
+	}
 	headers.Add("Content-Type", "application/json")
 	var response *basistheory.AccountUpdaterJob
 	raw, err := r.caller.Call(

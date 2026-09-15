@@ -244,3 +244,30 @@ func TestProxiesPatchWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestProxiesPatchWithWireMock", "PATCH", "/proxies/id", nil, 1)
 }
+
+func TestProxiesTransferHostnameWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &basistheory.TransferProxyHostnameRequest{
+		ProxyHost: "proxy_host",
+	}
+	invocationErr := client.Proxies.TransferHostname(
+		context.TODO(),
+		"id",
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestProxiesTransferHostnameWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestProxiesTransferHostnameWithWireMock", "PUT", "/proxies/id/hostname", nil, 1)
+}

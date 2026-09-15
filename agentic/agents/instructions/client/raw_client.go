@@ -222,3 +222,53 @@ func (r *RawClient) Update(
 		Body:       response,
 	}, nil
 }
+
+func (r *RawClient) Confirmations(
+	ctx context.Context,
+	agentID string,
+	instructionID string,
+	request *agents.PublishConfirmationRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*basistheory.PublishConfirmationResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://api.basistheory.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/agentic/agents/%v/instructions/%v/confirmations",
+		agentID,
+		instructionID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	headers.Add("Content-Type", "application/json")
+	var response *basistheory.PublishConfirmationResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(agents.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*basistheory.PublishConfirmationResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}

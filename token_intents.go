@@ -82,11 +82,12 @@ var (
 	tokenIntentFieldCreatedBy      = big.NewInt(1 << 4)
 	tokenIntentFieldCreatedAt      = big.NewInt(1 << 5)
 	tokenIntentFieldExpiresAt      = big.NewInt(1 << 6)
-	tokenIntentFieldCard           = big.NewInt(1 << 7)
-	tokenIntentFieldBank           = big.NewInt(1 << 8)
-	tokenIntentFieldNetworkToken   = big.NewInt(1 << 9)
-	tokenIntentFieldAuthentication = big.NewInt(1 << 10)
-	tokenIntentFieldExtras         = big.NewInt(1 << 11)
+	tokenIntentFieldData           = big.NewInt(1 << 7)
+	tokenIntentFieldCard           = big.NewInt(1 << 8)
+	tokenIntentFieldBank           = big.NewInt(1 << 9)
+	tokenIntentFieldNetworkToken   = big.NewInt(1 << 10)
+	tokenIntentFieldAuthentication = big.NewInt(1 << 11)
+	tokenIntentFieldExtras         = big.NewInt(1 << 12)
 )
 
 type TokenIntent struct {
@@ -97,6 +98,7 @@ type TokenIntent struct {
 	CreatedBy      *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt      *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ExpiresAt      *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Data           any                `json:"data,omitempty" url:"data,omitempty"`
 	Card           *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
 	Bank           *BankDetails       `json:"bank,omitempty" url:"bank,omitempty"`
 	NetworkToken   *CardDetails       `json:"network_token,omitempty" url:"network_token,omitempty"`
@@ -157,6 +159,13 @@ func (t *TokenIntent) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return t.ExpiresAt
+}
+
+func (t *TokenIntent) GetData() any {
+	if t == nil {
+		return nil
+	}
+	return t.Data
 }
 
 func (t *TokenIntent) GetCard() *CardDetails {
@@ -255,6 +264,13 @@ func (t *TokenIntent) SetCreatedAt(createdAt *time.Time) {
 func (t *TokenIntent) SetExpiresAt(expiresAt *time.Time) {
 	t.ExpiresAt = expiresAt
 	t.require(tokenIntentFieldExpiresAt)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TokenIntent) SetData(data any) {
+	t.Data = data
+	t.require(tokenIntentFieldData)
 }
 
 // SetCard sets the Card field and marks it as non-optional;

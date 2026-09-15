@@ -12,6 +12,52 @@ import (
 )
 
 var (
+	publishConfirmationRequestFieldConfirmationData = big.NewInt(1 << 0)
+)
+
+type PublishConfirmationRequest struct {
+	ConfirmationData []*v7.ConfirmationEntry `json:"confirmation_data" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (p *PublishConfirmationRequest) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetConfirmationData sets the ConfirmationData field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PublishConfirmationRequest) SetConfirmationData(confirmationData []*v7.ConfirmationEntry) {
+	p.ConfirmationData = confirmationData
+	p.require(publishConfirmationRequestFieldConfirmationData)
+}
+
+func (p *PublishConfirmationRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler PublishConfirmationRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*p = PublishConfirmationRequest(body)
+	return nil
+}
+
+func (p *PublishConfirmationRequest) MarshalJSON() ([]byte, error) {
+	type embed PublishConfirmationRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	createInstructionRequestFieldEnrollmentID           = big.NewInt(1 << 0)
 	createInstructionRequestFieldAmount                 = big.NewInt(1 << 1)
 	createInstructionRequestFieldDescription            = big.NewInt(1 << 2)

@@ -220,3 +220,36 @@ func TestAgenticAgentsInstructionsUpdateWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestAgenticAgentsInstructionsUpdateWithWireMock", "PATCH", "/agentic/agents/agent_id/instructions/instruction_id", nil, 1)
 }
+
+func TestAgenticAgentsInstructionsConfirmationsWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &agents.PublishConfirmationRequest{
+		ConfirmationData: []*basistheory.ConfirmationEntry{
+			&basistheory.ConfirmationEntry{
+				TransactionStatus: basistheory.TransactionStatusApproved,
+				TransactionType:   basistheory.TransactionTypePurchase,
+			},
+		},
+	}
+	_, invocationErr := client.Agentic.Agents.Instructions.Confirmations(
+		context.TODO(),
+		"agent_id",
+		"instruction_id",
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestAgenticAgentsInstructionsConfirmationsWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestAgenticAgentsInstructionsConfirmationsWithWireMock", "POST", "/agentic/agents/agent_id/instructions/instruction_id/confirmations", nil, 1)
+}

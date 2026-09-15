@@ -9,11 +9,6 @@ import (
 )
 
 var ErrorCodes internal.ErrorCodes = internal.ErrorCodes{
-	400: func(apiError *core.APIError) error {
-		return &basistheory.BadRequestError{
-			APIError: apiError,
-		}
-	},
 	401: func(apiError *core.APIError) error {
 		return &basistheory.UnauthorizedError{
 			APIError: apiError,
@@ -29,13 +24,28 @@ var ErrorCodes internal.ErrorCodes = internal.ErrorCodes{
 			APIError: apiError,
 		}
 	},
-	404: func(apiError *core.APIError) error {
-		return &basistheory.NotFoundError{
+	400: func(apiError *core.APIError) error {
+		return &basistheory.BadRequestError{
 			APIError: apiError,
 		}
 	},
 	422: func(apiError *core.APIError) error {
 		return &basistheory.UnprocessableEntityError{
+			APIError: apiError,
+		}
+	},
+	404: func(apiError *core.APIError) error {
+		return &basistheory.NotFoundError{
+			APIError: apiError,
+		}
+	},
+	409: func(apiError *core.APIError) error {
+		return &basistheory.ConflictError{
+			APIError: apiError,
+		}
+	},
+	501: func(apiError *core.APIError) error {
+		return &basistheory.NotImplementedError{
 			APIError: apiError,
 		}
 	},

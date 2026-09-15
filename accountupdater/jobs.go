@@ -10,15 +10,21 @@ import (
 )
 
 var (
-	createAccountUpdaterJobRequestFieldDeduplicateTokens = big.NewInt(1 << 0)
-	createAccountUpdaterJobRequestFieldMerchantID        = big.NewInt(1 << 1)
-	createAccountUpdaterJobRequestFieldResultVersion     = big.NewInt(1 << 2)
+	createAccountUpdaterJobRequestFieldBtMerchantID            = big.NewInt(1 << 0)
+	createAccountUpdaterJobRequestFieldDeduplicateTokens       = big.NewInt(1 << 1)
+	createAccountUpdaterJobRequestFieldConfigurationMerchantID = big.NewInt(1 << 2)
+	createAccountUpdaterJobRequestFieldMerchantID              = big.NewInt(1 << 3)
+	createAccountUpdaterJobRequestFieldResultVersion           = big.NewInt(1 << 4)
 )
 
 type CreateAccountUpdaterJobRequest struct {
+	// Tenant merchant the job acts as. Tokens in the file are read within this merchant's scope and new tokens are associated with it. Responds 404 if the merchant does not exist in the tenant.
+	BtMerchantID *string `json:"-" url:"-"`
 	// Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
 	DeduplicateTokens *bool `json:"deduplicate_tokens,omitempty" url:"-"`
-	// Tenant merchant identifier
+	// Tenant merchant whose provider configuration is used for this job. Selects configuration only; it does not scope token access or associate tokens with the merchant. Takes precedence over merchant_id; defaults to the BT-MERCHANT-ID header merchant, then the tenant-level configuration.
+	ConfigurationMerchantID *string `json:"configuration_merchant_id,omitempty" url:"-"`
+	// Deprecated: use configuration_merchant_id instead. Legacy alias kept for backward compatibility with lower precedence. Selects configuration only.
 	MerchantID *string `json:"merchant_id,omitempty" url:"-"`
 	// Version of the result CSV format. Version '1' returns base columns. Version '1.1' adds new_fingerprint and new_brand columns. Version '1.2' adds the new_last4 column on top of 1.1.
 	ResultVersion *CreateAccountUpdaterJobRequestResultVersion `json:"result_version,omitempty" url:"-"`
@@ -34,11 +40,25 @@ func (c *CreateAccountUpdaterJobRequest) require(field *big.Int) {
 	c.explicitFields.Or(c.explicitFields, field)
 }
 
+// SetBtMerchantID sets the BtMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAccountUpdaterJobRequest) SetBtMerchantID(btMerchantID *string) {
+	c.BtMerchantID = btMerchantID
+	c.require(createAccountUpdaterJobRequestFieldBtMerchantID)
+}
+
 // SetDeduplicateTokens sets the DeduplicateTokens field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
 func (c *CreateAccountUpdaterJobRequest) SetDeduplicateTokens(deduplicateTokens *bool) {
 	c.DeduplicateTokens = deduplicateTokens
 	c.require(createAccountUpdaterJobRequestFieldDeduplicateTokens)
+}
+
+// SetConfigurationMerchantID sets the ConfigurationMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateAccountUpdaterJobRequest) SetConfigurationMerchantID(configurationMerchantID *string) {
+	c.ConfigurationMerchantID = configurationMerchantID
+	c.require(createAccountUpdaterJobRequestFieldConfigurationMerchantID)
 }
 
 // SetMerchantID sets the MerchantID field and marks it as non-optional;
