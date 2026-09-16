@@ -1,3 +1,10 @@
+# [7.2.0](https://github.com/Basis-Theory/go-sdk/compare/v7.1.0...v7.2.0) (2026-09-16)
+
+
+### Features
+
+* add proxy hostname transfer, runtime log options, and account updater merchant header ([d8df65b](https://github.com/Basis-Theory/go-sdk/commit/d8df65bb76d536ab8c6448b7d317c00ec44fad9f))
+
 # [7.1.0](https://github.com/Basis-Theory/go-sdk/compare/v7.0.0...v7.1.0) (2026-09-11)
 
 
