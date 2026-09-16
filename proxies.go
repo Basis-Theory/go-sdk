@@ -344,6 +344,52 @@ func (p *PatchProxyRequest) MarshalJSON() ([]byte, error) {
 }
 
 var (
+	transferProxyHostnameRequestFieldProxyHost = big.NewInt(1 << 0)
+)
+
+type TransferProxyHostnameRequest struct {
+	ProxyHost string `json:"proxy_host" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (t *TransferProxyHostnameRequest) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetProxyHost sets the ProxyHost field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TransferProxyHostnameRequest) SetProxyHost(proxyHost string) {
+	t.ProxyHost = proxyHost
+	t.require(transferProxyHostnameRequestFieldProxyHost)
+}
+
+func (t *TransferProxyHostnameRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransferProxyHostnameRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*t = TransferProxyHostnameRequest(body)
+	return nil
+}
+
+func (t *TransferProxyHostnameRequest) MarshalJSON() ([]byte, error) {
+	type embed TransferProxyHostnameRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	pendingProxyFieldDestinationURL     = big.NewInt(1 << 0)
 	pendingProxyFieldConfiguration      = big.NewInt(1 << 1)
 	pendingProxyFieldRequireAuth        = big.NewInt(1 << 2)
@@ -1507,6 +1553,7 @@ var (
 	runtimeFieldTimeout         = big.NewInt(1 << 4)
 	runtimeFieldResources       = big.NewInt(1 << 5)
 	runtimeFieldPermissions     = big.NewInt(1 << 6)
+	runtimeFieldLogs            = big.NewInt(1 << 7)
 )
 
 type Runtime struct {
@@ -1517,6 +1564,7 @@ type Runtime struct {
 	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
 	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
 	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
+	Logs            *RuntimeLogOptions `json:"logs,omitempty" url:"logs,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1572,6 +1620,13 @@ func (r *Runtime) GetPermissions() []string {
 		return nil
 	}
 	return r.Permissions
+}
+
+func (r *Runtime) GetLogs() *RuntimeLogOptions {
+	if r == nil {
+		return nil
+	}
+	return r.Logs
 }
 
 func (r *Runtime) GetExtraProperties() map[string]interface{} {
@@ -1635,6 +1690,13 @@ func (r *Runtime) SetResources(resources *string) {
 func (r *Runtime) SetPermissions(permissions []string) {
 	r.Permissions = permissions
 	r.require(runtimeFieldPermissions)
+}
+
+// SetLogs sets the Logs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *Runtime) SetLogs(logs *RuntimeLogOptions) {
+	r.Logs = logs
+	r.require(runtimeFieldLogs)
 }
 
 func (r *Runtime) UnmarshalJSON(data []byte) error {

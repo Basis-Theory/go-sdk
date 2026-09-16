@@ -190,3 +190,21 @@ func (c *Client) Patch(
 	}
 	return nil
 }
+
+func (c *Client) TransferHostname(
+	ctx context.Context,
+	id string,
+	request *basistheory.TransferProxyHostnameRequest,
+	opts ...option.IdempotentRequestOption,
+) error {
+	_, err := c.WithRawResponse.TransferHostname(
+		ctx,
+		id,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
