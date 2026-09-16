@@ -49,6 +49,9 @@ func (r *RawClient) Invoke(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	if request.BtMerchantID != nil {
+		headers.Add("BT-MERCHANT-ID", *request.BtMerchantID)
+	}
 	headers.Add("Content-Type", "application/json")
 	var response *basistheory.AccountUpdaterRealTimeResponse
 	raw, err := r.caller.Call(

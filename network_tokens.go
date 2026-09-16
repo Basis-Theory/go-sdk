@@ -11,23 +11,27 @@ import (
 )
 
 var (
-	createNetworkTokenRequestFieldData            = big.NewInt(1 << 0)
-	createNetworkTokenRequestFieldTokenID         = big.NewInt(1 << 1)
-	createNetworkTokenRequestFieldTokenIntentID   = big.NewInt(1 << 2)
-	createNetworkTokenRequestFieldExpirationMonth = big.NewInt(1 << 3)
-	createNetworkTokenRequestFieldExpirationYear  = big.NewInt(1 << 4)
-	createNetworkTokenRequestFieldCardholderInfo  = big.NewInt(1 << 5)
-	createNetworkTokenRequestFieldMerchantID      = big.NewInt(1 << 6)
+	createNetworkTokenRequestFieldData                    = big.NewInt(1 << 0)
+	createNetworkTokenRequestFieldTokenID                 = big.NewInt(1 << 1)
+	createNetworkTokenRequestFieldTokenIntentID           = big.NewInt(1 << 2)
+	createNetworkTokenRequestFieldExpirationMonth         = big.NewInt(1 << 3)
+	createNetworkTokenRequestFieldExpirationYear          = big.NewInt(1 << 4)
+	createNetworkTokenRequestFieldCardholderInfo          = big.NewInt(1 << 5)
+	createNetworkTokenRequestFieldMerchantID              = big.NewInt(1 << 6)
+	createNetworkTokenRequestFieldConfigurationMerchantID = big.NewInt(1 << 7)
+	createNetworkTokenRequestFieldOwnerMerchantID         = big.NewInt(1 << 8)
 )
 
 type CreateNetworkTokenRequest struct {
-	Data            *Card           `json:"data,omitempty" url:"-"`
-	TokenID         *string         `json:"token_id,omitempty" url:"-"`
-	TokenIntentID   *string         `json:"token_intent_id,omitempty" url:"-"`
-	ExpirationMonth *int            `json:"expiration_month,omitempty" url:"-"`
-	ExpirationYear  *int            `json:"expiration_year,omitempty" url:"-"`
-	CardholderInfo  *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
-	MerchantID      *string         `json:"merchant_id,omitempty" url:"-"`
+	Data                    *Card           `json:"data,omitempty" url:"-"`
+	TokenID                 *string         `json:"token_id,omitempty" url:"-"`
+	TokenIntentID           *string         `json:"token_intent_id,omitempty" url:"-"`
+	ExpirationMonth         *int            `json:"expiration_month,omitempty" url:"-"`
+	ExpirationYear          *int            `json:"expiration_year,omitempty" url:"-"`
+	CardholderInfo          *CardholderInfo `json:"cardholder_info,omitempty" url:"-"`
+	MerchantID              *string         `json:"merchant_id,omitempty" url:"-"`
+	ConfigurationMerchantID *string         `json:"configuration_merchant_id,omitempty" url:"-"`
+	OwnerMerchantID         *string         `json:"owner_merchant_id,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -87,6 +91,20 @@ func (c *CreateNetworkTokenRequest) SetCardholderInfo(cardholderInfo *Cardholder
 func (c *CreateNetworkTokenRequest) SetMerchantID(merchantID *string) {
 	c.MerchantID = merchantID
 	c.require(createNetworkTokenRequestFieldMerchantID)
+}
+
+// SetConfigurationMerchantID sets the ConfigurationMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetConfigurationMerchantID(configurationMerchantID *string) {
+	c.ConfigurationMerchantID = configurationMerchantID
+	c.require(createNetworkTokenRequestFieldConfigurationMerchantID)
+}
+
+// SetOwnerMerchantID sets the OwnerMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateNetworkTokenRequest) SetOwnerMerchantID(ownerMerchantID *string) {
+	c.OwnerMerchantID = ownerMerchantID
+	c.require(createNetworkTokenRequestFieldOwnerMerchantID)
 }
 
 func (c *CreateNetworkTokenRequest) UnmarshalJSON(data []byte) error {

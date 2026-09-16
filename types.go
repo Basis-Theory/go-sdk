@@ -6310,11 +6310,12 @@ var (
 	createTokenIntentResponseFieldCreatedBy      = big.NewInt(1 << 4)
 	createTokenIntentResponseFieldCreatedAt      = big.NewInt(1 << 5)
 	createTokenIntentResponseFieldExpiresAt      = big.NewInt(1 << 6)
-	createTokenIntentResponseFieldCard           = big.NewInt(1 << 7)
-	createTokenIntentResponseFieldBank           = big.NewInt(1 << 8)
-	createTokenIntentResponseFieldNetworkToken   = big.NewInt(1 << 9)
-	createTokenIntentResponseFieldAuthentication = big.NewInt(1 << 10)
-	createTokenIntentResponseFieldExtras         = big.NewInt(1 << 11)
+	createTokenIntentResponseFieldData           = big.NewInt(1 << 7)
+	createTokenIntentResponseFieldCard           = big.NewInt(1 << 8)
+	createTokenIntentResponseFieldBank           = big.NewInt(1 << 9)
+	createTokenIntentResponseFieldNetworkToken   = big.NewInt(1 << 10)
+	createTokenIntentResponseFieldAuthentication = big.NewInt(1 << 11)
+	createTokenIntentResponseFieldExtras         = big.NewInt(1 << 12)
 )
 
 type CreateTokenIntentResponse struct {
@@ -6325,6 +6326,7 @@ type CreateTokenIntentResponse struct {
 	CreatedBy      *string            `json:"created_by,omitempty" url:"created_by,omitempty"`
 	CreatedAt      *time.Time         `json:"created_at,omitempty" url:"created_at,omitempty"`
 	ExpiresAt      *time.Time         `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+	Data           any                `json:"data,omitempty" url:"data,omitempty"`
 	Card           *CardDetails       `json:"card,omitempty" url:"card,omitempty"`
 	Bank           *BankDetails       `json:"bank,omitempty" url:"bank,omitempty"`
 	NetworkToken   *CardDetails       `json:"network_token,omitempty" url:"network_token,omitempty"`
@@ -6385,6 +6387,13 @@ func (c *CreateTokenIntentResponse) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return c.ExpiresAt
+}
+
+func (c *CreateTokenIntentResponse) GetData() any {
+	if c == nil {
+		return nil
+	}
+	return c.Data
 }
 
 func (c *CreateTokenIntentResponse) GetCard() *CardDetails {
@@ -6483,6 +6492,13 @@ func (c *CreateTokenIntentResponse) SetCreatedAt(createdAt *time.Time) {
 func (c *CreateTokenIntentResponse) SetExpiresAt(expiresAt *time.Time) {
 	c.ExpiresAt = expiresAt
 	c.require(createTokenIntentResponseFieldExpiresAt)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenIntentResponse) SetData(data any) {
+	c.Data = data
+	c.require(createTokenIntentResponseFieldData)
 }
 
 // SetCard sets the Card field and marks it as non-optional;
@@ -6588,6 +6604,7 @@ var (
 	createTokenRequestFieldExpiresAt             = big.NewInt(1 << 10)
 	createTokenRequestFieldContainers            = big.NewInt(1 << 11)
 	createTokenRequestFieldTokenIntentID         = big.NewInt(1 << 12)
+	createTokenRequestFieldOwnerMerchantID       = big.NewInt(1 << 13)
 )
 
 type CreateTokenRequest struct {
@@ -6604,6 +6621,7 @@ type CreateTokenRequest struct {
 	ExpiresAt             *string            `json:"expires_at,omitempty" url:"expires_at,omitempty"`
 	Containers            []string           `json:"containers,omitempty" url:"containers,omitempty"`
 	TokenIntentID         *string            `json:"token_intent_id,omitempty" url:"token_intent_id,omitempty"`
+	OwnerMerchantID       *string            `json:"owner_merchant_id,omitempty" url:"owner_merchant_id,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -6701,6 +6719,13 @@ func (c *CreateTokenRequest) GetTokenIntentID() *string {
 		return nil
 	}
 	return c.TokenIntentID
+}
+
+func (c *CreateTokenRequest) GetOwnerMerchantID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.OwnerMerchantID
 }
 
 func (c *CreateTokenRequest) GetExtraProperties() map[string]interface{} {
@@ -6806,6 +6831,13 @@ func (c *CreateTokenRequest) SetContainers(containers []string) {
 func (c *CreateTokenRequest) SetTokenIntentID(tokenIntentID *string) {
 	c.TokenIntentID = tokenIntentID
 	c.require(createTokenRequestFieldTokenIntentID)
+}
+
+// SetOwnerMerchantID sets the OwnerMerchantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreateTokenRequest) SetOwnerMerchantID(ownerMerchantID *string) {
+	c.OwnerMerchantID = ownerMerchantID
+	c.require(createTokenRequestFieldOwnerMerchantID)
 }
 
 func (c *CreateTokenRequest) UnmarshalJSON(data []byte) error {
@@ -8622,6 +8654,254 @@ func (e EnrollmentType) Ptr() *EnrollmentType {
 }
 
 type EventTypes = []string
+
+var (
+	functionSourceDetectionFieldCategory = big.NewInt(1 << 0)
+	functionSourceDetectionFieldStart    = big.NewInt(1 << 1)
+	functionSourceDetectionFieldLength   = big.NewInt(1 << 2)
+)
+
+type FunctionSourceDetection struct {
+	Category *string `json:"category,omitempty" url:"category,omitempty"`
+	Start    *int    `json:"start,omitempty" url:"start,omitempty"`
+	Length   *int    `json:"length,omitempty" url:"length,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (f *FunctionSourceDetection) GetCategory() *string {
+	if f == nil {
+		return nil
+	}
+	return f.Category
+}
+
+func (f *FunctionSourceDetection) GetStart() *int {
+	if f == nil {
+		return nil
+	}
+	return f.Start
+}
+
+func (f *FunctionSourceDetection) GetLength() *int {
+	if f == nil {
+		return nil
+	}
+	return f.Length
+}
+
+func (f *FunctionSourceDetection) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
+	return f.extraProperties
+}
+
+func (f *FunctionSourceDetection) require(field *big.Int) {
+	if f.explicitFields == nil {
+		f.explicitFields = big.NewInt(0)
+	}
+	f.explicitFields.Or(f.explicitFields, field)
+}
+
+// SetCategory sets the Category field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceDetection) SetCategory(category *string) {
+	f.Category = category
+	f.require(functionSourceDetectionFieldCategory)
+}
+
+// SetStart sets the Start field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceDetection) SetStart(start *int) {
+	f.Start = start
+	f.require(functionSourceDetectionFieldStart)
+}
+
+// SetLength sets the Length field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceDetection) SetLength(length *int) {
+	f.Length = length
+	f.require(functionSourceDetectionFieldLength)
+}
+
+func (f *FunctionSourceDetection) UnmarshalJSON(data []byte) error {
+	type unmarshaler FunctionSourceDetection
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FunctionSourceDetection(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FunctionSourceDetection) MarshalJSON() ([]byte, error) {
+	type embed FunctionSourceDetection
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*f),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, f.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (f *FunctionSourceDetection) String() string {
+	if f == nil {
+		return "<nil>"
+	}
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
+}
+
+var (
+	functionSourceValidationFieldDetected     = big.NewInt(1 << 0)
+	functionSourceValidationFieldCategories   = big.NewInt(1 << 1)
+	functionSourceValidationFieldDetections   = big.NewInt(1 << 2)
+	functionSourceValidationFieldRedactedCode = big.NewInt(1 << 3)
+)
+
+type FunctionSourceValidation struct {
+	Detected     *bool                      `json:"detected,omitempty" url:"detected,omitempty"`
+	Categories   []string                   `json:"categories,omitempty" url:"categories,omitempty"`
+	Detections   []*FunctionSourceDetection `json:"detections,omitempty" url:"detections,omitempty"`
+	RedactedCode *string                    `json:"redacted_code,omitempty" url:"redacted_code,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (f *FunctionSourceValidation) GetDetected() *bool {
+	if f == nil {
+		return nil
+	}
+	return f.Detected
+}
+
+func (f *FunctionSourceValidation) GetCategories() []string {
+	if f == nil {
+		return nil
+	}
+	return f.Categories
+}
+
+func (f *FunctionSourceValidation) GetDetections() []*FunctionSourceDetection {
+	if f == nil {
+		return nil
+	}
+	return f.Detections
+}
+
+func (f *FunctionSourceValidation) GetRedactedCode() *string {
+	if f == nil {
+		return nil
+	}
+	return f.RedactedCode
+}
+
+func (f *FunctionSourceValidation) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
+	return f.extraProperties
+}
+
+func (f *FunctionSourceValidation) require(field *big.Int) {
+	if f.explicitFields == nil {
+		f.explicitFields = big.NewInt(0)
+	}
+	f.explicitFields.Or(f.explicitFields, field)
+}
+
+// SetDetected sets the Detected field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetDetected(detected *bool) {
+	f.Detected = detected
+	f.require(functionSourceValidationFieldDetected)
+}
+
+// SetCategories sets the Categories field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetCategories(categories []string) {
+	f.Categories = categories
+	f.require(functionSourceValidationFieldCategories)
+}
+
+// SetDetections sets the Detections field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetDetections(detections []*FunctionSourceDetection) {
+	f.Detections = detections
+	f.require(functionSourceValidationFieldDetections)
+}
+
+// SetRedactedCode sets the RedactedCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FunctionSourceValidation) SetRedactedCode(redactedCode *string) {
+	f.RedactedCode = redactedCode
+	f.require(functionSourceValidationFieldRedactedCode)
+}
+
+func (f *FunctionSourceValidation) UnmarshalJSON(data []byte) error {
+	type unmarshaler FunctionSourceValidation
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FunctionSourceValidation(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FunctionSourceValidation) MarshalJSON() ([]byte, error) {
+	type embed FunctionSourceValidation
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*f),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, f.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (f *FunctionSourceValidation) String() string {
+	if f == nil {
+		return "<nil>"
+	}
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
+}
 
 var (
 	getApplicationsFieldID    = big.NewInt(1 << 0)
@@ -13579,6 +13859,106 @@ func NewRecurringFrequencyFromString(s string) (RecurringFrequency, error) {
 
 func (r RecurringFrequency) Ptr() *RecurringFrequency {
 	return &r
+}
+
+var (
+	runtimeLogOptionsFieldEnabled = big.NewInt(1 << 0)
+	runtimeLogOptionsFieldLevel   = big.NewInt(1 << 1)
+)
+
+type RuntimeLogOptions struct {
+	Enabled *bool   `json:"enabled,omitempty" url:"enabled,omitempty"`
+	Level   *string `json:"level,omitempty" url:"level,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RuntimeLogOptions) GetEnabled() *bool {
+	if r == nil {
+		return nil
+	}
+	return r.Enabled
+}
+
+func (r *RuntimeLogOptions) GetLevel() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Level
+}
+
+func (r *RuntimeLogOptions) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *RuntimeLogOptions) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetEnabled sets the Enabled field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogOptions) SetEnabled(enabled *bool) {
+	r.Enabled = enabled
+	r.require(runtimeLogOptionsFieldEnabled)
+}
+
+// SetLevel sets the Level field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogOptions) SetLevel(level *string) {
+	r.Level = level
+	r.require(runtimeLogOptionsFieldLevel)
+}
+
+func (r *RuntimeLogOptions) UnmarshalJSON(data []byte) error {
+	type unmarshaler RuntimeLogOptions
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RuntimeLogOptions(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RuntimeLogOptions) MarshalJSON() ([]byte, error) {
+	type embed RuntimeLogOptions
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *RuntimeLogOptions) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 var (
@@ -21272,6 +21652,90 @@ func (u *User) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
+}
+
+var (
+	validateFunctionSourceRequestFieldCode = big.NewInt(1 << 0)
+)
+
+type ValidateFunctionSourceRequest struct {
+	Code string `json:"code" url:"code"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *ValidateFunctionSourceRequest) GetCode() string {
+	if v == nil {
+		return ""
+	}
+	return v.Code
+}
+
+func (v *ValidateFunctionSourceRequest) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *ValidateFunctionSourceRequest) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *ValidateFunctionSourceRequest) SetCode(code string) {
+	v.Code = code
+	v.require(validateFunctionSourceRequestFieldCode)
+}
+
+func (v *ValidateFunctionSourceRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ValidateFunctionSourceRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = ValidateFunctionSourceRequest(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *ValidateFunctionSourceRequest) MarshalJSON() ([]byte, error) {
+	type embed ValidateFunctionSourceRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *ValidateFunctionSourceRequest) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 var (

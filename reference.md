@@ -2100,6 +2100,22 @@ client.NetworkTokens.Create(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**configurationMerchantID:** `*string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ownerMerchantID:** `*string` 
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -2958,6 +2974,62 @@ client.Proxies.Patch(
 <dd>
 
 **disableDetokenization:** `*bool` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Proxies.TransferHostname(ID, request) -> error</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &basistheory.TransferProxyHostnameRequest{
+        ProxyHost: "proxy_host",
+    }
+client.Proxies.TransferHostname(
+        context.TODO(),
+        "id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**proxyHost:** `string` 
     
 </dd>
 </dl>
@@ -4369,6 +4441,14 @@ client.AccountUpdater.Jobs.Create(
 <dl>
 <dd>
 
+**btMerchantID:** `*string` — Tenant merchant the job acts as. Tokens in the file are read within this merchant's scope and new tokens are associated with it. Responds 404 if the merchant does not exist in the tenant.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **deduplicateTokens:** `*bool` — Whether deduplication should be enabled when creating new tokens. Uses the value of the Deduplicate Tokens setting on the tenant if not set.
     
 </dd>
@@ -4377,7 +4457,15 @@ client.AccountUpdater.Jobs.Create(
 <dl>
 <dd>
 
-**merchantID:** `*string` — Tenant merchant identifier
+**configurationMerchantID:** `*string` — Tenant merchant whose provider configuration is used for this job. Selects configuration only; it does not scope token access or associate tokens with the merchant. Takes precedence over merchant_id; defaults to the BT-MERCHANT-ID header merchant, then the tenant-level configuration.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**merchantID:** `*string` — Deprecated: use configuration_merchant_id instead. Legacy alias kept for backward compatibility with lower precedence. Selects configuration only.
     
 </dd>
 </dl>
@@ -4447,6 +4535,14 @@ client.AccountUpdater.RealTime.Invoke(
 <dl>
 <dd>
 
+**btMerchantID:** `*string` — Tenant merchant the request acts as. The card token is read within this merchant's scope and the updated token is associated with it. Responds 404 if the merchant does not exist in the tenant.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **tokenID:** `string` — Card Token identifier
     
 </dd>
@@ -4479,7 +4575,15 @@ client.AccountUpdater.RealTime.Invoke(
 <dl>
 <dd>
 
-**merchantID:** `*string` — Tenant merchant identifier
+**configurationMerchantID:** `*string` — Tenant merchant whose provider configuration is used for this request. Selects configuration only; it does not scope token access or associate the new token with the merchant. Takes precedence over merchant_id; defaults to the BT-MERCHANT-ID header merchant, then the tenant-level configuration.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**merchantID:** `*string` — Deprecated: use configuration_merchant_id instead. Legacy alias kept for backward compatibility with lower precedence. Selects configuration only.
     
 </dd>
 </dl>

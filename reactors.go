@@ -1516,6 +1516,7 @@ var (
 	reactorRuntimeFieldTimeout         = big.NewInt(1 << 5)
 	reactorRuntimeFieldResources       = big.NewInt(1 << 6)
 	reactorRuntimeFieldPermissions     = big.NewInt(1 << 7)
+	reactorRuntimeFieldLogs            = big.NewInt(1 << 8)
 )
 
 type ReactorRuntime struct {
@@ -1527,6 +1528,7 @@ type ReactorRuntime struct {
 	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
 	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
 	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
+	Logs            *RuntimeLogOptions `json:"logs,omitempty" url:"logs,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1589,6 +1591,13 @@ func (r *ReactorRuntime) GetPermissions() []string {
 		return nil
 	}
 	return r.Permissions
+}
+
+func (r *ReactorRuntime) GetLogs() *RuntimeLogOptions {
+	if r == nil {
+		return nil
+	}
+	return r.Logs
 }
 
 func (r *ReactorRuntime) GetExtraProperties() map[string]interface{} {
@@ -1659,6 +1668,13 @@ func (r *ReactorRuntime) SetResources(resources *string) {
 func (r *ReactorRuntime) SetPermissions(permissions []string) {
 	r.Permissions = permissions
 	r.require(reactorRuntimeFieldPermissions)
+}
+
+// SetLogs sets the Logs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetLogs(logs *RuntimeLogOptions) {
+	r.Logs = logs
+	r.require(reactorRuntimeFieldLogs)
 }
 
 func (r *ReactorRuntime) UnmarshalJSON(data []byte) error {
