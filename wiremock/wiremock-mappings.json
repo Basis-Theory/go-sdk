@@ -2555,6 +2555,58 @@
       }
     },
     {
+      "id": "10df8534-e278-4506-a3b4-844d5554ac91",
+      "name": "List tenant events - success",
+      "request": {
+        "urlPathTemplate": "/events",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "start_date": {
+            "equalTo": "2024-01-15T09:30:00.000Z"
+          },
+          "end_date": {
+            "equalTo": "2024-01-15T09:30:00.000Z"
+          },
+          "start": {
+            "equalTo": "start"
+          },
+          "size": {
+            "equalTo": "1"
+          },
+          "type": {
+            "equalTo": "type"
+          },
+          "trace_id": {
+            "equalTo": "trace_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"ad393f80-3cc7-4f30-902f-02e239f6a039\",\n      \"tenant_id\": \"d87c3e57-e7e3-45e6-bfce-db5177102019\",\n      \"type\": \"token.created\",\n      \"timestamp\": \"2026-09-16T12:00:00.000Z\",\n      \"trace_id\": \"example-trace\",\n      \"data\": {\n        \"token\": {\n          \"metadata\": {\n            \"order\": \"order-1\"\n          }\n        }\n      }\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"opaque-cursor\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "10df8534-e278-4506-a3b4-844d5554ac91",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
       "id": "83f8a894-d315-48f8-ad5d-cee77abf3ccd",
       "name": "Get a specific account updater batch job - default",
       "request": {
@@ -5205,6 +5257,6 @@
     }
   ],
   "meta": {
-    "total": 145
+    "total": 146
   }
 }

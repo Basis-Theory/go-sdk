@@ -151,6 +151,30 @@ func (s *ServiceUnavailableError) Unwrap() error {
 	return s.APIError
 }
 
+// Too Many Requests
+type TooManyRequestsError struct {
+	*core.APIError
+	Body *ProblemDetails
+}
+
+func (t *TooManyRequestsError) UnmarshalJSON(data []byte) error {
+	var body *ProblemDetails
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	t.StatusCode = 429
+	t.Body = body
+	return nil
+}
+
+func (t *TooManyRequestsError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.Body)
+}
+
+func (t *TooManyRequestsError) Unwrap() error {
+	return t.APIError
+}
+
 // Unauthorized
 type UnauthorizedError struct {
 	*core.APIError
