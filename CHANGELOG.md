@@ -1,3 +1,10 @@
+# [7.3.0](https://github.com/Basis-Theory/go-sdk/compare/v7.2.0...v7.3.0) (2026-10-01)
+
+
+### Features
+
+* add Events listing with cursor pagination ([57a38d2](https://github.com/Basis-Theory/go-sdk/commit/57a38d2107302995c3eae9f8179ebff077d06ff1))
+
 # [7.2.0](https://github.com/Basis-Theory/go-sdk/compare/v7.1.0...v7.2.0) (2026-09-16)
 
 
