@@ -14,6 +14,7 @@ import (
 	core "github.com/Basis-Theory/go-sdk/v7/core"
 	documentsclient "github.com/Basis-Theory/go-sdk/v7/documents/client"
 	enrichments "github.com/Basis-Theory/go-sdk/v7/enrichments"
+	events "github.com/Basis-Theory/go-sdk/v7/events"
 	googlepayclient "github.com/Basis-Theory/go-sdk/v7/googlepay/client"
 	internal "github.com/Basis-Theory/go-sdk/v7/internal"
 	keys "github.com/Basis-Theory/go-sdk/v7/keys"
@@ -51,6 +52,7 @@ type Client struct {
 	Sessions             *sessions.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
+	Events               *events.Client
 	AccountUpdater       *accountupdaterclient.Client
 	Agentic              *agenticclient.Client
 	Tenants              *tenantsclient.Client
@@ -85,6 +87,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Sessions:             sessions.NewClient(options),
 		TokenIntents:         tokenintents.NewClient(options),
 		Webhooks:             webhooksclient.NewClient(options),
+		Events:               events.NewClient(options),
 		AccountUpdater:       accountupdaterclient.NewClient(options),
 		Agentic:              agenticclient.NewClient(options),
 		Tenants:              tenantsclient.NewClient(options),
