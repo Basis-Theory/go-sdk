@@ -13862,6 +13862,295 @@ func (r RecurringFrequency) Ptr() *RecurringFrequency {
 }
 
 var (
+	runtimeLogFieldSource        = big.NewInt(1 << 0)
+	runtimeLogFieldRecordType    = big.NewInt(1 << 1)
+	runtimeLogFieldID            = big.NewInt(1 << 2)
+	runtimeLogFieldOccurredAt    = big.NewInt(1 << 3)
+	runtimeLogFieldLevel         = big.NewInt(1 << 4)
+	runtimeLogFieldEvent         = big.NewInt(1 << 5)
+	runtimeLogFieldTraceID       = big.NewInt(1 << 6)
+	runtimeLogFieldTransformType = big.NewInt(1 << 7)
+	runtimeLogFieldMessage       = big.NewInt(1 << 8)
+	runtimeLogFieldOutcome       = big.NewInt(1 << 9)
+	runtimeLogFieldDurationMs    = big.NewInt(1 << 10)
+	runtimeLogFieldError         = big.NewInt(1 << 11)
+	runtimeLogFieldAttributes    = big.NewInt(1 << 12)
+)
+
+type RuntimeLog struct {
+	// Origin of the record, either application code or the platform.
+	Source RuntimeLogSource `json:"source" url:"source"`
+	// Record category paired with source (application/log or platform/lifecycle).
+	RecordType RuntimeLogRecordType `json:"record_type" url:"record_type"`
+	// Stable identifier assigned to one runtime-log record during ingestion. Repeated delivery preserves it; separate records retain different IDs even when messages and timestamps match. Treat it as an opaque deduplication key, not a resource, invocation, or event-batch ID. Filtering by id is not supported.
+	ID            string    `json:"id" url:"id"`
+	OccurredAt    time.Time `json:"occurred_at" url:"occurred_at"`
+	Level         *string   `json:"level,omitempty" url:"level,omitempty"`
+	Event         *string   `json:"event,omitempty" url:"event,omitempty"`
+	TraceID       *string   `json:"trace_id,omitempty" url:"trace_id,omitempty"`
+	TransformType *string   `json:"transform_type,omitempty" url:"transform_type,omitempty"`
+	Message       *string   `json:"message,omitempty" url:"message,omitempty"`
+	Outcome       *string   `json:"outcome,omitempty" url:"outcome,omitempty"`
+	DurationMs    *float64  `json:"duration_ms,omitempty" url:"duration_ms,omitempty"`
+	// Display-only diagnostic data; its properties are not searchable.
+	Error map[string]any `json:"error,omitempty" url:"error,omitempty"`
+	// Display-only diagnostic data; its properties are not searchable.
+	Attributes map[string]any `json:"attributes,omitempty" url:"attributes,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RuntimeLog) GetSource() RuntimeLogSource {
+	if r == nil {
+		return ""
+	}
+	return r.Source
+}
+
+func (r *RuntimeLog) GetRecordType() RuntimeLogRecordType {
+	if r == nil {
+		return ""
+	}
+	return r.RecordType
+}
+
+func (r *RuntimeLog) GetID() string {
+	if r == nil {
+		return ""
+	}
+	return r.ID
+}
+
+func (r *RuntimeLog) GetOccurredAt() time.Time {
+	if r == nil {
+		return time.Time{}
+	}
+	return r.OccurredAt
+}
+
+func (r *RuntimeLog) GetLevel() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Level
+}
+
+func (r *RuntimeLog) GetEvent() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Event
+}
+
+func (r *RuntimeLog) GetTraceID() *string {
+	if r == nil {
+		return nil
+	}
+	return r.TraceID
+}
+
+func (r *RuntimeLog) GetTransformType() *string {
+	if r == nil {
+		return nil
+	}
+	return r.TransformType
+}
+
+func (r *RuntimeLog) GetMessage() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Message
+}
+
+func (r *RuntimeLog) GetOutcome() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Outcome
+}
+
+func (r *RuntimeLog) GetDurationMs() *float64 {
+	if r == nil {
+		return nil
+	}
+	return r.DurationMs
+}
+
+func (r *RuntimeLog) GetError() map[string]any {
+	if r == nil {
+		return nil
+	}
+	return r.Error
+}
+
+func (r *RuntimeLog) GetAttributes() map[string]any {
+	if r == nil {
+		return nil
+	}
+	return r.Attributes
+}
+
+func (r *RuntimeLog) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *RuntimeLog) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetSource sets the Source field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetSource(source RuntimeLogSource) {
+	r.Source = source
+	r.require(runtimeLogFieldSource)
+}
+
+// SetRecordType sets the RecordType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetRecordType(recordType RuntimeLogRecordType) {
+	r.RecordType = recordType
+	r.require(runtimeLogFieldRecordType)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetID(id string) {
+	r.ID = id
+	r.require(runtimeLogFieldID)
+}
+
+// SetOccurredAt sets the OccurredAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetOccurredAt(occurredAt time.Time) {
+	r.OccurredAt = occurredAt
+	r.require(runtimeLogFieldOccurredAt)
+}
+
+// SetLevel sets the Level field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetLevel(level *string) {
+	r.Level = level
+	r.require(runtimeLogFieldLevel)
+}
+
+// SetEvent sets the Event field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetEvent(event *string) {
+	r.Event = event
+	r.require(runtimeLogFieldEvent)
+}
+
+// SetTraceID sets the TraceID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetTraceID(traceID *string) {
+	r.TraceID = traceID
+	r.require(runtimeLogFieldTraceID)
+}
+
+// SetTransformType sets the TransformType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetTransformType(transformType *string) {
+	r.TransformType = transformType
+	r.require(runtimeLogFieldTransformType)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetMessage(message *string) {
+	r.Message = message
+	r.require(runtimeLogFieldMessage)
+}
+
+// SetOutcome sets the Outcome field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetOutcome(outcome *string) {
+	r.Outcome = outcome
+	r.require(runtimeLogFieldOutcome)
+}
+
+// SetDurationMs sets the DurationMs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetDurationMs(durationMs *float64) {
+	r.DurationMs = durationMs
+	r.require(runtimeLogFieldDurationMs)
+}
+
+// SetError sets the Error field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetError(error_ map[string]any) {
+	r.Error = error_
+	r.require(runtimeLogFieldError)
+}
+
+// SetAttributes sets the Attributes field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLog) SetAttributes(attributes map[string]any) {
+	r.Attributes = attributes
+	r.require(runtimeLogFieldAttributes)
+}
+
+func (r *RuntimeLog) UnmarshalJSON(data []byte) error {
+	type embed RuntimeLog
+	var unmarshaler = struct {
+		embed
+		OccurredAt *internal.DateTime `json:"occurred_at"`
+	}{
+		embed: embed(*r),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*r = RuntimeLog(unmarshaler.embed)
+	r.OccurredAt = unmarshaler.OccurredAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RuntimeLog) MarshalJSON() ([]byte, error) {
+	type embed RuntimeLog
+	var marshaler = struct {
+		embed
+		OccurredAt *internal.DateTime `json:"occurred_at"`
+	}{
+		embed:      embed(*r),
+		OccurredAt: internal.NewDateTime(r.OccurredAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *RuntimeLog) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+var (
 	runtimeLogOptionsFieldEnabled = big.NewInt(1 << 0)
 	runtimeLogOptionsFieldLevel   = big.NewInt(1 << 1)
 )
@@ -13959,6 +14248,252 @@ func (r *RuntimeLogOptions) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", r)
+}
+
+var (
+	runtimeLogPageFieldData       = big.NewInt(1 << 0)
+	runtimeLogPageFieldPagination = big.NewInt(1 << 1)
+)
+
+type RuntimeLogPage struct {
+	Data       []*RuntimeLog             `json:"data" url:"data"`
+	Pagination *RuntimeLogPagePagination `json:"pagination" url:"pagination"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RuntimeLogPage) GetData() []*RuntimeLog {
+	if r == nil {
+		return nil
+	}
+	return r.Data
+}
+
+func (r *RuntimeLogPage) GetPagination() *RuntimeLogPagePagination {
+	if r == nil {
+		return nil
+	}
+	return r.Pagination
+}
+
+func (r *RuntimeLogPage) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *RuntimeLogPage) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogPage) SetData(data []*RuntimeLog) {
+	r.Data = data
+	r.require(runtimeLogPageFieldData)
+}
+
+// SetPagination sets the Pagination field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogPage) SetPagination(pagination *RuntimeLogPagePagination) {
+	r.Pagination = pagination
+	r.require(runtimeLogPageFieldPagination)
+}
+
+func (r *RuntimeLogPage) UnmarshalJSON(data []byte) error {
+	type unmarshaler RuntimeLogPage
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RuntimeLogPage(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RuntimeLogPage) MarshalJSON() ([]byte, error) {
+	type embed RuntimeLogPage
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *RuntimeLogPage) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+var (
+	runtimeLogPagePaginationFieldNext     = big.NewInt(1 << 0)
+	runtimeLogPagePaginationFieldPageSize = big.NewInt(1 << 1)
+)
+
+type RuntimeLogPagePagination struct {
+	Next     *string `json:"next,omitempty" url:"next,omitempty"`
+	PageSize int     `json:"page_size" url:"page_size"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RuntimeLogPagePagination) GetNext() *string {
+	if r == nil {
+		return nil
+	}
+	return r.Next
+}
+
+func (r *RuntimeLogPagePagination) GetPageSize() int {
+	if r == nil {
+		return 0
+	}
+	return r.PageSize
+}
+
+func (r *RuntimeLogPagePagination) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *RuntimeLogPagePagination) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetNext sets the Next field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogPagePagination) SetNext(next *string) {
+	r.Next = next
+	r.require(runtimeLogPagePaginationFieldNext)
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RuntimeLogPagePagination) SetPageSize(pageSize int) {
+	r.PageSize = pageSize
+	r.require(runtimeLogPagePaginationFieldPageSize)
+}
+
+func (r *RuntimeLogPagePagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler RuntimeLogPagePagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RuntimeLogPagePagination(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RuntimeLogPagePagination) MarshalJSON() ([]byte, error) {
+	type embed RuntimeLogPagePagination
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *RuntimeLogPagePagination) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+// Record category paired with source (application/log or platform/lifecycle).
+type RuntimeLogRecordType string
+
+const (
+	RuntimeLogRecordTypeLog       RuntimeLogRecordType = "log"
+	RuntimeLogRecordTypeLifecycle RuntimeLogRecordType = "lifecycle"
+)
+
+func NewRuntimeLogRecordTypeFromString(s string) (RuntimeLogRecordType, error) {
+	switch s {
+	case "log":
+		return RuntimeLogRecordTypeLog, nil
+	case "lifecycle":
+		return RuntimeLogRecordTypeLifecycle, nil
+	}
+	var t RuntimeLogRecordType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RuntimeLogRecordType) Ptr() *RuntimeLogRecordType {
+	return &r
+}
+
+// Origin of the record, either application code or the platform.
+type RuntimeLogSource string
+
+const (
+	RuntimeLogSourceApplication RuntimeLogSource = "application"
+	RuntimeLogSourcePlatform    RuntimeLogSource = "platform"
+)
+
+func NewRuntimeLogSourceFromString(s string) (RuntimeLogSource, error) {
+	switch s {
+	case "application":
+		return RuntimeLogSourceApplication, nil
+	case "platform":
+		return RuntimeLogSourcePlatform, nil
+	}
+	var t RuntimeLogSource
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RuntimeLogSource) Ptr() *RuntimeLogSource {
+	return &r
 }
 
 var (

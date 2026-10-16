@@ -151,7 +151,7 @@ func (s *ServiceUnavailableError) Unwrap() error {
 	return s.APIError
 }
 
-// Too Many Requests
+// Too many requests.
 type TooManyRequestsError struct {
 	*core.APIError
 	Body *ProblemDetails

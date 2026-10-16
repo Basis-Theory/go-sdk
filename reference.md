@@ -4261,6 +4261,413 @@ client.Webhooks.Create(
 </dl>
 </details>
 
+## ReactorLogs
+<details><summary><code>client.ReactorLogs.List(ReactorID) -> *basistheory.RuntimeLogPage</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Requires log:read. Returns individual Reactor runtime records, not event envelopes or neighboring records from the same batch. Tenant and history entitlement are checked on every request. Date bounds use occurred_at, inclusive at start and exclusive at end, and are clamped to current entitlement, now, and the 30-day maximum. Results are asynchronously visible. Responses include source (origin) and record_type (record kind); both have exact, case-sensitive string filters, with application/log and platform/lifecycle as the supported pairings. error and attributes are complete display-only objects and cannot be filtered or searched. IDs are stable logical record identities for deduplicating polling overlap. Pagination is bounded; follow next even after a short page. No cross-page uniqueness or snapshot is promised. Query parameters must be single strings; repeated, unknown, or operator parameters are 400. There are at most 36 parameters, values are at most 1,024 characters (cursor: 12,000), and combined filters are limited to 4,096 UTF-8 bytes. Word search trims/collapses whitespace and is limited to 256 normalized characters.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &basistheory.ReactorLogsListRequest{
+        StartDate: basistheory.Time(
+            basistheory.MustParseDateTime(
+                "2024-01-15T09:30:00Z",
+            ),
+        ),
+        EndDate: basistheory.Time(
+            basistheory.MustParseDateTime(
+                "2024-01-15T09:30:00Z",
+            ),
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+        Size: basistheory.Int(
+            1,
+        ),
+        Source: basistheory.String(
+            "source",
+        ),
+        RecordType: basistheory.String(
+            "record_type",
+        ),
+        TraceID: basistheory.String(
+            "trace_id",
+        ),
+        Level: basistheory.String(
+            "level",
+        ),
+        Event: basistheory.String(
+            "event",
+        ),
+        Outcome: basistheory.String(
+            "outcome",
+        ),
+        Message: basistheory.String(
+            "message",
+        ),
+        MessageSearchWords: basistheory.String(
+            "message[search_words]",
+        ),
+    }
+client.ReactorLogs.List(
+        context.TODO(),
+        "reactor_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**reactorID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**startDate:** `*time.Time` — Inclusive occurred_at bound; defaults to 24 hours before the end bound.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**endDate:** `*time.Time` — Exclusive occurred_at bound; defaults to request time.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` — Opaque continuation bound to tenant, resource, filters, bounds, page size, and log index generation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `*int` — Maximum unique records in this page; short pages may still have a next cursor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**source:** `*string` — Exact, case-sensitive string equality. Supported values are application (application records) and platform (lifecycle records); values are not otherwise enum-validated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**recordType:** `*string` — Exact, case-sensitive string equality. Supported values are log for application records and lifecycle for platform records; values are not otherwise enum-validated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**traceID:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**level:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**outcome:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**message:** `*string` — Exact, case-sensitive message equality; the empty string is a valid exact value.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**messageSearchWords:** `*string` — Standard-analyzed, case-insensitive all-terms match in any order on this same record. Whitespace is trimmed and collapsed; punctuation-only input matches no records.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## ProxyLogs
+<details><summary><code>client.ProxyLogs.List(ProxyID) -> *basistheory.RuntimeLogPage</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Requires log:read. Returns individual Proxy runtime records, not event envelopes or neighboring records from the same batch. Tenant and history entitlement are checked on every request. Date bounds use occurred_at, inclusive at start and exclusive at end, and are clamped to current entitlement, now, and the 30-day maximum. Results are asynchronously visible. Responses include source (origin) and record_type (record kind); both have exact, case-sensitive string filters, with application/log and platform/lifecycle as the supported pairings. error and attributes are complete display-only objects and cannot be filtered or searched. IDs are stable logical record identities for deduplicating polling overlap. Pagination is bounded; follow next even after a short page. No cross-page uniqueness or snapshot is promised. Query parameters must be single strings; repeated, unknown, or operator parameters are 400. There are at most 36 parameters, values are at most 1,024 characters (cursor: 12,000), and combined filters are limited to 4,096 UTF-8 bytes. Word search trims/collapses whitespace and is limited to 256 normalized characters.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &basistheory.ProxyLogsListRequest{
+        StartDate: basistheory.Time(
+            basistheory.MustParseDateTime(
+                "2024-01-15T09:30:00Z",
+            ),
+        ),
+        EndDate: basistheory.Time(
+            basistheory.MustParseDateTime(
+                "2024-01-15T09:30:00Z",
+            ),
+        ),
+        Start: basistheory.String(
+            "start",
+        ),
+        Size: basistheory.Int(
+            1,
+        ),
+        Source: basistheory.String(
+            "source",
+        ),
+        RecordType: basistheory.String(
+            "record_type",
+        ),
+        TraceID: basistheory.String(
+            "trace_id",
+        ),
+        Level: basistheory.String(
+            "level",
+        ),
+        Event: basistheory.String(
+            "event",
+        ),
+        Outcome: basistheory.String(
+            "outcome",
+        ),
+        TransformType: basistheory.String(
+            "transform_type",
+        ),
+        Message: basistheory.String(
+            "message",
+        ),
+        MessageSearchWords: basistheory.String(
+            "message[search_words]",
+        ),
+    }
+client.ProxyLogs.List(
+        context.TODO(),
+        "proxy_id",
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**proxyID:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**startDate:** `*time.Time` — Inclusive occurred_at bound; defaults to 24 hours before the end bound.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**endDate:** `*time.Time` — Exclusive occurred_at bound; defaults to request time.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start:** `*string` — Opaque continuation bound to tenant, resource, filters, bounds, page size, and log index generation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `*int` — Maximum unique records in this page; short pages may still have a next cursor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**source:** `*string` — Exact, case-sensitive string equality. Supported values are application (application records) and platform (lifecycle records); values are not otherwise enum-validated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**recordType:** `*string` — Exact, case-sensitive string equality. Supported values are log for application records and lifecycle for platform records; values are not otherwise enum-validated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**traceID:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**level:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**outcome:** `*string` — Exact, case-sensitive equality on this record.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**transformType:** `*string` — Exact, case-sensitive equality on this Proxy transform side.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**message:** `*string` — Exact, case-sensitive message equality; the empty string is a valid exact value.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**messageSearchWords:** `*string` — Standard-analyzed, case-insensitive all-terms match in any order on this same record. Whitespace is trimmed and collapsed; punctuation-only input matches no records.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Events
 <details><summary><code>client.Events.List() -> *basistheory.EventPage</code></summary>
 <dl>
@@ -4274,7 +4681,7 @@ client.Webhooks.Create(
 <dl>
 <dd>
 
-Requires event:read. Tenant identity comes from trusted API-key authentication. History is limited by log_history_limit (24 hours by default, at most 30 days). Windows reaching outside the visible history are clamped to it rather than rejected. No secondary failover or portal JWT support. SDK callers supply data.<path> filters as literal keys through the SDK's per-request query-parameter options, not as a filters request field.
+Requires event:read. Tenant identity comes from trusted authentication. History is limited by log_history_limit (24 hours by default, at most 30 days). Windows reaching outside the visible history are clamped to it rather than rejected. No secondary failover. SDK callers supply data.<path> filters as literal keys through the SDK's per-request query-parameter options, not as a filters request field.
 </dd>
 </dl>
 </dd>
