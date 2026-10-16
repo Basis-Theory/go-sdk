@@ -29578,6 +29578,22 @@ func TestSettersMarkExplicitNetworkStatusDetail(t *testing.T) {
 }
 
 func TestSettersNetworkTokenAccount(t *testing.T) {
+	t.Run("SetShortDescription", func(t *testing.T) {
+		obj := &NetworkTokenAccount{}
+		var fernTestValueShortDescription *string
+		obj.SetShortDescription(fernTestValueShortDescription)
+		assert.Equal(t, fernTestValueShortDescription, obj.ShortDescription)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetLongDescription", func(t *testing.T) {
+		obj := &NetworkTokenAccount{}
+		var fernTestValueLongDescription *string
+		obj.SetLongDescription(fernTestValueLongDescription)
+		assert.Equal(t, fernTestValueLongDescription, obj.LongDescription)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 	t.Run("SetCardArt", func(t *testing.T) {
 		obj := &NetworkTokenAccount{}
 		var fernTestValueCardArt *CardArt
@@ -29589,6 +29605,72 @@ func TestSettersNetworkTokenAccount(t *testing.T) {
 }
 
 func TestGettersNetworkTokenAccount(t *testing.T) {
+	t.Run("GetShortDescription", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &NetworkTokenAccount{}
+		var expected *string
+		obj.ShortDescription = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetShortDescription(), "getter should return the property value")
+	})
+
+	t.Run("GetShortDescription_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &NetworkTokenAccount{}
+		obj.ShortDescription = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetShortDescription(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetShortDescription_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *NetworkTokenAccount
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetShortDescription() // Should return zero value
+	})
+
+	t.Run("GetLongDescription", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &NetworkTokenAccount{}
+		var expected *string
+		obj.LongDescription = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetLongDescription(), "getter should return the property value")
+	})
+
+	t.Run("GetLongDescription_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &NetworkTokenAccount{}
+		obj.LongDescription = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetLongDescription(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetLongDescription_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *NetworkTokenAccount
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetLongDescription() // Should return zero value
+	})
+
 	t.Run("GetCardArt", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
@@ -29625,6 +29707,68 @@ func TestGettersNetworkTokenAccount(t *testing.T) {
 }
 
 func TestSettersMarkExplicitNetworkTokenAccount(t *testing.T) {
+	t.Run("SetShortDescription_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &NetworkTokenAccount{}
+		var fernTestValueShortDescription *string
+
+		// Act
+		obj.SetShortDescription(fernTestValueShortDescription)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetLongDescription_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &NetworkTokenAccount{}
+		var fernTestValueLongDescription *string
+
+		// Act
+		obj.SetLongDescription(fernTestValueLongDescription)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
 	t.Run("SetCardArt_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
