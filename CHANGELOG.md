@@ -1,3 +1,10 @@
+# [7.4.0](https://github.com/Basis-Theory/go-sdk/compare/v7.3.0...v7.4.0) (2026-10-16)
+
+
+### Features
+
+* add Reactor and Proxy runtime log search ([736c134](https://github.com/Basis-Theory/go-sdk/commit/736c134396fad25d8c32701f75ddef54b87fc557))
+
 # [7.3.0](https://github.com/Basis-Theory/go-sdk/compare/v7.2.0...v7.3.0) (2026-10-01)
 
 
