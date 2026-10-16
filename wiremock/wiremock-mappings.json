@@ -2555,6 +2555,157 @@
       }
     },
     {
+      "id": "775e8505-9baa-43e5-91d7-cd53f62db191",
+      "name": "List Reactor runtime logs - default",
+      "request": {
+        "urlPathTemplate": "/reactors/{reactor_id}/logs",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "reactor_id": {
+            "equalTo": "reactor_id"
+          }
+        },
+        "queryParameters": {
+          "start_date": {
+            "equalTo": "2024-01-15T09:30:00.000Z"
+          },
+          "end_date": {
+            "equalTo": "2024-01-15T09:30:00.000Z"
+          },
+          "start": {
+            "equalTo": "start"
+          },
+          "size": {
+            "equalTo": "1"
+          },
+          "source": {
+            "equalTo": "source"
+          },
+          "record_type": {
+            "equalTo": "record_type"
+          },
+          "trace_id": {
+            "equalTo": "trace_id"
+          },
+          "level": {
+            "equalTo": "level"
+          },
+          "event": {
+            "equalTo": "event"
+          },
+          "outcome": {
+            "equalTo": "outcome"
+          },
+          "message": {
+            "equalTo": "message"
+          },
+          "message[search_words]": {
+            "equalTo": "message[search_words]"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"source\": \"application\",\n      \"record_type\": \"log\",\n      \"id\": \"id\",\n      \"occurred_at\": \"2024-01-15T09:30:00Z\",\n      \"level\": \"level\",\n      \"event\": \"event\",\n      \"trace_id\": \"trace_id\",\n      \"transform_type\": \"transform_type\",\n      \"message\": \"message\",\n      \"outcome\": \"outcome\",\n      \"duration_ms\": 1.1,\n      \"error\": {\n        \"key\": \"value\"\n      },\n      \"attributes\": {\n        \"key\": \"value\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "775e8505-9baa-43e5-91d7-cd53f62db191",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "44047e77-d1b8-4ec0-a06c-dae49230b775",
+      "name": "List Proxy runtime logs - default",
+      "request": {
+        "urlPathTemplate": "/proxies/{proxy_id}/logs",
+        "method": "GET",
+        "headers": {
+          "BT-API-KEY": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "proxy_id": {
+            "equalTo": "proxy_id"
+          }
+        },
+        "queryParameters": {
+          "start_date": {
+            "equalTo": "2024-01-15T09:30:00.000Z"
+          },
+          "end_date": {
+            "equalTo": "2024-01-15T09:30:00.000Z"
+          },
+          "start": {
+            "equalTo": "start"
+          },
+          "size": {
+            "equalTo": "1"
+          },
+          "source": {
+            "equalTo": "source"
+          },
+          "record_type": {
+            "equalTo": "record_type"
+          },
+          "trace_id": {
+            "equalTo": "trace_id"
+          },
+          "level": {
+            "equalTo": "level"
+          },
+          "event": {
+            "equalTo": "event"
+          },
+          "outcome": {
+            "equalTo": "outcome"
+          },
+          "transform_type": {
+            "equalTo": "transform_type"
+          },
+          "message": {
+            "equalTo": "message"
+          },
+          "message[search_words]": {
+            "equalTo": "message[search_words]"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"source\": \"application\",\n      \"record_type\": \"log\",\n      \"id\": \"id\",\n      \"occurred_at\": \"2024-01-15T09:30:00Z\",\n      \"level\": \"level\",\n      \"event\": \"event\",\n      \"trace_id\": \"trace_id\",\n      \"transform_type\": \"transform_type\",\n      \"message\": \"message\",\n      \"outcome\": \"outcome\",\n      \"duration_ms\": 1.1,\n      \"error\": {\n        \"key\": \"value\"\n      },\n      \"attributes\": {\n        \"key\": \"value\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"next\": \"next\",\n    \"page_size\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "44047e77-d1b8-4ec0-a06c-dae49230b775",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "10df8534-e278-4506-a3b4-844d5554ac91",
       "name": "List tenant events - success",
       "request": {
@@ -5257,6 +5408,6 @@
     }
   ],
   "meta": {
-    "total": 146
+    "total": 148
   }
 }

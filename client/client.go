@@ -23,6 +23,8 @@ import (
 	option "github.com/Basis-Theory/go-sdk/v7/option"
 	permissions "github.com/Basis-Theory/go-sdk/v7/permissions"
 	proxies "github.com/Basis-Theory/go-sdk/v7/proxies"
+	proxylogs "github.com/Basis-Theory/go-sdk/v7/proxylogs"
+	reactorlogs "github.com/Basis-Theory/go-sdk/v7/reactorlogs"
 	reactorsclient "github.com/Basis-Theory/go-sdk/v7/reactors/client"
 	roles "github.com/Basis-Theory/go-sdk/v7/roles"
 	sessions "github.com/Basis-Theory/go-sdk/v7/sessions"
@@ -52,6 +54,8 @@ type Client struct {
 	Sessions             *sessions.Client
 	TokenIntents         *tokenintents.Client
 	Webhooks             *webhooksclient.Client
+	ReactorLogs          *reactorlogs.Client
+	ProxyLogs            *proxylogs.Client
 	Events               *events.Client
 	AccountUpdater       *accountupdaterclient.Client
 	Agentic              *agenticclient.Client
@@ -87,6 +91,8 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Sessions:             sessions.NewClient(options),
 		TokenIntents:         tokenintents.NewClient(options),
 		Webhooks:             webhooksclient.NewClient(options),
+		ReactorLogs:          reactorlogs.NewClient(options),
+		ProxyLogs:            proxylogs.NewClient(options),
 		Events:               events.NewClient(options),
 		AccountUpdater:       accountupdaterclient.NewClient(options),
 		Agentic:              agenticclient.NewClient(options),
