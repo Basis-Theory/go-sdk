@@ -1,3 +1,10 @@
+# [7.5.0](https://github.com/Basis-Theory/go-sdk/compare/v7.4.0...v7.5.0) (2026-10-21)
+
+
+### Features
+
+* **ENG-13226:** expose network token descriptions in Go SDK ([#149](https://github.com/Basis-Theory/go-sdk/issues/149)) ([892d415](https://github.com/Basis-Theory/go-sdk/commit/892d415b26edf622562a35cf18789a6b298a58ff))
+
 # [7.4.0](https://github.com/Basis-Theory/go-sdk/compare/v7.3.0...v7.4.0) (2026-10-16)
 
 
