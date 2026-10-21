@@ -12931,17 +12931,35 @@ func (n *NetworkStatusDetail) String() string {
 }
 
 var (
-	networkTokenAccountFieldCardArt = big.NewInt(1 << 0)
+	networkTokenAccountFieldShortDescription = big.NewInt(1 << 0)
+	networkTokenAccountFieldLongDescription  = big.NewInt(1 << 1)
+	networkTokenAccountFieldCardArt          = big.NewInt(1 << 2)
 )
 
 type NetworkTokenAccount struct {
-	CardArt *CardArt `json:"card_art,omitempty" url:"card_art,omitempty"`
+	ShortDescription *string  `json:"short_description,omitempty" url:"short_description,omitempty"`
+	LongDescription  *string  `json:"long_description,omitempty" url:"long_description,omitempty"`
+	CardArt          *CardArt `json:"card_art,omitempty" url:"card_art,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
+}
+
+func (n *NetworkTokenAccount) GetShortDescription() *string {
+	if n == nil {
+		return nil
+	}
+	return n.ShortDescription
+}
+
+func (n *NetworkTokenAccount) GetLongDescription() *string {
+	if n == nil {
+		return nil
+	}
+	return n.LongDescription
 }
 
 func (n *NetworkTokenAccount) GetCardArt() *CardArt {
@@ -12963,6 +12981,20 @@ func (n *NetworkTokenAccount) require(field *big.Int) {
 		n.explicitFields = big.NewInt(0)
 	}
 	n.explicitFields.Or(n.explicitFields, field)
+}
+
+// SetShortDescription sets the ShortDescription field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkTokenAccount) SetShortDescription(shortDescription *string) {
+	n.ShortDescription = shortDescription
+	n.require(networkTokenAccountFieldShortDescription)
+}
+
+// SetLongDescription sets the LongDescription field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (n *NetworkTokenAccount) SetLongDescription(longDescription *string) {
+	n.LongDescription = longDescription
+	n.require(networkTokenAccountFieldLongDescription)
 }
 
 // SetCardArt sets the CardArt field and marks it as non-optional;

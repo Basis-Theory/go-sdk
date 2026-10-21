@@ -4319,7 +4319,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"card_art\": {\n    \"background_color\": \"background_color\",\n    \"logo\": {\n      \"url\": \"url\",\n      \"description\": \"description\",\n      \"height\": 1,\n      \"width\": 1\n    },\n    \"card_image\": {\n      \"url\": \"url\",\n      \"description\": \"description\",\n      \"height\": 1,\n      \"width\": 1\n    }\n  }\n}",
+        "body": "{\n  \"short_description\": \"short_description\",\n  \"long_description\": \"long_description\",\n  \"card_art\": {\n    \"background_color\": \"background_color\",\n    \"logo\": {\n      \"url\": \"url\",\n      \"description\": \"description\",\n      \"height\": 1,\n      \"width\": 1\n    },\n    \"card_image\": {\n      \"url\": \"url\",\n      \"description\": \"description\",\n      \"height\": 1,\n      \"width\": 1\n    }\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
