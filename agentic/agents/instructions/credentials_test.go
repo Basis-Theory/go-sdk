@@ -4,7 +4,7 @@ package instructions
 
 import (
 	json "encoding/json"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -13,7 +13,7 @@ import (
 func TestSettersGetCredentialsRequest(t *testing.T) {
 	t.Run("SetProducts", func(t *testing.T) {
 		obj := &GetCredentialsRequest{}
-		var fernTestValueProducts []*v7.Product
+		var fernTestValueProducts []*v8.Product
 		obj.SetProducts(fernTestValueProducts)
 		assert.Equal(t, fernTestValueProducts, obj.Products)
 		assert.NotNil(t, obj.explicitFields)
@@ -21,7 +21,7 @@ func TestSettersGetCredentialsRequest(t *testing.T) {
 
 	t.Run("SetMerchant", func(t *testing.T) {
 		obj := &GetCredentialsRequest{}
-		var fernTestValueMerchant *v7.AgenticMerchant
+		var fernTestValueMerchant *v8.AgenticMerchant
 		obj.SetMerchant(fernTestValueMerchant)
 		assert.Equal(t, fernTestValueMerchant, obj.Merchant)
 		assert.NotNil(t, obj.explicitFields)
@@ -29,7 +29,7 @@ func TestSettersGetCredentialsRequest(t *testing.T) {
 
 	t.Run("SetAmount", func(t *testing.T) {
 		obj := &GetCredentialsRequest{}
-		var fernTestValueAmount *v7.Amount
+		var fernTestValueAmount *v8.Amount
 		obj.SetAmount(fernTestValueAmount)
 		assert.Equal(t, fernTestValueAmount, obj.Amount)
 		assert.NotNil(t, obj.explicitFields)
@@ -37,7 +37,7 @@ func TestSettersGetCredentialsRequest(t *testing.T) {
 
 	t.Run("SetDeliveryMethod", func(t *testing.T) {
 		obj := &GetCredentialsRequest{}
-		var fernTestValueDeliveryMethod *v7.DeliveryMethod
+		var fernTestValueDeliveryMethod *v8.DeliveryMethod
 		obj.SetDeliveryMethod(fernTestValueDeliveryMethod)
 		assert.Equal(t, fernTestValueDeliveryMethod, obj.DeliveryMethod)
 		assert.NotNil(t, obj.explicitFields)
@@ -45,7 +45,7 @@ func TestSettersGetCredentialsRequest(t *testing.T) {
 
 	t.Run("SetShippingAddress", func(t *testing.T) {
 		obj := &GetCredentialsRequest{}
-		var fernTestValueShippingAddress *v7.ShippingAddress
+		var fernTestValueShippingAddress *v8.ShippingAddress
 		obj.SetShippingAddress(fernTestValueShippingAddress)
 		assert.Equal(t, fernTestValueShippingAddress, obj.ShippingAddress)
 		assert.NotNil(t, obj.explicitFields)
@@ -58,7 +58,7 @@ func TestSettersMarkExplicitGetCredentialsRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &GetCredentialsRequest{}
-		var fernTestValueProducts []*v7.Product
+		var fernTestValueProducts []*v8.Product
 
 		// Act
 		obj.SetProducts(fernTestValueProducts)
@@ -89,7 +89,7 @@ func TestSettersMarkExplicitGetCredentialsRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &GetCredentialsRequest{}
-		var fernTestValueMerchant *v7.AgenticMerchant
+		var fernTestValueMerchant *v8.AgenticMerchant
 
 		// Act
 		obj.SetMerchant(fernTestValueMerchant)
@@ -120,7 +120,7 @@ func TestSettersMarkExplicitGetCredentialsRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &GetCredentialsRequest{}
-		var fernTestValueAmount *v7.Amount
+		var fernTestValueAmount *v8.Amount
 
 		// Act
 		obj.SetAmount(fernTestValueAmount)
@@ -151,7 +151,7 @@ func TestSettersMarkExplicitGetCredentialsRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &GetCredentialsRequest{}
-		var fernTestValueDeliveryMethod *v7.DeliveryMethod
+		var fernTestValueDeliveryMethod *v8.DeliveryMethod
 
 		// Act
 		obj.SetDeliveryMethod(fernTestValueDeliveryMethod)
@@ -182,7 +182,7 @@ func TestSettersMarkExplicitGetCredentialsRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &GetCredentialsRequest{}
-		var fernTestValueShippingAddress *v7.ShippingAddress
+		var fernTestValueShippingAddress *v8.ShippingAddress
 
 		// Act
 		obj.SetShippingAddress(fernTestValueShippingAddress)

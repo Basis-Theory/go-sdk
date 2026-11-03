@@ -6,11 +6,11 @@ import (
 	context "context"
 	os "os"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	merchant "github.com/Basis-Theory/go-sdk/v7/googlepay/merchant"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	merchant "github.com/Basis-Theory/go-sdk/v8/googlepay/merchant"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 )
 
 type Client struct {

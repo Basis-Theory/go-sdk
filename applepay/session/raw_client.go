@@ -6,10 +6,10 @@ import (
 	context "context"
 	http "net/http"
 
-	applepay "github.com/Basis-Theory/go-sdk/v7/applepay"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	applepay "github.com/Basis-Theory/go-sdk/v8/applepay"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 )
 
 type RawClient struct {

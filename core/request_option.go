@@ -64,9 +64,9 @@ func (r *RequestOptions) ToHeader() http.Header {
 func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
-	headers.Set("X-Fern-SDK-Name", "github.com/Basis-Theory/go-sdk/v7")
-	headers.Set("X-Fern-SDK-Version", "v7.0.0")
-	headers.Set("User-Agent", "github.com/Basis-Theory/go-sdk/7.0.0")
+	headers.Set("X-Fern-SDK-Name", "github.com/Basis-Theory/go-sdk/v8")
+	headers.Set("X-Fern-SDK-Version", "v8.0.0")
+	headers.Set("User-Agent", "github.com/Basis-Theory/go-sdk/8.0.0")
 	return headers
 }
 

@@ -6,12 +6,12 @@ import (
 	context "context"
 	os "os"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
-	applepay "github.com/Basis-Theory/go-sdk/v7/applepay"
-	certificates "github.com/Basis-Theory/go-sdk/v7/applepay/merchant/certificates"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
+	applepay "github.com/Basis-Theory/go-sdk/v8/applepay"
+	certificates "github.com/Basis-Theory/go-sdk/v8/applepay/merchant/certificates"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 )
 
 type Client struct {

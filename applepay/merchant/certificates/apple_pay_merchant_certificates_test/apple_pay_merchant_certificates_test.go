@@ -10,9 +10,9 @@ import (
 	os "os"
 	testing "testing"
 
-	merchant "github.com/Basis-Theory/go-sdk/v7/applepay/merchant"
-	client "github.com/Basis-Theory/go-sdk/v7/client"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	merchant "github.com/Basis-Theory/go-sdk/v8/applepay/merchant"
+	client "github.com/Basis-Theory/go-sdk/v8/client"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 	require "github.com/stretchr/testify/require"
 )
 

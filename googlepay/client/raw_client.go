@@ -6,10 +6,10 @@ import (
 	context "context"
 	http "net/http"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 )
 
 type RawClient struct {
@@ -125,7 +125,7 @@ func (r *RawClient) Delete(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (*core.Response[string], error) {
+) (*core.Response[*basistheory.GooglePayDeleteResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -140,7 +140,7 @@ func (r *RawClient) Delete(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response string
+	var response *basistheory.GooglePayDeleteResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -159,7 +159,7 @@ func (r *RawClient) Delete(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[string]{
+	return &core.Response[*basistheory.GooglePayDeleteResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

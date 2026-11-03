@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 	big "math/big"
 	time "time"
 )
@@ -160,6 +160,246 @@ func (g *GooglePayCreateResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GooglePayCreateResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+var (
+	googlePayDeleteResponseFieldGooglePay = big.NewInt(1 << 0)
+)
+
+type GooglePayDeleteResponse struct {
+	GooglePay *GooglePayDeleteTokenResponse `json:"google_pay,omitempty" url:"google_pay,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePayDeleteResponse) GetGooglePay() *GooglePayDeleteTokenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.GooglePay
+}
+
+func (g *GooglePayDeleteResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GooglePayDeleteResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetGooglePay sets the GooglePay field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayDeleteResponse) SetGooglePay(googlePay *GooglePayDeleteTokenResponse) {
+	g.GooglePay = googlePay
+	g.require(googlePayDeleteResponseFieldGooglePay)
+}
+
+func (g *GooglePayDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler GooglePayDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GooglePayDeleteResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GooglePayDeleteResponse) MarshalJSON() ([]byte, error) {
+	type embed GooglePayDeleteResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GooglePayDeleteResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+var (
+	googlePayDeleteTokenResponseFieldID        = big.NewInt(1 << 0)
+	googlePayDeleteTokenResponseFieldType      = big.NewInt(1 << 1)
+	googlePayDeleteTokenResponseFieldTenantID  = big.NewInt(1 << 2)
+	googlePayDeleteTokenResponseFieldStatus    = big.NewInt(1 << 3)
+	googlePayDeleteTokenResponseFieldExpiresAt = big.NewInt(1 << 4)
+)
+
+type GooglePayDeleteTokenResponse struct {
+	ID        *string    `json:"id,omitempty" url:"id,omitempty"`
+	Type      *string    `json:"type,omitempty" url:"type,omitempty"`
+	TenantID  *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Status    *string    `json:"status,omitempty" url:"status,omitempty"`
+	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GooglePayDeleteTokenResponse) GetID() *string {
+	if g == nil {
+		return nil
+	}
+	return g.ID
+}
+
+func (g *GooglePayDeleteTokenResponse) GetType() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Type
+}
+
+func (g *GooglePayDeleteTokenResponse) GetTenantID() *string {
+	if g == nil {
+		return nil
+	}
+	return g.TenantID
+}
+
+func (g *GooglePayDeleteTokenResponse) GetStatus() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Status
+}
+
+func (g *GooglePayDeleteTokenResponse) GetExpiresAt() *time.Time {
+	if g == nil {
+		return nil
+	}
+	return g.ExpiresAt
+}
+
+func (g *GooglePayDeleteTokenResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GooglePayDeleteTokenResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayDeleteTokenResponse) SetID(id *string) {
+	g.ID = id
+	g.require(googlePayDeleteTokenResponseFieldID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayDeleteTokenResponse) SetType(type_ *string) {
+	g.Type = type_
+	g.require(googlePayDeleteTokenResponseFieldType)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayDeleteTokenResponse) SetTenantID(tenantID *string) {
+	g.TenantID = tenantID
+	g.require(googlePayDeleteTokenResponseFieldTenantID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayDeleteTokenResponse) SetStatus(status *string) {
+	g.Status = status
+	g.require(googlePayDeleteTokenResponseFieldStatus)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GooglePayDeleteTokenResponse) SetExpiresAt(expiresAt *time.Time) {
+	g.ExpiresAt = expiresAt
+	g.require(googlePayDeleteTokenResponseFieldExpiresAt)
+}
+
+func (g *GooglePayDeleteTokenResponse) UnmarshalJSON(data []byte) error {
+	type embed GooglePayDeleteTokenResponse
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*g),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*g = GooglePayDeleteTokenResponse(unmarshaler.embed)
+	g.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GooglePayDeleteTokenResponse) MarshalJSON() ([]byte, error) {
+	type embed GooglePayDeleteTokenResponse
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*g),
+		ExpiresAt: internal.NewOptionalDateTime(g.ExpiresAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GooglePayDeleteTokenResponse) String() string {
 	if g == nil {
 		return "<nil>"
 	}

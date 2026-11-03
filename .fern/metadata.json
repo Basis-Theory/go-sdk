@@ -6,10 +6,10 @@
     "packageName": "basistheory",
     "union": "v1"
   },
-  "originGitCommit": "02b3943fdc3917f3ccf5bf3f0c33f3cc7eab7d36",
+  "originGitCommit": "1f6320dc5e7f64751b94582409cbac836c69d73b",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
-  "requestedVersion": "7.0.0",
+  "requestedVersion": "8.0.0",
   "ciProvider": "github",
-  "sdkVersion": "v7.0.0"
+  "sdkVersion": "v8.0.0"
 }

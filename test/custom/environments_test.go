@@ -3,7 +3,7 @@ package custom
 import (
 	"testing"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
 )
 
 // Pins the host each environment resolves to. Us and Eu both resolved to the

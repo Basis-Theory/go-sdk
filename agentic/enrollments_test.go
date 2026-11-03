@@ -4,7 +4,7 @@ package agentic
 
 import (
 	json "encoding/json"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -21,7 +21,7 @@ func TestSettersCreateEnrollmentRequest(t *testing.T) {
 
 	t.Run("SetConsumer", func(t *testing.T) {
 		obj := &CreateEnrollmentRequest{}
-		var fernTestValueConsumer *v7.Consumer
+		var fernTestValueConsumer *v8.Consumer
 		obj.SetConsumer(fernTestValueConsumer)
 		assert.Equal(t, fernTestValueConsumer, obj.Consumer)
 		assert.NotNil(t, obj.explicitFields)
@@ -105,7 +105,7 @@ func TestSettersMarkExplicitCreateEnrollmentRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateEnrollmentRequest{}
-		var fernTestValueConsumer *v7.Consumer
+		var fernTestValueConsumer *v8.Consumer
 
 		// Act
 		obj.SetConsumer(fernTestValueConsumer)

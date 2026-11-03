@@ -3,9 +3,9 @@
 package agents
 
 import (
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 )
 
 var ErrorCodes internal.ErrorCodes = internal.ErrorCodes{
