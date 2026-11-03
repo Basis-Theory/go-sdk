@@ -548,7 +548,7 @@
       },
       "response": {
         "status": 200,
-        "body": "\"string\"",
+        "body": "{\n  \"apple_pay\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"tenant_id\": \"tenant_id\",\n    \"status\": \"status\",\n    \"expires_at\": \"2024-01-15T09:30:00Z\"\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -651,7 +651,7 @@
       },
       "response": {
         "status": 200,
-        "body": "\"string\"",
+        "body": "{\n  \"google_pay\": {\n    \"id\": \"id\",\n    \"type\": \"type\",\n    \"tenant_id\": \"tenant_id\",\n    \"status\": \"status\",\n    \"expires_at\": \"2024-01-15T09:30:00Z\"\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }

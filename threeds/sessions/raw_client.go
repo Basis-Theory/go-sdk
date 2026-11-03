@@ -6,11 +6,11 @@ import (
 	context "context"
 	http "net/http"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
-	threeds "github.com/Basis-Theory/go-sdk/v7/threeds"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
+	threeds "github.com/Basis-Theory/go-sdk/v8/threeds"
 )
 
 type RawClient struct {

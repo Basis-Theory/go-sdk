@@ -10,9 +10,9 @@ import (
 	os "os"
 	testing "testing"
 
-	client "github.com/Basis-Theory/go-sdk/v7/client"
-	googlepay "github.com/Basis-Theory/go-sdk/v7/googlepay"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	client "github.com/Basis-Theory/go-sdk/v8/client"
+	googlepay "github.com/Basis-Theory/go-sdk/v8/googlepay"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 	require "github.com/stretchr/testify/require"
 )
 

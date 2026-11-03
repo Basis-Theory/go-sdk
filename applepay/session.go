@@ -4,7 +4,7 @@ package applepay
 
 import (
 	json "encoding/json"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 	big "math/big"
 )
 

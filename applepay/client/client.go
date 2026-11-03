@@ -6,13 +6,13 @@ import (
 	context "context"
 	os "os"
 
-	basistheory "github.com/Basis-Theory/go-sdk/v7"
-	domain "github.com/Basis-Theory/go-sdk/v7/applepay/domain"
-	client "github.com/Basis-Theory/go-sdk/v7/applepay/merchant/client"
-	session "github.com/Basis-Theory/go-sdk/v7/applepay/session"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	basistheory "github.com/Basis-Theory/go-sdk/v8"
+	domain "github.com/Basis-Theory/go-sdk/v8/applepay/domain"
+	client "github.com/Basis-Theory/go-sdk/v8/applepay/merchant/client"
+	session "github.com/Basis-Theory/go-sdk/v8/applepay/session"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 )
 
 type Client struct {
@@ -83,14 +83,14 @@ func (c *Client) Delete(
 	ctx context.Context,
 	id string,
 	opts ...option.RequestOption,
-) (string, error) {
+) (*basistheory.ApplePayDeleteResponse, error) {
 	response, err := c.WithRawResponse.Delete(
 		ctx,
 		id,
 		opts...,
 	)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return response.Body, nil
 }

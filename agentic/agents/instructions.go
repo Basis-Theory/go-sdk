@@ -5,8 +5,8 @@ package agents
 import (
 	json "encoding/json"
 	fmt "fmt"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 	big "math/big"
 	time "time"
 )
@@ -25,12 +25,12 @@ var (
 
 type CreateInstructionRequest struct {
 	EnrollmentID    string              `json:"enrollment_id" url:"-"`
-	Amount          *v7.Amount          `json:"amount" url:"-"`
+	Amount          *v8.Amount          `json:"amount" url:"-"`
 	Description     string              `json:"description" url:"-"`
 	ExpiresAt       time.Time           `json:"expires_at" url:"-"`
 	AssuranceData   map[string]any      `json:"assurance_data,omitempty" url:"-"`
-	Recurring       *v7.Recurring       `json:"recurring,omitempty" url:"-"`
-	InstanceDetails *v7.InstanceDetails `json:"instance_details,omitempty" url:"-"`
+	Recurring       *v8.Recurring       `json:"recurring,omitempty" url:"-"`
+	InstanceDetails *v8.InstanceDetails `json:"instance_details,omitempty" url:"-"`
 	// Stripe network business profile identifier (`profile_...`) of the seller allowed to use the
 	// shared payment token. Maps to Stripe's `seller_details[network_business_profile]`.
 	// Only valid for `spt` (Stripe) enrollments; required unless an MPP challenge with Stripe
@@ -61,7 +61,7 @@ func (c *CreateInstructionRequest) SetEnrollmentID(enrollmentID string) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequest) SetAmount(amount *v7.Amount) {
+func (c *CreateInstructionRequest) SetAmount(amount *v8.Amount) {
 	c.Amount = amount
 	c.require(createInstructionRequestFieldAmount)
 }
@@ -89,14 +89,14 @@ func (c *CreateInstructionRequest) SetAssuranceData(assuranceData map[string]any
 
 // SetRecurring sets the Recurring field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequest) SetRecurring(recurring *v7.Recurring) {
+func (c *CreateInstructionRequest) SetRecurring(recurring *v8.Recurring) {
 	c.Recurring = recurring
 	c.require(createInstructionRequestFieldRecurring)
 }
 
 // SetInstanceDetails sets the InstanceDetails field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequest) SetInstanceDetails(instanceDetails *v7.InstanceDetails) {
+func (c *CreateInstructionRequest) SetInstanceDetails(instanceDetails *v8.InstanceDetails) {
 	c.InstanceDetails = instanceDetails
 	c.require(createInstructionRequestFieldInstanceDetails)
 }
@@ -191,7 +191,7 @@ var (
 )
 
 type CreateInstructionRequestMpp struct {
-	Challenge *v7.MppStripeChallenge `json:"challenge" url:"challenge"`
+	Challenge *v8.MppStripeChallenge `json:"challenge" url:"challenge"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -200,7 +200,7 @@ type CreateInstructionRequestMpp struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CreateInstructionRequestMpp) GetChallenge() *v7.MppStripeChallenge {
+func (c *CreateInstructionRequestMpp) GetChallenge() *v8.MppStripeChallenge {
 	if c == nil {
 		return nil
 	}
@@ -223,7 +223,7 @@ func (c *CreateInstructionRequestMpp) require(field *big.Int) {
 
 // SetChallenge sets the Challenge field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateInstructionRequestMpp) SetChallenge(challenge *v7.MppStripeChallenge) {
+func (c *CreateInstructionRequestMpp) SetChallenge(challenge *v8.MppStripeChallenge) {
 	c.Challenge = challenge
 	c.require(createInstructionRequestMppFieldChallenge)
 }
@@ -277,7 +277,7 @@ var (
 )
 
 type UpdateInstructionRequest struct {
-	Amount      *v7.Amount `json:"amount,omitempty" url:"-"`
+	Amount      *v8.Amount `json:"amount,omitempty" url:"-"`
 	Description *string    `json:"description,omitempty" url:"-"`
 	ExpiresAt   *time.Time `json:"expires_at,omitempty" url:"-"`
 
@@ -294,7 +294,7 @@ func (u *UpdateInstructionRequest) require(field *big.Int) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (u *UpdateInstructionRequest) SetAmount(amount *v7.Amount) {
+func (u *UpdateInstructionRequest) SetAmount(amount *v8.Amount) {
 	u.Amount = amount
 	u.require(updateInstructionRequestFieldAmount)
 }

@@ -5,10 +5,10 @@ package client
 import (
 	os "os"
 
-	client "github.com/Basis-Theory/go-sdk/v7/agentic/agents/client"
-	enrollmentsclient "github.com/Basis-Theory/go-sdk/v7/agentic/enrollments/client"
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	client "github.com/Basis-Theory/go-sdk/v8/agentic/agents/client"
+	enrollmentsclient "github.com/Basis-Theory/go-sdk/v8/agentic/enrollments/client"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 )
 
 type Client struct {

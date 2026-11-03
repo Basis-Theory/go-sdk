@@ -5,8 +5,8 @@ package agentic
 import (
 	json "encoding/json"
 	fmt "fmt"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 	big "math/big"
 )
 
@@ -22,7 +22,7 @@ var (
 
 type CreateEnrollmentRequest struct {
 	TokenID  string       `json:"token_id" url:"-"`
-	Consumer *v7.Consumer `json:"consumer" url:"-"`
+	Consumer *v8.Consumer `json:"consumer" url:"-"`
 	// Single agent ID (mutually exclusive with agent_ids)
 	AgentID *string `json:"agent_id,omitempty" url:"-"`
 	// Multiple agent IDs (mutually exclusive with agent_id)
@@ -58,7 +58,7 @@ func (c *CreateEnrollmentRequest) SetTokenID(tokenID string) {
 
 // SetConsumer sets the Consumer field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CreateEnrollmentRequest) SetConsumer(consumer *v7.Consumer) {
+func (c *CreateEnrollmentRequest) SetConsumer(consumer *v8.Consumer) {
 	c.Consumer = consumer
 	c.require(createEnrollmentRequestFieldConsumer)
 }

@@ -5,7 +5,7 @@ package basistheory
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
 	big "math/big"
 	time "time"
 )
@@ -144,6 +144,246 @@ func (a *ApplePayCreateResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (a *ApplePayCreateResponse) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	applePayDeleteResponseFieldApplePay = big.NewInt(1 << 0)
+)
+
+type ApplePayDeleteResponse struct {
+	ApplePay *ApplePayDeleteTokenResponse `json:"apple_pay,omitempty" url:"apple_pay,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *ApplePayDeleteResponse) GetApplePay() *ApplePayDeleteTokenResponse {
+	if a == nil {
+		return nil
+	}
+	return a.ApplePay
+}
+
+func (a *ApplePayDeleteResponse) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *ApplePayDeleteResponse) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetApplePay sets the ApplePay field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDeleteResponse) SetApplePay(applePay *ApplePayDeleteTokenResponse) {
+	a.ApplePay = applePay
+	a.require(applePayDeleteResponseFieldApplePay)
+}
+
+func (a *ApplePayDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApplePayDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ApplePayDeleteResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ApplePayDeleteResponse) MarshalJSON() ([]byte, error) {
+	type embed ApplePayDeleteResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *ApplePayDeleteResponse) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	applePayDeleteTokenResponseFieldID        = big.NewInt(1 << 0)
+	applePayDeleteTokenResponseFieldType      = big.NewInt(1 << 1)
+	applePayDeleteTokenResponseFieldTenantID  = big.NewInt(1 << 2)
+	applePayDeleteTokenResponseFieldStatus    = big.NewInt(1 << 3)
+	applePayDeleteTokenResponseFieldExpiresAt = big.NewInt(1 << 4)
+)
+
+type ApplePayDeleteTokenResponse struct {
+	ID        *string    `json:"id,omitempty" url:"id,omitempty"`
+	Type      *string    `json:"type,omitempty" url:"type,omitempty"`
+	TenantID  *string    `json:"tenant_id,omitempty" url:"tenant_id,omitempty"`
+	Status    *string    `json:"status,omitempty" url:"status,omitempty"`
+	ExpiresAt *time.Time `json:"expires_at,omitempty" url:"expires_at,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *ApplePayDeleteTokenResponse) GetID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ID
+}
+
+func (a *ApplePayDeleteTokenResponse) GetType() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Type
+}
+
+func (a *ApplePayDeleteTokenResponse) GetTenantID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.TenantID
+}
+
+func (a *ApplePayDeleteTokenResponse) GetStatus() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Status
+}
+
+func (a *ApplePayDeleteTokenResponse) GetExpiresAt() *time.Time {
+	if a == nil {
+		return nil
+	}
+	return a.ExpiresAt
+}
+
+func (a *ApplePayDeleteTokenResponse) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *ApplePayDeleteTokenResponse) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDeleteTokenResponse) SetID(id *string) {
+	a.ID = id
+	a.require(applePayDeleteTokenResponseFieldID)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDeleteTokenResponse) SetType(type_ *string) {
+	a.Type = type_
+	a.require(applePayDeleteTokenResponseFieldType)
+}
+
+// SetTenantID sets the TenantID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDeleteTokenResponse) SetTenantID(tenantID *string) {
+	a.TenantID = tenantID
+	a.require(applePayDeleteTokenResponseFieldTenantID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDeleteTokenResponse) SetStatus(status *string) {
+	a.Status = status
+	a.require(applePayDeleteTokenResponseFieldStatus)
+}
+
+// SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *ApplePayDeleteTokenResponse) SetExpiresAt(expiresAt *time.Time) {
+	a.ExpiresAt = expiresAt
+	a.require(applePayDeleteTokenResponseFieldExpiresAt)
+}
+
+func (a *ApplePayDeleteTokenResponse) UnmarshalJSON(data []byte) error {
+	type embed ApplePayDeleteTokenResponse
+	var unmarshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed: embed(*a),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*a = ApplePayDeleteTokenResponse(unmarshaler.embed)
+	a.ExpiresAt = unmarshaler.ExpiresAt.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ApplePayDeleteTokenResponse) MarshalJSON() ([]byte, error) {
+	type embed ApplePayDeleteTokenResponse
+	var marshaler = struct {
+		embed
+		ExpiresAt *internal.DateTime `json:"expires_at,omitempty"`
+	}{
+		embed:     embed(*a),
+		ExpiresAt: internal.NewOptionalDateTime(a.ExpiresAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *ApplePayDeleteTokenResponse) String() string {
 	if a == nil {
 		return "<nil>"
 	}

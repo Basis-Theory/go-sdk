@@ -4,7 +4,7 @@ package tenants
 
 import (
 	json "encoding/json"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -160,7 +160,7 @@ func TestSettersServiceOnboardingRequest(t *testing.T) {
 
 	t.Run("SetCardNetworkInfo", func(t *testing.T) {
 		obj := &ServiceOnboardingRequest{}
-		var fernTestValueCardNetworkInfo *v7.CardNetworkInfo
+		var fernTestValueCardNetworkInfo *v8.CardNetworkInfo
 		obj.SetCardNetworkInfo(fernTestValueCardNetworkInfo)
 		assert.Equal(t, fernTestValueCardNetworkInfo, obj.CardNetworkInfo)
 		assert.NotNil(t, obj.explicitFields)
@@ -266,7 +266,7 @@ func TestSettersMarkExplicitServiceOnboardingRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &ServiceOnboardingRequest{}
-		var fernTestValueCardNetworkInfo *v7.CardNetworkInfo
+		var fernTestValueCardNetworkInfo *v8.CardNetworkInfo
 
 		// Act
 		obj.SetCardNetworkInfo(fernTestValueCardNetworkInfo)

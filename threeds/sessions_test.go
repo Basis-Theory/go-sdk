@@ -4,7 +4,7 @@ package threeds
 
 import (
 	json "encoding/json"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -61,7 +61,7 @@ func TestSettersCreateThreeDsSessionRequest(t *testing.T) {
 
 	t.Run("SetDeviceInfo", func(t *testing.T) {
 		obj := &CreateThreeDsSessionRequest{}
-		var fernTestValueDeviceInfo *v7.ThreeDsDeviceInfo
+		var fernTestValueDeviceInfo *v8.ThreeDsDeviceInfo
 		obj.SetDeviceInfo(fernTestValueDeviceInfo)
 		assert.Equal(t, fernTestValueDeviceInfo, obj.DeviceInfo)
 		assert.NotNil(t, obj.explicitFields)
@@ -69,7 +69,7 @@ func TestSettersCreateThreeDsSessionRequest(t *testing.T) {
 
 	t.Run("SetAuthenticationRequest", func(t *testing.T) {
 		obj := &CreateThreeDsSessionRequest{}
-		var fernTestValueAuthenticationRequest *v7.AuthenticateThreeDsSessionRequest
+		var fernTestValueAuthenticationRequest *v8.AuthenticateThreeDsSessionRequest
 		obj.SetAuthenticationRequest(fernTestValueAuthenticationRequest)
 		assert.Equal(t, fernTestValueAuthenticationRequest, obj.AuthenticationRequest)
 		assert.NotNil(t, obj.explicitFields)
@@ -77,7 +77,7 @@ func TestSettersCreateThreeDsSessionRequest(t *testing.T) {
 
 	t.Run("SetCallbackURLs", func(t *testing.T) {
 		obj := &CreateThreeDsSessionRequest{}
-		var fernTestValueCallbackURLs *v7.ThreeDsCallbackURLs
+		var fernTestValueCallbackURLs *v8.ThreeDsCallbackURLs
 		obj.SetCallbackURLs(fernTestValueCallbackURLs)
 		assert.Equal(t, fernTestValueCallbackURLs, obj.CallbackURLs)
 		assert.NotNil(t, obj.explicitFields)
@@ -284,7 +284,7 @@ func TestSettersMarkExplicitCreateThreeDsSessionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateThreeDsSessionRequest{}
-		var fernTestValueDeviceInfo *v7.ThreeDsDeviceInfo
+		var fernTestValueDeviceInfo *v8.ThreeDsDeviceInfo
 
 		// Act
 		obj.SetDeviceInfo(fernTestValueDeviceInfo)
@@ -315,7 +315,7 @@ func TestSettersMarkExplicitCreateThreeDsSessionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateThreeDsSessionRequest{}
-		var fernTestValueAuthenticationRequest *v7.AuthenticateThreeDsSessionRequest
+		var fernTestValueAuthenticationRequest *v8.AuthenticateThreeDsSessionRequest
 
 		// Act
 		obj.SetAuthenticationRequest(fernTestValueAuthenticationRequest)
@@ -346,7 +346,7 @@ func TestSettersMarkExplicitCreateThreeDsSessionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateThreeDsSessionRequest{}
-		var fernTestValueCallbackURLs *v7.ThreeDsCallbackURLs
+		var fernTestValueCallbackURLs *v8.ThreeDsCallbackURLs
 
 		// Act
 		obj.SetCallbackURLs(fernTestValueCallbackURLs)

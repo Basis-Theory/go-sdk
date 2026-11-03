@@ -4,7 +4,7 @@ package agents
 
 import (
 	json "encoding/json"
-	v7 "github.com/Basis-Theory/go-sdk/v7"
+	v8 "github.com/Basis-Theory/go-sdk/v8"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	testing "testing"
@@ -22,7 +22,7 @@ func TestSettersCreateInstructionRequest(t *testing.T) {
 
 	t.Run("SetAmount", func(t *testing.T) {
 		obj := &CreateInstructionRequest{}
-		var fernTestValueAmount *v7.Amount
+		var fernTestValueAmount *v8.Amount
 		obj.SetAmount(fernTestValueAmount)
 		assert.Equal(t, fernTestValueAmount, obj.Amount)
 		assert.NotNil(t, obj.explicitFields)
@@ -54,7 +54,7 @@ func TestSettersCreateInstructionRequest(t *testing.T) {
 
 	t.Run("SetRecurring", func(t *testing.T) {
 		obj := &CreateInstructionRequest{}
-		var fernTestValueRecurring *v7.Recurring
+		var fernTestValueRecurring *v8.Recurring
 		obj.SetRecurring(fernTestValueRecurring)
 		assert.Equal(t, fernTestValueRecurring, obj.Recurring)
 		assert.NotNil(t, obj.explicitFields)
@@ -62,7 +62,7 @@ func TestSettersCreateInstructionRequest(t *testing.T) {
 
 	t.Run("SetInstanceDetails", func(t *testing.T) {
 		obj := &CreateInstructionRequest{}
-		var fernTestValueInstanceDetails *v7.InstanceDetails
+		var fernTestValueInstanceDetails *v8.InstanceDetails
 		obj.SetInstanceDetails(fernTestValueInstanceDetails)
 		assert.Equal(t, fernTestValueInstanceDetails, obj.InstanceDetails)
 		assert.NotNil(t, obj.explicitFields)
@@ -122,7 +122,7 @@ func TestSettersMarkExplicitCreateInstructionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateInstructionRequest{}
-		var fernTestValueAmount *v7.Amount
+		var fernTestValueAmount *v8.Amount
 
 		// Act
 		obj.SetAmount(fernTestValueAmount)
@@ -246,7 +246,7 @@ func TestSettersMarkExplicitCreateInstructionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateInstructionRequest{}
-		var fernTestValueRecurring *v7.Recurring
+		var fernTestValueRecurring *v8.Recurring
 
 		// Act
 		obj.SetRecurring(fernTestValueRecurring)
@@ -277,7 +277,7 @@ func TestSettersMarkExplicitCreateInstructionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateInstructionRequest{}
-		var fernTestValueInstanceDetails *v7.InstanceDetails
+		var fernTestValueInstanceDetails *v8.InstanceDetails
 
 		// Act
 		obj.SetInstanceDetails(fernTestValueInstanceDetails)
@@ -494,7 +494,7 @@ func TestSettersMarkExplicitInstructionsListRequest(t *testing.T) {
 func TestSettersCreateInstructionRequestMpp(t *testing.T) {
 	t.Run("SetChallenge", func(t *testing.T) {
 		obj := &CreateInstructionRequestMpp{}
-		var fernTestValueChallenge *v7.MppStripeChallenge
+		var fernTestValueChallenge *v8.MppStripeChallenge
 		obj.SetChallenge(fernTestValueChallenge)
 		assert.Equal(t, fernTestValueChallenge, obj.Challenge)
 		assert.NotNil(t, obj.explicitFields)
@@ -507,7 +507,7 @@ func TestGettersCreateInstructionRequestMpp(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateInstructionRequestMpp{}
-		var expected *v7.MppStripeChallenge
+		var expected *v8.MppStripeChallenge
 		obj.Challenge = expected
 
 		// Act & Assert
@@ -543,7 +543,7 @@ func TestSettersMarkExplicitCreateInstructionRequestMpp(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CreateInstructionRequestMpp{}
-		var fernTestValueChallenge *v7.MppStripeChallenge
+		var fernTestValueChallenge *v8.MppStripeChallenge
 
 		// Act
 		obj.SetChallenge(fernTestValueChallenge)
@@ -575,7 +575,7 @@ func TestSettersMarkExplicitCreateInstructionRequestMpp(t *testing.T) {
 func TestSettersUpdateInstructionRequest(t *testing.T) {
 	t.Run("SetAmount", func(t *testing.T) {
 		obj := &UpdateInstructionRequest{}
-		var fernTestValueAmount *v7.Amount
+		var fernTestValueAmount *v8.Amount
 		obj.SetAmount(fernTestValueAmount)
 		assert.Equal(t, fernTestValueAmount, obj.Amount)
 		assert.NotNil(t, obj.explicitFields)
@@ -604,7 +604,7 @@ func TestSettersMarkExplicitUpdateInstructionRequest(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &UpdateInstructionRequest{}
-		var fernTestValueAmount *v7.Amount
+		var fernTestValueAmount *v8.Amount
 
 		// Act
 		obj.SetAmount(fernTestValueAmount)

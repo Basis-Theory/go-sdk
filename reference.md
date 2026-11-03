@@ -768,7 +768,7 @@ client.ApplePay.Get(
 </dl>
 </details>
 
-<details><summary><code>client.ApplePay.Delete(ID) -> string</code></summary>
+<details><summary><code>client.ApplePay.Delete(ID) -> *basistheory.ApplePayDeleteResponse</code></summary>
 <dl>
 <dd>
 
@@ -918,7 +918,7 @@ client.GooglePay.Get(
 </dl>
 </details>
 
-<details><summary><code>client.GooglePay.Delete(ID) -> string</code></summary>
+<details><summary><code>client.GooglePay.Delete(ID) -> *basistheory.GooglePayDeleteResponse</code></summary>
 <dl>
 <dd>
 

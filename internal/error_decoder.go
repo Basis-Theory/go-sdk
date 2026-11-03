@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Basis-Theory/go-sdk/v7/core"
+	"github.com/Basis-Theory/go-sdk/v8/core"
 )
 
 // ErrorCodes maps HTTP status codes to error constructors.

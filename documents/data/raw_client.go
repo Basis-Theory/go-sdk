@@ -8,10 +8,10 @@ import (
 	io "io"
 	http "net/http"
 
-	core "github.com/Basis-Theory/go-sdk/v7/core"
-	documents "github.com/Basis-Theory/go-sdk/v7/documents"
-	internal "github.com/Basis-Theory/go-sdk/v7/internal"
-	option "github.com/Basis-Theory/go-sdk/v7/option"
+	core "github.com/Basis-Theory/go-sdk/v8/core"
+	documents "github.com/Basis-Theory/go-sdk/v8/documents"
+	internal "github.com/Basis-Theory/go-sdk/v8/internal"
+	option "github.com/Basis-Theory/go-sdk/v8/option"
 )
 
 type RawClient struct {
