@@ -1,3 +1,13 @@
+# [8.0.0](https://github.com/Basis-Theory/go-sdk/compare/v7.5.0...v8.0.0) (2026-11-03)
+
+
+* feat(ENG-14143)!: return typed objects from applePay.delete and googlePay.delete (#150) ([03e91fc](https://github.com/Basis-Theory/go-sdk/commit/03e91fc8f7428ac94779ab6fc206979bacdcfac0)), closes [#150](https://github.com/Basis-Theory/go-sdk/issues/150)
+
+
+### BREAKING CHANGES
+
+* applePay.delete and googlePay.delete now return ApplePayDeleteResponse and GooglePayDeleteResponse instead of string.
+
 # [7.5.0](https://github.com/Basis-Theory/go-sdk/compare/v7.4.0...v7.5.0) (2026-10-21)
 
 
