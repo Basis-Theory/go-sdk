@@ -8656,6 +8656,106 @@ func (e EnrollmentType) Ptr() *EnrollmentType {
 type EventTypes = []string
 
 var (
+	executionRoleFieldPermissions = big.NewInt(1 << 0)
+	executionRoleFieldRules       = big.NewInt(1 << 1)
+)
+
+type ExecutionRole struct {
+	Permissions []string      `json:"permissions,omitempty" url:"permissions,omitempty"`
+	Rules       []*AccessRule `json:"rules,omitempty" url:"rules,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *ExecutionRole) GetPermissions() []string {
+	if e == nil {
+		return nil
+	}
+	return e.Permissions
+}
+
+func (e *ExecutionRole) GetRules() []*AccessRule {
+	if e == nil {
+		return nil
+	}
+	return e.Rules
+}
+
+func (e *ExecutionRole) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
+	return e.extraProperties
+}
+
+func (e *ExecutionRole) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetPermissions sets the Permissions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *ExecutionRole) SetPermissions(permissions []string) {
+	e.Permissions = permissions
+	e.require(executionRoleFieldPermissions)
+}
+
+// SetRules sets the Rules field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *ExecutionRole) SetRules(rules []*AccessRule) {
+	e.Rules = rules
+	e.require(executionRoleFieldRules)
+}
+
+func (e *ExecutionRole) UnmarshalJSON(data []byte) error {
+	type unmarshaler ExecutionRole
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = ExecutionRole(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *ExecutionRole) MarshalJSON() ([]byte, error) {
+	type embed ExecutionRole
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (e *ExecutionRole) String() string {
+	if e == nil {
+		return "<nil>"
+	}
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+var (
 	functionSourceDetectionFieldCategory = big.NewInt(1 << 0)
 	functionSourceDetectionFieldStart    = big.NewInt(1 << 1)
 	functionSourceDetectionFieldLength   = big.NewInt(1 << 2)
