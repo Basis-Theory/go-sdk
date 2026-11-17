@@ -3838,6 +3838,14 @@ func TestSettersReactorRuntime(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetExecutionRole", func(t *testing.T) {
+		obj := &ReactorRuntime{}
+		var fernTestValueExecutionRole *ExecutionRole
+		obj.SetExecutionRole(fernTestValueExecutionRole)
+		assert.Equal(t, fernTestValueExecutionRole, obj.ExecutionRole)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 	t.Run("SetLogs", func(t *testing.T) {
 		obj := &ReactorRuntime{}
 		var fernTestValueLogs *RuntimeLogOptions
@@ -4113,6 +4121,39 @@ func TestGettersReactorRuntime(t *testing.T) {
 		_ = obj.GetPermissions() // Should return zero value
 	})
 
+	t.Run("GetExecutionRole", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &ReactorRuntime{}
+		var expected *ExecutionRole
+		obj.ExecutionRole = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetExecutionRole(), "getter should return the property value")
+	})
+
+	t.Run("GetExecutionRole_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &ReactorRuntime{}
+		obj.ExecutionRole = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetExecutionRole(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetExecutionRole_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *ReactorRuntime
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetExecutionRole() // Should return zero value
+	})
+
 	t.Run("GetLogs", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
@@ -4374,6 +4415,37 @@ func TestSettersMarkExplicitReactorRuntime(t *testing.T) {
 
 		// Act
 		obj.SetPermissions(fernTestValuePermissions)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetExecutionRole_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &ReactorRuntime{}
+		var fernTestValueExecutionRole *ExecutionRole
+
+		// Act
+		obj.SetExecutionRole(fernTestValueExecutionRole)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)

@@ -1553,7 +1553,8 @@ var (
 	runtimeFieldTimeout         = big.NewInt(1 << 4)
 	runtimeFieldResources       = big.NewInt(1 << 5)
 	runtimeFieldPermissions     = big.NewInt(1 << 6)
-	runtimeFieldLogs            = big.NewInt(1 << 7)
+	runtimeFieldExecutionRole   = big.NewInt(1 << 7)
+	runtimeFieldLogs            = big.NewInt(1 << 8)
 )
 
 type Runtime struct {
@@ -1564,6 +1565,7 @@ type Runtime struct {
 	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
 	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
 	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
+	ExecutionRole   *ExecutionRole     `json:"execution_role,omitempty" url:"execution_role,omitempty"`
 	Logs            *RuntimeLogOptions `json:"logs,omitempty" url:"logs,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -1620,6 +1622,13 @@ func (r *Runtime) GetPermissions() []string {
 		return nil
 	}
 	return r.Permissions
+}
+
+func (r *Runtime) GetExecutionRole() *ExecutionRole {
+	if r == nil {
+		return nil
+	}
+	return r.ExecutionRole
 }
 
 func (r *Runtime) GetLogs() *RuntimeLogOptions {
@@ -1690,6 +1699,13 @@ func (r *Runtime) SetResources(resources *string) {
 func (r *Runtime) SetPermissions(permissions []string) {
 	r.Permissions = permissions
 	r.require(runtimeFieldPermissions)
+}
+
+// SetExecutionRole sets the ExecutionRole field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *Runtime) SetExecutionRole(executionRole *ExecutionRole) {
+	r.ExecutionRole = executionRole
+	r.require(runtimeFieldExecutionRole)
 }
 
 // SetLogs sets the Logs field and marks it as non-optional;

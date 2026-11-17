@@ -1516,7 +1516,8 @@ var (
 	reactorRuntimeFieldTimeout         = big.NewInt(1 << 5)
 	reactorRuntimeFieldResources       = big.NewInt(1 << 6)
 	reactorRuntimeFieldPermissions     = big.NewInt(1 << 7)
-	reactorRuntimeFieldLogs            = big.NewInt(1 << 8)
+	reactorRuntimeFieldExecutionRole   = big.NewInt(1 << 8)
+	reactorRuntimeFieldLogs            = big.NewInt(1 << 9)
 )
 
 type ReactorRuntime struct {
@@ -1528,6 +1529,7 @@ type ReactorRuntime struct {
 	Timeout         *int               `json:"timeout,omitempty" url:"timeout,omitempty"`
 	Resources       *string            `json:"resources,omitempty" url:"resources,omitempty"`
 	Permissions     []string           `json:"permissions,omitempty" url:"permissions,omitempty"`
+	ExecutionRole   *ExecutionRole     `json:"execution_role,omitempty" url:"execution_role,omitempty"`
 	Logs            *RuntimeLogOptions `json:"logs,omitempty" url:"logs,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -1591,6 +1593,13 @@ func (r *ReactorRuntime) GetPermissions() []string {
 		return nil
 	}
 	return r.Permissions
+}
+
+func (r *ReactorRuntime) GetExecutionRole() *ExecutionRole {
+	if r == nil {
+		return nil
+	}
+	return r.ExecutionRole
 }
 
 func (r *ReactorRuntime) GetLogs() *RuntimeLogOptions {
@@ -1668,6 +1677,13 @@ func (r *ReactorRuntime) SetResources(resources *string) {
 func (r *ReactorRuntime) SetPermissions(permissions []string) {
 	r.Permissions = permissions
 	r.require(reactorRuntimeFieldPermissions)
+}
+
+// SetExecutionRole sets the ExecutionRole field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReactorRuntime) SetExecutionRole(executionRole *ExecutionRole) {
+	r.ExecutionRole = executionRole
+	r.require(reactorRuntimeFieldExecutionRole)
 }
 
 // SetLogs sets the Logs field and marks it as non-optional;
