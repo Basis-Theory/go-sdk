@@ -1,3 +1,10 @@
+# [8.1.0](https://github.com/Basis-Theory/go-sdk/compare/v8.0.0...v8.1.0) (2026-11-17)
+
+
+### Features
+
+* add runtime.execution_role to Reactors and Proxy code transforms ([#151](https://github.com/Basis-Theory/go-sdk/issues/151)) ([d590e9c](https://github.com/Basis-Theory/go-sdk/commit/d590e9c9ed5511f39e863c5c70529d118c2141f6))
+
 # [8.0.0](https://github.com/Basis-Theory/go-sdk/compare/v7.5.0...v8.0.0) (2026-11-03)
 
 
