@@ -6,7 +6,7 @@
     "packageName": "basistheory",
     "union": "v1"
   },
-  "originGitCommit": "524dae06b005f95d10595c67f6377de25f0073d0",
+  "originGitCommit": "1052cb473bd944abd56bc61965fe783fd0f3a814",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "requestedVersion": "8.0.0",
